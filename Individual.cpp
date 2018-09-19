@@ -186,4 +186,56 @@ double IndividualArrayInt::euclideanDistance(const Individual *ind) const {
 	return std::sqrt(sum);
 }
 
+
+
+//-----  Hamming Distance  ----------------------------------------------------
+double IndividualArrayInt::hammingDistance(const Individual *ind) const {
+	if (ind->getType() != Individual::ARRAY_INTEGER) {
+		std::string errorMsg = "Cannot measure the distance between ";
+		errorMsg += "individuals of different types";
+		throw new FuzzyFWException("Individual", errorMsg);
+	}
+
+	const IndividualArrayInt * ind2 =
+		dynamic_cast<const IndividualArrayInt *>(ind);
+
+	if (this->genotype.size() != ind2->size())
+		return Infd;
+	unsigned int count = 0;
+	for (unsigned int i = 0; i < this->genotype.size(); i++) {
+		if (this->getGene(i) != ind2->getGene(i))
+			count++;
+	}
+	return ((double)count) / this->genotype.size();
+}
+
+
+
+//-----  Kendall-tau Distance  ------------------------------------------------
+double IndividualArrayInt::kendallTauDistance(const Individual *ind) const {
+	if (ind->getType() != Individual::ARRAY_INTEGER) {
+		std::string errorMsg = "Cannot measure the distance between ";
+		errorMsg += "individuals of different types";
+		throw new FuzzyFWException("Individual", errorMsg);
+	}
+
+	unsigned int count = 0, length, N;
+	const IndividualArrayInt * ind2 =
+		dynamic_cast<const IndividualArrayInt *>(ind);
+	length = this->genotype.size();
+
+	N = length * (length - 1) / 2;
+	for (unsigned int i = 0; i < length; i++) {
+		for (unsigned int j = i + 1; j < length; j++) {
+			if ((this->getGene(i) < this->getGene(j)) && (ind2->getGene(i) > ind2->getGene(j)))
+				count++;
+			if ((this->getGene(i) > this->getGene(j)) && (ind2->getGene(i) < ind2->getGene(j)))
+				count++;
+		}
+	}
+	return ((double)count) / N;
+}
+
+
+
 }

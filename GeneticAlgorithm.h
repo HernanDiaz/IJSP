@@ -22,7 +22,9 @@ namespace FuzzyFW {
 
 #define GA_CREATION "creation"	// Creation strategy
 #define GA_CROSSOVER "crossover"	// Crossover operator
+#define GA_CROSSOVER_PROB "crossover.probability" // Crossover probability
 #define GA_MUTATION "mutation"		// Mutation operator
+#define GA_MUTATION_PROB "mutation.probability"		// Mutation probability
 #define GA_SELECTION "selection"	// Selection operator
 #define GA_REPLACE "replacement"	// Replacement operator
 
@@ -78,6 +80,13 @@ namespace FuzzyFW {
 		*/
 		Crossover * crossover;
 		Mutation * mutation;
+
+		/**
+		* Operation probabilities
+		*/
+		double crossoverProb;
+		double mutationProb;
+
 
 		/**
 		* Replacement strategy
@@ -244,7 +253,7 @@ namespace FuzzyFW {
 		*
 		* @return true if all components are correctly initialized
 		*/
-		bool checkSetup();
+		virtual bool checkSetup();
 		
 
 		/**

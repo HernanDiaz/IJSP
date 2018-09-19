@@ -22,7 +22,10 @@ LocalSearch::LocalSearch(ParameterDB *parameters)
 	: iterationLabel(FUZZYFW_LOCAL_SEARCH_ITER),
 	evaluationLabel(FUZZYFW_LOCAL_SEARCH_EVAL),
 	evaluations(0), timeLabel(FUZZYFW_LOCAL_SEARCH_TIME), maxTime(0.0),
-	neighbours(0), iterations(0), neighbourhood(NULL) {
+	neighbours(0), iterations(0), neighbourhood(NULL),
+	guideLabel(FUZZYFW_LOCAL_SEARCH_DRIVE), estimationGuided(false),
+	filterLabel(FUZZYFW_LOCAL_SEARCH_FILTER), estimationFilter(false)
+	{
 	if (parameters != NULL)
 		this->setup(parameters);
 }
@@ -34,6 +37,8 @@ LocalSearch::LocalSearch(const LocalSearch &source)
 	evaluationLabel(source.evaluationLabel), evaluations(source.evaluations),
 	maxIterations(source.maxIterations), maxEvaluations(source.maxEvaluations),
 	timeLabel(source.timeLabel), maxTime(source.maxTime),
+	guideLabel(source.guideLabel), estimationGuided(source.estimationGuided),
+	filterLabel(source.filterLabel), estimationFilter(source.estimationFilter),
 	neighbours(source.neighbours) {
 
 	if (source.neighbourhood != NULL)
@@ -50,6 +55,12 @@ void LocalSearch::setup(ParameterDB *parameters) {
 	this->maxEvaluations = parameters->getInteger(this->evaluationLabel, -1);
 	// Loads the maximumtime run
 	this->maxTime = parameters->getDouble(this->timeLabel, -1.0);
+
+	// Loads the main drive
+	this->estimationGuided = parameters->getBoolean(this->guideLabel, false);
+
+	// Loads the filter mechanism
+	this->estimationFilter = parameters->getBoolean(this->filterLabel, false);
 }
 
 
@@ -85,52 +96,295 @@ bool LocalSearch::stoppingCriteria() {
 FullSolution LS_HillClimbing::apply(const Solution *solution,
 	const Fitness *fitness, const SharedVars *svars) {
 
-	int next;
+	int next, index, nNeighbours;
 	this->evaluations = 0;
 	this->neighbours = 0;
 	this->iterations = 0;
 
-	FullSolution current, neighbour;
-	current.first = solution->clone();
-	current.second = fitness->clone();
+	FullSolution current;
+	Fitness *estimation, *realValue;
+	std::vector<int> randomArray;
+
+	this->neighbourhood->setInitialSolution(solution->clone(),
+		fitness->clone(), svars);
+	current = this->neighbourhood->getCurrentSolution();
 
 	bool improves = true;
-
 	while (improves && !this->stoppingCriteria()) {
 		improves = false;
-		this->neighbours +=
-			this->neighbourhood->findNeighbours(
-				current.first, current.second, svars);
+		nNeighbours =
+			this->neighbourhood->findNewNeighbours(svars);
+		this->neighbours += nNeighbours;
+		randomArray = svars->rng->getRandomVector(0, nNeighbours - 1);
 
-		while (!improves && this->neighbourhood->size() > 0) {
+		while (!improves && nNeighbours > 0) {
 			// Pick a random number
-			next = svars->rng->getInteger(0, this->neighbourhood->size() - 1);
-			this->evaluations++;
+			next = svars->rng->getInteger(0, nNeighbours - 1);
+			index = randomArray[next];
 
-			// Move to the new neighbour
-			neighbour = this->neighbourhood->evaluateNeighbour(next, svars, true);
-
-			if (neighbour.first != NULL
-				&& neighbour.second->isBetterThan(current.second)) {
-				improves = true;
-				delete current.first;
-				delete current.second;
-				current.first = neighbour.first;
-				current.second = neighbour.second;
-				this->iterations++;
-			}
-			else {
-				this->neighbourhood->discardNeighbour(next);
-				if (neighbour.first != NULL) {
-					delete neighbour.first;
-					delete neighbour.second;
+			// Estimate the quality of a neighbour
+			estimation = this->neighbourhood->getEstimation(index, svars);
+			
+			if (!this->estimationFilter || estimation->isBetterThan(current.second)) {
+				if (this->estimationGuided) {
+					if (estimation->isBetterThan(current.second)) {
+						improves = true;
+						this->neighbourhood->acceptNeighbour(index, svars);
+						current = this->neighbourhood->getCurrentSolution();
+						this->evaluations++;
+						this->iterations++;
+					}
 				}
+				else {
+					realValue = this->neighbourhood->evaluateNeighbour(index, svars, true);
+
+					this->evaluations++;
+					if (realValue->isBetterThan(current.second)) {
+						improves = true;
+						this->neighbourhood->acceptNeighbour(index, svars);
+						current = this->neighbourhood->getCurrentSolution();
+						this->iterations++;
+					}
+				}
+			}
+			if (!improves) {
+				//this->neighbourhood->discardNeighbour(next);
+				std::swap(randomArray[next], randomArray[randomArray.size() - 1]);
+				nNeighbours--;
 			}
 		}
 	}
 
+	current.first = current.first->clone();
+	current.second = current.second->clone();
 	return current;
 }
 
+
+
+
+
+//=============================================================================
+//
+//	Class LS_GradientDescent
+//
+//=============================================================================
+//=============================================================================
+//		METHODS
+//=============================================================================
+FullSolution LS_GradientDescent::apply(const Solution *solution,
+	const Fitness *fitness, const SharedVars *svars) {
+
+	int index, nNeighbours, bestNeighbor;
+	this->evaluations = 0;
+	this->neighbours = 0;
+	this->iterations = 0;
+
+	FullSolution current;
+	Fitness *estimation, *realValue, *best;
+	std::vector<int> randomArray;
+
+	this->neighbourhood->setInitialSolution(solution->clone(),
+		fitness->clone(), svars);
+	current = this->neighbourhood->getCurrentSolution();
+
+	bool improves = true;
+	while (improves && !this->stoppingCriteria()) {
+		improves = false;
+		bestNeighbor = -1;
+		best = current.second;
+
+		nNeighbours =
+			this->neighbourhood->findNewNeighbours(svars);
+		this->neighbours += nNeighbours;
+		this->neighbourhood->sortByEstimation(svars);
+
+		index = 0;
+		while (index < nNeighbours) {
+			estimation = this->neighbourhood->getEstimation(index, svars);
+
+			if (!this->estimationFilter || estimation->isBetterThan(best)) {
+				if (this->estimationGuided) {
+					if (estimation->isBetterThan(best)) {
+						best = estimation;
+						bestNeighbor = index;
+					}
+				}
+				else {
+					realValue = this->neighbourhood->evaluateNeighbour(index, svars, true);
+					this->evaluations++;
+					if (realValue->isBetterThan(best)) {
+						best = realValue;
+						bestNeighbor = index;
+					}
+				}
+				index++;
+			}
+			else
+				index = nNeighbours;
+		}
+		if (bestNeighbor >= 0) {
+			improves = true;
+			this->neighbourhood->acceptNeighbour(bestNeighbor, svars);
+			current = this->neighbourhood->getCurrentSolution();
+			this->iterations++;
+			if (this->estimationGuided)
+				this->evaluations++;
+		}
+	}
+
+	current.first = current.first->clone();
+	current.second = current.second->clone();
+	return current;
+}
+
+
+
+
+
+//=============================================================================
+//
+//	Class LS_Tabu
+//
+//=============================================================================
+//=============================================================================
+//		CONTRUCTORS / INITIALIZERS
+//=============================================================================
+//-----  Main constructor  ----------------------------------------------------
+LS_Tabu::LS_Tabu(ParameterDB *parameters)
+	: LocalSearch(parameters), maxBadIterations(0),
+	badIterationsLabel(FUZZYFW_LOCAL_SEARCH_TABUITER),
+	badIterations(0)
+{
+	tabuList = new TabuList(parameters);
+}
+
+
+//-----  Copy constructor  ----------------------------------------------------
+LS_Tabu::LS_Tabu(const LS_Tabu &source)
+	: LocalSearch(source), maxBadIterations(source.maxBadIterations),
+	badIterationsLabel(badIterationsLabel),
+	badIterations(source.badIterations)
+{
+	tabuList = source.tabuList->clone();
+}
+
+
+
+//-----  Setup method  --------------------------------------------------------
+void LS_Tabu::setup(ParameterDB *parameters) {
+	LocalSearch::setup(parameters);
+	// Loads the maximum number of iterations without improvement
+	this->maxBadIterations = parameters->getInteger(this->badIterationsLabel, -1);
+
+	if (this->maxBadIterations < 0) {
+		std::string errorMsg = "Number of iterations without improvement not";
+		errorMsg += " specified";
+		throw new FuzzyFWException("Tabu Search",errorMsg);
+	}
+}
+
+
+//-----  Stopping criteria  ---------------------------------------------------
+bool LS_Tabu::stoppingCriteria() {
+	if (LocalSearch::stoppingCriteria())
+		return true;
+	if (this->badIterations >= this->maxBadIterations)
+		return true;
+
+	return false;
+}
+
+
+
+//=============================================================================
+//		METHODS
+//=============================================================================
+FullSolution LS_Tabu::apply(const Solution *solution,
+	const Fitness *fitness, const SharedVars *svars) {
+
+	int index, nNeighbours, bestNeighbor;
+	unsigned int isTabu;
+	this->evaluations = 0;
+	this->neighbours = 0;
+	this->iterations = 0;
+	this->badIterations = 0;
+
+	FullSolution current, bestSolution;
+	Fitness *estimation, *realValue, *best;
+	std::vector<int> randomArray;
+
+	this->neighbourhood->setInitialSolution(solution->clone(),
+		fitness->clone(), svars);
+	current = this->neighbourhood->getCurrentSolution();
+	bestSolution.first = solution->clone();
+	bestSolution.second = fitness->clone();
+
+	bool improves = true;
+	this->tabuList->clear();
+	while (!this->stoppingCriteria()) {
+		improves = false;
+		bestNeighbor = -1;
+		best = NULL;
+
+		nNeighbours =
+			this->neighbourhood->findNewNeighbours(svars);
+		this->neighbours += nNeighbours;
+		this->neighbourhood->sortByEstimation(svars);
+
+		index = 0;
+		while (index < nNeighbours) {
+			estimation = this->neighbourhood->getEstimation(index, svars);
+			isTabu = this->tabuList->isTabu(this->neighbourhood->getNeighbour(index));
+
+			if (!this->estimationFilter || best == NULL || estimation->isBetterThan(best)) {
+				if (this->estimationGuided) {
+					if ((best == NULL || estimation->isBetterThan(best))
+						&& (!isTabu || estimation->isBetterThan(bestSolution.second))) {
+						best = estimation;
+						bestNeighbor = index;
+					}
+				}
+				else {
+					realValue = this->neighbourhood->evaluateNeighbour(index, svars, true);
+					this->evaluations++;
+					if ((best == NULL || realValue->isBetterThan(best))
+						&& (!isTabu || realValue->isBetterThan(bestSolution.second))) {
+						best = realValue;
+						bestNeighbor = index;
+					}
+				}
+				index++;
+			}
+			else
+				index = nNeighbours;
+		}
+
+		if (bestNeighbor >= 0) {
+			this->tabuList->addNeighbour(this->neighbourhood->getNeighbour(bestNeighbor));
+			this->neighbourhood->acceptNeighbour(bestNeighbor, svars);
+			current = this->neighbourhood->getCurrentSolution();
+			this->iterations++;
+			if (this->estimationGuided)
+				this->evaluations++;
+
+			if (current.second->isBetterThan(bestSolution.second)) {
+				delete bestSolution.first;
+				delete bestSolution.second;
+				bestSolution.first = current.first->clone();
+				bestSolution.second = current.second->clone();
+				improves = true;
+				this->badIterations = 0;
+			}
+			else
+				this->badIterations++;
+		}
+		// No neihgbours: Dead end
+		else
+			this->badIterations = this->maxBadIterations;
+	}
+
+	return bestSolution;
+}
 
 }

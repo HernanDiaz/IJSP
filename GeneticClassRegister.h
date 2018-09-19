@@ -37,6 +37,7 @@
 #include "CreationFJSP.h"
 #include "CrossoverFJSP.h"
 #include "DecoderFJSP.h"
+#include "DecoderFVRP.h"
 
 
 
@@ -228,6 +229,41 @@ public:
 	static void registerClasses() {
 
 		// -----  ENCODING FUNCTION  ------------------------------------------
+		
+		// -----  DECODING FUNCTION  ------------------------------------------
+
+		// -----  CREATION OPERATORS  -----------------------------------------
+
+		// -----  CROSSOVER OPERATORS  ----------------------------------------
+		CrossoverMap[toUpper("obc")] = &createCrossoverInstance<Crossover_OBC>;
+		CrossoverMap[toUpper("cbc")] = &createCrossoverInstance<Crossover_CBC>;
+		CrossoverMap[toUpper("pmx")] = &createCrossoverInstance<Crossover_PMX>;
+
+		// -----  MUTATION OPERATORS  -----------------------------------------
+		MutationMap[toUpper("insertion")] = &createMutationInstance<MutationInsertion>;
+		MutationMap[toUpper("inversion")] = &createMutationInstance<MutationInversion>;
+		MutationMap[toUpper("swap")] = &createMutationInstance<MutationSwap>;
+
+		// -----  SELECTION OPERATORS  ----------------------------------------
+		SelectionMap[toUpper("random")] = &createSelectionInstance<SelectionRandom>;
+		SelectionMap[toUpper("shuffle")] = &createSelectionInstance<SelectionShuffle>;
+		SelectionMap[toUpper("sus")] = &createSelectionInstance<SelectionSUS>;
+		SelectionMap[toUpper("roulette")] = &createSelectionInstance<SelectionRoulette>;
+		SelectionMap[toUpper("tournament")] = &createSelectionInstance<SelectionTournament>;
+
+		// -----  REPLACEMENT OPERATORS  --------------------------------------
+		ReplacementMap[toUpper("generational")] = &createReplacementInstance<ReplacementElitist>;
+		ReplacementMap[toUpper("simple")] = &createReplacementInstance<ReplacementElitist>;
+		ReplacementMap[toUpper("elitism")] = &createReplacementInstance<ReplacementElitist>;
+		ReplacementMap[toUpper("parents")] = &createReplacementInstance<ReplacementParents>;
+		ReplacementMap[toUpper("tournament")] = &createReplacementInstance<ReplacementParents>;
+
+
+
+		// --------------------------------------------------------------------
+		//			FJSP
+		// --------------------------------------------------------------------
+		// -----  ENCODING FUNCTION  ------------------------------------------
 		EncoderMap[toUpper("permutation")] = &createEncoderInstance<FJSP::EncoderFJSP_Order>;
 		EncoderMap[toUpper("task-order")] = &createEncoderInstance<FJSP::EncoderFJSP_Order>;
 		EncoderMap[toUpper("taskorder")] = &createEncoderInstance<FJSP::EncoderFJSP_Order>;
@@ -257,23 +293,34 @@ public:
 		CrossoverMap[toUpper("ppx")] = &createCrossoverInstance<FJSP::Crossover_PPXBierwirth>;
 
 		// -----  MUTATION OPERATORS  -----------------------------------------
-		MutationMap[toUpper("insertion")] = &createMutationInstance<MutationInsertion>;
-		MutationMap[toUpper("inversion")] = &createMutationInstance<MutationInversion>;
-		MutationMap[toUpper("swap")] = &createMutationInstance<MutationSwap>;
 
 		// -----  SELECTION OPERATORS  ----------------------------------------
-		SelectionMap[toUpper("random")] = &createSelectionInstance<SelectionRandom>;
-		SelectionMap[toUpper("shuffle")] = &createSelectionInstance<SelectionShuffle>;
-		SelectionMap[toUpper("sus")] = &createSelectionInstance<SelectionSUS>;
-		SelectionMap[toUpper("roulette")] = &createSelectionInstance<SelectionRoulette>;
-		SelectionMap[toUpper("tournament")] = &createSelectionInstance<SelectionTournament>;
 
 		// -----  REPLACEMENT OPERATORS  --------------------------------------
-		ReplacementMap[toUpper("generational")] = &createReplacementInstance<ReplacementElitist>;
-		ReplacementMap[toUpper("simple")] = &createReplacementInstance<ReplacementElitist>;
-		ReplacementMap[toUpper("elitism")] = &createReplacementInstance<ReplacementElitist>;
-		ReplacementMap[toUpper("parents")] = &createReplacementInstance<ReplacementParents>;
-		ReplacementMap[toUpper("tournament")] = &createReplacementInstance<ReplacementParents>;
+
+
+
+
+		// --------------------------------------------------------------------
+		//			FVRP
+		// --------------------------------------------------------------------
+		// -----  ENCODING FUNCTION  ------------------------------------------
+		EncoderMap[toUpper("permutation")] = &createEncoderInstance<FVRP::EncoderFVRP_Order>;
+
+		// -----  DECODING FUNCTION  ------------------------------------------
+		DecoderMap[toUpper("split")] = &createDecoderInstance<FVRP::DecoderFRVP_Split>;
+
+		// -----  CREATION OPERATORS  -----------------------------------------
+
+		// -----  CROSSOVER OPERATORS  ----------------------------------------
+
+		// -----  MUTATION OPERATORS  -----------------------------------------
+
+		// -----  SELECTION OPERATORS  ----------------------------------------
+
+		// -----  REPLACEMENT OPERATORS  --------------------------------------
+
+
 
 	}
 

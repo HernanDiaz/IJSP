@@ -8,12 +8,15 @@
 
 #include "Population.h"
 #include "SharedVarsEvolutionary.h"
+#include "FitnessMO.h"
 
 
 namespace FuzzyFW {
 
-#define FUZZYFW_EVALUATION_LAMARCK "evaluation.lamarckism"
+typedef Fitness Objective;
 
+
+#define FUZZYFW_EVALUATION_LAMARCK "evaluation.lamarckism"
 
 
 //=============================================================================
@@ -82,6 +85,17 @@ public:
 	//		METHODS
 	//=============================================================================
 public:
+	/**
+	* Computed the value of the objetive function of a given individual
+	*
+	* @param svars Shared elements of the algorithm*
+	* @param individual Individual to evaluate
+	* @return the value of the objective function
+	*/
+	virtual Objective * getObjectiveFunction(const SharedVarsEvolutionary * const svars,
+		Individual *individual) const = 0;
+
+
 	/**
 	 * Computed the fitness value for a given individual
 	 *

@@ -35,6 +35,7 @@
 //
 // ****************************************************************************
 #include "EvaluationFJSP.h"
+#include "EvaluationFVRP.h"
 
 
 
@@ -105,13 +106,28 @@ public:
 	 */
 	static void registerClasses() {
 
-		// -----  EVALUATION FUNCTION  ----------------------------------------
+		// -----  FJSP EVALUATION FUNCTIONS  ----------------------------------
 		EvaluationMap[toUpper("makespan")] =	&createEvaluationInstance<FJSP::EvaluationFJSP_Makespan>;
 		EvaluationMap[toUpper("cmax")] = &createEvaluationInstance<FJSP::EvaluationFJSP_Makespan>;
 		EvaluationMap[toUpper("aimin")] = &createEvaluationInstance<FJSP::EvaluationFJSP_AImin>;
 		EvaluationMap[toUpper("ai_min")] = &createEvaluationInstance<FJSP::EvaluationFJSP_AImin>;
+		EvaluationMap[toUpper("ai_min_icae")] = &createEvaluationInstance<FJSP::EvaluationFJSP_AImin_ICAE>;
+		EvaluationMap[toUpper("aimin_icae")] = &createEvaluationInstance<FJSP::EvaluationFJSP_AImin_ICAE>;
 		EvaluationMap[toUpper("aiavg")] = &createEvaluationInstance<FJSP::EvaluationFJSP_AIavg>;
 		EvaluationMap[toUpper("ai_avg")] = &createEvaluationInstance<FJSP::EvaluationFJSP_AIavg>;
+		EvaluationMap[toUpper("esdmin")] = &createEvaluationInstance<FJSP::EvaluationFJSP_ESDmin>;
+		EvaluationMap[toUpper("esd_min")] = &createEvaluationInstance<FJSP::EvaluationFJSP_ESDmin>;
+		EvaluationMap[toUpper("esdavg")] = &createEvaluationInstance<FJSP::EvaluationFJSP_ESDavg>;
+		EvaluationMap[toUpper("esd_avg")] = &createEvaluationInstance<FJSP::EvaluationFJSP_ESDavg>;
+
+
+		// -----  FVRP EVALUATION FUNCTIONS  ----------------------------------
+		EvaluationMap[toUpper("time")] = &createEvaluationInstance<FVRP::EvaluationFVRP_TimeCost>;
+		EvaluationMap[toUpper("traveltime")] = &createEvaluationInstance<FVRP::EvaluationFVRP_TimeCost>;
+		EvaluationMap[toUpper("time-ctw")] = &createEvaluationInstance<FVRP::EvaluationFVRP_CTW_TimeCost>;
+		EvaluationMap[toUpper("time.ctw")] = &createEvaluationInstance<FVRP::EvaluationFVRP_CTW_TimeCost>;
+		EvaluationMap[toUpper("traveltime-ctw")] = &createEvaluationInstance<FVRP::EvaluationFVRP_CTW_TimeCost>;
+		EvaluationMap[toUpper("traveltime.ctw")] = &createEvaluationInstance<FVRP::EvaluationFVRP_CTW_TimeCost>;
 	}
 
 };

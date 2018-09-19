@@ -6,7 +6,8 @@
 */
 #pragma once
 
-#include "MemeticAlgorithm.h"
+#include "MemeticNeri.h"
+#include "RandomPopulation.h"
 
 
 namespace FuzzyFW {

@@ -28,7 +28,6 @@ namespace FJSP {
 struct ScheduledTaskInfo {
 	const TaskFJSP *task;	// Scheduled task
 	FuzzyFW::TFN head;		// Starting time (head)
-	FuzzyFW::TFN tail;		// Minimum remaining time after the task
 	int mp;		// Machine predecessor
 	int ms;		// Machine successor
 };
@@ -97,7 +96,6 @@ protected:
 	/**
 	* Various flags
 	*/
-	char tailsUpdated;
 	char isSorted;
 
 
@@ -119,7 +117,7 @@ public:
 	/**
 	* Destructor
 	*/
-	virtual ~ScheduleFJSP() { }
+	virtual ~ScheduleFJSP() {	}
 
 
 	/**
@@ -207,12 +205,6 @@ public:
 	* Add a new task to the schedule
 	*/
 	void addTask(const int taskIdx, FuzzyFW::TFN & ST, const int macSuc);
-
-	/**
-	* Update the heads and tails for future use. It requires the type
-	* of maximum to use during the computations
-	*/
-	void updateTails(const FuzzyFW::TFN::Maximum maxType);
 
 	/**
 	* Clears the schedule

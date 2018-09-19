@@ -28,6 +28,9 @@ GeneticAlgorithm::GeneticAlgorithm(ParameterDB *params)
 	this->crossover = NULL;
 	this->mutation = NULL;
 	this->replacement = NULL;
+
+	this->crossoverProb = 0.0;
+	this->mutationProb = 0.0;
 	
 	this->maxGenerations = Infi;
 	this->maxEvaluations = Infi;
@@ -78,6 +81,8 @@ void GeneticAlgorithm::clearAll() {
 	this->maxEvaluations = Infi;
 	this->maxRuntime = Infi;
 	this->populationSize = 0;
+	this->crossoverProb = 0.0;
+	this->mutationProb = 0.0;
 	this->printPopulation = false;
 	this->printPopGenerations = 0;
 }
@@ -143,11 +148,13 @@ void GeneticAlgorithm::printSetupTree(std::ofstream & output) const {
 
 	names = this->crossover->getName();
 	output << ";Crossover:;" << names[0] << std::endl;
+	output << ";;Probability:;" << valueToString(this->crossoverProb) << std::endl;
 	for (int i = 1; i < (int)names.size(); i++)
 		output << ";" + names[i] << std::endl;
 
 	names = this->mutation->getName();
 	output << ";Mutation:;" << names[0] << std::endl;
+	output << ";;Probability:;" << valueToString(this->mutationProb) << std::endl;
 	for (int i = 1; i < (int)names.size(); i++)
 		output << ";" + names[i] << std::endl;
 
@@ -264,9 +271,15 @@ void GeneticAlgorithm::prepareToRun(ParameterDB *params) {
 	value = params->getStringLower(GA_CROSSOVER);
 	this->crossover = GeneticClassRegister::getCrossoverObject(value);
 
+	// Gets the crossover probability
+	this->crossoverProb = params->getDouble(GA_CROSSOVER_PROB, -1.0);
+
 	// Gets the mutation operator
 	value = params->getStringLower(GA_MUTATION);
 	this->mutation = GeneticClassRegister::getMutationObject(value);
+
+	// Gets the mutation probability
+	this->mutationProb = params->getDouble(GA_MUTATION_PROB, -1.0);
 
 	// Gets the selection operator
 	value = params->getStringLower(GA_SELECTION);
@@ -355,6 +368,18 @@ bool GeneticAlgorithm::checkSetup() {
 	}
 	if (this->selection == NULL) {
 		err = "Invalid selection operator.";
+		correct = false;
+	}
+
+	if (compareDouble(this->crossoverProb, 0.0) < 0
+		|| compareDouble(this->crossoverProb, 1.0) > 0) {
+		err = "Invalid crossover probability.";
+		correct = false;
+	}
+
+	if (compareDouble(this->mutationProb, 0.0) < 0
+		|| compareDouble(this->mutationProb, 1.0) > 0) {
+		err = "Invalid mutation probability.";
 		correct = false;
 	}
 
@@ -454,18 +479,18 @@ std::pair<Solution *, Objective *> GeneticAlgorithm::run(Problem *problem,
 		algorithmTime = clock();
 		// Select individuals for mating  -----------------
 		timePoint = clock();
-		offspring = this->selection->apply(currentPopulation,
+		offspring = this->selection->apply(currentPopulation, this->populationSize,
 			this->sharedVariables);
 		this->selectionTime += clock() - timePoint;
 
 		// Crossover  -------------------------------------
 		timePoint = clock();
-		this->crossover->apply(offspring, this->sharedVariables);
+		this->crossover->apply(offspring, this->crossoverProb, this->sharedVariables);
 		this->crossoverTime += clock() - timePoint;
 
 		// Mutation  --------------------------------------
 		timePoint = clock();
-		this->mutation->apply(offspring, this->sharedVariables);
+		this->mutation->apply(offspring, this->mutationProb, this->sharedVariables);
 		this->mutationTime += clock() - timePoint;
 
 		// Evaluation.
@@ -555,6 +580,7 @@ bool GeneticAlgorithm::stop() {
 //-----  compute Statistics  --------------------------------------------------
 void GeneticAlgorithm::computeStatistics(Population *currentPopulation) {
 	std::vector<double> stats;
+	double best, sum;
 	double runtime = this->totalRuntime / (double)CLOCKS_PER_SEC;
 
 	if (!this->showEvolutionTime && this->generation < this->nextSplit)
@@ -564,8 +590,11 @@ void GeneticAlgorithm::computeStatistics(Population *currentPopulation) {
 
 	stats.push_back(this->generation);	// Iteration
 	stats.push_back(runtime); // Runtime
+
 	stats.push_back(this->bestSoFar->getFitness()->toDouble());	// Best solution
 	stats.push_back(currentPopulation->getAverageFitness()); // Average quality
+
+
 	for (size_t i = 0; i < this->statistics.size(); i++)
 		stats.push_back(this->statistics[i]->
 			getValue(this->sharedVariables, currentPopulation));

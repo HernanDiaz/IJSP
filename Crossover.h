@@ -11,12 +11,7 @@
 
 
 namespace FuzzyFW {
-
-// Crossover parameters defined in this header file
-#define CROSSOVER_PROBABILITY "crossover.probability"
-
-
-
+	
 
 
 //=============================================================================
@@ -41,15 +36,6 @@ class Crossover {
 	//		COMMON FIELDS
 	//=========================================================================
 public:
-	/**
-	 * Name of the probability parameter to get from the configuration file
-	 */
-	std::string probLabel;
-
-	/**
-	 * Probability to apply the operator
-	 */
-	double probability;
 
 
 
@@ -64,9 +50,9 @@ public:
 
 	/**
 	 * Loads the needed parameters.
-	 * Loads the crossover probability
+	 * Nothing to load here
 	 */
-	virtual void setup(ParameterDB *parameters);
+	virtual void setup(ParameterDB *parameters) { }
 
 	/**
 	 * Destructor
@@ -97,7 +83,7 @@ public:
 	 * @param population Population of individuals to mate
 	 * @param svars Shared elements of the algorithm
 	 */
-	virtual void apply(Population *population,
+	virtual void apply(Population *population, const double probability,
 		const SharedVarsEvolutionary *svars) const;
 
 	/**
@@ -108,5 +94,210 @@ public:
 	 */
 	virtual std::vector<std::string> getName() const=0;
 };
+
+
+
+
+
+//=============================================================================
+//
+//	Abstract class Crossover_OBC
+//
+//=============================================================================
+/**
+* Order-based crossover for permutations
+*
+* @author jjpalacios
+*
+*/
+class Crossover_OBC : public Crossover {
+	//=========================================================================
+	//		CONSTRUCTORS / INITIALIZERS
+	//=========================================================================
+public:
+	/**
+	* Default constructor
+	*/
+	explicit Crossover_OBC(ParameterDB *parameters = NULL)
+		: Crossover(parameters) { }
+
+	/**
+	* Loads the needed parameters.
+	* Loads the crossover probability
+	*/
+	//virtual void setup(ParameterDB *parameters);
+
+	/**
+	* Destructor
+	*/
+	virtual ~Crossover_OBC() { }; 	// Nothing to destroy here
+
+
+
+	//=========================================================================
+	//		METHODS
+	//=========================================================================
+public:
+	/**
+	* Apply the crossover operator to a pair of individuals and produces two
+	* offspring. The offspring will automatically replace their parents
+	*
+	* @param ind1 First parent for the mating
+	* @param ind2 Second parent for the mating
+	* @param svars Shared elements of the algorithm
+	*/
+	virtual void apply(Individual *ind1,
+		Individual *ind2, const SharedVarsEvolutionary *svars) const;
+
+
+	/**
+	* Get the name and setup of the operator
+	*
+	* @return A string of parameter values. The first string is the name of
+	* the operator
+	*/
+	virtual std::vector<std::string> getName() const {
+		std::vector<std::string> name;
+		name.push_back("Order-Based");
+		return name;
+	}
+};
+
+
+
+
+
+//=============================================================================
+//
+//	Abstract class Crossover_CBC
+//
+//=============================================================================
+/**
+* Cycle-based crossover for permutations
+*
+* @author jjpalacios
+*
+*/
+class Crossover_CBC : public Crossover {
+	//=========================================================================
+	//		CONSTRUCTORS / INITIALIZERS
+	//=========================================================================
+public:
+	/**
+	* Default constructor
+	*/
+	explicit Crossover_CBC(ParameterDB *parameters = NULL)
+		: Crossover(parameters) { }
+
+	/**
+	* Loads the needed parameters.
+	* Loads the crossover probability
+	*/
+	//virtual void setup(ParameterDB *parameters);
+
+	/**
+	* Destructor
+	*/
+	virtual ~Crossover_CBC() { }; 	// Nothing to destroy here
+
+
+
+	//=========================================================================
+	//		METHODS
+	//=========================================================================
+public:
+	/**
+	* Apply the crossover operator to a pair of individuals and produces two
+	* offspring. The offspring will automatically replace their parents
+	*
+	* @param ind1 First parent for the mating
+	* @param ind2 Second parent for the mating
+	* @param svars Shared elements of the algorithm
+	*/
+	virtual void apply(Individual *ind1,
+		Individual *ind2, const SharedVarsEvolutionary *svars) const;
+
+	/**
+	* Get the name and setup of the operator
+	*
+	* @return A string of parameter values. The first string is the name of
+	* the operator
+	*/
+	virtual std::vector<std::string> getName() const {
+		std::vector<std::string> name;
+		name.push_back("Cycle-Based");
+		return name;
+	}
+};
+
+
+
+
+
+//=============================================================================
+//
+//	Abstract class Crossover_PMX
+//
+//=============================================================================
+/**
+* PMX crossover for permutations
+*
+* @author jjpalacios
+*
+*/
+class Crossover_PMX : public Crossover {
+	//=========================================================================
+	//		CONSTRUCTORS / INITIALIZERS
+	//=========================================================================
+public:
+	/**
+	* Default constructor
+	*/
+	explicit Crossover_PMX(ParameterDB *parameters = NULL)
+		: Crossover(parameters) { }
+
+	/**
+	* Loads the needed parameters.
+	* Loads the crossover probability
+	*/
+	//virtual void setup(ParameterDB *parameters);
+
+	/**
+	* Destructor
+	*/
+	virtual ~Crossover_PMX() { }; 	// Nothing to destroy here
+
+
+
+	//=========================================================================
+	//		METHODS
+	//=========================================================================
+public:
+	/**
+	* Apply the crossover operator to a pair of individuals and produces two
+	* offspring. The offspring will automatically replace their parents
+	*
+	* @param ind1 First parent for the mating
+	* @param ind2 Second parent for the mating
+	* @param svars Shared elements of the algorithm
+	*/
+	virtual void apply(Individual *ind1,
+		Individual *ind2, const SharedVarsEvolutionary *svars) const;
+
+
+	/**
+	* Get the name and setup of the operator
+	*
+	* @return A string of parameter values. The first string is the name of
+	* the operator
+	*/
+	virtual std::vector<std::string> getName() const {
+		std::vector<std::string> name;
+		name.push_back("PMX");
+		return name;
+	}
+};
+
+
 
 }

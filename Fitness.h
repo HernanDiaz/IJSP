@@ -27,7 +27,7 @@ namespace FuzzyFW {
 */
 class Fitness {
 public:
-	enum Type { INTEGER, DOUBLE, FUZZY };
+	enum Type { INTEGER, DOUBLE, FUZZY, LEXICOGRAPHIC };
 
 
 	//=========================================================================
@@ -56,6 +56,12 @@ public:
 	*/
 	Fitness(const Fitness &source)
 		: maximize(source.maximize) { }
+
+
+	/*
+	* Destructor
+	*/
+	virtual ~Fitness() { }
 
 
 	/*
@@ -158,6 +164,10 @@ public:
 	FitnessDouble(const FitnessDouble &fitness)
 		: Fitness(fitness), value(fitness.value) { }
 
+	/*
+	* Destructor
+	*/
+	virtual ~FitnessDouble() { }
 
 	/*
 	* Clone method for inherited instances
@@ -274,6 +284,12 @@ public:
 	*/
 	FitnessInteger(const FitnessInteger &fitness)
 		: Fitness(fitness), value(fitness.value) { }
+
+
+	/*
+	* Destructor
+	*/
+	virtual ~FitnessInteger() { }
 
 
 	/*
@@ -399,6 +415,12 @@ public:
 	*/
 	FitnessTFN(const FitnessTFN &fitness)
 		: Fitness(fitness), value(fitness.value) { }
+
+
+	/*
+	* Destructor
+	*/
+	virtual ~FitnessTFN() { }
 
 
 	/*

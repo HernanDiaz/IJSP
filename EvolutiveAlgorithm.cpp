@@ -24,7 +24,11 @@ EvolutiveAlgorithm::EvolutiveAlgorithm(ParameterDB *params) {
 
 	this->sharedVariables = new SharedVarsEvolutionary();
 	this->sharedVariables->parameters = params;
+#if defined(_WIN32)
 	this->sharedVariables->rng = new RandomMT();
+#else
+	this->sharedVariables->rng = new Random();
+#endif
 	finished = false;
 	evaluator = NULL;
 	ready = false;
@@ -83,31 +87,36 @@ void EvolutiveAlgorithm::prepareToRun(ParameterDB *params) {
 	Statistics::STAT_TYPE type;
 
 	paramName = valueToString(STATISTICS_ROOT);
-	paramName += ".1." + valueToString(STATISTICS_METRIC);
+	paramName += ".1." + valueToString(STATISTICS_VALUE);
 	paramValue = this->sharedVariables->parameters->getString(paramName);
 
 	while (paramValue.size() > 1) {
-		if(paramValue.compare(STATISTICS_BEST) == 0)
-		type = Statistics::STAT_BEST;
-		if (paramValue.compare(STATISTICS_WORST) == 0)
-			type = Statistics::STAT_WORST;
-		if (paramValue.compare(STATISTICS_AVG) == 0)
-			type = Statistics::STAT_AVG;
-		if (paramValue.compare(STATISTICS_SDEV) == 0)
-			type = Statistics::STAT_SDEV;
+		stats = StatisticsClassRegister::getStatsObject(paramValue);
 
 		paramName = valueToString(STATISTICS_ROOT) + ".";
 		paramName += valueToString(cont) + ".";
-		paramName += valueToString(STATISTICS_VALUE);
+		paramName += valueToString(STATISTICS_METRIC);
 		paramValue = this->sharedVariables->parameters->getString(paramName);
+		
+		if(paramValue.compare(STATISTICS_BEST) == 0)
+			type = Statistics::STAT_BEST;
+		else if (paramValue.compare(STATISTICS_WORST) == 0)
+			type = Statistics::STAT_WORST;
+		else if (paramValue.compare(STATISTICS_AVG) == 0)
+			type = Statistics::STAT_AVG;
+		else if (paramValue.compare(STATISTICS_SDEV) == 0)
+			type = Statistics::STAT_SDEV;
+		else 
+			type = Statistics::STAT_BEST;
 
-		stats = StatisticsClassRegister::getStatsObject(paramValue);
 		stats->setStat(type);
 		statistics.push_back(stats);
 
 		cont++;
-		paramName = valueToString(STATISTICS_ROOT);
-		paramName += valueToString(cont) + valueToString(STATISTICS_METRIC);
+
+		paramName = valueToString(STATISTICS_ROOT) + ".";
+		paramName += valueToString(cont) + ".";
+		paramName += valueToString(STATISTICS_VALUE);
 		paramValue = this->sharedVariables->parameters->getString(paramName);
 	}
 

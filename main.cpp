@@ -28,13 +28,13 @@ int main(int argc, const char *argv[]) {
 
 	} catch(FJSP::FJSPException &ex) {
 		std::cout << ex.what() << std::endl << std::endl;
-		system("PAUSE");
+		//system("PAUSE");
 		return -2;
 	}
 
 	delete launcher;
 
-	system("PAUSE");
+	//system("PAUSE");
 	return 0;
 }
 

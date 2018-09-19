@@ -287,16 +287,20 @@ public:
 	//=========================================================================
 	//		METHODS
 	//=========================================================================
+	/**
+	* Computes Euclidean distance between two individuals
+	*/
 	double euclideanDistance(const Individual *ind) const;
 
-	
+	/**
+	* Computes Hamming distance between two individuals
+	*/
+	double hammingDistance(const Individual *ind) const;
+
+	/**
+	* Computes Kendall-Tau distance between two individuals
+	*/
+	double kendallTauDistance(const Individual *ind) const;
 };
-
-// Future versions
-/*
-double hammingDistance(const SharedVars const *sharedVars,
-const IndividualArrayInt *ind1, const IndividualArrayInt *ind2);
-*/
-
 
 }

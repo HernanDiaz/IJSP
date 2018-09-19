@@ -40,22 +40,6 @@ public:
 	*/
 	unsigned int y;
 
-	/*
-	* Internal data structures
-	* Certain estimators will compute values that are useful
-	* later for the full evaluation
-	*/
-	FuzzyFW::TFN newHeadX;
-	FuzzyFW::TFN newHeadY;
-	FuzzyFW::TFN newTailX;
-	FuzzyFW::TFN newTailY;
-
-protected:
-	/*
-	* Indicates if the inner strcutres have been updated
-	*/
-	char headsUpdated;
-
 
 
 
@@ -68,17 +52,13 @@ public:
 	* Default constructor.
 	*/
 	explicit NeighbourFJSP_Arc()
-		: Neighbour(), x(0), y(0), newHeadX(FuzzyFW::TFN(-1, -1, -1)),
-		newHeadY(FuzzyFW::TFN(-1, -1, -1)), newTailX(FuzzyFW::TFN(-1, -1, -1)),
-		newTailY(FuzzyFW::TFN(-1, -1, -1)), headsUpdated(false) { }
+		: Neighbour(), x(0), y(0) { }
 		
 	/*
 	* Main constructor.
 	*/
 	explicit NeighbourFJSP_Arc(const int x, const int y)
-		: Neighbour(), x(x), y(y), newHeadX(FuzzyFW::TFN(-1, -1, -1)),
-		newHeadY(FuzzyFW::TFN(-1, -1, -1)), newTailX(FuzzyFW::TFN(-1, -1, -1)),
-		newTailY(FuzzyFW::TFN(-1, -1, -1)), headsUpdated(false) { }
+		: Neighbour(), x(x), y(y) { }
 
 	/**
 	* Copy constructor
@@ -120,14 +100,6 @@ public:
 	* That is, if we move to this neighbour, we end up in neighbour v.
 	*/
 	virtual bool isReverse(const Neighbour *v) const;
-
-
-	/*
-	* Intermediate state before fully evaluating the solution.
-	* It computes the new head and tail values for the nodes that are
-	* implicated in the neighbour
-	*/
-	void updateHeadsTails(ScheduleFJSP *solution);
 };
 
 }

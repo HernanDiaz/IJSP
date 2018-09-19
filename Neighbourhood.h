@@ -6,20 +6,15 @@
 */
 #pragma once
 
-#include "Fitness.h"
-#include "Solution.h"
 #include "SharedVars.h"
+#include "Neighbour.h"
 
 
 namespace FuzzyFW {
 
-	// Creation parameters defined in this header file
+// Creation parameters defined in this header file
 #define NEIGHBOURHOOD_ESTIMATOR "neighbourhood.estimator"
-#define NB_ESTIMATOR_NONE "none"
-#define NB_ESTIMATOR_HEADSTAILS "heads&tails"
 	
-
-typedef std::pair<FuzzyFW::Solution *, FuzzyFW::Fitness *> FullSolution;
 
 //=============================================================================
 //
@@ -101,6 +96,12 @@ public:
 
 
 	/*
+	* Gets the current solution
+	*/
+	virtual FullSolution getCurrentSolution() = 0;
+
+
+	/*
 	* Name of the Neighbourhood structure
 	*/
 	virtual std::vector<std::string> getName() = 0;
@@ -112,37 +113,53 @@ public:
 	//=========================================================================
 public:
 	/*
-	* Find the neighbours of the given solution
-	* Returns the number of neighbours found
+	* Set initial solution to create the neighbourhood from
 	*/
-	virtual unsigned int findNeighbours(Solution *solution, Fitness *fitness,
+	virtual void setInitialSolution(Solution *solution, Fitness *fitness,
 		const SharedVars *svars) = 0;
 
 
 	/*
-	* Accept a neighbour and generates the new solution using
-	* the one given before as base
+	* Find the neighbours of the given solution
+	* Returns the number of neighbours found
 	*/
-	virtual FullSolution evaluateNeighbour(const unsigned int idx,
+	virtual unsigned int findNewNeighbours(const SharedVars *svars) = 0;
+
+	/*
+	* Generates the new solution using the one given before as base
+	*/
+	virtual Fitness * evaluateNeighbour(const unsigned int idx,
 		const SharedVars *svars, const bool improvement = false) = 0;
+
+	/*
+	* Accept a neighbour and moves towards it
+	*/
+	virtual void acceptNeighbour(const unsigned int idx,
+		const SharedVars *svars) = 0;
+
 
 	/*
 	* If an estimator is used, an estimation can be used
 	*/
-	virtual Fitness * getEstimation(const unsigned int idx) = 0;
-
-
-	/*
-	* Discard a specific neighbour
-	*/
-	virtual void discardNeighbour(const unsigned int idx) = 0;
-
+	virtual Fitness * getEstimation(const unsigned int idx,
+		const SharedVars *svars) = 0;
 
 	/*
 	* Sort all neighbours by their estimation
 	*/
 	virtual void sortByEstimation(const SharedVars *svars) = 0;
 
+	/*
+	* Discard a specific neighbour. This deletes all the structures
+	* created for that neighbour. That is: estimation and evaluation
+	*/
+	virtual void discardNeighbour(const unsigned int idx) = 0;
+
+
+	/*
+	* Gets a neighbour from the neighbourhood
+	*/
+	virtual Neighbour* getNeighbour(const unsigned int idx) = 0;
 };
 
 }

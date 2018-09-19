@@ -17,7 +17,6 @@ namespace FJSP {
 //====  Main constructor  =====================================================
 ScheduleFJSP::ScheduleFJSP(const ProblemFJSP * problem) {
 	this->nScheduledTasks = 0;
-	this->tailsUpdated = true;
 	this->isSorted = true;
 
 	this->problem = problem;
@@ -33,7 +32,6 @@ ScheduleFJSP::ScheduleFJSP(const ProblemFJSP * problem) {
 //====  Copy constructor  =====================================================
 ScheduleFJSP::ScheduleFJSP(const ScheduleFJSP & source) {
 	this->nScheduledTasks = source.nScheduledTasks;
-	this->tailsUpdated = source.tailsUpdated;
 	this->isSorted = source.isSorted;
 
 	this->problem = source.problem;
@@ -97,7 +95,6 @@ FuzzyFW::TFN ScheduleFJSP::getCTJob(const unsigned int job) const {
 //====  Assignment overload  ==================================================
 ScheduleFJSP & ScheduleFJSP::operator=(const ScheduleFJSP & source) {
 	this->nScheduledTasks = source.nScheduledTasks;
-	this->tailsUpdated = source.tailsUpdated;
 	this->isSorted = source.isSorted;
 
 	this->problem = source.problem;
@@ -184,68 +181,7 @@ void ScheduleFJSP::addTask(const int taskIdx, FuzzyFW::TFN & ST,
 	else
 		this->taskOrder[this->nScheduledTasks] = taskIdx;
 
-	this->tailsUpdated = false;
 	this->nScheduledTasks++;
-}
-
-
-
-//====  updateTails Method  ===================================================
-void ScheduleFJSP::updateTails(const FuzzyFW::TFN::Maximum maxType) {
-	if (this->tailsUpdated)
-		return;
-
-	int mp, jp, ms, js, taskIdx, mac;
-	std::queue<int> taskQueue;
-
-	std::vector<char> visited(this->problem->getNumberTasks(), false);
-
-	// Look for tasks with no successors
-	for (size_t i = 0; i < this->lastTaskJob.size(); i++) {
-		taskIdx = this->lastTaskJob[i];
-		mac = this->taskInfo[taskIdx].task->machine;
-		if (taskIdx == this->lastTaskMachine[mac])
-			taskQueue.push(taskIdx);
-	}
-
-	// Backwards propagation
-	while (taskQueue.size() > 0) {
-		taskIdx = taskQueue.front();
-		taskQueue.pop();
-
-		// Update tail
-		ms = this->taskInfo[taskIdx].ms;
-		js = this->taskInfo[taskIdx].task->js;
-
-		if (ms != -1 && js != -1)
-			this->taskInfo[taskIdx].tail =
-			maximum(this->taskInfo[ms].tail + this->taskInfo[ms].task->p,
-				this->taskInfo[js].tail + this->taskInfo[js].task->p, maxType);
-		else if (ms != -1)
-			this->taskInfo[taskIdx].tail =
-			this->taskInfo[ms].tail + this->taskInfo[ms].task->p;
-		else if (js != -1)
-			this->taskInfo[js].tail + this->taskInfo[js].task->p;
-		else this->taskInfo[taskIdx].tail = FuzzyFW::TFN(0, 0, 0);
-
-		// Propagate
-		mp = this->taskInfo[taskIdx].mp;
-		jp = this->taskInfo[taskIdx].task->jp;
-
-		if (mp != -1) {
-			if (visited[mp] || this->taskInfo[mp].task->js == -1)
-				taskQueue.push(mp);
-			else visited[mp] = true;
-		}
-
-		if (jp != -1) {
-			if (visited[jp] || this->taskInfo[jp].ms == -1)
-				taskQueue.push(jp);
-			else visited[jp] = true;
-		}
-	}
-
-	this->tailsUpdated = true;
 }
 
 
@@ -256,12 +192,10 @@ void ScheduleFJSP::reset() {
 		return;
 
 	this->nScheduledTasks = 0;
-	this->tailsUpdated = true;
 	this->isSorted = true;
 
 	for (size_t i = 0; i < this->taskInfo.size(); i++) {
 		this->taskInfo[i].head = FuzzyFW::TFN(-1, -1, -1);
-		this->taskInfo[i].tail = FuzzyFW::TFN(0, 0, 0);
 		this->taskInfo[i].mp = this->taskInfo[i].mp = -1;
 		this->taskOrder[i] = -1;
 	}

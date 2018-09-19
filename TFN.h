@@ -214,6 +214,35 @@ public:
 	double expectedValue() const;
 
 
+
+	/**
+	* Degree of membership for the real number r
+	*/
+	double membership(const double r) const;
+
+
+
+	/**
+	* Possibility of the TFN being lesser or equal than the real value r
+	*/
+	double possibility(const double r) const;
+
+
+
+	/**
+	* Possibility of the TFN being lesser or equal than the real value r
+	*/
+	double necessity(const double r) const;
+
+
+
+	/**
+	* Possibility of the TFN being lesser or equal than the real value r
+	*/
+	double credibility(const double r) const;
+
+
+
 	/**
 	* Converts the TFN into a string
 	*/

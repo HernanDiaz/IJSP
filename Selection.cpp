@@ -29,11 +29,11 @@ Selection::Selection(ParameterDB * parameters) {
 //		METHODS
 //=============================================================================
 //-----  apply (Population)  --------------------------------------------------
-Population * Selection::apply(Population *population,
+Population * Selection::apply(Population *population, const unsigned int n,
 		const SharedVars *svars) const {
 	Population * newPopulation = new Population();
 	Individual * selected;
-	for(unsigned int i=0; i < population->size(); i++) {
+	for(unsigned int i=0; i < n; i++) {
 		selected = this->select(population, svars);
 		newPopulation->addIndividual(selected->clone());
 	}
@@ -227,10 +227,9 @@ Individual * SelectionRoulette::selectClassic(Population *population,
 //		METHODS
 //=============================================================================
 //-----  apply  --------------------------------------------------------------
-Population * SelectionSUS::apply(Population *population,
+Population * SelectionSUS::apply(Population *population, const unsigned int n,
 		const SharedVars *svars) const {
 	
-	int n = population->size();
 	double sumValues, fitness;
 	double sum, ptr;
 
@@ -238,7 +237,7 @@ Population * SelectionSUS::apply(Population *population,
 	std::vector<Individual *> selectedIndividuals;
 
 	// Array of expected picks per individual
-	std::vector<double> expected(n);
+	std::vector<double> expected(population->size());
 
 	if (n <= 0)
 		return NULL;
@@ -246,14 +245,14 @@ Population * SelectionSUS::apply(Population *population,
 	if (this->interpolate) {
 		sumValues = (n*(n + 1) / 2);
 		for (unsigned int i = 1; i <= population->size(); i++) {
-			expected[population->whoIsBest(svars, n - i)] = n * i / sumValues;
+			expected[population->whoIsBest(svars, population->size() - i)] = n * i / sumValues;
 		}
 	}
 	else if (population->getIndividual(0)->getFitness()->mustMaximize()) {
 		sumValues = population->getAverageFitness() * population->size();
 		for (unsigned int i = 0; i < population->size(); i++) {
 			fitness = population->getIndividual(i)->getFitness()->toDouble();
-			expected[population->whoIsBest(svars, n - i)] =
+			expected[population->whoIsBest(svars, population->size() - i)] =
 				n * fitness / sumValues;
 		}
 	}
@@ -266,7 +265,7 @@ Population * SelectionSUS::apply(Population *population,
 
 		for (unsigned int i = 0; i < population->size(); i++) {
 			fitness = 1 / population->getIndividual(i)->getFitness()->toDouble();
-			expected[population->whoIsBest(svars, n - i)] =
+			expected[population->whoIsBest(svars, population->size() - i)] =
 				n * fitness / sumValues;
 		}
 	}
@@ -276,7 +275,7 @@ Population * SelectionSUS::apply(Population *population,
 
 	// SUS algorithm
 	sum = 0.0;
-	for(int i=0; i < n; i++) {
+	for(unsigned int i=0; i < population->size(); i++) {
 		sum += expected[i];
 		while(sum > ptr) {
 			selectedIndividuals.push_back(population->getIndividual(i));
@@ -312,16 +311,22 @@ Individual * SelectionShuffle::select(Population *population,
 
 
 //-----  apply  --------------------------------------------------------------
-Population * SelectionShuffle::apply(Population *population,
+Population * SelectionShuffle::apply(Population *population, const unsigned int n,
 		const SharedVars *svars) const {
-	std::vector<int> randomOrder =
-			svars->rng->getRandomVector(0, population->size()-1);
-
 	Population * newPopulation = new Population();
 	Individual * selected;
-	for(unsigned int i=0; i < population->size(); i++) {
-		selected = population->getIndividual(randomOrder[i]);
-		newPopulation->addIndividual(selected->clone());
+	std::vector<int> randomOrder;
+	
+	for (unsigned int i = 0; i < population->size(); i++) {
+		randomOrder.push_back(i);
+	} 
+		
+	while (newPopulation->size() < n) {
+		svars->rng->shuffle(randomOrder);
+		for (unsigned int i = 0; i < randomOrder.size() && newPopulation->size() < n; i++) {
+			selected = population->getIndividual(randomOrder[i]);
+			newPopulation->addIndividual(selected->clone());
+		}
 	}
 
 	return newPopulation;

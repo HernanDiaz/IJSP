@@ -102,7 +102,7 @@ std::string EvoLauncher::optimise(Problem *problem) {
 		this->fitnessValues.push_back(solution.second);
 
 		// Information about the set of solutions
-		outputFile << run + 1 << std::endl;
+		outputFile << run + 1 << ";";
 		outputFile << solution.first->toString() << ";";
 		outputFile << solution.second->toString() << std::endl;
 
@@ -209,6 +209,11 @@ void EvoLauncher::setupAlgorithm(const std::string name) {
 	else if (toUpper(name).compare("MEMETIC") == 0
 		|| toUpper(name).compare("MA") == 0)
 		this->algorithm = new MemeticAlgorithm(this->setup);
+	else if (toUpper(name).compare("NERI") == 0
+		|| toUpper(name).compare("NERI-MA") == 0)
+		this->algorithm = new MemeticNeri(this->setup);
+	else if (toUpper(name).compare("GA-TOOL-RANDOMPOPULATION") == 0)
+		this->algorithm = new RandomPopulation(this->setup);
 	else {
 		std::string err = "Solving algorithm \'" + name + "\' unknown";
 		throw FuzzyFWException("Loading", err);
@@ -244,7 +249,7 @@ void EvoLauncher::printRuntimes(std::ofstream &outputFile) {
 	outputFile << std::endl << "Runtimes" << std::endl;
 	outputFile << separator << std::endl;
 
-	outputFile << "Time;Average;Best;Worst";
+	outputFile << "Time;Average;Best;Worst;Std.Dev.";
 	for (unsigned int i = 0; i < avgTimes.size(); i++) {
 		outputFile << ";Run " << i + 1;
 	}
@@ -253,6 +258,7 @@ void EvoLauncher::printRuntimes(std::ofstream &outputFile) {
 	std::vector<double> bestValues(avgTimes[0].size(), Infd);
 	std::vector<double> worstValues(avgTimes[0].size(), -Infd);
 	std::vector<double> avgValues(avgTimes[0].size(), 0.0);
+	std::vector<double> devValues(avgTimes[0].size(), 0.0);
 
 	for (unsigned int i = 0; i < avgTimes[0].size(); i++) {
 		for (unsigned int j = 0; j < avgTimes.size(); j++) {
@@ -261,7 +267,15 @@ void EvoLauncher::printRuntimes(std::ofstream &outputFile) {
 			if (avgTimes[j][i].second > worstValues[i])
 				worstValues[i] = avgTimes[j][i].second;
 			avgValues[i] += avgTimes[j][i].second;
+			devValues[i] += avgTimes[j][i].second * avgTimes[j][i].second;
 		}
+		if (avgTimes.size() == 1)
+			devValues[i] = 0.0;
+		else
+			devValues[i] = sqrt((devValues[i] - ((avgValues[i] * avgValues[i]) / avgTimes.size())) 
+			/ (avgTimes.size() - 1));
+		if(devValues[i] < AccuracyError)
+			devValues[i] = 0.0;
 		avgValues[i] /= avgTimes.size();
 	}
 
@@ -270,6 +284,7 @@ void EvoLauncher::printRuntimes(std::ofstream &outputFile) {
 		outputFile << ";" << avgValues[i];
 		outputFile << ";" << bestValues[i];
 		outputFile << ";" << worstValues[i];
+		outputFile << ";" << devValues[i];
 		for (unsigned int j = 0; j < avgTimes.size(); j++)
 			outputFile << ";" << avgTimes[j][i].second;
 		outputFile << std::endl;
@@ -285,7 +300,7 @@ void EvoLauncher::printStatistics(std::ofstream &outputFile) {
 	outputFile << std::endl << "Basic statistics" << std::endl;
 	outputFile << separator << std::endl;
 
-	outputFile << "Field;Average;Best;Worst";
+	outputFile << "Field;Average;Best;Worst;Std.Dev.";
 	for (unsigned int i = 0; i < this->avgStats.size(); i++) {
 		outputFile << ";Run " << i + 1;
 	}
@@ -294,6 +309,7 @@ void EvoLauncher::printStatistics(std::ofstream &outputFile) {
 	std::vector<double> bestValues(this->avgStats[0].size(), Infd);
 	std::vector<double> worstValues(this->avgStats[0].size(), -Infd);
 	std::vector<double> avgValues(this->avgStats[0].size(), 0.0);
+	std::vector<double> devValues(this->avgStats[0].size(), 0.0);
 
 	for (unsigned int i = 0; i < this->avgStats[0].size(); i++) {
 		for (unsigned int j = 0; j < this->avgStats.size(); j++) {
@@ -302,7 +318,15 @@ void EvoLauncher::printStatistics(std::ofstream &outputFile) {
 			if (this->avgStats[j][i].second > worstValues[i])
 				worstValues[i] = this->avgStats[j][i].second;
 			avgValues[i] += this->avgStats[j][i].second;
+			devValues[i] += this->avgStats[j][i].second * this->avgStats[j][i].second;
 		}
+		if (avgStats.size() == 1)
+			devValues[i] = 0.0;
+		else
+			devValues[i] = sqrt((devValues[i] - ((avgValues[i] * avgValues[i]) / avgStats.size()))
+				/ (avgStats.size() - 1));
+		if (devValues[i] < AccuracyError)
+			devValues[i] = 0.0;
 		avgValues[i] /= this->avgStats.size();
 	}
 
@@ -310,6 +334,7 @@ void EvoLauncher::printStatistics(std::ofstream &outputFile) {
 	outputFile << ";" << avgValues[0];
 	outputFile << ";" << bestValues[0];
 	outputFile << ";" << worstValues[0];
+	outputFile << ";" << devValues[0];
 	for (unsigned int j = 0; j < this->avgStats.size(); j++)
 		outputFile << ";" << this->avgStats[j][0].second;
 	outputFile << std::endl;
@@ -319,6 +344,7 @@ void EvoLauncher::printStatistics(std::ofstream &outputFile) {
 		outputFile << ";" << avgValues[i];
 		outputFile << ";" << bestValues[i];
 		outputFile << ";" << worstValues[i];
+		outputFile << ";" << devValues[i];
 		for (unsigned int j = 0; j < this->avgStats.size(); j++)
 			outputFile << ";" << this->avgStats[j][i].second;
 		outputFile << std::endl;
@@ -333,16 +359,17 @@ void EvoLauncher::printObjectiveValues(std::ofstream &outputFile) {
 	outputFile << std::endl << "Objective function values" << std::endl;
 	outputFile << separator << std::endl;
 
-	outputFile << "Average;Best;Worst";
+	outputFile << "Average;Best;Worst;Std.Dev.";
 	for (unsigned int i = 0; i < this->avgStats.size(); i++) {
 		outputFile << ";Run " << i + 1;
 	}
 	outputFile << std::endl;
 
 	Fitness *best, *worst;
-	double sum;
+	double sum, sqSum;
 	best = worst = this->fitnessValues[0];
 	sum = best->toDouble();
+	sqSum = sum * sum;
 
 	for (size_t i = 1; i < this->fitnessValues.size(); i++) {
 		if (this->fitnessValues[i]->isBetterThan(best))
@@ -350,11 +377,14 @@ void EvoLauncher::printObjectiveValues(std::ofstream &outputFile) {
 		if (this->fitnessValues[i]->isWorseThan(worst))
 			worst = this->fitnessValues[i];
 		sum += this->fitnessValues[i]->toDouble();
+		sqSum += this->fitnessValues[i]->toDouble() * this->fitnessValues[i]->toDouble();
 	}
 
 	outputFile << sum / this->fitnessValues.size();
 	outputFile << ";" << best->toString();
 	outputFile << ";" << worst->toString();
+	outputFile << ";" << sqrt((sqSum - ((sum * sum) / this->fitnessValues.size())) 
+		/ (this->fitnessValues.size() - 1));
 	
 	for (size_t i = 0; i < this->fitnessValues.size(); i++)
 		outputFile << ";" << this->fitnessValues[i]->toString();

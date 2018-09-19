@@ -79,7 +79,7 @@ public:
 	 * @param svars Shared elements of the algorithm
 	 * @return A new population with the selected individuals
 	 */
-	virtual Population * apply(Population *population,
+	virtual Population * apply(Population *population, const unsigned int n,
 			const SharedVars *svars) const;
 
 	/**
@@ -352,7 +352,7 @@ public:
 	 * @param svars Shared elements of the algorithm
 	 * @return A new population with the selected individuals
 	 */
-	virtual Population * apply(Population *population,
+	virtual Population * apply(Population *population, const unsigned int n,
 			const SharedVars *svars) const;
 
 
@@ -439,7 +439,7 @@ public:
 	 * @param svars Shared elements of the algorithm
 	 * @return A new population with the selected individuals
 	 */
-	virtual Population * apply(Population *population,
+	virtual Population * apply(Population *population, const unsigned int n,
 			const SharedVars *svars) const;
 
 

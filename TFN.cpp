@@ -309,16 +309,19 @@ TFN maximum(const TFN & x, const TFN & y, const TFN::Maximum mt) {
 		sol.a = std::max(x.a, y.a);
 		sol.b = std::max(x.b, y.b);
 		sol.c = std::max(x.c, y.c);
+		break;
 
 	case TFN::M_EV:
 		if (x.isGreaterThan(y, TFN::C_EV))
 			sol = x;
 		else sol = y;
+		break;
 
 	case TFN::M_SAKAWA:
 		if (x.isGreaterThan(y, TFN::C_SAKAWA))
 			sol = x;
 		else sol = y;
+		break;
 	}
 	return sol;
 }
@@ -331,25 +334,69 @@ TFN minimum(const TFN & x, const TFN & y, const TFN::Maximum mt) {
 		sol.a = std::min(x.a, y.a);
 		sol.b = std::min(x.b, y.b);
 		sol.c = std::min(x.c, y.c);
+		break;
 
 	case TFN::M_EV:
 		if (x.isLesserThan(y, TFN::C_EV))
 			sol = x;
 		else sol = y;
+		break;
 
 	case TFN::M_SAKAWA:
 		if (x.isLesserThan(y, TFN::C_SAKAWA))
 			sol = x;
 		else sol = y;
+		break;
 	}
 	return sol;
 }
 
 
 
-//====  Funcion expectedValue  ================================================
+//====  Function expectedValue  ===============================================
 double TFN::expectedValue() const {
 	return (this->a + 2 * this->b + this->c) / 4.0;
+}
+
+
+
+//====  Membership function  ==================================================
+double TFN::membership(const double r) const {
+	if (compareDouble(r, this->a) <= 0
+		|| compareDouble(r, this->c) >= 0)
+		return 0.0;
+	if (compareDouble(r, this->b) <= 0)
+		return (r - this->a) / (this->b - this->a);
+	return (r - this->c) / (this->b - this->c);
+}
+
+
+
+//====  Possibility function  =================================================
+double TFN::possibility(const double r) const {
+	if (compareDouble(r, this->a) <= 0)
+		return 0.0;
+	if (compareDouble(r, this->b) >= 0)
+		return 1.0;
+	return (r - this->a) / (this->b - this->a);
+}
+
+
+
+//====  Necessity function  =================================================
+double TFN::necessity(const double r) const {
+	if (compareDouble(r, this->b) <= 0)
+		return 0.0;
+	if (compareDouble(r, this->c) >= 0)
+		return 1.0;
+	return (r - this->b) / (this->c - this->b);
+}
+
+
+
+//====  Credibility function  =================================================
+double TFN::credibility(const double r) const {
+	return (this->possibility(r) + this->necessity(r)) / 2;
 }
 
 

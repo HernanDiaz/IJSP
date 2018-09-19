@@ -100,22 +100,24 @@ public:
 		Population *population) = 0;
 
 	/*
+	* Get the value from the population
+	*/
+	virtual double getValue(const SharedVarsEvolutionary * svars,
+		Individual *individual) = 0;
+
+	/*
 	* Get the statistic as a string
 	*/
-	virtual std::string setStatName() const {
+	virtual std::string getStatName() const {
 		switch (this->type) {
 		case STAT_BEST:
 			return "Best";
-			break;
 		case STAT_WORST:
 			return "Worst";
-				break;
 		case STAT_AVG:
 			return "Avg";
-			break;
 		case STAT_SDEV:
 			return "Std.Dev.";
-			break;
 		}
 		return "";
 	}

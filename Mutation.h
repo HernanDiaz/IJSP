@@ -11,11 +11,6 @@
 
 namespace FuzzyFW {
 
-// Mutation parameters defined in this header file
-#define MUTATION_PROBABILITY "mutation-probability"
-
-
-
 
 
 //=============================================================================
@@ -39,16 +34,6 @@ class Mutation {
 	//=========================================================================
 	//		COMMON FIELDS
 	//=========================================================================
-public:
-	/**
-	* Name of the probability parameter to get from the configuration file
-	*/
-	std::string probLabel;
-
-	/**
-	* Probability to apply the operator
-	*/
-	double probability;
 
 
 
@@ -59,13 +44,16 @@ public:
 	/**
 	* Default constructor
 	*/
-	explicit Mutation(ParameterDB *parameters = NULL);
+	explicit Mutation(ParameterDB *parameters = NULL) {
+		if (parameters != NULL)
+			this->setup(parameters);
+	}
 
 	/**
 	* Loads the needed parameters.
-	* Loads the mutation probability
+	* Nothing to load here
 	*/
-	virtual void setup(ParameterDB *parameters);
+	virtual void setup(ParameterDB *parameters) { }
 
 	/**
 	* Destructor
@@ -88,12 +76,14 @@ public:
 		const = 0;
 
 	/**
-	* Apply the mutation operator to all individuals in the population.
+	* Apply the mutation operator to a number of random individuals
+	* in the population.
 	*
 	* @param population Population of individuals to mate
 	* @param svars Shared elements of the algorithm
 	*/
-	virtual void apply(Population *population, const SharedVars *svars) const;
+	virtual void apply(Population *population, const double probability, 
+		const SharedVars *svars) const;
 
 	/**
 	* Get the name and setup of the operator
@@ -169,7 +159,6 @@ public:
 	virtual std::vector<std::string> getName() const {
 		std::vector<std::string> setup;
 		setup.push_back("Insertion");
-		setup.push_back(";Probability;" + valueToString(this->probability));
 		return setup;
 	}
 };
@@ -238,7 +227,6 @@ public:
 	virtual std::vector<std::string> getName() const {
 		std::vector<std::string> setup;
 		setup.push_back("Swap");
-		setup.push_back(";Probability;" + valueToString(this->probability));
 		return setup;
 	}
 };
@@ -308,7 +296,6 @@ public:
 	virtual std::vector<std::string> getName() const {
 		std::vector<std::string> setup;
 		setup.push_back("Inversion");
-		setup.push_back(";Probability;" + valueToString(this->probability));
 		return setup;
 	}
 };

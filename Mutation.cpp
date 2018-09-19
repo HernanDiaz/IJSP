@@ -15,35 +15,13 @@ namespace FuzzyFW {
 //
 //=============================================================================
 //=============================================================================
-//		CONSTRUCTORS / INITIALIZERS
-//=============================================================================
-//-----  Main constructor  ----------------------------------------------------
-Mutation::Mutation(ParameterDB *parameters)
-	: probLabel(MUTATION_PROBABILITY), probability(0.0) {
-	if (parameters != NULL)
-		this->setup(parameters);
-}
-
-//-----  Setup method  --------------------------------------------------------
-void Mutation::setup(ParameterDB *parameters) {
-	this->probability = parameters->getDouble(this->probLabel, -1.0);
-	if (compareDouble(this->probability, 0.0) < 0
-		|| compareDouble(this->probability, 1.0) > 0) {
-		std::string err = "Invalid mutation probability.";
-		err += " Incorrect value or missing parameter.";
-		throw new FuzzyFWException("Mutation", err);
-	}
-}
-
-
-
-//=============================================================================
 //		METHODS
 //=============================================================================
 //-----  Apply (Population)  --------------------------------------------------
-void Mutation::apply(Population *population, const SharedVars *svars) const {
+void Mutation::apply(Population *population, const  double probability,
+	const SharedVars *svars) const {
 	for(unsigned int i=0; i < population->size(); i++) {
-		if(svars->rng->getProbability() < this->probability)
+		if(svars->rng->getProbability() < probability)
 			apply(population->getIndividual(i), svars);
 	}
 }

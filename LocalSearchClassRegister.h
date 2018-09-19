@@ -32,7 +32,9 @@
 // ADD HERE ALL THE HEADER FILES OF THE OPERATORS YOU HAVE CREATED
 //
 // ****************************************************************************
-#include "NeighbourhoodFJSP.h"
+#include "NeighbourhoodFJSP_Cmax.h"
+#include "NeighbourhoodFJSP_AI.h"
+#include "NeighbourhoodFJSP_ESD.h"
 
 
 
@@ -132,12 +134,29 @@ public:
 			&createLocalSearchInstance<LS_HillClimbing>;
 		LocalSearchMap[toUpper("hc")] = 
 			&createLocalSearchInstance<LS_HillClimbing>;
+		LocalSearchMap[toUpper("gradientdescent")] =
+			&createLocalSearchInstance<LS_GradientDescent>;
+		LocalSearchMap[toUpper("gradient-descent")] =
+			&createLocalSearchInstance<LS_GradientDescent>;
+		LocalSearchMap[toUpper("tabu-search")] =
+			&createLocalSearchInstance<LS_Tabu>;
+		LocalSearchMap[toUpper("tabu")] =
+			&createLocalSearchInstance<LS_Tabu>;
+
 
 		// -----  NEIGHBOURHOOD STRUCTURES  ---------------------------------------
 		NeighbourhoodMap[toUpper("fjsp.makespan.n1")] =
 			&createNeighbourhoodInstance<FJSP::NB_ParallelN1_MakespanFJSP>;
 		NeighbourhoodMap[toUpper("fjsp.aiavg.n1")] =
 			&createNeighbourhoodInstance<FJSP::NB_ParallelN1_AIavgFJSP>;
+		NeighbourhoodMap[toUpper("fjsp.aimin.n1")] =
+			&createNeighbourhoodInstance<FJSP::NB_ParallelN1_AIminFJSP>;
+		NeighbourhoodMap[toUpper("fjsp.aimin.ICAE")] =
+			&createNeighbourhoodInstance<FJSP::NB_ParallelN1_AIminICAE>;
+		NeighbourhoodMap[toUpper("fjsp.esdavg.n1")] =
+			&createNeighbourhoodInstance<FJSP::NB_ParallelN1_ESDavgFJSP>;
+		NeighbourhoodMap[toUpper("fjsp.esdmin.n1")] =
+			&createNeighbourhoodInstance<FJSP::NB_ParallelN1_ESDminFJSP>;
 	}
 
 };

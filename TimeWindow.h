@@ -34,7 +34,7 @@ class TimeWindow {
 public:
 
 	// Different types of Taime windows implemented
-	enum Type { CRISP, LINEAR, TRAPEZOID };
+	enum Type { DEADLINE, CRISP, LINEAR, TRAPEZOID };
 
 
 	//=========================================================================
@@ -162,18 +162,17 @@ public:
 
 //=============================================================================
 //
-//	Class TimeWindowCrisp
+//	Class TimeWindowDeadline
 //
 //=============================================================================
 /**
 * This class inherits from TimeWindow.
-* It contains a crisp time window, or strict time window. Those are the time
-* windows that are defined by a crisp value. They represent a strict deadline
+* It contains a crisp deadline, or strict deadline.
 *
 * @author Juan Jose Palacios
 *
 */
-class TimeWindowCrisp : public TimeWindow {
+class TimeWindowDeadline : public TimeWindow {
 
 	//=========================================================================
 	//		FIELDS
@@ -193,12 +192,136 @@ public:
 	/**
 	* Default constructor
 	*/
+	TimeWindowDeadline();
+
+	/**
+	* Main constructor
+	*/
+	TimeWindowDeadline(const double twValue);
+
+	/**
+	* Copy constructor
+	*/
+	TimeWindowDeadline(const TimeWindowDeadline &tw);
+
+	/**
+	* Destructor
+	*/
+	virtual ~TimeWindowDeadline() { };	// Nothing to destroy here
+
+	/**
+	* Clone method to replicate inherited instances
+	*/
+	virtual TimeWindow * clone() const;
+
+
+
+	//=========================================================================
+	//		GET/SET METHODS
+	//=========================================================================
+public:
+	/**
+	* Get the type of the time window
+	*/
+	virtual Type getType() const {
+		return Type::CRISP;
+	};
+
+	/**
+	* Get the name of the time window type
+	*/
+	virtual std::string getName() const {
+		return "Crisp Deadline";
+	};
+
+
+
+	//=========================================================================
+	//		METHODS
+	//=========================================================================
+public:
+	/**
+	* In this case, the agreement index is the poportion of the area of
+	* the TFN that is below the time window
+	*/
+	virtual double agreementIndex(const TFN c) const;
+
+	/**
+	* In this case the agreement index does not make sense, being 1.0 if
+	* the deadline is met, and 0.0 otherwise
+	*/
+	virtual double agreementIndex(const double c) const;
+
+	/**
+	* Absolute delay of a TFN with respect to the time window (difference)
+	*/
+	virtual TFN delay(const TFN c) const;
+
+	/**
+	* Absolute delay of a TFN with respect to the time window (difference)
+	*/
+	virtual double delay(const double c) const;
+
+
+
+	//=========================================================================
+	//		INPUT / OUTPUT
+	//=========================================================================
+public:
+	/**
+	* Takes the time window value from a stream of data
+	*/
+	virtual std::istream & readFromStream(std::istream & is);
+
+	/**
+	* Prints the time window value through a stream of data
+	*/
+	virtual std::string toString();
+};
+
+
+
+
+
+//=============================================================================
+//
+//	Class TimeWindowCrisp
+//
+//=============================================================================
+/**
+* This class inherits from TimeWindow.
+* It contains a crisp time window
+*
+* @author Juan Jose Palacios
+*
+*/
+class TimeWindowCrisp : public TimeWindow {
+
+	//=========================================================================
+	//		FIELDS
+	//=========================================================================
+public:
+	/**
+	* time window values
+	*/
+	double earlyTime;
+	double lateTime;
+
+
+
+	//=========================================================================
+	//		CONSTRUCTORS / INITIALIZERS
+	//=========================================================================
+public:
+	/**
+	* Default constructor
+	*/
 	TimeWindowCrisp();
 
 	/**
 	* Main constructor
 	*/
-	TimeWindowCrisp(const double twValue);
+	TimeWindowCrisp(const double early, const double late);
 
 	/**
 	* Copy constructor
@@ -279,8 +402,6 @@ public:
 	*/
 	virtual std::string toString();
 };
-
-
 
 
 

@@ -32,7 +32,9 @@
 // ADD HERE ALL THE HEADER FILES OF THE OPERATORS YOU HAVE CREATED
 //
 // ****************************************************************************
+#include "StatisticsDiversity.h"
 #include "StatisticsFJSP.h"
+#include "StatisticsFVRP.h"
 
 
 
@@ -106,15 +108,35 @@ public:
 	 */
 	static void registerClasses() {
 
-		// -----  STATISTICS TYPE  --------------------------------------------
+		// -----  Framework OBJECTS  ------------------------------------------
+		StatsMap[toUpper("hamming")] = &createStatsInstance<StatisticsHamming>;
+		StatsMap[toUpper("kendall")] = &createStatsInstance<StatisticsKendall>;
+		StatsMap[toUpper("kendall-tau")] = &createStatsInstance<StatisticsKendall>;
+		StatsMap[toUpper("neri")] = &createStatsInstance<StatisticsNeri>;
+		StatsMap[toUpper("neri-best")] = &createStatsInstance<StatisticsNeriBest>;
+
+		// -----  FJSP OBJECTS  -----------------------------------------------
 		StatsMap[toUpper("makespan")] = &createStatsInstance<FJSP::StatisticsMakespan>;
 		StatsMap[toUpper("cmax")] = &createStatsInstance<FJSP::StatisticsMakespan>;
 		StatsMap[toUpper("aimin")] = &createStatsInstance<FJSP::StatisticsAImin>;
 		StatsMap[toUpper("ai_min")] = &createStatsInstance<FJSP::StatisticsAImin>;
 		StatsMap[toUpper("aiavg")] = &createStatsInstance<FJSP::StatisticsAIavg>;
 		StatsMap[toUpper("ai_avg")] = &createStatsInstance<FJSP::StatisticsAIavg>;
-	}
+		StatsMap[toUpper("esdmin")] = &createStatsInstance<FJSP::StatisticsESDmin>;
+		StatsMap[toUpper("esd_min")] = &createStatsInstance<FJSP::StatisticsESDmin>;
+		StatsMap[toUpper("esdavg")] = &createStatsInstance<FJSP::StatisticsESDavg>;
+		StatsMap[toUpper("esd_avg")] = &createStatsInstance<FJSP::StatisticsESDavg>;
 
+		// -----  FVRP OBJECTS  -----------------------------------------------
+		StatsMap[toUpper("cost")] = &createStatsInstance<FVRP::StatisticsTimeCost>;
+		StatsMap[toUpper("travelcost")] = &createStatsInstance<FVRP::StatisticsTimeCost>;
+		StatsMap[toUpper("necessity")] = &createStatsInstance<FVRP::StatisticsDemandMinNec>;
+		StatsMap[toUpper("minnec")] = &createStatsInstance<FVRP::StatisticsDemandMinNec>;
+		StatsMap[toUpper("possibility")] = &createStatsInstance<FVRP::StatisticsDemandMinPos>;
+		StatsMap[toUpper("minpos")] = &createStatsInstance<FVRP::StatisticsDemandMinNec>;
+		StatsMap[toUpper("credibility")] = &createStatsInstance<FVRP::StatisticsDemandMinCred>;
+		StatsMap[toUpper("mincred")] = &createStatsInstance<FVRP::StatisticsDemandMinNec>;
+	}
 };
 
 }

@@ -107,6 +107,7 @@ namespace FuzzyFW {
 		static void registerClasses() {
 
 			// -----  DUEDATE COMPONENT  ------------------------------------------
+			TimeWindowMap[toUpper("deadline")] = &createDueDateInstance<TimeWindowDeadline>;
 			TimeWindowMap[toUpper("crisp")] = &createDueDateInstance<TimeWindowCrisp>;
 			TimeWindowMap[toUpper("strict")] = &createDueDateInstance<TimeWindowCrisp>;
 			TimeWindowMap[toUpper("linear")] = &createDueDateInstance<TimeWindowLinear>;

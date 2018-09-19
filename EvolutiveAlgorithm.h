@@ -23,8 +23,6 @@ namespace FuzzyFW {
 #define STATISTICS_AVG "average"
 #define STATISTICS_SDEV "deviation"
 
-typedef Fitness Objective;
-
 
 //=============================================================================
 //

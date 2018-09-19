@@ -7,8 +7,12 @@
 #pragma once
 
 #include "Fitness.h"
+#include "FitnessMO.h"
+#include "Solution.h"
 
 namespace FuzzyFW {
+
+typedef std::pair<FuzzyFW::Solution *, FuzzyFW::Fitness *> FullSolution;
 
 	//=============================================================================
 	//
@@ -35,7 +39,17 @@ namespace FuzzyFW {
 		/*
 		* Flag indicating if the neighbour's quaity has been estimated
 		*/
-		bool isEstimated;
+		bool estimated;
+
+		/*
+		* Estimated quality of the neighbour
+		*/
+		FullSolution solution;
+
+		/*
+		* Flag indicating if the neighbour's quaity has been estimated
+		*/
+		bool evaluated;
 
 
 
@@ -47,7 +61,10 @@ namespace FuzzyFW {
 		* Default constructor.
 		*/
 		explicit Neighbour()
-			: estimatedQuality(NULL), isEstimated(false) { }
+			: estimatedQuality(NULL), estimated(false), evaluated(false) {
+			solution.first = NULL;
+			solution.second = NULL;
+		}
 
 		/**
 		* Copy constructor
@@ -65,6 +82,10 @@ namespace FuzzyFW {
 		virtual ~Neighbour() {
 			if (this->estimatedQuality != NULL)
 				delete estimatedQuality;
+			if (this->solution.first != NULL)
+				delete this->solution.first;
+			if (this->solution.second != NULL)
+				delete this->solution.second;
 		}
 
 
@@ -81,17 +102,48 @@ namespace FuzzyFW {
 		* Gets the estimated quality of the neighbour
 		*/
 		virtual Fitness * getEstimatedQuality() {
-			if (!this->isEstimated)
+			if (!this->estimated)
 				return NULL;
 			return this->estimatedQuality;
 		}
 
 
 		/*
-		* Checks if the neighbour's quality has been estimated
+		* Checks if the neighbour has been fully evaluated
 		*/
-		virtual bool hasEstimation() const {
-			return this->isEstimated;
+		virtual bool isEstimated() const {
+			return this->estimated;
+		}
+
+		/*
+		* Set a the evaluted fitness of the neighbour
+		*/
+		virtual void setEvaluation(Solution *sol, Fitness *fitness);
+
+		/*
+		* Gets the fitness value of the neighbour
+		*/
+		virtual Fitness * getEvaluatedFitness() {
+			if (!this->evaluated)
+				return NULL;
+			return this->solution.second;
+		}
+
+		/*
+		* Gets the full solution evaluated
+		*/
+		virtual Solution * getEvaluation() {
+			if (!this->evaluated)
+				return NULL;
+			return this->solution.first;
+		}
+
+
+		/*
+		* Checks if the neighbour's quality has been evaluated
+		*/
+		virtual bool isEvaluated() const {
+			return this->evaluated;
 		}
 
 

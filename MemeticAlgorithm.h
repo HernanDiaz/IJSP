@@ -215,7 +215,7 @@ namespace FuzzyFW {
 		*
 		* @return true if all components are correctly initialized
 		*/
-		bool checkSetup();
+		virtual bool checkSetup();
 
 
 		/**

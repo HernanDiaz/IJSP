@@ -23,7 +23,11 @@
 #include <list>
 
 #include "FuzzyFWException.h"
+#if defined(_WIN32)
 #include "RandomMT.h"
+#else
+#include "Random.h"
+#endif
 
 #define Infd std::numeric_limits<double>::max()
 #define Inff std::numeric_limits<float>::max()
@@ -34,7 +38,7 @@
 #define NULL   ((void *) 0)
 #endif
 
-#define DEBUG_LEVEL 3
+#define DEBUG_LEVEL 0
 
 #if defined(_WIN32)
 
@@ -129,3 +133,54 @@ static int compareDouble(const double a, const double b) {
 	return 0;
 }
 
+
+template<typename T>
+static void quickSortInc(std::vector<T> &values, const unsigned int left,
+	const unsigned int right, FuzzyFW::Random *rng) {
+
+	int pivot, pos;
+
+	if (left >= right)
+		return;
+
+	pivot = rng->getInteger(left, right);
+
+	std::swap(values[pivot], values[right]);
+	pos = left;
+	for (int i = left; i < right; i++) {
+		if (values[i] < values[right]) {
+			std::swap(values[i], values[pos]);
+			pos++;
+		}
+	}
+
+	std::swap(values[pos], values[right]);
+	quickSort(values, left, pos - 1, rng);
+	quickSort(values, pos + 1, right, rng);
+}
+
+
+template<typename T>
+static void quickSortDec(std::vector<T> &values, const unsigned int left,
+	const unsigned int right, FuzzyFW::Random *rng) {
+
+	int pivot, pos;
+
+	if (left >= right)
+		return;
+
+	pivot = rng->getInteger(left, right);
+
+	std::swap(values[pivot], values[right]);
+	pos = left;
+	for (int i = left; i < right; i++) {
+		if (values[i] > values[right]) {
+			std::swap(values[i], values[pos]);
+			pos++;
+		}
+	}
+
+	std::swap(values[pos], values[right]);
+	quickSort(values, left, pos - 1, rng);
+	quickSort(values, pos + 1, right, rng);
+}
