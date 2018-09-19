@@ -189,7 +189,7 @@ public:
 		if (this->taskOrder.size() <= 0)
 			return "";
 		str = valueToString(this->taskOrder[0]);
-		for (size_t i = 0; i < this->taskOrder.size(); i++)
+		for (size_t i = 1; i < this->taskOrder.size(); i++)
 			str += " " + valueToString(this->taskOrder[i]);
 		return str;
 	}

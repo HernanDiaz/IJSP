@@ -425,7 +425,7 @@ void FuzzySGS_fGYT1::setup(const ParameterDB *params) {
 	this->delta = params->getDouble(this->deltaLabel);
 	if (compareDouble(this->delta, -1.0) == 0) {
 		std::cout << "Warning! Parameter \'" << this->deltaLabel;
-		std::cout << "not found. Value 1.0 taken by default." << std::endl;
+		std::cout << "\' not found. Value 1.0 taken by default." << std::endl;
 		this->delta = 1.0;
 	}
 	else if (compareDouble(delta, 0.0) < 0 || compareDouble(delta, 1.0) > 0) {
@@ -465,11 +465,18 @@ FuzzySchedule * FuzzySGS_fGYT1::buildSchedule(const SharedVars * svars,
 		throw new FJSPException("SGS", errorMsg);
 	}
 
+	if (this->isCreated)
+		this->schedule->reset();
+	else {
+		this->schedule = new FuzzySchedule(fuzzyProb);
+		this->isCreated = true;
+	}
+
 	// Keep the position of each task in the permutation
 	// NOTE: Empirical results show that this speeds up the method
 	nJobs = fuzzyProb->getNumberJobs();
 	for (size_t i = 0; i < order.size(); i++)
-		situation[i] = i;
+		situation[order[i]] = i;
 
 
 	while (this->schedule->getScheduledTasks() < nTasks) {
@@ -483,11 +490,13 @@ FuzzySchedule * FuzzySGS_fGYT1::buildSchedule(const SharedVars * svars,
 			jobPred = this->schedule->lastTaskJob[job];
 			if (jobPred != -1)
 				taskIdx = this->schedule->taskInfo[jobPred].task->js;
-			else if (fuzzyProb->getNumberTasks(job))
+			else if (fuzzyProb->getNumberTasks(job) > 0)
 				taskIdx = fuzzyProb->getTaskId(job, 0);
 			else
-				continue;
+				taskIdx = -1;
 
+			if(taskIdx < 0)
+				continue;
 			task = (*fuzzyProb)[taskIdx];
 
 			Stime = maximum(schedule->getCTJob(job),
@@ -589,11 +598,18 @@ FuzzySchedule * FuzzySGS_fGYT2::buildSchedule(const SharedVars * svars,
 		throw new FJSPException("SGS", errorMsg);
 	}
 
+	if (this->isCreated)
+		this->schedule->reset();
+	else {
+		this->schedule = new FuzzySchedule(fuzzyProb);
+		this->isCreated = true;
+	}
+
 	// Keep the position of each task in the permutation
 	// NOTE: Empirical results show that this speeds up the method
 	nJobs = fuzzyProb->getNumberJobs();
 	for (size_t i = 0; i < order.size(); i++)
-		situation[i] = i;
+		situation[order[i]] = i;
 
 
 	while (this->schedule->getScheduledTasks() < nTasks) {
@@ -607,11 +623,13 @@ FuzzySchedule * FuzzySGS_fGYT2::buildSchedule(const SharedVars * svars,
 			jobPred = this->schedule->lastTaskJob[job];
 			if (jobPred != -1)
 				taskIdx = this->schedule->taskInfo[jobPred].task->js;
-			else if (fuzzyProb->getNumberTasks(job))
+			else if (fuzzyProb->getNumberTasks(job) > 0)
 				taskIdx = fuzzyProb->getTaskId(job, 0);
 			else
-				continue;
+				taskIdx = -1;
 
+			if(taskIdx < 0)
+				continue;
 			task = (*fuzzyProb)[taskIdx];
 
 			Stime = maximum(schedule->getCTJob(job),

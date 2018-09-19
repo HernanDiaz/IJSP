@@ -221,6 +221,8 @@ std::vector< std::vector<double> > GeneticAlgorithm::getEvolution(
 	labels.push_back("Runtime");
 	labels.push_back("Best");
 	labels.push_back("Avg");
+	for (size_t i = 0; i < this->statistics.size(); i++)
+		labels.push_back(this->statistics[i]->getName());
 	return this->evolutionStats;
 }
 
@@ -286,12 +288,33 @@ void GeneticAlgorithm::prepareToRun(ParameterDB *params) {
 	// Gets the population size
 	this->populationSize = this->sharedVariables->parameters->
 		getInteger(GA_POP_SIZE, -1);
+	this->printPopGenerations = this->sharedVariables->parameters->
+		getInteger(GA_POP_INTERVAL, 1);
+
 
 	// Checks if the populations must be printed
 	this->printPopulation = this->sharedVariables->parameters->
 		getBoolean(GA_PRINT_POPULATION, false);
 	this->printPopGenerations = this->sharedVariables->parameters->
 		getInteger(GA_POP_INTERVAL, 1);
+
+	// Checks the unit and span to show evolution
+	value = this->sharedVariables->parameters->
+		getStringLower(GA_EVOL_METRIC);
+	if (value.compare(GA_EVOL_UNIT_GEN) == 0)
+		showEvolutionTime = false;
+	else if (value.compare(GA_EVOL_UNIT_TIME) == 0)
+		showEvolutionTime = true;
+	else {
+		std::cout << "WARNING: Unit foe showing evolution values not found.";
+		std::cout << " Using generations by default." << std::endl;
+	}
+	this->evolutionSpan = this->sharedVariables->parameters->
+		getDouble(GA_EVOL_SPAN, 1);
+	
+	// Gets the maximum number of evaluations
+	this->maxEvaluations = this->sharedVariables->parameters->
+		getInteger(GA_EVALUATIONS, -1);
 
 	this->checkSetup();
 
@@ -366,8 +389,8 @@ std::pair<Solution *, Objective *> GeneticAlgorithm::run(Problem *problem,
 	std::string signature, std::string logFolder, int rngSeed) {
 
 	Population *currentPopulation;
-	std::vector<double> stats;
-	clock_t timePoint;
+	Population *offspring;
+	clock_t timePoint, algorithmTime;
 
 	// Initialize dynamic variables
 	this->creationTime = 0;
@@ -381,6 +404,7 @@ std::pair<Solution *, Objective *> GeneticAlgorithm::run(Problem *problem,
 
 	this->generation = 0;
 	this->evaluations = 0;
+	this->nextSplit = 0.0;
 
 	// Initialize the RNG
 	this->sharedVariables->rng->init(rngSeed);
@@ -402,18 +426,15 @@ std::pair<Solution *, Objective *> GeneticAlgorithm::run(Problem *problem,
 	this->evaluator->evaluatePopulation(this->sharedVariables, currentPopulation);
 	this->evaluationTime = clock() - this->evaluationTime;
 
+	// Stop counting time for the statistic values and debug mode
+	this->totalRuntime = clock() - this->totalRuntime;
+
 	// Statistics....
 	if (this->bestSoFar != NULL)
 		delete this->bestSoFar;
 	this->bestSoFar =
 		currentPopulation->getBest(this->sharedVariables)->clone();
-
-	stats.push_back(this->generation);	// Iteration
-	stats.push_back(
-		(clock() - this->totalRuntime) / (double)CLOCKS_PER_SEC); // Runtime
-	stats.push_back(this->bestSoFar->getFitness()->toDouble());	// Best solution
-	stats.push_back(currentPopulation->getAverageFitness()); // Average quality
-	evolutionStats.push_back(stats);
+	this->computeStatistics(currentPopulation);
 
 #if DEBUG_LEVEL >= 2
 	std::cout << "Generation 0:" << std::endl;
@@ -422,14 +443,18 @@ std::pair<Solution *, Objective *> GeneticAlgorithm::run(Problem *problem,
 #endif // DEBUG
 
 	// While not stopping criteria is met...
-	Population *offspring;
+	algorithmTime = clock();
 	while (!this->stop()) {
+		// Stop counting time for the statistic values and debug mode
+		this->totalRuntime += clock() - algorithmTime;
+
 		// Save detailed data...
 		if (this->printPopulation &&
 			this->generation % this->printPopGenerations == 0)
-			Statistics::printPopulation(this->generation, signature, logFolder,
+			DataPrinter::printPopulation(this->generation, signature, logFolder,
 				currentPopulation);
 
+		algorithmTime = clock();
 		// Select individuals for mating  -----------------
 		timePoint = clock();
 		offspring = this->selection->apply(currentPopulation,
@@ -467,25 +492,31 @@ std::pair<Solution *, Objective *> GeneticAlgorithm::run(Problem *problem,
 		else
 			this->iterationsNI++;
 
+		if (this->bestSoFar != NULL
+			&& currentPopulation->getBest(this->sharedVariables)->getFitness()->
+			isBetterThan(this->bestSoFar->getFitness())) {
+			delete this->bestSoFar;
+			this->bestSoFar =
+				currentPopulation->getBest(this->sharedVariables)->clone();
+		}
+		else
+			this->bestSoFar =
+			currentPopulation->getBest(this->sharedVariables)->clone();
+		
+		// Stop counting time for the statistic values and debug mode
+		this->totalRuntime += clock() - algorithmTime;
+
 		// Statistics....
-		stats.clear();
-		delete this->bestSoFar;
-		this->bestSoFar = currentPopulation->
-			getBest(this->sharedVariables)->clone();
-		stats.push_back(this->generation);	// Iteration
-		stats.push_back(
-			(clock() - this->totalRuntime) / (double)CLOCKS_PER_SEC); // Runtime
-		stats.push_back(this->bestSoFar->getFitness()->toDouble());	// Best solution
-		stats.push_back(currentPopulation->getAverageFitness()); // Average quality
-		evolutionStats.push_back(stats);
+		this->computeStatistics(currentPopulation);
+
 #if DEBUG_LEVEL >= 2
 		std::cout << "Generation " << this->generation << ":" << std::endl;
 		std::cout << "Best fitness: " << this->bestSoFar->getFitness()->toString();
 		std::cout << std::endl << std::endl;
 #endif // DEBUG
+		algorithmTime = clock();
 	}
 
-	this->totalRuntime = clock() - this->totalRuntime;
 	this->finished = true;
 
 	std::pair<Solution *, Objective *> returnValue;
@@ -505,8 +536,7 @@ bool GeneticAlgorithm::stop() {
 	if (this->iterationsNI >= this->maxPlateau && this->maxPlateau >= 0)
 		return true;
 
-	clock_t clockTime = clock() - this->totalRuntime;
-	double currentRuntime = clockTime / (double)CLOCKS_PER_SEC;
+	double currentRuntime = this->totalRuntime / (double)CLOCKS_PER_SEC;
 
 	if (this->maxRuntime >= 0) {
 		if (currentRuntime >= this->maxRuntime)
@@ -522,6 +552,34 @@ bool GeneticAlgorithm::stop() {
 	return false;
 }
 
+
+
+//-----  compute Statistics  --------------------------------------------------
+void GeneticAlgorithm::computeStatistics(Population *currentPopulation) {
+	std::vector<double> stats;
+	double runtime = this->totalRuntime / (double)CLOCKS_PER_SEC;
+
+	if (!this->showEvolutionTime && this->generation < this->nextSplit)
+		return;
+	if (this->showEvolutionTime && runtime < this->nextSplit)
+		return;
+
+	stats.push_back(this->generation);	// Iteration
+	stats.push_back(runtime); // Runtime
+	stats.push_back(this->bestSoFar->getFitness()->toDouble());	// Best solution
+	stats.push_back(currentPopulation->getAverageFitness()); // Average quality
+	for (size_t i = 0; i < this->statistics.size(); i++)
+		stats.push_back(this->statistics[i]->
+			getValue(this->sharedVariables, currentPopulation));
+	evolutionStats.push_back(stats);
+
+	if (this->showEvolutionTime) {
+		while(runtime >= this->nextSplit)
+			this->nextSplit += this->evolutionSpan;
+	}
+	else
+		this->nextSplit += this->evolutionSpan;
+}
 
 }
 

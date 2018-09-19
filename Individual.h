@@ -134,15 +134,15 @@ public:
 	/**
 	* Check if the phenotype of the individual is updated to the genotype
 	*/
-	bool isPhenotypeUpdated() const {
-		return (bool)this->phenotypeUpdated;
+	char isPhenotypeUpdated() const {
+		return this->phenotypeUpdated;
 	}
 
 	/**
 	* Check if the individual has been already evaluated
 	*/
-	bool isEvaluated() const {
-		return (bool)this->evaluated;
+	char isEvaluated() const {
+		return this->evaluated;
 	}
 	
 

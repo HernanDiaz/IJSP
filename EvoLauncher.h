@@ -84,6 +84,7 @@ namespace FJSP {
 		std::vector< std::vector< std::pair<std::string, double> > > avgStats;
 		std::vector< std::vector< std::vector<double> > > avgEvolStats;
 		std::vector< std::string > avgEvolLabels;
+		std::vector<Fitness *> fitnessValues;
 
 
 
@@ -171,6 +172,13 @@ namespace FJSP {
 		* are the name of the field and the double is the value.
 		*/
 		void printStatistics(std::ofstream &outputFile);
+
+		/**
+		* Print the objective function values
+		*
+		* @param outputFile File in which print the data
+		*/
+		void printObjectiveValues(std::ofstream &outputFile);
 
 
 		/**

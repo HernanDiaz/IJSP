@@ -9,11 +9,21 @@
 
 
 #include "EvaluationClassRegister.h"
+#include "StatisticsClassRegister.h"
+#include "Statistics.h"
 
 
 namespace FJSP {
 
 #define OBJECTIVE_FUNCTION "objective"
+#define STATISTICS_ROOT "statistics"
+#define STATISTICS_VALUE "value"
+#define STATISTICS_METRIC "metric"
+
+#define STATISTICS_BEST "best"
+#define STATISTICS_WORST "worst"
+#define STATISTICS_AVG "average"
+#define STATISTICS_SDEV "deviation"
 
 typedef Fitness Objective;
 
@@ -57,6 +67,11 @@ public:
 	* Evaluation function
 	*/
 	Evaluation *evaluator;
+
+	/**
+	* Statistics to show
+	*/
+	std::vector<Statistics *> statistics;
 
 
 

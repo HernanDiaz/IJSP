@@ -43,10 +43,13 @@ void Evaluation::setup(ParameterDB *parameters) {
 //-----  Evaluate Population  -------------------------------------------------
 void Evaluation::evaluatePopulation(const SharedVars * const svars,
 	Population *population, bool reEvaluate) const {
+	Fitness *fitness;
 	for (unsigned int i = 0; i < population->size(); i++) {
-		if(!population->getIndividual(i)->isEvaluated()
-			|| reEvaluate)
-			this->evaluate(svars, population->getIndividual(i));
+		if (!population->getIndividual(i)->isEvaluated()
+			|| reEvaluate) {
+			fitness = this->evaluate(svars, population->getIndividual(i));
+			population->getIndividual(i)->updateFitness(fitness);
+		}
 	}
 }
 
@@ -68,7 +71,6 @@ EvaluationFJSP_Makespan::EvaluationFJSP_Makespan(ParameterDB *parameters)
 	compareLabel(EVALUATION_COMPARE), tfnCompare(TFN::C_EV),
 	Evaluation(parameters) {
 	SchedulingClassRegister::registerClasses();
-	Fitness::FitnessMaximize = false;
 }
 
 
@@ -98,7 +100,7 @@ void EvaluationFJSP_Makespan::setup(ParameterDB *parameters) {
 		std::string errorMsg = "Invalid value for parameter ";
 		errorMsg += "\'" + this->maximumLabel + "\': \'";
 		errorMsg += maxName + "\'";
-		throw new FJSPException("SGS", errorMsg);
+		throw new FJSPException("Evaluation", errorMsg);
 	}
 
 	// Load comparison strategy parameter
@@ -159,9 +161,9 @@ Fitness * EvaluationFJSP_Makespan::evaluate(const SharedVars * const svars,
 
 	if (this->lamarckism)
 		svars->encoder->encode(schedule, individual, svars);
-	individual->updateFitness(new FitnessTFN(makespan));
-	individual->updatePhenotype(schedule->clone());
-	return individual->getFitness();
+	if (!individual->isPhenotypeUpdated())
+		individual->updatePhenotype(schedule->clone());
+	return new FitnessTFN(makespan, false);
 }
 
 
@@ -181,7 +183,6 @@ EvaluationFJSP_AImin::EvaluationFJSP_AImin(ParameterDB *parameters)
 	: exactLabel(EVALUATION_AI), isExact(true),
 	Evaluation(parameters) {
 	SchedulingClassRegister::registerClasses();
-	Fitness::FitnessMaximize = true;
 }
 
 
@@ -266,9 +267,9 @@ Fitness * EvaluationFJSP_AImin::evaluate(const SharedVars * const svars,
 
 	if (this->lamarckism)
 		svars->encoder->encode(schedule, individual, svars);
-	individual->updateFitness(new FitnessDouble(minAI));
-	individual->updatePhenotype(schedule->clone());
-	return individual->getFitness();
+	if (!individual->isPhenotypeUpdated())
+		individual->updatePhenotype(schedule->clone());
+	return new FitnessDouble(minAI, true);
 }
 
 
@@ -402,9 +403,9 @@ Fitness * EvaluationFJSP_AIavg::evaluate(const SharedVars * const svars,
 
 	if (this->lamarckism)
 		svars->encoder->encode(schedule, individual, svars);
-	individual->updateFitness(new FitnessDouble(sum / nJobs));
-	individual->updatePhenotype(schedule->clone());
-	return individual->getFitness();
+	if (!individual->isPhenotypeUpdated())
+		individual->updatePhenotype(schedule->clone());
+	return new FitnessDouble(sum / nJobs, true);
 }
 
 }

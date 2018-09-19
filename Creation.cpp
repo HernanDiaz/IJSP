@@ -73,7 +73,6 @@ void CreationRandomSchedule::setup(ParameterDB *parameters) {
 Individual * CreationRandomSchedule::createIndividual(
 	const SharedVars *svars) const {
 
-	unsigned int nTasks;
 	std::vector<int> permutation, count;
 	int rand;
 	Individual * indiv;
@@ -100,7 +99,7 @@ Individual * CreationRandomSchedule::createIndividual(
 		// Pass to the next task of the job
 		count[rand] = (*fuzzyProb)[count[rand]]->js;
 		if (count[rand] < 0) {
-			for (int i = rand + 1; i < count.size(); i++)
+			for (size_t i = rand + 1; i < count.size(); i++)
 				count[i - 1] = count[i];
 			count.pop_back();
 		}

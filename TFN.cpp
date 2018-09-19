@@ -26,17 +26,17 @@ std::string TFN::getComparison(TFN::Compare cmp) {
 }
 
 TFN::Compare TFN::getComparison(std::string str) {
-	if (toUpper(str).compare("COMPONENT"))
+	if (toUpper(str).compare("COMPONENT") == 0)
 		return C_COMPONENT;
-	if (toUpper(str).compare("EV"))
+	if (toUpper(str).compare("EV") == 0)
 		return C_EV;
-	if (toUpper(str).compare("EXPECTEDVALUE"))
+	if (toUpper(str).compare("EXPECTEDVALUE") == 0)
 		return C_EV;
-	if (toUpper(str).compare("SAKAWA"))
+	if (toUpper(str).compare("SAKAWA") == 0)
 		return C_SAKAWA;
-	if (toUpper(str).compare("LEI"))
+	if (toUpper(str).compare("LEI") == 0)
 		return C_SAKAWA;
-	if (toUpper(str).compare("RANKING"))
+	if (toUpper(str).compare("RANKING") == 0)
 		return C_SAKAWA;
 	return C_Err;
 }
@@ -57,17 +57,17 @@ std::string TFN::getMaximum(TFN::Maximum mxm) {
 
 
 TFN::Maximum TFN::getMaximum(std::string str) {
-	if (toUpper(str).compare("COMPONENT"))
+	if (toUpper(str).compare("COMPONENT") == 0)
 		return M_COMPONENT;
 	if (toUpper(str).compare("EV"))
 		return M_EV;
-	if (toUpper(str).compare("EXPECTEDVALUE"))
+	if (toUpper(str).compare("EXPECTEDVALUE") == 0)
 		return M_EV;
-	if (toUpper(str).compare("SAKAWA"))
+	if (toUpper(str).compare("SAKAWA") == 0)
 		return M_SAKAWA;
-	if (toUpper(str).compare("LEI"))
+	if (toUpper(str).compare("LEI") == 0)
 		return M_SAKAWA;
-	if (toUpper(str).compare("RANKING"))
+	if (toUpper(str).compare("RANKING") == 0)
 		return M_SAKAWA;
 	return M_Err;
 }

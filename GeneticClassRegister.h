@@ -241,6 +241,7 @@ public:
 		// -----  DECODING FUNCTION  ------------------------------------------
 		DecoderMap[toUpper("permutation")] = &createDecoderInstance<DecoderFJSP_Order>;
 		DecoderMap[toUpper("task-order")] = &createDecoderInstance<DecoderFJSP_Order>;
+		DecoderMap[toUpper("taskorder")] = &createDecoderInstance<DecoderFJSP_Order>;
 		DecoderMap[toUpper("permutation-reap")] = &createDecoderInstance<DecoderFJSP_JobOrder>;
 		DecoderMap[toUpper("permutationreap")] = &createDecoderInstance<DecoderFJSP_JobOrder>;
 		DecoderMap[toUpper("job-order")] = &createDecoderInstance<DecoderFJSP_JobOrder>;
@@ -252,8 +253,10 @@ public:
 
 		// -----  CROSSOVER OPERATORS  ----------------------------------------
 		CrossoverMap[toUpper("jox")] = &createCrossoverInstance<Crossover_JOX>;
-		CrossoverMap[toUpper("gox")] = &createCrossoverInstance<Crossover_Bierwirth>;
-		CrossoverMap[toUpper("biertwirth")] = &createCrossoverInstance<Crossover_Bierwirth>;
+		CrossoverMap[toUpper("gox")] = &createCrossoverInstance<Crossover_GOXBierwirth>;
+		CrossoverMap[toUpper("biertwirth")] = &createCrossoverInstance<Crossover_GOXBierwirth>;
+		CrossoverMap[toUpper("gpmx")] = &createCrossoverInstance<Crossover_GPMXBierwirth>;
+		CrossoverMap[toUpper("ppx")] = &createCrossoverInstance<Crossover_PPXBierwirth>;
 
 		// -----  MUTATION OPERATORS  -----------------------------------------
 		MutationMap[toUpper("insertion")] = &createMutationInstance<MutationInsertion>;

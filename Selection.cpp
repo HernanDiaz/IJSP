@@ -180,7 +180,10 @@ Individual * SelectionRoulette::selectClassic(Population *population,
 	double sumValues, randomValue, acum;
 	int cont = 0;
 
-	if (Fitness::FitnessMaximize) {
+	if (n <= 0)
+		return NULL;
+
+	if (population->getIndividual(0)->getFitness()->mustMaximize()) {
 		sumValues = population->getAverageFitness() * population->size();
 		randomValue = svars->rng->getDouble(0, sumValues);
 
@@ -237,13 +240,16 @@ Population * SelectionSUS::apply(Population *population,
 	// Array of expected picks per individual
 	std::vector<double> expected(n);
 
+	if (n <= 0)
+		return NULL;
+
 	if (this->interpolate) {
 		sumValues = (n*(n + 1) / 2);
 		for (unsigned int i = 1; i <= population->size(); i++) {
 			expected[population->whoIsBest(svars, n - i)] = n * i / sumValues;
 		}
 	}
-	else if(Fitness::FitnessMaximize) {
+	else if (population->getIndividual(0)->getFitness()->mustMaximize()) {
 		sumValues = population->getAverageFitness() * population->size();
 		for (unsigned int i = 0; i < population->size(); i++) {
 			fitness = population->getIndividual(i)->getFitness()->toDouble();

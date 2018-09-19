@@ -208,7 +208,7 @@ protected:
 
 //=============================================================================
 //
-//	Class Crossover_Bierwirth
+//	Class Crossover_GOXBierwirth
 //
 //=============================================================================
 /**
@@ -234,7 +234,7 @@ protected:
 * @author jjpalacios
 *
 */
-class Crossover_Bierwirth : public Crossover {
+class Crossover_GOXBierwirth : public Crossover {
 	//=========================================================================
 	//		CONSTRUCTORS / INITIALIZERS
 	//=========================================================================
@@ -242,7 +242,7 @@ public:
 	/**
 	* Constructor using the parameters file
 	*/
-	Crossover_Bierwirth(ParameterDB *parameters = NULL)
+	Crossover_GOXBierwirth(ParameterDB *parameters = NULL)
 		: Crossover(parameters) { }
 
 	/**
@@ -255,7 +255,7 @@ public:
 	/**
 	* Destructor
 	*/
-	virtual ~Crossover_Bierwirth() { }; 	// Nothing to destroy here
+	virtual ~Crossover_GOXBierwirth() { }; 	// Nothing to destroy here
 
 
 
@@ -284,6 +284,211 @@ public:
 	virtual std::vector<std::string> getName() const {
 		std::vector<std::string> setup;
 		setup.push_back("GOX-Bierwirth");
+		setup.push_back(";Probability;" + valueToString(this->probability));
+		return setup;
+	}
+
+protected:
+	/**
+	* Crossover operator depending on the type of individual we are
+	* receiving
+	*
+	* @param ind1 First parent for the mating
+	* @param ind2 Second parent for the mating
+	* @param svars Shared elements of the algorithm
+	* @return The two offspring produced
+	*/
+	virtual void applyPermutation(IndividualArrayInt *ind1,
+		IndividualArrayInt *ind2, const SharedVars *svars) const;
+
+	virtual void applyJobPermutation(IndividualArrayInt *ind1,
+		IndividualArrayInt *ind2, const SharedVars *svars) const;
+};
+
+
+
+
+
+
+//=============================================================================
+//
+//	Class Crossover_GPMXBierwirth
+//
+//=============================================================================
+/**
+* General PMX operator proposed by Bierwtih in this paper:
+*		Bierwirth C., Mattfeld D.C., Kopfer H. (1996) On permutation
+*		representations for scheduling problems. In: Parallel Problem Solving
+*		from Nature	— PPSN IV. PPSN 1996. LNCS, vol 1141.
+*
+* The operator chooses a random sequence of genes from parent 1. Then, in
+* order to generate the offspring, it copies the genes of the second parent
+* that are not included in the previously selected sequence until the position
+* where the substring is. At that point, the sequence is included and
+* then the genotype refill with the remaining genes of the second parent.
+* Example:
+*	Parent 1: A B B A C A B C B C
+*	Parent 2: B A B B C A C C B A
+*	Substring in parent 1: * * * A C A B * * *
+*	Locate the key gene: B A B B* C* A* C C B A*
+*	Offspring: B A B [A C A B] C C B
+*
+* Bierwith establishes that the length of the substring must be always in the
+* interval [1/3, 1/2] times the length of the genotype
+*
+* @author jjpalacios
+*
+*/
+class Crossover_GPMXBierwirth : public Crossover {
+	//=========================================================================
+	//		CONSTRUCTORS / INITIALIZERS
+	//=========================================================================
+public:
+	/**
+	* Constructor using the parameters file
+	*/
+	Crossover_GPMXBierwirth(ParameterDB *parameters = NULL)
+		: Crossover(parameters) { }
+
+	/**
+	* Loads extra parameters.
+	*/
+	virtual void setup(ParameterDB *parameters) {
+		Crossover::setup(parameters);
+	}
+
+	/**
+	* Destructor
+	*/
+	virtual ~Crossover_GPMXBierwirth() { }; 	// Nothing to destroy here
+
+
+
+	//=========================================================================
+	//		METHODS
+	//=========================================================================
+public:
+	/**
+	* Apply the crossover operator to a pair of individuals and produces two
+	* offspring. The offspring will automatically replace their parents
+	*
+	* @param ind1 First parent for the mating
+	* @param ind2 Second parent for the mating
+	* @param svars Shared elements of the algorithm
+	* @return The two offspring produced
+	*/
+	virtual void apply(Individual *ind1,
+		Individual *ind2, const SharedVars *svars) const;
+
+	/**
+	* Get the name and setup of the operator
+	*
+	* @return A string of parameter values. The first string is the name of
+	* the operator
+	*/
+	virtual std::vector<std::string> getName() const {
+		std::vector<std::string> setup;
+		setup.push_back("GPMX-Bierwirth");
+		setup.push_back(";Probability;" + valueToString(this->probability));
+		return setup;
+	}
+
+protected:
+	/**
+	* Crossover operator depending on the type of individual we are
+	* receiving
+	*
+	* @param ind1 First parent for the mating
+	* @param ind2 Second parent for the mating
+	* @param svars Shared elements of the algorithm
+	* @return The two offspring produced
+	*/
+	virtual void applyPermutation(IndividualArrayInt *ind1,
+		IndividualArrayInt *ind2, const SharedVars *svars) const;
+
+	virtual void applyJobPermutation(IndividualArrayInt *ind1,
+		IndividualArrayInt *ind2, const SharedVars *svars) const;
+};
+
+
+
+
+
+
+
+//=============================================================================
+//
+//	Class Crossover_PPXBierwirth
+//
+//=============================================================================
+/**
+* PPX operator proposed by Bierwtih in this paper:
+*		Bierwirth C., Mattfeld D.C., Kopfer H. (1996) On permutation
+*		representations for scheduling problems. In: Parallel Problem Solving
+*		from Nature	— PPSN IV. PPSN 1996. LNCS, vol 1141.
+*
+* The operator creates a sequence of 1's and 2's as long as the genotype.
+* This string is used to determine when to take genes from the first or
+* the second parent.
+* Example:
+*	Parent 1: C B B B C A A A C
+*	Parent 2: A A C B B A B C C
+*	Sequence mask: 1 1 2 2 2 2 1 1 1
+*	Offspring: C B A A B A B C C
+*
+* @author jjpalacios
+*
+*/
+class Crossover_PPXBierwirth : public Crossover {
+	//=========================================================================
+	//		CONSTRUCTORS / INITIALIZERS
+	//=========================================================================
+public:
+	/**
+	* Constructor using the parameters file
+	*/
+	Crossover_PPXBierwirth(ParameterDB *parameters = NULL)
+		: Crossover(parameters) { }
+
+	/**
+	* Loads extra parameters.
+	*/
+	virtual void setup(ParameterDB *parameters) {
+		Crossover::setup(parameters);
+	}
+
+	/**
+	* Destructor
+	*/
+	virtual ~Crossover_PPXBierwirth() { }; 	// Nothing to destroy here
+
+
+
+	//=========================================================================
+	//		METHODS
+	//=========================================================================
+public:
+	/**
+	* Apply the crossover operator to a pair of individuals and produces two
+	* offspring. The offspring will automatically replace their parents
+	*
+	* @param ind1 First parent for the mating
+	* @param ind2 Second parent for the mating
+	* @param svars Shared elements of the algorithm
+	* @return The two offspring produced
+	*/
+	virtual void apply(Individual *ind1,
+		Individual *ind2, const SharedVars *svars) const;
+
+	/**
+	* Get the name and setup of the operator
+	*
+	* @return A string of parameter values. The first string is the name of
+	* the operator
+	*/
+	virtual std::vector<std::string> getName() const {
+		std::vector<std::string> setup;
+		setup.push_back("PPX-Bierwirth");
 		setup.push_back(";Probability;" + valueToString(this->probability));
 		return setup;
 	}

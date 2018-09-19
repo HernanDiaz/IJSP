@@ -20,6 +20,7 @@ namespace FJSP {
 //-----  Main constructor  ----------------------------------------------------
 EvolutiveAlgorithm::EvolutiveAlgorithm(ParameterDB *params) {
 	EvaluationClassRegister::registerClasses();
+	StatisticsClassRegister::registerClasses();
 
 	this->sharedVariables = new SharedVars();
 	this->sharedVariables->parameters = params;
@@ -43,6 +44,7 @@ void EvolutiveAlgorithm::clearAll() {
 //-----  prepareToRun  ----------------------------------------------------
 void EvolutiveAlgorithm::prepareToRun(ParameterDB *params) {
 	std::string paramName;
+	std::string paramValue;
 
 	if (this->ready)
 		clearAll();
@@ -71,6 +73,41 @@ void EvolutiveAlgorithm::prepareToRun(ParameterDB *params) {
 		throw new FJSPException("Loading", errorMsg);
 	}
 	this->evaluator->setup(this->sharedVariables->parameters);
+
+	// Load the different statistics to use
+	Statistics * stats;
+	statistics.clear();
+	int cont = 1;
+	Statistics::STAT_TYPE type;
+
+	paramName = valueToString(STATISTICS_ROOT);
+	paramName += ".1." + valueToString(STATISTICS_METRIC);
+	paramValue = this->sharedVariables->parameters->getString(paramName);
+
+	while (paramValue.size() > 1) {
+		if(paramValue.compare(STATISTICS_BEST) == 0)
+		type = Statistics::STAT_BEST;
+		if (paramValue.compare(STATISTICS_WORST) == 0)
+			type = Statistics::STAT_WORST;
+		if (paramValue.compare(STATISTICS_AVG) == 0)
+			type = Statistics::STAT_AVG;
+		if (paramValue.compare(STATISTICS_SDEV) == 0)
+			type = Statistics::STAT_SDEV;
+
+		paramName = valueToString(STATISTICS_ROOT) + ".";
+		paramName += valueToString(cont) + ".";
+		paramName += valueToString(STATISTICS_VALUE);
+		paramValue = this->sharedVariables->parameters->getString(paramName);
+
+		stats = StatisticsClassRegister::getStatsObject(paramValue);
+		stats->setStat(type);
+		statistics.push_back(stats);
+
+		cont++;
+		paramName = valueToString(STATISTICS_ROOT);
+		paramName += valueToString(cont) + valueToString(STATISTICS_METRIC);
+		paramValue = this->sharedVariables->parameters->getString(paramName);
+	}
 
 	this->ready = true;
 	this->finished = false;

@@ -34,11 +34,11 @@ public:
 	//=========================================================================
 	//		COMMON FIELDS
 	//=========================================================================
-public:
+protected:
 	/*
 	* Indicates the optimisation strategy
 	*/
-	static bool FitnessMaximize;
+	bool maximize;
 
 
 
@@ -49,7 +49,14 @@ public:
 	/*
 	* Default constructor
 	*/
-	Fitness() { }
+	Fitness(bool maxim = true) : maximize(maxim) { }
+
+
+	/*
+	* Copy consrtuctor
+	*/
+	Fitness(const Fitness &source)
+		: maximize(source.maximize) { }
 
 
 	/*
@@ -62,6 +69,14 @@ public:
 	//=========================================================================
 	//		GET / SET METHODS
 	//=========================================================================
+	/*
+	* Check if the fitness must be maximized
+	*/
+	virtual bool mustMaximize() const {
+		return this->maximize;
+	}
+
+
 	/*
 	* Gets the type of the Fitness to be identified
 	*/
@@ -130,18 +145,19 @@ public:
 	/*
 	* Default constructor
 	*/
-	FitnessDouble() : Fitness() { }
+	FitnessDouble(bool maxim = true) : Fitness(maxim) { }
 
 	/*
 	* Main constructor
 	*/
-	FitnessDouble(const double d) : Fitness(), value(d) { }
+	FitnessDouble(const double d, bool maxim = true)
+		: Fitness(maxim), value(d) { }
 
 	/*
 	* Copy constructor
 	*/
 	FitnessDouble(const FitnessDouble &fitness)
-		: Fitness(), value(fitness.value) { }
+		: Fitness(fitness), value(fitness.value) { }
 
 
 	/*
@@ -238,19 +254,20 @@ public:
 	/*
 	* Default constructor
 	*/
-	FitnessInteger() : Fitness() { }
+	FitnessInteger(bool maxim = true) : Fitness(maxim) { }
 
 	/*
 	* Main constructor
 	*/
-	FitnessInteger(const int i) : Fitness(), value(i) { }
+	FitnessInteger(const int i, bool maxim = true)
+		: Fitness(maxim), value(i) { }
 
 
 	/*
 	* Copy constructor
 	*/
 	FitnessInteger(const FitnessInteger &fitness)
-		: Fitness(), value(fitness.value) { }
+		: Fitness(fitness), value(fitness.value) { }
 
 
 	/*
@@ -356,18 +373,19 @@ public:
 	/*
 	* Default constructor
 	*/
-	FitnessTFN() : Fitness() { }
+	FitnessTFN(bool maxim = true) : Fitness(maxim) { }
 
 	/*
 	* Main constructor
 	*/
-	FitnessTFN(const TFN & tfn) : Fitness(), value(tfn) { }
+	FitnessTFN(const TFN & tfn, bool maxim = true)
+		: Fitness(maxim), value(tfn) { }
 
 	/*
 	* Copy constructor
 	*/
 	FitnessTFN(const FitnessTFN &fitness)
-		: Fitness(), value(fitness.value) { }
+		: Fitness(fitness), value(fitness.value) { }
 
 
 	/*

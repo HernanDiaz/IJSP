@@ -9,7 +9,6 @@
 
 namespace FJSP {
 
-bool Fitness::FitnessMaximize = true;
 
 //=============================================================================
 //
@@ -22,7 +21,7 @@ bool Fitness::FitnessMaximize = true;
 //=====  Better than or equal to  =============================================
 bool FitnessDouble::isBetterOrEqualTo(const Fitness * f) const {
 	const FitnessDouble *fd = this->convertType(f);
-	if (FitnessMaximize)
+	if (this->maximize)
 		return compareDouble(this->value, fd->value) >= 0;
 	return compareDouble(this->value, fd->value) <= 0;
 }
@@ -31,7 +30,7 @@ bool FitnessDouble::isBetterOrEqualTo(const Fitness * f) const {
 //=====  Better than  =========================================================
 bool FitnessDouble::isBetterThan(const Fitness * f) const {
 	const FitnessDouble *fd = this->convertType(f);
-	if (FitnessMaximize)
+	if (this->maximize)
 		return compareDouble(this->value, fd->value) > 0;
 	return compareDouble(this->value, fd->value) < 0;
 }
@@ -45,7 +44,7 @@ bool FitnessDouble::isEqualTo(const Fitness * f) const {
 //=====  Better than or equal to  =============================================
 bool FitnessDouble::isWorseThan(const Fitness * f) const {
 	const FitnessDouble *fd = this->convertType(f);
-	if (FitnessMaximize)
+	if (this->maximize)
 		return compareDouble(this->value, fd->value) < 0;
 	return compareDouble(this->value, fd->value) > 0;
 }
@@ -53,7 +52,7 @@ bool FitnessDouble::isWorseThan(const Fitness * f) const {
 //=====  Better than or equal to  =============================================
 bool FitnessDouble::isWorseOrEqualTo(const Fitness * f) const {
 	const FitnessDouble *fd = this->convertType(f);
-	if (FitnessMaximize)
+	if (this->maximize)
 		return compareDouble(this->value, fd->value) <= 0;
 	return compareDouble(this->value, fd->value) >= 0;
 }
@@ -82,7 +81,7 @@ const FitnessDouble * FitnessDouble::convertType(const Fitness *f) const {
 //=====  Better than or equal to  =============================================
 bool FitnessInteger::isBetterOrEqualTo(const Fitness * f) const {
 	const FitnessInteger *fd = this->convertType(f);
-	if (FitnessMaximize)
+	if (this->maximize)
 		return this->value >= fd->value;
 	return this->value <= fd->value;
 }
@@ -91,7 +90,7 @@ bool FitnessInteger::isBetterOrEqualTo(const Fitness * f) const {
 //=====  Better than  =========================================================
 bool FitnessInteger::isBetterThan(const Fitness * f) const {
 	const FitnessInteger *fd = this->convertType(f);
-	if (FitnessMaximize)
+	if (this->maximize)
 		return this->value > fd->value;
 	return this->value < fd->value;
 }
@@ -105,7 +104,7 @@ bool FitnessInteger::isEqualTo(const Fitness * f) const {
 //=====  Better than or equal to  =============================================
 bool FitnessInteger::isWorseThan(const Fitness * f) const {
 	const FitnessInteger *fd = this->convertType(f);
-	if (FitnessMaximize)
+	if (this->maximize)
 		return this->value <= fd->value;
 	return this->value >= fd->value;
 }
@@ -113,7 +112,7 @@ bool FitnessInteger::isWorseThan(const Fitness * f) const {
 //=====  Better than or equal to  =============================================
 bool FitnessInteger::isWorseOrEqualTo(const Fitness * f) const {
 	const FitnessInteger *fd = this->convertType(f);
-	if (FitnessMaximize)
+	if (this->maximize)
 		return this->value < fd->value;
 	return this->value > fd->value;
 }
@@ -144,7 +143,7 @@ TFN::Compare FitnessTFN::FitnessCompareStrategy = TFN::C_EV;
 //=====  Better than or equal to  =============================================
 bool FitnessTFN::isBetterOrEqualTo(const Fitness * f) const {
 	const FitnessTFN *ft = this->convertType(f);
-	if (FitnessMaximize)
+	if (this->maximize)
 		return this->value.isGreaterEqualTo(ft->value,
 			this->FitnessCompareStrategy);
 	return this->value.isLesserEqualTo(ft->value,
@@ -155,7 +154,7 @@ bool FitnessTFN::isBetterOrEqualTo(const Fitness * f) const {
 //=====  Better than  =========================================================
 bool FitnessTFN::isBetterThan(const Fitness * f) const {
 	const FitnessTFN *ft = this->convertType(f);
-	if (FitnessMaximize)
+	if (this->maximize)
 		return this->value.isGreaterThan(ft->value,
 			this->FitnessCompareStrategy);
 	return this->value.isLesserThan(ft->value,
@@ -172,7 +171,7 @@ bool FitnessTFN::isEqualTo(const Fitness * f) const {
 //=====  Better than or equal to  =============================================
 bool FitnessTFN::isWorseThan(const Fitness * f) const {
 	const FitnessTFN *ft = this->convertType(f);
-	if (FitnessMaximize)
+	if (this->maximize)
 		return this->value.isLesserThan(ft->value,
 			this->FitnessCompareStrategy);
 	return this->value.isGreaterThan(ft->value,
@@ -182,7 +181,7 @@ bool FitnessTFN::isWorseThan(const Fitness * f) const {
 //=====  Better than or equal to  =============================================
 bool FitnessTFN::isWorseOrEqualTo(const Fitness * f) const {
 	const FitnessTFN *ft = this->convertType(f);
-	if (FitnessMaximize)
+	if (this->maximize)
 		return this->value.isLesserEqualTo(ft->value,
 			this->FitnessCompareStrategy);
 	return this->value.isGreaterEqualTo(ft->value,

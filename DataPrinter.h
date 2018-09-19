@@ -4,13 +4,14 @@
  *  Created on: Sep 20, 2017
  *      Author: jjpalacios
  */
-#pragma once
+#ifndef SRC_DATA_PRINTER_H_
+#define SRC_DATA_PRINTER_H_
 
 
 #include "Population.h"
 
 
-namespace FuzzyFW {
+namespace FJSP {
 
 #define FULL_POP "FullPopulation"
 
@@ -37,3 +38,4 @@ public:
 
 
 }
+#endif /* SRC_DATA_PRINTER_H_ */

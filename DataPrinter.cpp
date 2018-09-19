@@ -7,7 +7,7 @@
 
 #include "DataPrinter.h"
 
-namespace FuzzyFW {
+namespace FJSP {
 
 int DataPrinter::numCalls = 0;
 

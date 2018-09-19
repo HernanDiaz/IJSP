@@ -9,7 +9,7 @@
 
 
 #include "EvolutiveAlgorithm.h"
-#include "Statistics.h"
+#include "DataPrinter.h"
 #include "GeneticClassRegister.h"
 
 
@@ -26,6 +26,11 @@ namespace FJSP {
 #define GA_MUTATION "mutation"		// Mutation operator
 #define GA_SELECTION "selection"	// Selection operator
 #define GA_REPLACE "replacement"	// Replacement operator
+
+#define GA_EVOL_METRIC "evolution.unit"	// Wthat metric use for evolution
+#define GA_EVOL_UNIT_GEN "iteration"	
+#define GA_EVOL_UNIT_TIME "time"	
+#define GA_EVOL_SPAN "evolution.span"	// Span of units for showing evolution
 
 #define GA_GENERATIONS "generations"	// Maximum number of iterations
 #define GA_TIME "timelimit"			// Maximum runtime
@@ -99,6 +104,16 @@ namespace FJSP {
 		bool printPopulation;
 		int printPopGenerations;
 
+		/**
+		* Show the evolution by generations or by time
+		*/
+		bool showEvolutionTime;
+
+		/**
+		* Span of time/generations to show evolution
+		*/
+		double evolutionSpan;
+
 
 
 
@@ -127,6 +142,11 @@ namespace FJSP {
 		* Evolution data for statistics
 		*/
 		std::vector< std::vector<double> > evolutionStats;
+
+		/**
+		* Next moment to show evolution
+		*/
+		double nextSplit;
 
 
 
@@ -234,6 +254,12 @@ namespace FJSP {
 		* @return true if the stopping criteria is met
 		*/
 		virtual bool stop();
+
+
+		/**
+		* Stores the statistical values in each time/generation span
+		*/
+		virtual void computeStatistics(Population *currentPopulation);
 	};
 
 }

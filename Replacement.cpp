@@ -51,8 +51,10 @@ void ReplacementElitist::setup(ParameterDB * parameters) {
 
 	// Load own parameters
 	this->elite = parameters->getInteger(this->labelElite, -1);
-	std::cout << "Warning: Elite parameter not found for the Replacement";
-	std::cout << " strategy. No elitism is assumed";
+	if (this->elite < 0) {
+		std::cout << "Warning: Elite parameter not found for the Replacement";
+		std::cout << " strategy. No elitism is assumed" << std::endl;
+	}
 }
 
 
@@ -195,7 +197,7 @@ void ReplacementParents::applyNoRepeat(Population *oldPopulation,
 	std::vector<Individual *> family(4);
 	Individual *replaced;
 	unsigned int best, best2;
-	unsigned int pos1, pos2, pos3, pos0;
+	unsigned int pos2, pos3;
 	char isRepeated;
 
 	for (unsigned int i = 0; i < newPopulation->size(); i += 2) {
@@ -207,13 +209,6 @@ void ReplacementParents::applyNoRepeat(Population *oldPopulation,
 		pos2 = family[0]->id;
 		pos3 = family[1]->id;
 
-#if _NDEBUG
-		std::cout << "Entran: " << family[0]->getFitness()->toString();
-		std::cout << ", " << family[1]->getFitness()->toString();
-		std::cout << ", " << family[2]->getFitness()->toString();
-		std::cout << ", " << family[3]->getFitness()->toString();
-		std::cout << std::endl;
-#endif
 		if (family[1]->getFitness()->isBetterThan(family[0]->getFitness())) {
 			std::swap(family[0], family[1]);
 			best = i + 1;
@@ -259,11 +254,6 @@ void ReplacementParents::applyNoRepeat(Population *oldPopulation,
 				}
 			}
 		}
-#if _NDEBUG
-		std::cout << "Pasan: " << newPopulation->getIndividual(i)->getFitness()->toString();
-		std::cout << ", " << newPopulation->getIndividual(i+1)->getFitness()->toString();
-		std::cout << std::endl;
-#endif
 	}
 
 	delete oldPopulation;
