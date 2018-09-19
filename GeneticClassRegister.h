@@ -4,8 +4,7 @@
  *  Created on: Aug 1, 2017
  *      Author: Juan Jose Palacios
  */
-#ifndef GENETIC_CLASSREGISTER_H_
-#define GENETIC_CLASSREGISTER_H_
+#pragma once
 
 
 /*=============================================================================
@@ -27,25 +26,24 @@
 =============================================================================*/
 
 
-#include "Creation.h"
-#include "Crossover.h"
 #include "Mutation.h"
 #include "Selection.h"
 #include "Replacement.h"
-#include "Decoder.h"
 // ****************************************************************************
 //
 // ADD HERE ALL THE HEADER FILES OF THE OPERATORS YOU HAVE CREATED
 //
 // ****************************************************************************
+#include "CreationFJSP.h"
+#include "CrossoverFJSP.h"
+#include "DecoderFJSP.h"
 
 
 
 
 
 
-
-namespace FJSP {
+namespace FuzzyFW {
 
 /**
  * This static class allows to create the different kinds of problem elements.
@@ -230,33 +228,33 @@ public:
 	static void registerClasses() {
 
 		// -----  ENCODING FUNCTION  ------------------------------------------
-		EncoderMap[toUpper("permutation")] = &createEncoderInstance<EncoderFJSP_Order>;
-		EncoderMap[toUpper("task-order")] = &createEncoderInstance<EncoderFJSP_Order>;
-		EncoderMap[toUpper("taskorder")] = &createEncoderInstance<EncoderFJSP_Order>;
-		EncoderMap[toUpper("permutation-reap")] = &createEncoderInstance<EncoderFJSP_JobOrder>;
-		EncoderMap[toUpper("permutationreap")] = &createEncoderInstance<EncoderFJSP_JobOrder>;
-		EncoderMap[toUpper("job-order")] = &createEncoderInstance<EncoderFJSP_JobOrder>;
-		EncoderMap[toUpper("joborder")] = &createEncoderInstance<EncoderFJSP_JobOrder>;
+		EncoderMap[toUpper("permutation")] = &createEncoderInstance<FJSP::EncoderFJSP_Order>;
+		EncoderMap[toUpper("task-order")] = &createEncoderInstance<FJSP::EncoderFJSP_Order>;
+		EncoderMap[toUpper("taskorder")] = &createEncoderInstance<FJSP::EncoderFJSP_Order>;
+		EncoderMap[toUpper("permutation-reap")] = &createEncoderInstance<FJSP::EncoderFJSP_JobOrder>;
+		EncoderMap[toUpper("permutationreap")] = &createEncoderInstance<FJSP::EncoderFJSP_JobOrder>;
+		EncoderMap[toUpper("job-order")] = &createEncoderInstance<FJSP::EncoderFJSP_JobOrder>;
+		EncoderMap[toUpper("joborder")] = &createEncoderInstance<FJSP::EncoderFJSP_JobOrder>;
 
 		// -----  DECODING FUNCTION  ------------------------------------------
-		DecoderMap[toUpper("permutation")] = &createDecoderInstance<DecoderFJSP_Order>;
-		DecoderMap[toUpper("task-order")] = &createDecoderInstance<DecoderFJSP_Order>;
-		DecoderMap[toUpper("taskorder")] = &createDecoderInstance<DecoderFJSP_Order>;
-		DecoderMap[toUpper("permutation-reap")] = &createDecoderInstance<DecoderFJSP_JobOrder>;
-		DecoderMap[toUpper("permutationreap")] = &createDecoderInstance<DecoderFJSP_JobOrder>;
-		DecoderMap[toUpper("job-order")] = &createDecoderInstance<DecoderFJSP_JobOrder>;
-		DecoderMap[toUpper("joborder")] = &createDecoderInstance<DecoderFJSP_JobOrder>;
+		DecoderMap[toUpper("permutation")] = &createDecoderInstance<FJSP::DecoderFJSP_Order>;
+		DecoderMap[toUpper("task-order")] = &createDecoderInstance<FJSP::DecoderFJSP_Order>;
+		DecoderMap[toUpper("taskorder")] = &createDecoderInstance<FJSP::DecoderFJSP_Order>;
+		DecoderMap[toUpper("permutation-reap")] = &createDecoderInstance<FJSP::DecoderFJSP_JobOrder>;
+		DecoderMap[toUpper("permutationreap")] = &createDecoderInstance<FJSP::DecoderFJSP_JobOrder>;
+		DecoderMap[toUpper("job-order")] = &createDecoderInstance<FJSP::DecoderFJSP_JobOrder>;
+		DecoderMap[toUpper("joborder")] = &createDecoderInstance<FJSP::DecoderFJSP_JobOrder>;
 
 		// -----  CREATION OPERATORS  -----------------------------------------
-		CreationMap[toUpper("fjsp-random")] = &createCreationInstance<CreationRandomSchedule>;
-		CreationMap[toUpper("fjsprandom")] = &createCreationInstance<CreationRandomSchedule>;
+		CreationMap[toUpper("fjsp-random")] = &createCreationInstance<FJSP::CreationRandomSchedule>;
+		CreationMap[toUpper("fjsprandom")] = &createCreationInstance<FJSP::CreationRandomSchedule>;
 
 		// -----  CROSSOVER OPERATORS  ----------------------------------------
-		CrossoverMap[toUpper("jox")] = &createCrossoverInstance<Crossover_JOX>;
-		CrossoverMap[toUpper("gox")] = &createCrossoverInstance<Crossover_GOXBierwirth>;
-		CrossoverMap[toUpper("biertwirth")] = &createCrossoverInstance<Crossover_GOXBierwirth>;
-		CrossoverMap[toUpper("gpmx")] = &createCrossoverInstance<Crossover_GPMXBierwirth>;
-		CrossoverMap[toUpper("ppx")] = &createCrossoverInstance<Crossover_PPXBierwirth>;
+		CrossoverMap[toUpper("jox")] = &createCrossoverInstance<FJSP::Crossover_JOX>;
+		CrossoverMap[toUpper("gox")] = &createCrossoverInstance<FJSP::Crossover_GOXBierwirth>;
+		CrossoverMap[toUpper("biertwirth")] = &createCrossoverInstance<FJSP::Crossover_GOXBierwirth>;
+		CrossoverMap[toUpper("gpmx")] = &createCrossoverInstance<FJSP::Crossover_GPMXBierwirth>;
+		CrossoverMap[toUpper("ppx")] = &createCrossoverInstance<FJSP::Crossover_PPXBierwirth>;
 
 		// -----  MUTATION OPERATORS  -----------------------------------------
 		MutationMap[toUpper("insertion")] = &createMutationInstance<MutationInsertion>;
@@ -283,5 +281,3 @@ public:
 
 }
 
-
-#endif /* GENETIC_CLASSREGISTER_H_ */

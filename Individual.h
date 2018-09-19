@@ -4,15 +4,14 @@
  *  Created on: June 22, 2017
  *      Author: jjpalacios
  */
-#ifndef ECOBJECTS_INDIVIDUAL_H_
-#define ECOBJECTS_INDIVIDUAL_H_
+#pragma once
 
 #include "SharedVars.h"
 #include "Fitness.h"
 #include "Solution.h"
 
 
-namespace FJSP {
+namespace FuzzyFW {
 
 
 //=============================================================================
@@ -301,6 +300,3 @@ const IndividualArrayInt *ind1, const IndividualArrayInt *ind2);
 
 
 }
-
-#endif /* ECOBJECTS_INDIVIDUAL_H_  */
-

@@ -7,7 +7,7 @@
 
 #include "EvolutiveAlgorithm.h"
 
-namespace FJSP {
+namespace FuzzyFW {
 
 //=============================================================================
 //
@@ -22,7 +22,7 @@ EvolutiveAlgorithm::EvolutiveAlgorithm(ParameterDB *params) {
 	EvaluationClassRegister::registerClasses();
 	StatisticsClassRegister::registerClasses();
 
-	this->sharedVariables = new SharedVars();
+	this->sharedVariables = new SharedVarsEvolutionary();
 	this->sharedVariables->parameters = params;
 	this->sharedVariables->rng = new RandomMT();
 	finished = false;
@@ -64,7 +64,7 @@ void EvolutiveAlgorithm::prepareToRun(ParameterDB *params) {
 
 	if (paramName.length() < 1) {
 		std::string errorMsg = "Objective function not found";
-		throw new FJSPException("Loading", errorMsg);
+		throw new FuzzyFWException("Loading", errorMsg);
 	}
 
 	this->evaluator = EvaluationClassRegister::getEvaluationObject(evalName);
@@ -72,7 +72,7 @@ void EvolutiveAlgorithm::prepareToRun(ParameterDB *params) {
 	if (this->evaluator == NULL) {
 		std::string errorMsg = "Invalid evaluation function. Incorrect name ";
 		errorMsg += "or missing parameter";
-		throw new FJSPException("Loading", errorMsg);
+		throw new FuzzyFWException("Loading", errorMsg);
 	}
 	this->evaluator->setup(this->sharedVariables->parameters);
 

@@ -4,12 +4,11 @@
 *  Created on: June 7, 2017
 *      Author: Juan Jose Palacios
 */
-#ifndef OBJECTS_FITNESS_H_
-#define OBJECTS_FITNESS_H_
+#pragma once
 
 #include "TFN.h"
 
-namespace FJSP {
+namespace FuzzyFW {
 
 //=============================================================================
 //
@@ -92,7 +91,7 @@ public:
 	* Converts the Fitness into a double value
 	*/
 	virtual double toDouble() const {
-		throw new FJSPException("Fitness",
+		throw new FuzzyFWException("Fitness",
 			"This fitness type cannot be converted to double");
 	}
 
@@ -471,5 +470,3 @@ private:
 };
 
 }
-
-#endif  /* OBJECTS_FITNESS_H_ */

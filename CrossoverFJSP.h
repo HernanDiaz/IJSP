@@ -81,6 +81,7 @@ public:
 	virtual std::vector<std::string> getName() const {
 		std::vector<std::string> setup;
 		setup.push_back("JOX");
+		setup.push_back(";Probability;" + valueToString(this->probability));
 		return setup;
 	}
 
@@ -187,6 +188,7 @@ public:
 	virtual std::vector<std::string> getName() const {
 		std::vector<std::string> setup;
 		setup.push_back("GOX-Bierwirth");
+		setup.push_back(";Probability;" + valueToString(this->probability));
 		return setup;
 	}
 
@@ -294,6 +296,7 @@ public:
 	virtual std::vector<std::string> getName() const {
 		std::vector<std::string> setup;
 		setup.push_back("GPMX-Bierwirth");
+		setup.push_back(";Probability;" + valueToString(this->probability));
 		return setup;
 	}
 
@@ -396,6 +399,7 @@ public:
 	virtual std::vector<std::string> getName() const {
 		std::vector<std::string> setup;
 		setup.push_back("PPX-Bierwirth");
+		setup.push_back(";Probability;" + valueToString(this->probability));
 		return setup;
 	}
 

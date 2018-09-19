@@ -4,12 +4,11 @@
 *  Created on: Nov 29, 2016
 *      Author: Juan Jose Palacios
 */
-#ifndef UTILS_TFN_H_
-#define UTILS_TFN_H_
+#pragma once
 
 #include "heading.h"
 
-namespace FJSP {
+namespace FuzzyFW {
 
 //=========================================================================
 //
@@ -238,5 +237,3 @@ public:
 };
 
 }
-
-#endif /* UTILS_TFN_H_ */

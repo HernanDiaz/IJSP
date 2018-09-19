@@ -4,18 +4,17 @@
 *  Created on: Oct 11, 2017
 *      Author: jjpalacios
 */
-#ifndef LOCAL_SEARCH_H
-#define LOCAL_SEARCH_H
+#pragma once
 
 #include "Neighbourhood.h"
 
 
-namespace FJSP {
+namespace FuzzyFW {
 
 	// Creation parameters defined in this header file
-#define LOCAL_SEARCH_ITER "localsearch.max-iterations"
-#define LOCAL_SEARCH_EVAL "localsearch.max-evaluations"
-#define LOCAL_SEARCH_TIME "localsearch.max_time"
+#define FUZZYFW_LOCAL_SEARCH_ITER "localsearch.max-iterations"
+#define FUZZYFW_LOCAL_SEARCH_EVAL "localsearch.max-evaluations"
+#define FUZZYFW_LOCAL_SEARCH_TIME "localsearch.max_time"
 
 
 
@@ -167,7 +166,7 @@ public:
 	* solution found during the local search procedure. It also updates the
 	* inner structures regarding the data of the run
 	*/
-	virtual Individual * apply(const Individual *individual,
+	virtual FullSolution apply(const Solution *solution, const Fitness *fitness,
 		const SharedVars *svars) = 0;
 
 
@@ -246,7 +245,7 @@ public:
 	* solution found during the local search procedure. It also updates the
 	* inner structures regarding the data of the run
 	*/
-	virtual Individual * apply(const Individual *individual,
+	virtual FullSolution apply(const Solution *solution, const Fitness *fitness,
 		const SharedVars *svars);
 
 
@@ -265,4 +264,3 @@ public:
 
 }
 
-#endif /* LOCAL_SEARCH_H */

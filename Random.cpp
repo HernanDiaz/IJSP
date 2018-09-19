@@ -1,6 +1,6 @@
 #include "Random.h"
 
-namespace FJSP {
+namespace FuzzyFW {
 
 
 	//==== Constructor  ===========================================================

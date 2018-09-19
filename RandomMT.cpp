@@ -1,6 +1,6 @@
 #include "RandomMT.h"
 
-namespace FJSP {
+namespace FuzzyFW {
 
 
 	//==== Constructor  =======================================================

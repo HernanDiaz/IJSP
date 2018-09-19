@@ -7,7 +7,7 @@
 
 #include "TFN.h"
 
-namespace FJSP {
+namespace FuzzyFW {
 
 //=============================================================================
 //		ENUMS TO STRING
@@ -161,7 +161,7 @@ bool TFN::isEqualTo(const TFN t, const Compare cp) const {
 			return true;
 		return false;
 	}
-	throw new FJSPException("TFN", "Comparison method unknown");
+	throw new FuzzyFWException("TFN", "Comparison method unknown");
 	return false;
 }
 
@@ -191,7 +191,7 @@ bool TFN::isGreaterThan(const TFN t, const Compare cp) const {
 		}
 		return false;
 	}
-	throw new FJSPException("TFN", "Comparison method unknown");
+	throw new FuzzyFWException("TFN", "Comparison method unknown");
 	return false;
 }
 
@@ -221,7 +221,7 @@ bool TFN::isGreaterEqualTo(const TFN t, const Compare cp) const {
 		}
 		return false;
 	}
-	throw new FJSPException("TFN", "Comparison method unknown");
+	throw new FuzzyFWException("TFN", "Comparison method unknown");
 	return false;
 }
 
@@ -251,7 +251,7 @@ bool TFN::isLesserThan(const TFN t, const Compare cp) const {
 		}
 		return false;
 	}
-	throw new FJSPException("TFN", "Comparison method unknown");
+	throw new FuzzyFWException("TFN", "Comparison method unknown");
 	return false;
 }
 
@@ -281,7 +281,7 @@ bool TFN::isLesserEqualTo(const TFN t, const Compare cp) const {
 		}
 		return false;
 	}
-	throw new FJSPException("TFN", "Comparison method unknown");
+	throw new FuzzyFWException("TFN", "Comparison method unknown");
 	return false;
 }
 

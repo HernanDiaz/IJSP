@@ -7,7 +7,7 @@
 
 #include "Selection.h"
 
-namespace FJSP {
+namespace FuzzyFW {
 
 //=============================================================================
 //
@@ -63,7 +63,7 @@ void SelectionTournament::setup(ParameterDB * parameters) {
 		std::string errMsg = "Invalid tournament size (";
 		errMsg += valueToString(this->size) + "). ";
 		errMsg += " Incorrect value or missing parameter.";
-		throw new FJSPException("Selection", errMsg);
+		throw new FuzzyFWException("Selection", errMsg);
 	}
 }
 

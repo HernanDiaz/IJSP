@@ -4,8 +4,7 @@
 *  Created on: Oct 13, 2017
 *      Author: jjpalacios
 */
-#ifndef SRC_MEMETICALGORITHM_H_
-#define SRC_MEMETICALGORITHM_H_
+#pragma once
 
 
 #include "GeneticAlgorithm.h"
@@ -13,7 +12,7 @@
 
 
 
-namespace FJSP {
+namespace FuzzyFW {
 
 /* Parameters for Memetic Algorithms:
 *
@@ -30,6 +29,7 @@ namespace FJSP {
 * 			the population apply the hill climbing
 */
 #define MA_LOCAL_SEARCH "localsearch"
+#define MA_LOCAL_SEARCH_LAMARCKISM "localsearch.lamarckism"
 
 #define MA_LOCAL_SEARCH_NEIGHBOURHOOD "localsearch.neighbourhood"
 
@@ -103,6 +103,12 @@ namespace FJSP {
 		* Percentage of individuals to which LS should be applied
 		*/
 		double lsPercentage;
+
+		/**
+		* Flag indicating if the chromosome must be updated after
+		* applying local search
+		*/
+		char lsLamarckism;
 
 
 		//-----  DYNAMIC FIELDS  ------------------------------
@@ -232,6 +238,3 @@ namespace FJSP {
 	};
 
 }
-
-#endif /* SRC_GENETICALGORITHM_H_ */
-

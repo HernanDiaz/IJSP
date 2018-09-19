@@ -7,7 +7,7 @@
 
 #include "Population.h"
 
-namespace FJSP {
+namespace FuzzyFW {
 
 //=============================================================================
 //
@@ -58,7 +58,7 @@ void Population::clear() {
 //=====  Get an individual  ===================================================
 Individual * Population::getIndividual(const unsigned int index) const {
 	if (index < 0 || index > this->individual.size())
-		throw new FJSPException("Population",
+		throw new FuzzyFWException("Population",
 			"Access to a non-existing individual");
 	return this->individual[index];
 }
@@ -69,7 +69,7 @@ Individual * Population::replaceIndividual(const unsigned int index,
 	Individual *newInd) {
 
 	if (index < 0 || index > (int)this->individual.size())
-		throw new FJSPException("Population",
+		throw new FuzzyFWException("Population",
 			"Access to a non-existing individual");
 	Individual *old = this->individual[index];
 	this->individual[index] = newInd;
@@ -81,7 +81,7 @@ Individual * Population::replaceIndividual(const unsigned int index,
 //=====  Get Fitness  =========================================================
 Fitness * Population::getFitness(const unsigned int index) const {
 	if (index < 0 || index > (int)this->individual.size())
-		throw new FJSPException("Population",
+		throw new FuzzyFWException("Population",
 			"Access to a non-existing individual");
 	return this->individual[index]->getFitness();
 }
@@ -90,16 +90,17 @@ Fitness * Population::getFitness(const unsigned int index) const {
 //=====  Set Fitness  =========================================================
 void Population::setFitness(const unsigned int index, Fitness * fitness) {
 	if (index < 0 || index > (int)this->individual.size())
-		throw new FJSPException("Population",
+		throw new FuzzyFWException("Population",
 			"Access to a non-existing individual");
 	this->individual[index]->updateFitness(fitness);
 }
 
 
 //===== Get Best  =============================================================
-Individual * Population::getBest(const SharedVars *svars, const unsigned int k) {
+Individual * Population::getBest(const SharedVars *svars,
+	const unsigned int k) {
 	if (k < 0 || k >= (int)this->individual.size()) {
-		throw new FJSPException("Population",
+		throw new FuzzyFWException("Population",
 			"Access to a non-existing individual");
 	}
 	this->sort(svars->rng);
@@ -110,7 +111,7 @@ Individual * Population::getBest(const SharedVars *svars, const unsigned int k) 
 //===== Who is the Best  ======================================================
 int Population::whoIsBest(const SharedVars *svars, const unsigned int k) {
 	if (k < 0 || k >= (int)this->individual.size()) {
-		throw new FJSPException("Population",
+		throw new FuzzyFWException("Population",
 			"Access to a non-existing individual");
 	}
 	this->sort(svars->rng);

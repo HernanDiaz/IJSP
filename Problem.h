@@ -4,12 +4,12 @@
 *  Created on: Sep 22, 2017
 *      Author: jjpalacios
 */
-#ifndef ECOBJECTS_PROBLEM_H_
-#define ECOBJECTS_PROBLEM_H_
+#pragma once
 
 #include "ParameterDB.h"
+#include "TimeWindowClassRegister.h"
 
-namespace FJSP {
+namespace FuzzyFW {
 
 
 //=============================================================================
@@ -43,6 +43,12 @@ protected:
 	*/
 	char * problemPath;
 
+	/**
+	* Indicates if the problem has been loaded or not
+	*/
+	char isSetup;
+
+
 
 
 	//=========================================================================
@@ -52,7 +58,11 @@ public:
 	/**
 	* Default constructor
 	*/
-	Problem(const ParameterDB *params = NULL) { }
+	Problem(const ParameterDB *params = NULL) {
+		TimeWindowClassRegister::registerClasses();
+		if (params != NULL)
+			this->setup(params);
+	}
 
 
 
@@ -62,27 +72,29 @@ public:
 	* due-dates and therefore make a better reading of the input file.
 	*/
 	Problem(const ParameterDB *params, const char *inputFile) {
-
-		char auxChar;
-
-		// Initialize problem name and path
-		size_t len = strlen(inputFile);
-		this->problemPath = (char *)malloc(len + 1);
-		memset(this->problemPath, '\0', len + 1);
-		memcpy(this->problemPath, inputFile, len);
-
-		this->problemName = "";
-		for (int i = 0; this->problemPath[i] != '\0'; i++) {
-			auxChar = this->problemPath[i];
-			if (auxChar == '/' || auxChar == '\\')
-				this->problemName = "";
-			else
-				this->problemName += auxChar;
-		}
-		this->problemName = this->problemName.substr(0,
-			this->problemName.length() - 4);
+		TimeWindowClassRegister::registerClasses();
+		this->updatePath(inputFile);
+		if (params != NULL)
+			this->setup(params);
 	}
 
+
+	/**
+	* Main constructor
+	* Takes the path to the problem instance, but does not load.
+	*/
+	Problem(const char *inputFile) {
+		TimeWindowClassRegister::registerClasses();
+		this->updatePath(inputFile);
+	}
+
+
+	/**
+	* Loads the parameters describing the problem
+	*/
+	virtual void setup(const ParameterDB *params) {
+		this->isSetup = true;
+	}
 
 
 	/**
@@ -91,9 +103,11 @@ public:
 	Problem(const Problem &source) {
 		this->problemPath = (char *)malloc(strlen(source.problemPath) + 1);
 		memset(this->problemPath, '\0', sizeof(this->problemPath));
-		memcpy(this->problemPath, source.problemPath, strlen(source.problemPath));
+		memcpy(this->problemPath, source.problemPath,
+			strlen(source.problemPath));
 
 		this->problemName = source.problemName;
+		this->isSetup = source.isSetup;
 	}
 
 
@@ -127,6 +141,33 @@ public:
 		return this->problemName;
 	}
 
+protected:
+	/**
+	* Auxiliar method. Sets the path of the problem from the complete name
+	*/
+	void updatePath(const char*newPath) {
+		char auxChar;
+
+		// Initialize problem name and path
+		size_t len = strlen(newPath);
+		this->problemPath = (char *)malloc(len + 1);
+		memset(this->problemPath, '\0', len + 1);
+		memcpy(this->problemPath, newPath, len);
+
+		this->problemName = "";
+		for (int i = 0; this->problemPath[i] != '\0'; i++) {
+			auxChar = this->problemPath[i];
+			if (auxChar == '/' || auxChar == '\\')
+				this->problemName = "";
+			else
+				this->problemName += auxChar;
+		}
+		this->problemName = this->problemName.substr(0,
+			this->problemName.length() - 4);
+	}
+
+
+
 
 
 	//=========================================================================
@@ -136,7 +177,7 @@ public:
 	/**
 	* Load all data from the stored file
 	*/
-	virtual void loadFile(const char *inputFile) = 0;
+	virtual void loadFile(const char *inputFile = NULL) = 0;
 
 
 protected:
@@ -149,6 +190,3 @@ protected:
 };
 
 }
-
-
-#endif /* ECOBJECTS_SOLUTION_H_ */

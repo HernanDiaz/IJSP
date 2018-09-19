@@ -4,8 +4,7 @@
  *  Created on: Oct 13, 2017
  *      Author: Juan Jose Palacios
  */
-#ifndef LOCALSEARCH_CLASSREGISTER_H_
-#define LOCALSEARCH_CLASSREGISTER_H_
+#pragma once
 
 
 /*=============================================================================
@@ -33,6 +32,7 @@
 // ADD HERE ALL THE HEADER FILES OF THE OPERATORS YOU HAVE CREATED
 //
 // ****************************************************************************
+#include "NeighbourhoodFJSP.h"
 
 
 
@@ -40,7 +40,7 @@
 
 
 
-namespace FJSP {
+namespace FuzzyFW {
 
 /**
  * This static class allows to create the different kinds of loca search
@@ -135,14 +135,11 @@ public:
 
 		// -----  NEIGHBOURHOOD STRUCTURES  ---------------------------------------
 		NeighbourhoodMap[toUpper("fjsp.makespan.n1")] =
-			&createNeighbourhoodInstance<NB_ParallelN1_MakespanFJSP>;
+			&createNeighbourhoodInstance<FJSP::NB_ParallelN1_MakespanFJSP>;
 		NeighbourhoodMap[toUpper("fjsp.aiavg.n1")] =
-			&createNeighbourhoodInstance<NB_ParallelN1_AIavgFJSP>;
+			&createNeighbourhoodInstance<FJSP::NB_ParallelN1_AIavgFJSP>;
 	}
 
 };
 
 }
-
-
-#endif /* SCHEDULING_CLASSREGISTER_H_ */

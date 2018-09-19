@@ -8,7 +8,7 @@
 
 #include "Replacement.h"
 
-namespace FJSP {
+namespace FuzzyFW {
 
 //=============================================================================
 //

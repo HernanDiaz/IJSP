@@ -1,7 +1,7 @@
 
 #include "EvaluationClassRegister.h"
 
-namespace FJSP {
+namespace FuzzyFW {
 
 /**
  * Initialize all static variables in GeneticClassRegister

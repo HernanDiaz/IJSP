@@ -5,9 +5,9 @@
  *      Author: jjpalacios
  */
 
-#include "./Mutation.h"
+#include "Mutation.h"
 
-namespace FJSP {
+namespace FuzzyFW {
 
 //=============================================================================
 //
@@ -31,7 +31,7 @@ void Mutation::setup(ParameterDB *parameters) {
 		|| compareDouble(this->probability, 1.0) > 0) {
 		std::string err = "Invalid mutation probability.";
 		err += " Incorrect value or missing parameter.";
-		throw new FJSPException("Mutation", err);
+		throw new FuzzyFWException("Mutation", err);
 	}
 }
 
@@ -95,7 +95,7 @@ void MutationInsertion::apply(Individual *individual,
 	else {
 		std::string errorMsg = "Type of genotype not recognised";
 		errorMsg += " by this operator";
-		throw new FJSPException("Mutation", errorMsg);
+		throw new FuzzyFWException("Mutation", errorMsg);
 	}
 }
 
@@ -139,7 +139,7 @@ void MutationSwap::apply(Individual *individual,
 	else {
 		std::string errorMsg = "Type of individual not recognised";
 		errorMsg += " by this operator";
-		throw new FJSPException("Mutation", errorMsg);
+		throw new FuzzyFWException("Mutation", errorMsg);
 	}
 }
 
@@ -191,7 +191,7 @@ void MutationInversion::apply(Individual *individual,
 	else {
 		std::string errorMsg = "Type of individual not recognised";
 		errorMsg += " by this operator";
-		throw new FJSPException("Mutation", errorMsg);
+		throw new FuzzyFWException("Mutation", errorMsg);
 	}
 }
 

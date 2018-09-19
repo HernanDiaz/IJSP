@@ -7,7 +7,7 @@
 
 #include "LocalSearch.h"
 
-namespace FJSP {
+namespace FuzzyFW {
 
 //=============================================================================
 //
@@ -19,8 +19,9 @@ namespace FJSP {
 //=============================================================================
 //-----  Main constructor  ----------------------------------------------------
 LocalSearch::LocalSearch(ParameterDB *parameters)
-	: iterationLabel(LOCAL_SEARCH_ITER), evaluationLabel(LOCAL_SEARCH_EVAL),
-	evaluations(0), timeLabel(LOCAL_SEARCH_TIME), maxTime(0.0),
+	: iterationLabel(FUZZYFW_LOCAL_SEARCH_ITER),
+	evaluationLabel(FUZZYFW_LOCAL_SEARCH_EVAL),
+	evaluations(0), timeLabel(FUZZYFW_LOCAL_SEARCH_TIME), maxTime(0.0),
 	neighbours(0), iterations(0), neighbourhood(NULL) {
 	if (parameters != NULL)
 		this->setup(parameters);
@@ -64,7 +65,7 @@ bool LocalSearch::stoppingCriteria() {
 	double currentRuntime = this->runtime / (double)CLOCKS_PER_SEC;
 	if (this->maxTime > 0 &&
 		compareDouble(currentRuntime, this->maxTime) >= 0)
-			return true;
+		return true;
 
 	return false;
 }
@@ -81,24 +82,25 @@ bool LocalSearch::stoppingCriteria() {
 //=============================================================================
 //		METHODS
 //=============================================================================
-Individual * LS_HillClimbing::apply(const Individual *individual,
-	const SharedVars *svars) {
+FullSolution LS_HillClimbing::apply(const Solution *solution,
+	const Fitness *fitness, const SharedVars *svars) {
 
 	int next;
 	this->evaluations = 0;
 	this->neighbours = 0;
 	this->iterations = 0;
 
-	Individual *current = individual->clone();
-	Individual *neighbour;
-	Fitness *currentFitness = individual->getFitness();
+	FullSolution current, neighbour;
+	current.first = solution->clone();
+	current.second = fitness->clone();
 
 	bool improves = true;
 
 	while (improves && !this->stoppingCriteria()) {
 		improves = false;
 		this->neighbours +=
-			this->neighbourhood->findNeighbours(current, svars);
+			this->neighbourhood->findNeighbours(
+				current.first, current.second, svars);
 
 		while (!improves && this->neighbourhood->size() > 0) {
 			// Pick a random number
@@ -108,17 +110,21 @@ Individual * LS_HillClimbing::apply(const Individual *individual,
 			// Move to the new neighbour
 			neighbour = this->neighbourhood->evaluateNeighbour(next, svars, true);
 
-			if (neighbour != NULL && neighbour->getFitness()->isBetterThan(currentFitness)) {
+			if (neighbour.first != NULL
+				&& neighbour.second->isBetterThan(current.second)) {
 				improves = true;
-				delete current;
-				current = neighbour;
-				currentFitness = neighbour->getFitness();
+				delete current.first;
+				delete current.second;
+				current.first = neighbour.first;
+				current.second = neighbour.second;
 				this->iterations++;
 			}
 			else {
 				this->neighbourhood->discardNeighbour(next);
-				if(neighbour != NULL)
-					delete neighbour;
+				if (neighbour.first != NULL) {
+					delete neighbour.first;
+					delete neighbour.second;
+				}
 			}
 		}
 	}

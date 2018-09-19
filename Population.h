@@ -4,12 +4,11 @@
  *  Created on: Jun 23, 2017
  *      Author: jjpalacios
  */
-#ifndef SRC_ECOBJECTS_POPULATION_H_
-#define SRC_ECOBJECTS_POPULATION_H_
+#pragma once
 
 #include "Individual.h"
 
-namespace FJSP {
+namespace FuzzyFW {
 
 /**
  * This class keeps an array of individuals to simulate a population for
@@ -118,6 +117,15 @@ public:
 
 
 	/**
+	* Sets the sorted flag to an specific value to force or
+	* ignore the sorting
+	*/
+	void setSorted(bool flag) {
+		this->sorted = flag;
+	}
+
+
+	/**
 	 * Set the fitness of a given individual
 	 *
 	 * @param position The position of the individual
@@ -215,5 +223,3 @@ protected:
 
 
 }
-
-#endif /* SRC_ECOBJECTS_POPULATION_H_ */

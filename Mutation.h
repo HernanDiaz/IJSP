@@ -4,13 +4,12 @@
 *  Created on: August 1, 2017
 *      Author: jjpalacios
 */
-#ifndef SRC_ECOPERATORS_MUTATION_H_
-#define SRC_ECOPERATORS_MUTATION_H_
+#pragma once
 
 #include "Population.h"
 
 
-namespace FJSP {
+namespace FuzzyFW {
 
 // Mutation parameters defined in this header file
 #define MUTATION_PROBABILITY "mutation-probability"
@@ -316,5 +315,3 @@ public:
 
 
 }
-
-#endif /* SRC_ECOPERATORS_MUTATION_H_ */

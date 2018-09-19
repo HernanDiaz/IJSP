@@ -4,13 +4,12 @@
  *  Created on: Aug 2, 2017
  *      Author: jjpalacios
  */
-#ifndef SRC_ECOPERATORS_REPLACEMENT_H_
-#define SRC_ECOPERATORS_REPLACEMENT_H_
+#pragma once
 
 #include "Population.h"
 
 
-namespace FJSP {
+namespace FuzzyFW {
 
 // Replacement parameters defined in this header file
 #define REPLACE_REPEAT "replacement.allow-repeated"
@@ -275,12 +274,5 @@ protected:
 };
 
 
-
-
-
-
 }
 
-
-
-#endif /* SRC_ECOPERATORS_REPLACEMENT_H_ */

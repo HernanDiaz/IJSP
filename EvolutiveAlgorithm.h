@@ -4,16 +4,14 @@
 *  Created on : Sep 15, 2017
 * Author : jjpalacios
 */
-#ifndef SRC_ALGORITHMS_EVOLUTIONARYALGORITHM_H_
-#define SRC_ALGORITHMS_EVOLUTIONARYALGORITHM_H_
+#pragma once
 
 
 #include "EvaluationClassRegister.h"
 #include "StatisticsClassRegister.h"
-#include "Statistics.h"
 
 
-namespace FJSP {
+namespace FuzzyFW {
 
 #define OBJECTIVE_FUNCTION "objective"
 #define STATISTICS_ROOT "statistics"
@@ -56,7 +54,7 @@ public:
 	/**
 	* Shared variables for the algorithm
 	*/
-	SharedVars * sharedVariables;
+	SharedVarsEvolutionary * sharedVariables;
 
 	/**
 	* Flag indicating the status of the algorithm
@@ -169,5 +167,3 @@ public:
 
 
 }
-
-#endif /* SRC_ALGORITHMS_GENETICALGORITHM_H_ */

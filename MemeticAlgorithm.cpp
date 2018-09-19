@@ -7,7 +7,7 @@
 
 #include "MemeticAlgorithm.h"
 
-namespace FJSP {
+namespace FuzzyFW {
 
 //=============================================================================
 //
@@ -46,7 +46,7 @@ void MemeticAlgorithm::clearAll() {
 	GeneticAlgorithm::clearAll();
 	delete this->neighbourhood;
 	delete this->localSearch;
-	
+
 	lsFrequency = LS_Frequency::MALS_PERIOD;
 	lsPeriod = 1;
 	lsTarget = LS_Target::MALS_ALL;
@@ -161,6 +161,10 @@ void MemeticAlgorithm::printSetupTree(std::ofstream & output) const {
 		output << ";;Target:; Random" << std::endl;
 		output << ";;;Percentage:;" << 100 * this->lsPercentage << std::endl;
 	}
+	if (this->lsLamarckism)
+		output << ";;Lamarckism;Yes" << std::endl;
+	else
+		output << ";;Lamarckism;No" << std::endl;
 }
 
 
@@ -267,7 +271,7 @@ void MemeticAlgorithm::prepareToRun(ParameterDB *params) {
 	if (this->neighbourhood == NULL) {
 		std::string errorMsg = "Invalid neighbourhood structure";
 		errorMsg += " or ommited value.";
-		throw new FJSPException("Memetic Algorithm", errorMsg);
+		throw new FuzzyFWException("Memetic Algorithm", errorMsg);
 	}
 
 	// Loads the frequency to apply local search
@@ -302,6 +306,11 @@ void MemeticAlgorithm::prepareToRun(ParameterDB *params) {
 	else // It's a numerical value
 		this->lsPercentage = atof(value.c_str());
 
+
+	// Loads the lamarckism flag
+	this->lsLamarckism =
+		params->getBoolean(MA_LOCAL_SEARCH_LAMARCKISM, true);
+
 	this->checkSetup();
 
 	this->neighbourhood->setup(params);
@@ -334,7 +343,7 @@ bool MemeticAlgorithm::checkSetup() {
 
 	if (!correct) {
 		err += " Incorrect value or missing parameter";
-		throw new FJSPException("Memetic Algorithm", err);
+		throw new FuzzyFWException("Memetic Algorithm", err);
 	}
 
 	return true;
@@ -582,21 +591,26 @@ void MemeticAlgorithm::applyLocalSearch(Population *population) {
 void MemeticAlgorithm::applyLocalSearch(Population *population,
 	const unsigned int individualIdx) {
 
-	Individual *target, *result;
+	Individual *target;
+	FullSolution optimised;
 
 	target = population->getIndividual(individualIdx);
-	result = this->localSearch->apply(target, this->sharedVariables);
+	optimised = this->localSearch->apply(
+		target->getPhenotype(), target->getFitness(), this->sharedVariables);
+
 	this->evaluationsLS += this->localSearch->getEvaluations();
 	this->neighboursLS += this->localSearch->getNeighbours();
 	this->iterationsLS += this->localSearch->getIterations();
 	this->callsLS++;
 
 	// Lamarckism
-	this->sharedVariables->encoder->encode(result->getPhenotype(),
-		result, this->sharedVariables);
+	if (this->lsLamarckism)
+		this->sharedVariables->encoder->encode(optimised.first,
+			target, this->sharedVariables);
 
-	target = population->replaceIndividual(individualIdx, result);
-	delete target;
+	target->updatePhenotype(optimised.first);
+	target->updateFitness(optimised.second);
+	population->setSorted(false);
 }
 
 

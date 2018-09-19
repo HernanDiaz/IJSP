@@ -27,21 +27,21 @@
 =============================================================================*/
 
 
-#include "Evaluation.h"
+
 
 // ****************************************************************************
 //
 // ADD HERE ALL THE HEADER FILES OF THE OPERATORS YOU HAVE CREATED
 //
 // ****************************************************************************
+#include "EvaluationFJSP.h"
 
 
 
 
 
 
-
-namespace FJSP {
+namespace FuzzyFW {
 
 /**
  * This static class allows to create the different kinds of problem elements.
@@ -106,12 +106,12 @@ public:
 	static void registerClasses() {
 
 		// -----  EVALUATION FUNCTION  ----------------------------------------
-		EvaluationMap[toUpper("makespan")] =	&createEvaluationInstance<EvaluationFJSP_Makespan>;
-		EvaluationMap[toUpper("cmax")] = &createEvaluationInstance<EvaluationFJSP_Makespan>;
-		EvaluationMap[toUpper("aimin")] = &createEvaluationInstance<EvaluationFJSP_AImin>;
-		EvaluationMap[toUpper("ai_min")] = &createEvaluationInstance<EvaluationFJSP_AImin>;
-		EvaluationMap[toUpper("aiavg")] = &createEvaluationInstance<EvaluationFJSP_AIavg>;
-		EvaluationMap[toUpper("ai_avg")] = &createEvaluationInstance<EvaluationFJSP_AIavg>;
+		EvaluationMap[toUpper("makespan")] =	&createEvaluationInstance<FJSP::EvaluationFJSP_Makespan>;
+		EvaluationMap[toUpper("cmax")] = &createEvaluationInstance<FJSP::EvaluationFJSP_Makespan>;
+		EvaluationMap[toUpper("aimin")] = &createEvaluationInstance<FJSP::EvaluationFJSP_AImin>;
+		EvaluationMap[toUpper("ai_min")] = &createEvaluationInstance<FJSP::EvaluationFJSP_AImin>;
+		EvaluationMap[toUpper("aiavg")] = &createEvaluationInstance<FJSP::EvaluationFJSP_AIavg>;
+		EvaluationMap[toUpper("ai_avg")] = &createEvaluationInstance<FJSP::EvaluationFJSP_AIavg>;
 	}
 
 };

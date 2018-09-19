@@ -7,7 +7,7 @@
 
 #include "GeneticAlgorithm.h"
 
-namespace FJSP {
+namespace FuzzyFW {
 
 //=============================================================================
 //
@@ -371,7 +371,7 @@ bool GeneticAlgorithm::checkSetup() {
 
 	if (!correct) {
 		err += " Incorrect value or missing parameter";
-		throw new FJSPException("Genetic Algorithm", err);
+		throw new FuzzyFWException("Genetic Algorithm", err);
 	}
 
 	return true;

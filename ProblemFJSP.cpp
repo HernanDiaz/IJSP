@@ -22,7 +22,6 @@ ProblemFJSP::ProblemFJSP(const FuzzyFW::ParameterDB *params)
 	this->lb_Makespan = 0.0;
 	this->ub_AImin = 1.0;
 	this->ub_AIavg = 1.0;
-	this->duedateType = "";
 
 	// Load parameters
 	if (params != NULL)
@@ -41,7 +40,6 @@ ProblemFJSP::ProblemFJSP(const FuzzyFW::ParameterDB *params,
 	this->lb_Makespan = 0.0;
 	this->ub_AImin = 1.0;
 	this->ub_AIavg = 1.0;
-	this->duedateType = "";
 
 	// Load parameters
 	if (params != NULL)
@@ -61,7 +59,6 @@ ProblemFJSP::ProblemFJSP(const char *inputFile)
 	this->lb_Makespan = 0.0;
 	this->ub_AImin = 1.0;
 	this->ub_AIavg = 1.0;
-	this->duedateType = "";
 
 	// Is the problem loaded
 	this->isSetup = false;

@@ -7,7 +7,7 @@
 
 #include "Fitness.h"
 
-namespace FJSP {
+namespace FuzzyFW {
 
 
 //=============================================================================
@@ -62,7 +62,7 @@ bool FitnessDouble::isWorseOrEqualTo(const Fitness * f) const {
 const FitnessDouble * FitnessDouble::convertType(const Fitness *f) const {
 	if (f->getType() == Fitness::Type::DOUBLE)
 		return dynamic_cast<const FitnessDouble *>(f);
-	throw new FJSPException("Fitness",
+	throw new FuzzyFWException("Fitness",
 		"Comparison of incompatible fitness values");
 }
 
@@ -122,7 +122,7 @@ bool FitnessInteger::isWorseOrEqualTo(const Fitness * f) const {
 const FitnessInteger * FitnessInteger::convertType(const Fitness *f) const {
 	if (f->getType() == Fitness::Type::INTEGER)
 		return dynamic_cast<const FitnessInteger *>(f);
-	throw new FJSPException("Fitness",
+	throw new FuzzyFWException("Fitness",
 		"Comparison of incompatible fitness values");
 }
 
@@ -165,7 +165,7 @@ bool FitnessTFN::isBetterThan(const Fitness * f) const {
 bool FitnessTFN::isEqualTo(const Fitness * f) const {
 	const FitnessTFN *ft = this->convertType(f);
 	return this->value.isEqualTo(ft->value,
-			this->FitnessCompareStrategy);
+		this->FitnessCompareStrategy);
 }
 
 //=====  Better than or equal to  =============================================
@@ -193,7 +193,7 @@ bool FitnessTFN::isWorseOrEqualTo(const Fitness * f) const {
 const FitnessTFN * FitnessTFN::convertType(const Fitness *f) const {
 	if (f->getType() == Fitness::Type::FUZZY)
 		return dynamic_cast<const FitnessTFN *>(f);
-	throw new FJSPException("Fitness",
+	throw new FuzzyFWException("Fitness",
 		"Comparison of incompatible fitness values");
 }
 

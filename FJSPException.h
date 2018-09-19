@@ -1,11 +1,10 @@
 /*
-* SchException.h
+* FJSPException.h
 *
 *  Created on: Nov 29, 2016
 *      Author: Juan Jose Palacios
 */
-#ifndef UTILS_FJSP_EXCEPTION_H_
-#define UTILS_FJSP_EXCEPTION_H_
+#pragma once
 
 #include <iostream>
 
@@ -42,5 +41,3 @@ namespace FJSP {
 		}
 	};
 }
-
-#endif /* UTILS_FJSP_EXCEPTION_H_ */

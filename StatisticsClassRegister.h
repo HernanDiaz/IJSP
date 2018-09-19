@@ -4,8 +4,7 @@
  *  Created on: Oct 4, 2017
  *      Author: Juan Jose Palacios
  */
-#ifndef STATISTICS_CLASSREGISTER_H_
-#define STATISTICS_CLASSREGISTER_H_
+#pragma once
 
 
 /*=============================================================================
@@ -27,20 +26,20 @@
 =============================================================================*/
 
 
-#include "Statistics.h"
+
 // ****************************************************************************
 //
 // ADD HERE ALL THE HEADER FILES OF THE OPERATORS YOU HAVE CREATED
 //
 // ****************************************************************************
+#include "StatisticsFJSP.h"
 
 
 
 
 
 
-
-namespace FJSP {
+namespace FuzzyFW {
 
 /**
  * This static class allows to create the different kinds of statistics elements.
@@ -108,17 +107,14 @@ public:
 	static void registerClasses() {
 
 		// -----  STATISTICS TYPE  --------------------------------------------
-		StatsMap[toUpper("makespan")] = &createStatsInstance<StatisticsMakespan>;
-		StatsMap[toUpper("cmax")] = &createStatsInstance<StatisticsMakespan>;
-		StatsMap[toUpper("aimin")] = &createStatsInstance<StatisticsAImin>;
-		StatsMap[toUpper("ai_min")] = &createStatsInstance<StatisticsAImin>;
-		StatsMap[toUpper("aiavg")] = &createStatsInstance<StatisticsAIavg>;
-		StatsMap[toUpper("ai_avg")] = &createStatsInstance<StatisticsAIavg>;
+		StatsMap[toUpper("makespan")] = &createStatsInstance<FJSP::StatisticsMakespan>;
+		StatsMap[toUpper("cmax")] = &createStatsInstance<FJSP::StatisticsMakespan>;
+		StatsMap[toUpper("aimin")] = &createStatsInstance<FJSP::StatisticsAImin>;
+		StatsMap[toUpper("ai_min")] = &createStatsInstance<FJSP::StatisticsAImin>;
+		StatsMap[toUpper("aiavg")] = &createStatsInstance<FJSP::StatisticsAIavg>;
+		StatsMap[toUpper("ai_avg")] = &createStatsInstance<FJSP::StatisticsAIavg>;
 	}
 
 };
 
 }
-
-
-#endif /* SCHEDULING_CLASSREGISTER_H_ */

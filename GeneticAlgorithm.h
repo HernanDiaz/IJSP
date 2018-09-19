@@ -4,8 +4,7 @@
 *  Created on: Sep 15, 2017
 *      Author: jjpalacios
 */
-#ifndef SRC_GENETICALGORITHM_H_
-#define SRC_GENETICALGORITHM_H_
+#pragma once
 
 
 #include "EvolutiveAlgorithm.h"
@@ -14,7 +13,7 @@
 
 
 
-namespace FJSP {
+namespace FuzzyFW {
 
 
 // Parameters defined in this header file
@@ -263,6 +262,3 @@ namespace FJSP {
 	};
 
 }
-
-#endif /* SRC_GENETICALGORITHM_H_ */
-

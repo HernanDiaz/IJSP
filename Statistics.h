@@ -6,14 +6,13 @@
 *  Created on: Oct 4, 2017
 *      Author: jjpalacios
 */
-#ifndef SRC_STATISTICS_H_
-#define SRC_STATISTICS_H_
+#pragma once
 
 
 #include "Evaluation.h"
 
 
-namespace FJSP {
+namespace FuzzyFW {
 
 //=============================================================================
 //
@@ -97,7 +96,8 @@ public:
 	/*
 	* Get the value from the population
 	*/
-	virtual double getValue(const SharedVars * svars, Population *population) = 0;
+	virtual double getValue(const SharedVarsEvolutionary * svars,
+		Population *population) = 0;
 
 	/*
 	* Get the statistic as a string
@@ -127,211 +127,4 @@ public:
 
 };
 
-
-
-
-
-//=============================================================================
-//
-//	Class StatisticsMakespan
-//
-//=============================================================================
-/**
-* This class gives the makespan from the population
-*
-* @author jjpalacios
-*
-*/
-struct StatisticsMakespan : public Statistics {
-public:
-	/*
-	* Main constructor
-	* The flag indicates the metric to use:
-	*	001 : best
-	*	010 : worst
-	*	100 : average
-	*/
-	StatisticsMakespan(STAT_TYPE flag = STAT_BEST);
-
-
-	/*
-	* Copy constructot
-	*/
-	StatisticsMakespan(StatisticsMakespan & source)
-		: Statistics(source) { }
-
-
-	/*
-	* Clone method
-	*/
-	virtual Statistics * clone() {
-		return new StatisticsMakespan(*this);
-	}
-
-
-	/*
-	* Destructor
-	*/
-	~StatisticsMakespan() { }
-
-
-
-	//=========================================================================
-	//		METHODS
-	//=========================================================================
-public:
-	/*
-	* Get the value from the population
-	*/
-	virtual double getValue(const SharedVars * svars, Population *population);
-
-
-	/*
-	* Get the value from the population
-	*/
-	virtual std::string getName() const {
-		return this->setStatName() + " Cmax";
-	}
-};
-
-
-
-
-
-//=============================================================================
-//
-//	Class StatisticsAIavg
-//
-//=============================================================================
-/**
-* This class gives the average AI from the population
-*
-* @author jjpalacios
-*
-*/
-struct StatisticsAIavg : public Statistics {
-public:
-	/*
-	* Main constructor
-	* The flag indicates the metric to use:
-	*	001 : best
-	*	010 : worst
-	*	100 : average
-	*/
-	StatisticsAIavg(STAT_TYPE flag = STAT_BEST);
-
-
-	/*
-	* Copy constructot
-	*/
-	StatisticsAIavg(StatisticsAIavg & source)
-		: Statistics(source) { }
-
-
-	/*
-	* Clone method
-	*/
-	virtual Statistics * clone() {
-		return new StatisticsAIavg(*this);
-	}
-
-
-	/*
-	* Destructor
-	*/
-	~StatisticsAIavg() { }
-
-
-
-	//=========================================================================
-	//		METHODS
-	//=========================================================================
-public:
-	/*
-	* Get the value from the population
-	*/
-	virtual double getValue(const SharedVars * svars, Population *population);
-
-
-	/*
-	* Get the value from the population
-	*/
-	virtual std::string getName() const {
-		return this->setStatName() + " AIavg";
-	}
-};
-
-
-
-
-
-//=============================================================================
-//
-//	Class StatisticsAImin
-//
-//=============================================================================
-/**
-* This class gives the minimum AI from the population
-*
-* @author jjpalacios
-*
-*/
-struct StatisticsAImin : public Statistics {
-public:
-	/*
-	* Main constructor
-	* The flag indicates the metric to use:
-	*	001 : best
-	*	010 : worst
-	*	100 : average
-	*/
-	StatisticsAImin(STAT_TYPE flag = STAT_BEST);
-
-
-	/*
-	* Copy constructot
-	*/
-	StatisticsAImin(StatisticsAImin & source)
-		: Statistics(source) { }
-
-
-	/*
-	* Clone method
-	*/
-	virtual Statistics * clone() {
-		return new StatisticsAImin(*this);
-	}
-
-
-
-	/*
-	* Destructor
-	*/
-	~StatisticsAImin() { }
-
-
-
-	//=========================================================================
-	//		METHODS
-	//=========================================================================
-public:
-	/*
-	* Get the value from the population
-	*/
-	virtual double getValue(const SharedVars * svars, Population *population);
-
-
-	/*
-	* Get the value from the population
-	*/
-	virtual std::string getName() const {
-		return this->setStatName() + " AImin";
-	}
-};
-
-
-
-
 }
-#endif /* SRC_STATISTICS_H_ */
-

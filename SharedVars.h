@@ -4,18 +4,11 @@
 *  Created on: Nov 29, 2016
 *      Author: Juan Jose Palacios
 */
-#ifndef FJSPOBJECTS_SHAREDVARS_H_
-#define FJSPOBJECTS_SHAREDVARS_H_
+#pragma once
 
 #include "Problem.h"
 
-namespace FJSP {
-
-// Fordward declarations
-class Decoder;
-class Encoder;
-class Problem;
-
+namespace FuzzyFW {
 
 
 /**
@@ -37,16 +30,6 @@ public:
 	* Random Number Generator
 	*/
 	Random * rng;
-
-	/**
-	* Decoder for the algorithm
-	*/
-	Decoder * decoder;
-
-	/**
-	* Encoder for the algorithm
-	*/
-	Encoder * encoder;
 
 	/**
 	* Parameter database
@@ -77,5 +60,3 @@ public:
 };
 
 }
-
-#endif /* FJSPOBJECTS_SHAREDVARS_H_ */

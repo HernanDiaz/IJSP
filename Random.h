@@ -4,8 +4,7 @@
 *  Created on: Jul 23, 2015
 *      Author: Juan Jose Palacios
 */
-#ifndef UTILS_RANDOM_H_
-#define UTILS_RANDOM_H_
+#pragma once
 
 #include <algorithm>
 #include <cstdlib>
@@ -15,7 +14,7 @@
 
 #include <iostream>
 
-namespace FJSP {
+namespace FuzzyFW {
 
 	/**
 	* Class to generate random numbers
@@ -69,5 +68,3 @@ namespace FJSP {
 	};
 
 }
-
-#endif /* UTILS_RANDOM_H_ */

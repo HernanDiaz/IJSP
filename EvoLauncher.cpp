@@ -8,7 +8,7 @@
 
 #include "EvoLauncher.h"
 
-namespace FJSP {
+namespace FuzzyFW {
 
 //=============================================================================
 //
@@ -19,22 +19,23 @@ namespace FJSP {
 //		CONSTRUCTORS / INITIALIZERS
 //=============================================================================
 //-----  Main constructor  ----------------------------------------------------
-EvoLauncher::EvoLauncher(const char * problemPath, const char* algorithmSetup) {
+EvoLauncher::EvoLauncher(const char* algorithmSetup) {
 	this->numRuns = 0;
 	this->algorithm = NULL;
 	this->seed = 1;
 	this->logFolder = "." + FSEP;
+	this->problem = NULL;
 
 	this->loadConfiguration(algorithmSetup);
-
-	this->problem = new FuzzyProblem(this->setup, problemPath);
 }
 
 
 //-----  Destructor  ----------------------------------------------------------
 EvoLauncher::~EvoLauncher() {
-	delete this->algorithm;
-	delete this->problem;
+	if (this->algorithm != NULL)
+		delete this->algorithm;
+	if(this->problem != NULL)
+		delete this->problem;
 	for (size_t i = 0; i < this->fitnessValues.size(); i++)
 		delete this->fitnessValues[i];
 }
@@ -47,12 +48,20 @@ EvoLauncher::~EvoLauncher() {
 //		MAIN METHODS
 //=============================================================================
 //-----  Optimise method  -----------------------------------------------------
-std::string EvoLauncher::optimise() {
+std::string EvoLauncher::optimise(Problem *problem) {
 	std::pair<Solution *, Objective *> solution, bestSolution;
-	std::string signature = this->generateSignature();
+	std::string signature;
+
+	// Read the problem in memory
+	this->problem = problem;
+	this->problem->setup(this->setup);
+	this->problem->loadFile();
 
 	std::cout << "Experiment " << signature << std::endl << std::endl;
 	std::cout << "Solving instance " << this->problem->getName() << std::endl;
+
+	signature = this->generateSignature();
+	
 
 	// Initialize the algorithm
 	this->algorithm->prepareToRun(this->setup);
@@ -73,7 +82,7 @@ std::string EvoLauncher::optimise() {
 		std::string err = "It was impossible to generate the output ";
 		err += "files. They may be opened or the logFolder does ";
 		err += "not exist";
-		throw new FJSPException("Environment", err);
+		throw new FuzzyFWException("Environment", err);
 	}
 	outputFile << "Run;Solution;Objective Value" << std::endl;
 
@@ -123,7 +132,7 @@ std::string EvoLauncher::optimise() {
 		std::string err = "It was impossible to generate the output ";
 		err += "files. They may be opened or the logFolder does ";
 		err += "not exist";
-		throw new FJSPException("Environment", err);
+		throw new FuzzyFWException("Environment", err);
 	}
 
 	algorithm->printSetupTree(outputFile);
@@ -154,7 +163,7 @@ void EvoLauncher::setLogFolder(const char *path) {
 	this->logFolder = std::string(path);
 	if (this->logFolder.length() == 0) {
 		std::string err = "The path to the log folder has not been found";
-		throw new FJSPException("Loading", err);
+		throw new FuzzyFWException("Loading", err);
 	}
 	makeDir(path);
 }
@@ -168,7 +177,7 @@ void EvoLauncher::loadConfiguration(const char* paramsFile) {
 	// Read the seed
 	this->seed = this->setup->getInteger(EVO_SEED, time(NULL));
 	if (this->seed < 0) {
-		throw new FJSPException("Loading", "The seed must be a positive value");
+		throw new FuzzyFWException("Loading", "The seed must be a positive value");
 	}
 
 	// Read the number of runs for the algorithm
@@ -176,14 +185,14 @@ void EvoLauncher::loadConfiguration(const char* paramsFile) {
 	if (this->numRuns <= 0) {
 		std::string err = "The number of runs is not valid. It must be a ";
 		err += "positive value";
-		throw new FJSPException("Loading", err);
+		throw new FuzzyFWException("Loading", err);
 	}
 
 	// Read the name of the algorithm to use
 	std::string algorithmName = this->setup->getString(EVO_ALGORITHM);
 	if (algorithmName.length() == 0) {
 		std::string err = "The name of the algorithm to use has not been found";
-		throw new FJSPException("Loading", err);
+		throw new FuzzyFWException("Loading", err);
 	}
 
 	this->setupAlgorithm(algorithmName);
@@ -202,7 +211,7 @@ void EvoLauncher::setupAlgorithm(const std::string name) {
 		this->algorithm = new MemeticAlgorithm(this->setup);
 	else {
 		std::string err = "Solving algorithm \'" + name + "\' unknown";
-		throw FJSPException("Loading", err);
+		throw FuzzyFWException("Loading", err);
 	}
 }
 

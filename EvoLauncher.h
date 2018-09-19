@@ -4,13 +4,12 @@
 *  Created on: Sep 20, 2017
 *      Author: jjpalacios
 */
-#ifndef SRC_EVOLAUNCHER_H_
-#define SRC_EVOLAUNCHER_H_
+#pragma once
 
 #include "MemeticAlgorithm.h"
 
 
-namespace FJSP {
+namespace FuzzyFW {
 
 	// Parameters defined in this header file
 #define EVO_SEED "seed"	// Seed for the RNG
@@ -95,7 +94,7 @@ namespace FJSP {
 		/**
 		* Main constructor. It requires the setup file for the algorithm
 		*/
-		EvoLauncher(const char * problemPath, const char* algorithmSetup);
+		EvoLauncher(const char* algorithmSetup);
 
 		/**
 		* Destructor
@@ -114,7 +113,7 @@ namespace FJSP {
 		*
 		* @return The best solution found among all the runs
 		*/
-		std::string optimise();
+		std::string optimise(Problem *problem);
 
 
 		//=========================================================================
@@ -193,6 +192,4 @@ namespace FJSP {
 	};
 
 }
-
-#endif /* SRC_EVOLAUNCHER_H_ */
 

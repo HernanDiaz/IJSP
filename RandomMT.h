@@ -4,20 +4,13 @@
 *  Created on: Jul 23, 2015
 *      Author: Juan Jose Palacios
 */
-#ifndef UTILS_RANDOM_MT_H_
-#define UTILS_RANDOM_MT_H_
+#pragma once
 
-#include <algorithm>
-#include <cstdlib>
-#include <cmath>
-#include <time.h>
-#include <vector>
 #include <random>
 
-#include <iostream>
 #include "Random.h"
 
-namespace FJSP {
+namespace FuzzyFW {
 
 	/**
 	* Class to generate random numbers
@@ -65,5 +58,3 @@ namespace FJSP {
 	};
 
 }
-
-#endif /* UTILS_RANDOM_MT_H_ */

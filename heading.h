@@ -6,8 +6,7 @@
 *  Created on: Jul 23, 2015
 *      Author: jjpalacios
 */
-#ifndef HEADING_H_
-#define HEADING_H_
+#pragma once
 
 #include <algorithm>
 #include <cmath>
@@ -23,7 +22,7 @@
 #include <map>
 #include <list>
 
-#include "FJSPException.h"
+#include "FuzzyFWException.h"
 #include "RandomMT.h"
 
 #define Infd std::numeric_limits<double>::max()
@@ -130,4 +129,3 @@ static int compareDouble(const double a, const double b) {
 	return 0;
 }
 
-#endif /* HEADING_H_ */

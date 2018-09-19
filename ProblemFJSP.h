@@ -8,6 +8,7 @@
 
 #include "TaskFJSP.h"
 #include "Problem.h"
+#include "TimeWindowClassRegister.h"
 #include "FJSPException.h"
 
 

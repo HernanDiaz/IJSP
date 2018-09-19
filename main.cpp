@@ -9,7 +9,8 @@
 
 
 int main(int argc, const char *argv[]) {
-	FJSP::EvoLauncher *launcher;
+	FuzzyFW::EvoLauncher *launcher;
+	FJSP::ProblemFJSP *problem;
 
 	if(argc < 3) {
 		std::cout << "ERROR: Not enough input arguments." << std::endl;
@@ -18,11 +19,12 @@ int main(int argc, const char *argv[]) {
 	}
 
 	try {
-		launcher = new FJSP::EvoLauncher(argv[2], argv[1]);
+		launcher = new FuzzyFW::EvoLauncher(argv[1]);
 		if(argc > 3)
 			launcher->setLogFolder(argv[3]);
 
-		launcher->optimise();
+		problem = new FJSP::ProblemFJSP(argv[2]);
+		launcher->optimise(problem);
 
 	} catch(FJSP::FJSPException &ex) {
 		std::cout << ex.what() << std::endl << std::endl;

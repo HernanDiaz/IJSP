@@ -4,12 +4,11 @@
 *  Created on: September 14, 2017
 *      Author: jjpalacios
 */
-#ifndef ECOBJECTS_SOLUTION_H_
-#define ECOBJECTS_SOLUTION_H_
+#pragma once
 
 #include "heading.h"
 
-namespace FJSP {
+namespace FuzzyFW {
 
 
 //=============================================================================
@@ -66,4 +65,3 @@ public:
 
 }
 
-#endif /* ECOBJECTS_SOLUTION_H_ */
