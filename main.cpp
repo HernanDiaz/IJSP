@@ -7,8 +7,6 @@
 
 #include "EvoLauncher.h"
 
-// Test variables (for debugging)
-#define DEBUG
 
 int main(int argc, const char *argv[]) {
 	FJSP::EvoLauncher *launcher;

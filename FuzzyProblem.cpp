@@ -268,7 +268,6 @@ void FuzzyProblem::loadFile(const char *inputFile) {
 	}
 
 	getline(input, reader);
-	getline(input, reader);
 
 	// Read the processing times of the problem and discard null tasks
 	this->taskSequence.resize(this->nJobs);
@@ -325,7 +324,7 @@ void FuzzyProblem::loadDueDates(std::ifstream &input) {
 			throw new FJSPException("Loading problem", errorMsg);
 		}
 
-		getline(input, reader); // Blank line
+		getline(input, reader); // Heading
 		input >> dd;
 		this->dueDate.push_back(dd);
 

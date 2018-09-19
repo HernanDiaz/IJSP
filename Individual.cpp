@@ -45,8 +45,6 @@ Individual::~Individual() {
 		delete this->fitness;
 	if (this->phenotype != NULL)
 		delete this->phenotype;
-	this->evaluated = false;
-	this->phenotypeUpdated = false;
 }
 
 

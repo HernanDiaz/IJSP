@@ -35,6 +35,8 @@
 #define NULL   ((void *) 0)
 #endif
 
+#define DEBUG_LEVEL 1
+
 #if defined(_WIN32)
 
 static const std::string FSEP = "\\";

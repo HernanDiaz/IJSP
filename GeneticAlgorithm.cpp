@@ -114,6 +114,16 @@ void GeneticAlgorithm::printSetupTree(std::ofstream & output) const {
 	if (this->maxRuntime < 0) output << "no" << std::endl;
 	else output << this->maxRuntime << std::endl;
 
+	names = this->sharedVariables->encoder->getName();
+	output << ";Codification:;" << names[0] << std::endl;
+	for (int i = 1; i < (int)names.size(); i++)
+		output << ";" + names[i] << std::endl;
+
+	names = this->sharedVariables->decoder->getName();
+	output << ";Decodification:;" << names[0] << std::endl;
+	for (int i = 1; i < (int)names.size(); i++)
+		output << ";" + names[i] << std::endl;
+
 	names = this->creation->getName();
 	output << ";Initial Popul.:;" << names[0] << std::endl;
 	for (int i = 1; i < (int)names.size(); i++)
@@ -405,9 +415,10 @@ std::pair<Solution *, Objective *> GeneticAlgorithm::run(Problem *problem,
 	stats.push_back(currentPopulation->getAverageFitness()); // Average quality
 	evolutionStats.push_back(stats);
 
-#if DEBUG
+#if DEBUG_LEVEL >= 2
 	std::cout << "Generation 0:" << std::endl;
-	std::cout << "Best fitness: " << this->bestSoFar->getFitness() << std::endl;
+	std::cout << "Best fitness: " << this->bestSoFar->getFitness()->toString() << std::endl;
+	std::cout << std::endl;
 #endif // DEBUG
 
 	// While not stopping criteria is met...
@@ -467,9 +478,9 @@ std::pair<Solution *, Objective *> GeneticAlgorithm::run(Problem *problem,
 		stats.push_back(this->bestSoFar->getFitness()->toDouble());	// Best solution
 		stats.push_back(currentPopulation->getAverageFitness()); // Average quality
 		evolutionStats.push_back(stats);
-#ifdef DEBUG
+#if DEBUG_LEVEL >= 2
 		std::cout << "Generation " << this->generation << ":" << std::endl;
-		std::cout << "Best fitness: " << this->bestSoFar->getFitness();
+		std::cout << "Best fitness: " << this->bestSoFar->getFitness()->toString();
 		std::cout << std::endl << std::endl;
 #endif // DEBUG
 	}
@@ -497,13 +508,15 @@ bool GeneticAlgorithm::stop() {
 	clock_t clockTime = clock() - this->totalRuntime;
 	double currentRuntime = clockTime / (double)CLOCKS_PER_SEC;
 
-	if (this->maxRuntime >= 0 && currentRuntime >= this->maxRuntime)
-		return true;
-
-	if (this->generation > 0) {
-		double runtimePerGen = currentRuntime / this->generation;
-		if (currentRuntime + runtimePerGen / 2 >= this->maxRuntime)
+	if (this->maxRuntime >= 0) {
+		if (currentRuntime >= this->maxRuntime)
 			return true;
+
+		if (this->generation > 0) {
+			double runtimePerGen = currentRuntime / this->generation;
+			if (currentRuntime + runtimePerGen / 2 >= this->maxRuntime)
+				return true;
+		}
 	}
 
 	return false;

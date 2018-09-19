@@ -50,6 +50,7 @@ std::string EvoLauncher::optimise() {
 	std::string signature = this->generateSignature();
 
 	std::cout << "Experiment " << signature << std::endl << std::endl;
+	std::cout << "Solving instance" << this->problem->getName() << std::endl;
 
 	// Initialize the algorithm
 	this->algorithm->prepareToRun();
@@ -73,9 +74,10 @@ std::string EvoLauncher::optimise() {
 	}
 
 	for (int run = 0; run < numRuns; run++) {
+		std::cout << "Run " << run + 1 << "..." << std::endl;
 		// Run the algorithm
 		solution = this->algorithm->run(this->problem,
-			signature + valueToString(run), this->logFolder, this->seed + run);
+			signature + valueToString(run+1), this->logFolder, this->seed + run);
 
 		// Print setup
 		this->avgTimes.push_back(algorithm->getRuntime());
@@ -87,8 +89,8 @@ std::string EvoLauncher::optimise() {
 		outputFile << "Run " << run << std::endl;
 		outputFile << "------------------------------------------------------";
 		outputFile << std::endl;
-		//this->printSetData(outputFile, solution.first, solution.second);
-		//outputFile << std::endl;
+		outputFile << solution.first->toString() << ";";
+		outputFile << solution.second->toString() << std::endl;
 
 		// Print evolution data
 		std::vector< std::vector<double> > evolStats;
@@ -130,6 +132,7 @@ std::string EvoLauncher::optimise() {
 
 	outputFile.close();
 
+	std::cout << "The process has finished!" << std::endl;
 	return bestSolution.first->toString();
 }
 
@@ -206,7 +209,7 @@ std::string EvoLauncher::generateSignature() const {
 	const int bufferSize = 80;
 	char buffer[bufferSize];
 	strftime(buffer, bufferSize, "%Y%m%d%H%M%S", &timeinfo);
-	return std::string(buffer);
+	return this->problem->getName() + "_" + std::string(buffer);
 }
 
 
@@ -316,7 +319,7 @@ void EvoLauncher::printEvolutionTrace(std::ofstream &outputFile) {
 	for (unsigned int i = 0; i < avgEvolStats.size(); i++) {
 		for (unsigned int j = 0; j < avgEvolStats[i][0].size() - 1; j++)
 			outputFile << ";";
-		outputFile << ";Run " << i;
+		outputFile << ";Run " << i+1;
 	}
 	outputFile << std::endl << "Step";
 
@@ -327,27 +330,42 @@ void EvoLauncher::printEvolutionTrace(std::ofstream &outputFile) {
 	}
 	outputFile << std::endl;
 
-	std::vector< std::vector<double> > avgValues(avgEvolStats[0].size());
+	// Look for the shortest evolution
+	unsigned int minSize = avgEvolStats[0].size();
+	unsigned int maxSize = minSize;
+	for (unsigned int i = 1; i < avgEvolStats.size(); i++) {
+		if (avgEvolStats[i].size() < minSize)
+			minSize = avgEvolStats[i].size();
+		if (avgEvolStats[i].size() > maxSize)
+			maxSize = avgEvolStats[i].size();
+	}
 
-	for (unsigned int i = 0; i < avgEvolStats[0].size(); i++) {
-		avgValues[i].resize(avgEvolStats[0][i].size(), 0.0);
-		for (unsigned int j = 0; j < avgEvolStats[0][i].size(); j++) {
-			for (unsigned int k = 0; k < avgEvolStats.size(); k++) {
-				avgValues[i][j] += avgEvolStats[k][i][j];
+	std::vector< std::vector<double> > avgValues(minSize);
+
+	for (unsigned int row = 0; row < minSize; row++) {
+		avgValues[row].resize(avgEvolStats[0][row].size(), 0.0);
+		for (unsigned int col = 0; col < avgEvolStats[0][row].size(); col++) {
+			for (unsigned int run = 0; run < avgEvolStats.size(); run++) {
+					avgValues[row][col] += avgEvolStats[run][row][col];
 			}
-			avgValues[i][j] /= avgEvolStats.size();
+			avgValues[row][col] /= avgEvolStats.size();
 		}
 	}
 
-	for (unsigned int i = 0; i < avgEvolStats[0].size(); i++) {
-		outputFile << avgEvolStats[0][i][0];
+	for (unsigned int i = 0; i < maxSize; i++) {
+		if (i < avgValues.size())
+			outputFile << avgValues[i][0];
 
-		for (unsigned int j = 1; j < avgEvolStats[0][i].size(); j++) {
-			outputFile << ";" << avgValues[i][j];
+		for (unsigned int j = 1; j < avgEvolLabels.size(); j++) {
+			outputFile << ";";
+			if (i < avgValues.size())
+				outputFile << avgValues[i][j];
 		}
-		for (unsigned int k = 0; k < avgEvolStats.size(); k++) {
-			for (unsigned int j = 0; j < avgEvolStats[0][i].size(); j++) {
-				outputFile << ";" << avgEvolStats[k][i][j];
+		for (unsigned int run = 0; run < avgEvolStats.size(); run++) {
+			for (unsigned int j = 0; j < avgEvolLabels.size(); j++) {
+				outputFile << ";";
+				if (i < avgEvolStats[run].size())
+					outputFile << avgEvolStats[run][i][j];
 			}
 		}
 		outputFile << std::endl;

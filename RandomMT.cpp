@@ -16,7 +16,7 @@ namespace FJSP {
 
 	//==== Method init  =======================================================
 	void RandomMT::init(int seed) {
-		this->mt_rand = std::mt19937(this->seed);
+		this->mt_rand = std::mt19937(seed);
 	}
 
 

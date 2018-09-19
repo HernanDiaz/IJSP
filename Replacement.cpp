@@ -108,6 +108,7 @@ void ReplacementElitist::apply(Population *oldPopulation,
 		delete replaced;
 	}
 	delete oldPopulation;
+	newPopulation->rename();
 }
 
 
@@ -130,6 +131,7 @@ void ReplacementParents::apply(Population *oldPopulation,
 		this->applyRepeat(oldPopulation, newPopulation);
 	else
 		this->applyNoRepeat(oldPopulation, newPopulation);
+	newPopulation->rename();
 }
 
 
@@ -139,13 +141,17 @@ void ReplacementParents::applyRepeat(Population *oldPopulation,
 	Population *newPopulation) const {
 
 	std::vector<Individual *> family(4);
-	unsigned int best, best2;
+	Individual *replaced;
+	unsigned int best, best2, pos2, pos3;
 
 	for (unsigned int i = 0; i < newPopulation->size(); i += 2) {
 		family[0] = newPopulation->getIndividual(i);
 		family[1] = newPopulation->getIndividual(i + 1);
-		family[2] = newPopulation->getIndividual(family[0]->id);
-		family[3] = newPopulation->getIndividual(family[1]->id);
+		family[2] = oldPopulation->getIndividual(family[0]->id);
+		family[3] = oldPopulation->getIndividual(family[1]->id);
+
+		pos2 = family[0]->id;
+		pos3 = family[1]->id;
 
 		if (family[1]->getFitness()->isBetterThan(family[0]->getFitness())) {
 			std::swap(family[0], family[1]);
@@ -156,18 +162,23 @@ void ReplacementParents::applyRepeat(Population *oldPopulation,
 			best = i;
 			best2 = i + 1;
 		}
-		if (family[3]->getFitness()->isBetterThan(family[2]->getFitness()))
+		if (family[3]->getFitness()->isBetterThan(family[2]->getFitness())) {
 			std::swap(family[2], family[3]);
+			std::swap(pos2, pos3);
+		}
 
 		if (family[2]->getFitness()->isBetterThan(family[1]->getFitness())) {
-			newPopulation->replaceIndividual(best2, family[2]->clone());
+			replaced = newPopulation->replaceIndividual(best2, family[2]);
+			oldPopulation->replaceIndividual(pos2, replaced);
 			if (family[2]->getFitness()->isBetterThan(family[0]->getFitness())) {
 				family[1] = family[0];
 				family[0] = family[2];
 				std::swap(best2, best);
 
-				if (family[3]->getFitness()->isBetterThan(family[1]->getFitness()))
-					newPopulation->replaceIndividual(best2, family[3]->clone());
+				if (family[3]->getFitness()->isBetterThan(family[1]->getFitness())) {
+					replaced = newPopulation->replaceIndividual(best2, family[3]);
+					oldPopulation->replaceIndividual(pos3, replaced);
+				}
 			}
 		}
 	}
@@ -182,15 +193,27 @@ void ReplacementParents::applyNoRepeat(Population *oldPopulation,
 	Population *newPopulation) const {
 
 	std::vector<Individual *> family(4);
+	Individual *replaced;
 	unsigned int best, best2;
+	unsigned int pos1, pos2, pos3, pos0;
 	char isRepeated;
 
 	for (unsigned int i = 0; i < newPopulation->size(); i += 2) {
 		family[0] = newPopulation->getIndividual(i);
 		family[1] = newPopulation->getIndividual(i + 1);
-		family[2] = newPopulation->getIndividual(family[0]->id);
-		family[3] = newPopulation->getIndividual(family[1]->id);
+		family[2] = oldPopulation->getIndividual(family[0]->id);
+		family[3] = oldPopulation->getIndividual(family[1]->id);
 
+		pos2 = family[0]->id;
+		pos3 = family[1]->id;
+
+#if _NDEBUG
+		std::cout << "Entran: " << family[0]->getFitness()->toString();
+		std::cout << ", " << family[1]->getFitness()->toString();
+		std::cout << ", " << family[2]->getFitness()->toString();
+		std::cout << ", " << family[3]->getFitness()->toString();
+		std::cout << std::endl;
+#endif
 		if (family[1]->getFitness()->isBetterThan(family[0]->getFitness())) {
 			std::swap(family[0], family[1]);
 			best = i + 1;
@@ -200,8 +223,10 @@ void ReplacementParents::applyNoRepeat(Population *oldPopulation,
 			best = i;
 			best2 = i + 1;
 		}
-		if (family[3]->getFitness()->isBetterThan(family[2]->getFitness()))
+		if (family[3]->getFitness()->isBetterThan(family[2]->getFitness())) {
 			std::swap(family[2], family[3]);
+			std::swap(pos2, pos3);
+		}
 
 		if (family[0]->getFitness()->isEqualTo(family[1]->getFitness()))
 			isRepeated = true;
@@ -212,7 +237,9 @@ void ReplacementParents::applyNoRepeat(Population *oldPopulation,
 			family[2]->getFitness()->isBetterThan(family[1]->getFitness())) {
 
 			if (!family[2]->getFitness()->isEqualTo(family[0]->getFitness())) {
-				newPopulation->replaceIndividual(best2, family[2]->clone());
+				replaced = newPopulation->replaceIndividual(best2, family[2]);
+				oldPopulation->replaceIndividual(pos2, replaced);
+
 				if (family[2]->getFitness()->isBetterThan(family[0]->getFitness())) {
 					family[1] = family[0];
 					family[0] = family[2];
@@ -226,10 +253,17 @@ void ReplacementParents::applyNoRepeat(Population *oldPopulation,
 
 			if (isRepeated ||
 				family[3]->getFitness()->isBetterThan(family[1]->getFitness())) {
-				if (!family[3]->getFitness()->isEqualTo(family[0]->getFitness()))
-					newPopulation->replaceIndividual(best2, family[3]->clone());
+				if (!family[3]->getFitness()->isEqualTo(family[0]->getFitness())) {
+					replaced = newPopulation->replaceIndividual(best2, family[3]);
+					oldPopulation->replaceIndividual(pos3, replaced);
+				}
 			}
 		}
+#if _NDEBUG
+		std::cout << "Pasan: " << newPopulation->getIndividual(i)->getFitness()->toString();
+		std::cout << ", " << newPopulation->getIndividual(i+1)->getFitness()->toString();
+		std::cout << std::endl;
+#endif
 	}
 
 	delete oldPopulation;

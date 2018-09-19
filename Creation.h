@@ -192,7 +192,7 @@ public:
 		std::vector<std::string> sgsName = this->sgs->getName();
 		setup.push_back("Random");
 		setup.push_back(";SGS:;" + sgsName[0]);
-		for (size_t i = 0; i < sgsName.size(); i++)
+		for (size_t i = 1; i < sgsName.size(); i++)
 			setup.push_back(";" + sgsName[i]);
 		return setup;
 	}

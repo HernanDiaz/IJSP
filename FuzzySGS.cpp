@@ -70,8 +70,10 @@ FuzzySchedule * FuzzySGS_Insertion::buildSchedule(const SharedVars * svars,
 
 	if (this->isCreated)
 		this->schedule->reset();
-	else
+	else {
 		this->schedule = new FuzzySchedule(fuzzyProb);
+		this->isCreated = true;
+	}
 
 	for (size_t i = 0; i < order.size(); i++) {
 		this->scheduleTask((*fuzzyProb)[order[i]], order[i]);
@@ -210,8 +212,10 @@ FuzzySchedule * FuzzySGS_Append::buildSchedule(const SharedVars * svars,
 
 	if (this->isCreated)
 		this->schedule->reset();
-	else
+	else {
 		this->schedule = new FuzzySchedule(fuzzyProb);
+		this->isCreated = true;
+	}
 
 	for (size_t i = 0; i < order.size(); i++) {
 		this->scheduleTask((*fuzzyProb)[order[i]], order[i]);
@@ -330,8 +334,10 @@ FuzzySchedule * FuzzySGS_Dense::buildSchedule(const SharedVars * svars,
 
 	if (this->isCreated)
 		this->schedule->reset();
-	else
+	else {
 		this->schedule = new FuzzySchedule(fuzzyProb);
+		this->isCreated = true;
+	}
 
 
 	// Check the position of each task in the permutation
