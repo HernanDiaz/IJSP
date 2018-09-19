@@ -8,7 +8,6 @@
 #include "Decoder.h"
 
 namespace FJSP {
-
 //=============================================================================
 //
 //	Abstract class DecoderFJSP

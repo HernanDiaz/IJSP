@@ -229,9 +229,16 @@ public:
 	//=========================================================================
 public:
 	/**
-	* Set a new genotype for the individual
+	* Set a new genotype for the individual. The individual will be
+	* considered as not evaluated from that moment
 	*/
 	virtual void setGenotype(std::vector<int> & genes);
+
+	/**
+	* Updates de genotype of the individual, keeping the evaluation
+	* flags untouched.
+	*/
+	virtual void updateGenotype(std::vector<int> & genes);
 
 	/**
 	* Get the genotype of the individual as an array of real values

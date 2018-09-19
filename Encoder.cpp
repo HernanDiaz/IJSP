@@ -38,7 +38,7 @@ void EncoderFJSP_Order::encode(Solution *solution, Individual *indiv,
 		throw new FJSPException("Encoding", errorMsg);
 	}
 
-	intIndiv->setGenotype(schedule->getTaskOrder());
+	intIndiv->updateGenotype(schedule->getTaskOrder());
 }
 
 
@@ -107,7 +107,7 @@ void EncoderFJSP_JobOrder::encode(Solution *solution, Individual *indiv,
 	for (size_t i = 0; i < genotype.size(); i++)
 		genotype[i] = (*fuzzyProb)[genotype[i]]->job;
 	
-	intIndiv->setGenotype(genotype);
+	intIndiv->updateGenotype(genotype);
 }
 
 

@@ -55,7 +55,7 @@ std::string EvoLauncher::optimise() {
 	std::cout << "Solving instance " << this->problem->getName() << std::endl;
 
 	// Initialize the algorithm
-	this->algorithm->prepareToRun();
+	this->algorithm->prepareToRun(this->setup);
 
 	// Prepare average data
 	this->avgTimes.clear();
@@ -75,6 +75,7 @@ std::string EvoLauncher::optimise() {
 		err += "not exist";
 		throw new FJSPException("Environment", err);
 	}
+	outputFile << "Run;Solution;Objective Value" << std::endl;
 
 	for (int run = 0; run < numRuns; run++) {
 		std::cout << "Run " << run + 1 << "..." << std::endl;
@@ -92,9 +93,7 @@ std::string EvoLauncher::optimise() {
 		this->fitnessValues.push_back(solution.second);
 
 		// Information about the set of solutions
-		outputFile << "Run " << run << std::endl;
-		outputFile << "------------------------------------------------------";
-		outputFile << std::endl;
+		outputFile << run + 1 << std::endl;
 		outputFile << solution.first->toString() << ";";
 		outputFile << solution.second->toString() << std::endl;
 
@@ -198,6 +197,9 @@ void EvoLauncher::setupAlgorithm(const std::string name) {
 	if (toUpper(name).compare("GENETIC") == 0
 		|| toUpper(name).compare("GA") == 0)
 		this->algorithm = new GeneticAlgorithm(this->setup);
+	else if (toUpper(name).compare("MEMETIC") == 0
+		|| toUpper(name).compare("MA") == 0)
+		this->algorithm = new MemeticAlgorithm(this->setup);
 	else {
 		std::string err = "Solving algorithm \'" + name + "\' unknown";
 		throw FJSPException("Loading", err);

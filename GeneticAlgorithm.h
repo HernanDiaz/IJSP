@@ -245,7 +245,7 @@ namespace FJSP {
 		*
 		* @return true if all components are correctly initialized
 		*/
-		virtual bool checkSetup();
+		bool checkSetup();
 		
 
 		/**

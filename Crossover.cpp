@@ -857,7 +857,7 @@ void Crossover_PPXBierwirth::applyJobPermutation(IndividualArrayInt *ind1,
 	IndividualArrayInt *ind2, const SharedVars *svars) const {
 
 	std::vector<int> offs1, offs2;
-	unsigned int nGenes, pos1, pos2, length, job, offsSize;
+	unsigned int nGenes, pos1, pos2, job, offsSize;
 	std::vector<char> content1, content2;
 	std::vector<int> counter, genotype1, genotype2;
 	std::vector<char> passed, mask;

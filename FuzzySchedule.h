@@ -164,6 +164,14 @@ public:
 	TFN getCTJob(const unsigned int job) const;
 
 
+	/**
+	* Get the completion time of a job
+	*/
+	void setSorted(bool flag) {
+		this->isSorted = flag;
+	}
+
+
 
 	//=====================================================================
 	//		OPERATORS

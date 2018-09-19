@@ -7,7 +7,7 @@
 #ifndef SRC_EVOLAUNCHER_H_
 #define SRC_EVOLAUNCHER_H_
 
-#include "GeneticAlgorithm.h"
+#include "MemeticAlgorithm.h"
 
 
 namespace FJSP {

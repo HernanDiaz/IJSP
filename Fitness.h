@@ -187,6 +187,13 @@ public:
 	}
 
 	/*
+	* Sets the fitness value
+	*/
+	void setValue(const double source) {
+		this->value = source;
+	}
+
+	/*
 	* Converts the Fitness into a string
 	*/
 	virtual std::string toString() const {
@@ -295,6 +302,13 @@ public:
 	*/
 	int getValue() const {
 		return this->value;
+	}
+
+	/*
+	* Sets the fitness value
+	*/
+	void setValue(const int source) {
+		this->value = source;
 	}
 
 	/*
@@ -413,6 +427,13 @@ public:
 	*/
 	TFN getValue() const {
 		return this->value;
+	}
+
+	/*
+	* Sets the fitness value
+	*/
+	void setValue(const TFN source) {
+		this->value = source;
 	}
 
 	/*

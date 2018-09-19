@@ -34,6 +34,8 @@ EvolutiveAlgorithm::EvolutiveAlgorithm(ParameterDB *params) {
 //-----  ClearAll  ------------------------------------------------------------
 void EvolutiveAlgorithm::clearAll() {
 	delete this->evaluator;
+	this->finished = false;
+	this->ready = false;
 }
 
 

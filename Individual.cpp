@@ -115,6 +115,13 @@ void IndividualArrayInt::setGenotype(std::vector<int> & genes) {
 }
 
 
+//-----  Update Genotype  -----------------------------------------------------
+void IndividualArrayInt::updateGenotype(std::vector<int> & genes) {
+	this->genotype.clear();
+	this->genotype = genes;
+}
+
+
 //-----  Set Gene  ------------------------------------------------------------
 void IndividualArrayInt::setGene(const unsigned int index, int value) {
 	if (index < 0 || index > this->size())

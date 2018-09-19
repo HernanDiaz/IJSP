@@ -35,7 +35,7 @@
 #define NULL   ((void *) 0)
 #endif
 
-#define DEBUG_LEVEL 1
+#define DEBUG_LEVEL 3
 
 #if defined(_WIN32)
 

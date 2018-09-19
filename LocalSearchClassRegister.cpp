@@ -7,7 +7,7 @@
 
 #include "LocalSearchClassRegister.h"
 
-namespace FuzzyFW {
+namespace FJSP {
 
 /**
  * Initialize all static variables in SchedulingClassRegister

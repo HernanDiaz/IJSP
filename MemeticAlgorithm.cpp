@@ -7,7 +7,7 @@
 
 #include "MemeticAlgorithm.h"
 
-namespace FuzzyFW {
+namespace FJSP {
 
 //=============================================================================
 //
@@ -46,7 +46,7 @@ void MemeticAlgorithm::clearAll() {
 	GeneticAlgorithm::clearAll();
 	delete this->neighbourhood;
 	delete this->localSearch;
-
+	
 	lsFrequency = LS_Frequency::MALS_PERIOD;
 	lsPeriod = 1;
 	lsTarget = LS_Target::MALS_ALL;
@@ -118,13 +118,11 @@ void MemeticAlgorithm::printSetupTree(std::ofstream & output) const {
 
 	names = this->crossover->getName();
 	output << ";Crossover:;" << names[0] << std::endl;
-	output << ";;Probability:;" << valueToString(this->crossoverProb) << std::endl;
 	for (int i = 1; i < (int)names.size(); i++)
 		output << ";" + names[i] << std::endl;
 
 	names = this->mutation->getName();
 	output << ";Mutation:;" << names[0] << std::endl;
-	output << ";;Probability:;" << valueToString(this->mutationProb) << std::endl;
 	for (int i = 1; i < (int)names.size(); i++)
 		output << ";" + names[i] << std::endl;
 
@@ -159,16 +157,10 @@ void MemeticAlgorithm::printSetupTree(std::ofstream & output) const {
 		output << ";;Target:;Best solution" << std::endl;
 	else if (lsTarget == LS_Target::MALS_WORST)
 		output << ";;Target:;Worst solution" << std::endl;
-	else if (lsTarget == LS_Target::MALS_ALL)
-		output << ";;Target:;All solutions" << std::endl;
-	else if (lsTarget == LS_Target::MALS_SOME) {
+	else if (lsFrequency == LS_Target::MALS_SOME) {
 		output << ";;Target:; Random" << std::endl;
 		output << ";;;Percentage:;" << 100 * this->lsPercentage << std::endl;
 	}
-	if (this->lsLamarckism)
-		output << ";;Lamarckism;Yes" << std::endl;
-	else
-		output << ";;Lamarckism;No" << std::endl;
 }
 
 
@@ -259,7 +251,10 @@ std::vector< std::pair<std::string, double> > MemeticAlgorithm::getRuntime()
 void MemeticAlgorithm::prepareToRun(ParameterDB *params) {
 	// Loads the specific parameters
 	std::string value;
-	
+
+	// Loads the common parameters
+	GeneticAlgorithm::prepareToRun(params);
+
 	// Loads the Local Search strategy to use
 	value = params->getStringLower(MA_LOCAL_SEARCH);
 	this->localSearch =
@@ -272,7 +267,7 @@ void MemeticAlgorithm::prepareToRun(ParameterDB *params) {
 	if (this->neighbourhood == NULL) {
 		std::string errorMsg = "Invalid neighbourhood structure";
 		errorMsg += " or ommited value.";
-		throw new FuzzyFWException("Memetic Algorithm", errorMsg);
+		throw new FJSPException("Memetic Algorithm", errorMsg);
 	}
 
 	// Loads the frequency to apply local search
@@ -289,16 +284,13 @@ void MemeticAlgorithm::prepareToRun(ParameterDB *params) {
 		this->lsFrequency = LS_Frequency::MALS_PERIOD;
 	else if (value.compare(MA_LS_FREQ_STUCK) == 0)
 		this->lsFrequency = LS_Frequency::MALS_STUCK;
-	else {
-		this->lsFrequency = LS_Frequency::MALS_NONE;
+	else
 		this->lsPeriod = -1;
-	}
 
 	// Load the period of application, in case of Period or Stuck
 	this->lsPeriod = params->getInteger(MA_LOCAL_SEARCH_PERIOD, -2);
 
 	// Loads the target of the local search
-	this->lsTarget = LS_Target::MALS_SOME;
 	value = params->getStringLower(MA_LOCAL_SEARCH_TARGET);
 
 	if (value.compare(MA_LS_TARGET_BEST) == 0)
@@ -307,19 +299,10 @@ void MemeticAlgorithm::prepareToRun(ParameterDB *params) {
 		this->lsTarget = LS_Target::MALS_WORST;
 	else if (value.compare(MA_LS_TARGET_ALL) == 0)
 		this->lsTarget = LS_Target::MALS_ALL;
-	// It's a numerical value
-	else if(value.length() >= 1)
+	else // It's a numerical value
 		this->lsPercentage = atof(value.c_str());
-	else
-		this->lsPercentage = 0.0;
 
-
-	// Loads the lamarckism flag
-	this->lsLamarckism =
-		params->getBoolean(MA_LOCAL_SEARCH_LAMARCKISM, true);
-
-	// Loads the common parameters
-	GeneticAlgorithm::prepareToRun(params);
+	this->checkSetup();
 
 	this->neighbourhood->setup(params);
 	this->localSearch->setup(params);
@@ -343,7 +326,7 @@ bool MemeticAlgorithm::checkSetup() {
 		err = "Invalid Frequency of application of Local Search.";
 		correct = false;
 	}
-	if (this->lsTarget == LS_Target::MALS_SOME
+	if (this->lsFrequency != LS_Frequency::MALS_NONE
 		&& compareDouble(this->lsPercentage, 0.0) <= 0) {
 		err = "Invalid target to apply the Local Search to.";
 		correct = false;
@@ -351,7 +334,7 @@ bool MemeticAlgorithm::checkSetup() {
 
 	if (!correct) {
 		err += " Incorrect value or missing parameter";
-		throw new FuzzyFWException("Memetic Algorithm", err);
+		throw new FJSPException("Memetic Algorithm", err);
 	}
 
 	return true;
@@ -404,9 +387,7 @@ std::pair<Solution *, Objective *> MemeticAlgorithm::run(Problem *problem,
 
 
 	// Evaluate the initial population  -------------------
-	this->evaluationTime = clock();
 	this->evaluatePopulation(currentPopulation);
-	this->evaluationTime = clock() - this->evaluationTime;
 
 	// Stop counting time for the statistic values and debug mode
 	this->totalRuntime = clock() - this->totalRuntime;
@@ -441,18 +422,18 @@ std::pair<Solution *, Objective *> MemeticAlgorithm::run(Problem *problem,
 		algorithmTime = clock();
 		// Select individuals for mating  -----------------
 		timePoint = clock();
-		offspring = this->selection->apply(currentPopulation, this->populationSize,
+		offspring = this->selection->apply(currentPopulation,
 			this->sharedVariables);
 		this->selectionTime += clock() - timePoint;
 
 		// Crossover  -------------------------------------
 		timePoint = clock();
-		this->crossover->apply(offspring, this->crossoverProb, this->sharedVariables);
+		this->crossover->apply(offspring, this->sharedVariables);
 		this->crossoverTime += clock() - timePoint;
 
 		// Mutation  --------------------------------------
 		timePoint = clock();
-		this->mutation->apply(offspring, this->mutationProb, this->sharedVariables);
+		this->mutation->apply(offspring, this->sharedVariables);
 		this->mutationTime += clock() - timePoint;
 
 		// Evaluation.
@@ -555,19 +536,19 @@ void MemeticAlgorithm::applyLocalSearch(Population *population) {
 		best = chosen = population->whoIsBest(this->sharedVariables);
 		this->applyLocalSearch(population, chosen);
 	}
-	if (this->lsTarget == LS_Target::MALS_WORST) {
+	else if (this->lsTarget == LS_Target::MALS_WORST) {
 		chosen = population->whoIsBest(this->sharedVariables,
 			population->size() - 1);
 		this->applyLocalSearch(population, chosen);
 	}
 
-	if (this->lsTarget == LS_Target::MALS_ALL) {
+	else if (this->lsTarget == LS_Target::MALS_ALL) {
 		for (unsigned int i = 0; i < population->size(); i++) {
 			this->applyLocalSearch(population, i);
 		}
 	}
 
-	if (this->lsTarget == LS_Target::MALS_SOME) {
+	else if (this->lsTarget == LS_Target::MALS_SOME) {
 
 		// Take the best individual and then random individuals until
 		// filling the quota
@@ -601,26 +582,21 @@ void MemeticAlgorithm::applyLocalSearch(Population *population) {
 void MemeticAlgorithm::applyLocalSearch(Population *population,
 	const unsigned int individualIdx) {
 
-	Individual *target;
-	FullSolution optimised;
+	Individual *target, *result;
 
 	target = population->getIndividual(individualIdx);
-	optimised = this->localSearch->apply(
-		target->getPhenotype(), target->getFitness(), this->sharedVariables);
-
+	result = this->localSearch->apply(target, this->sharedVariables);
 	this->evaluationsLS += this->localSearch->getEvaluations();
 	this->neighboursLS += this->localSearch->getNeighbours();
 	this->iterationsLS += this->localSearch->getIterations();
 	this->callsLS++;
 
 	// Lamarckism
-	if (this->lsLamarckism)
-		this->sharedVariables->encoder->encode(optimised.first,
-			target, this->sharedVariables);
+	this->sharedVariables->encoder->encode(result->getPhenotype(),
+		result, this->sharedVariables);
 
-	target->updatePhenotype(optimised.first);
-	target->updateFitness(optimised.second);
-	population->setSorted(false);
+	target = population->replaceIndividual(individualIdx, result);
+	delete target;
 }
 
 

@@ -260,7 +260,8 @@ Fitness * EvaluationFJSP_AImin::evaluate(const SharedVars * const svars,
 
 	// Compute the minimum AI
 	for (unsigned int i = 0; i < fuzzyProb->getNumberJobs(); i++) {
-		ai = this->agreementIndex(fuzzyProb->getDueDate(i), schedule->getCTJob(i));
+		ai = this->agreementIndex(fuzzyProb->getDueDate(i),
+			schedule->getCTJob(i), this->isExact);
 		if (compareDouble(ai, minAI) < 0)
 			minAI = ai;
 	}
@@ -273,11 +274,12 @@ Fitness * EvaluationFJSP_AImin::evaluate(const SharedVars * const svars,
 }
 
 
+
 //----- Agreement Index  ------------------------------------------------------
 double EvaluationFJSP_AImin::agreementIndex(const DueDate * const dd,
-	const TFN &completionTime) const {
+ 	const TFN & completionTime, const bool exact) {
 
-	if (this->isExact)
+	if (exact)
 		return dd->agreementIndex(completionTime);
 
 	double c1 = completionTime.a;
@@ -397,7 +399,8 @@ Fitness * EvaluationFJSP_AIavg::evaluate(const SharedVars * const svars,
 
 	// Compute the minimum AI
 	for (unsigned int i = 0; i < nJobs; i++) {
-		ai = this->agreementIndex(fuzzyProb->getDueDate(i), schedule->getCTJob(i));
+		ai = this->agreementIndex(fuzzyProb->getDueDate(i),
+			schedule->getCTJob(i), this->isExact);
 		sum += ai;
 	}
 

@@ -73,6 +73,13 @@ void GeneticAlgorithm::clearAll() {
 	delete this->bestSoFar;
 	this->evolutionStats.clear();
 	EvolutiveAlgorithm::clearAll();
+
+	this->maxGenerations = Infi;
+	this->maxEvaluations = Infi;
+	this->maxRuntime = Infi;
+	this->populationSize = 0;
+	this->printPopulation = false;
+	this->printPopGenerations = 0;
 }
 
 
@@ -242,65 +249,56 @@ void GeneticAlgorithm::prepareToRun(ParameterDB *params) {
 	std::string value;
 
 	// Loads the encoding strategy
-	value = this->sharedVariables->parameters->getString(GA_ENCODING);
+	value = params->getStringLower(GA_ENCODING);
 	this->sharedVariables->encoder = GeneticClassRegister::getEncoderObject(value);
 
 	// Loads the decoding strategy
-	value = this->sharedVariables->parameters->getString(GA_DECODING);
+	value = params->getStringLower(GA_DECODING);
 	this->sharedVariables->decoder = GeneticClassRegister::getDecoderObject(value);
 
 	// Gets the creation strategy
-	value = this->sharedVariables->parameters->getString(GA_CREATION);
+	value = params->getStringLower(GA_CREATION);
 	this->creation = GeneticClassRegister::getCreationObject(value);
 
 	// Gets the crossover operator
-	value = this->sharedVariables->parameters->getString(GA_CROSSOVER);
+	value = params->getStringLower(GA_CROSSOVER);
 	this->crossover = GeneticClassRegister::getCrossoverObject(value);
 
 	// Gets the mutation operator
-	value = this->sharedVariables->parameters->getString(GA_MUTATION);
+	value = params->getStringLower(GA_MUTATION);
 	this->mutation = GeneticClassRegister::getMutationObject(value);
 
 	// Gets the selection operator
-	value = this->sharedVariables->parameters->getString(GA_SELECTION);
+	value = params->getStringLower(GA_SELECTION);
 	this->selection = GeneticClassRegister::getSelectionObject(value);
 
 	// Gets the replacement strategy
-	value = this->sharedVariables->parameters->getString(GA_REPLACE);
+	value = params->getStringLower(GA_REPLACE);
 	this->replacement = GeneticClassRegister::getReplacementObject(value);
 
 	// Gets the maximum number of generations
-	this->maxGenerations = this->sharedVariables->parameters->
-		getInteger(GA_GENERATIONS, -1);
+	this->maxGenerations = params->getInteger(GA_GENERATIONS, -1);
 
 	// Gets the maximum number of generations without improvement
-	this->maxPlateau = this->sharedVariables->parameters->
-		getInteger(GA_NOIMPROVE, -1);
+	this->maxPlateau = params->getInteger(GA_NOIMPROVE, -1);
 
 	// Gets the maximum number of evaluations
-	this->maxEvaluations = this->sharedVariables->parameters->
-		getInteger(GA_EVALUATIONS, -1);
+	this->maxEvaluations = params->getInteger(GA_EVALUATIONS, -1);
 
 	// Gets the time limit
-	this->maxRuntime = this->sharedVariables->parameters->
-		getDouble(GA_TIME, -1.0);
+	this->maxRuntime = params->getDouble(GA_TIME, -1.0);
 
 	// Gets the population size
-	this->populationSize = this->sharedVariables->parameters->
-		getInteger(GA_POP_SIZE, -1);
-	this->printPopGenerations = this->sharedVariables->parameters->
-		getInteger(GA_POP_INTERVAL, 1);
+	this->populationSize = params->getInteger(GA_POP_SIZE, -1);
+	this->printPopGenerations = params->getInteger(GA_POP_INTERVAL, 1);
 
 
 	// Checks if the populations must be printed
-	this->printPopulation = this->sharedVariables->parameters->
-		getBoolean(GA_PRINT_POPULATION, false);
-	this->printPopGenerations = this->sharedVariables->parameters->
-		getInteger(GA_POP_INTERVAL, 1);
+	this->printPopulation = params->getBoolean(GA_PRINT_POPULATION, false);
+	this->printPopGenerations = params->getInteger(GA_POP_INTERVAL, 1);
 
 	// Checks the unit and span to show evolution
-	value = this->sharedVariables->parameters->
-		getStringLower(GA_EVOL_METRIC);
+	value = params->getStringLower(GA_EVOL_METRIC);
 	if (value.compare(GA_EVOL_UNIT_GEN) == 0)
 		showEvolutionTime = false;
 	else if (value.compare(GA_EVOL_UNIT_TIME) == 0)
@@ -309,12 +307,10 @@ void GeneticAlgorithm::prepareToRun(ParameterDB *params) {
 		std::cout << "WARNING: Unit foe showing evolution values not found.";
 		std::cout << " Using generations by default." << std::endl;
 	}
-	this->evolutionSpan = this->sharedVariables->parameters->
-		getDouble(GA_EVOL_SPAN, 1);
+	this->evolutionSpan = params->getDouble(GA_EVOL_SPAN, 1);
 	
 	// Gets the maximum number of evaluations
-	this->maxEvaluations = this->sharedVariables->parameters->
-		getInteger(GA_EVALUATIONS, -1);
+	this->maxEvaluations = params->getInteger(GA_EVALUATIONS, -1);
 
 	this->checkSetup();
 
@@ -405,6 +401,7 @@ std::pair<Solution *, Objective *> GeneticAlgorithm::run(Problem *problem,
 	this->generation = 0;
 	this->evaluations = 0;
 	this->nextSplit = 0.0;
+	this->finished = false;
 
 	// Initialize the RNG
 	this->sharedVariables->rng->init(rngSeed);
@@ -518,6 +515,7 @@ std::pair<Solution *, Objective *> GeneticAlgorithm::run(Problem *problem,
 	}
 
 	this->finished = true;
+	delete currentPopulation;
 
 	std::pair<Solution *, Objective *> returnValue;
 	returnValue.first = this->bestSoFar->getPhenotype()->clone();

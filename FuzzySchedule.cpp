@@ -237,7 +237,7 @@ void FuzzySchedule::updateTails(const TFN::Maximum maxType) {
 		}
 
 		if (jp != -1) {
-			if (visited[jp] || this->taskInfo[mp].ms == -1)
+			if (visited[jp] || this->taskInfo[jp].ms == -1)
 				taskQueue.push(jp);
 			else visited[jp] = true;
 		}

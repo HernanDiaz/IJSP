@@ -4,7 +4,8 @@
  *  Created on: Oct 13, 2017
  *      Author: Juan Jose Palacios
  */
-#pragma once
+#ifndef LOCALSEARCH_CLASSREGISTER_H_
+#define LOCALSEARCH_CLASSREGISTER_H_
 
 
 /*=============================================================================
@@ -32,9 +33,6 @@
 // ADD HERE ALL THE HEADER FILES OF THE OPERATORS YOU HAVE CREATED
 //
 // ****************************************************************************
-#include "NeighbourhoodFJSP_Cmax.h"
-#include "NeighbourhoodFJSP_AI.h"
-#include "NeighbourhoodFJSP_ESD.h"
 
 
 
@@ -42,7 +40,7 @@
 
 
 
-namespace FuzzyFW {
+namespace FJSP {
 
 /**
  * This static class allows to create the different kinds of loca search
@@ -134,31 +132,17 @@ public:
 			&createLocalSearchInstance<LS_HillClimbing>;
 		LocalSearchMap[toUpper("hc")] = 
 			&createLocalSearchInstance<LS_HillClimbing>;
-		LocalSearchMap[toUpper("gradientdescent")] =
-			&createLocalSearchInstance<LS_GradientDescent>;
-		LocalSearchMap[toUpper("gradient-descent")] =
-			&createLocalSearchInstance<LS_GradientDescent>;
-		LocalSearchMap[toUpper("tabu-search")] =
-			&createLocalSearchInstance<LS_Tabu>;
-		LocalSearchMap[toUpper("tabu")] =
-			&createLocalSearchInstance<LS_Tabu>;
-
 
 		// -----  NEIGHBOURHOOD STRUCTURES  ---------------------------------------
 		NeighbourhoodMap[toUpper("fjsp.makespan.n1")] =
-			&createNeighbourhoodInstance<FJSP::NB_ParallelN1_MakespanFJSP>;
+			&createNeighbourhoodInstance<NB_ParallelN1_MakespanFJSP>;
 		NeighbourhoodMap[toUpper("fjsp.aiavg.n1")] =
-			&createNeighbourhoodInstance<FJSP::NB_ParallelN1_AIavgFJSP>;
-		NeighbourhoodMap[toUpper("fjsp.aimin.n1")] =
-			&createNeighbourhoodInstance<FJSP::NB_ParallelN1_AIminFJSP>;
-		NeighbourhoodMap[toUpper("fjsp.aimin.ICAE")] =
-			&createNeighbourhoodInstance<FJSP::NB_ParallelN1_AIminICAE>;
-		NeighbourhoodMap[toUpper("fjsp.esdavg.n1")] =
-			&createNeighbourhoodInstance<FJSP::NB_ParallelN1_ESDavgFJSP>;
-		NeighbourhoodMap[toUpper("fjsp.esdmin.n1")] =
-			&createNeighbourhoodInstance<FJSP::NB_ParallelN1_ESDminFJSP>;
+			&createNeighbourhoodInstance<NB_ParallelN1_AIavgFJSP>;
 	}
 
 };
 
 }
+
+
+#endif /* SCHEDULING_CLASSREGISTER_H_ */

@@ -266,7 +266,7 @@ protected:
 	/*
 	* Indicates if the calculation of the AI is exact of approximated
 	*/
-	char isExact;
+	bool isExact;
 
 
 
@@ -332,13 +332,11 @@ public:
 		return name;
 	}
 
-
-protected:
 	/**
 	* Calculates the agreement index of a completion time against a due-date
 	*/
-	double agreementIndex(const DueDate * const dd, const TFN &completionTime)
-		const;
+	static double agreementIndex(const DueDate * const dd,
+		const TFN &completionTime, const bool exact);
 };
 
 
