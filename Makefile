@@ -4,9 +4,9 @@ CXXFLAGS = -O3 -std=c++0x -I.. -I. -I /usr/local/src
 # flags de enlazado
 LDFLAGS = -lm
 # lista de archivos fuente y ejecutable
-SOURCES = Creation.cpp CreationFJSP.cpp Crossover.cpp CrossoverFJSP.cpp CustomerFVRP.cpp DataPrinter.cpp DecoderFJSP.cpp DecoderFVRP.cpp EncoderFJSP.cpp EncoderFVRP.cpp Evaluation.cpp EvaluationClassRegister.cpp EvaluationFJSP.cpp EvaluationFVRP.cpp EvoLauncher.cpp EvolutiveAlgorithm.cpp Fitness.cpp FitnessMO.cpp FJSPClassRegister.cpp FVRPClassRegister.cpp GeneticAlgorithm.cpp GeneticClassRegister.cpp Individual.cpp LocalSearch.cpp LocalSearchClassRegister.cpp main.cpp MemeticAlgorithm.cpp MemeticNeri.cpp Mutation.cpp Neighbour.cpp NeighbourFJSP.cpp NeighbourFVRP.cpp NeighbourhoodFJSP_AI.cpp NeighbourhoodFJSP_Cmax.cpp NeighbourhoodFJSP_ESD.cpp NeighbourhoodFVRP.cpp NeighbourhoodFVRP_TW.cpp ParameterDB.cpp Population.cpp ProblemFJSP.cpp ProblemFVRP.cpp Random.cpp RandomPopulation.cpp Replacement.cpp RouteFVRP.cpp ScheduleFJSP.cpp Selection.cpp SGS_FJSP.cpp SGS_FJSP_Append.cpp SGS_FJSP_Insertion.cpp SGS_FVRP.cpp SGS_FVRP_Split.cpp SGS_FVRP_Split_TW.cpp StatisticsClassRegister.cpp StatisticsDiversity.cpp StatisticsFJSP.cpp StatisticsFVRP.cpp TabuList.cpp TaskFJSP.cpp TFN.cpp TimeWindow.cpp TimeWindowClassRegister.cpp
+SOURCES = Creation.cpp Crossover.cpp Decoder.cpp DueDate.cpp DueDateClassRegister.cpp Encoder.cpp Evaluation.cpp EvaluationClassRegister.cpp EvoLauncher.cpp EvolutiveAlgorithm.cpp Fitness.cpp FuzzyProblem.cpp FuzzySchedule.cpp FuzzySGS.cpp FuzzySGS_Insertion.cpp FuzzyTask.cpp GeneticAlgorithm.cpp GeneticClassRegister.cpp Individual.cpp main.cpp Mutation.cpp ParameterDB.cpp Population.cpp Random.cpp RandomMT.cpp Replacement.cpp SchedulingClassRegister.cpp Selection.cpp Statistics.cpp TFN.cpp
 
-EXE = ../FuzzyFW
+EXE = ../FJSP_Frame
 
 # lista de archivos .o y .d
 objetos = $(SOURCES:.cpp=.o)

@@ -4,21 +4,18 @@
  *  Created on: Aug 2, 2017
  *      Author: jjpalacios
  */
-
 #ifndef SRC_ECOPERATORS_SELECTION_H_
 #define SRC_ECOPERATORS_SELECTION_H_
 
 
-#include "heading.h"
-#include "SharedVars.h"
 #include "Population.h"
 
 
 namespace FJSP {
 
 // Selection parameters defined in this header file
-#define SELECTION_SIZE "tournament-size"
-#define SELECTION_ROULETTE "roulette-interpolate"
+#define SELECTION_SIZE "selection.tournament-size"
+#define SELECTION_ROULETTE "selection.roulette-interpolate"
 
 
 

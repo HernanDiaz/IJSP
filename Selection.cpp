@@ -33,7 +33,7 @@ Population * Selection::apply(Population *population,
 		const SharedVars *svars) const {
 	Population * newPopulation = new Population();
 	Individual * selected;
-	for(int i=0; i < population->size(); i++) {
+	for(unsigned int i=0; i < population->size(); i++) {
 		selected = this->select(population, svars);
 		newPopulation->addIndividual(selected->clone());
 	}
@@ -270,7 +270,7 @@ Population * SelectionSUS::apply(Population *population,
 
 	// SUS algorithm
 	sum = 0.0;
-	for(unsigned int i=0; i < n; i++) {
+	for(int i=0; i < n; i++) {
 		sum += expected[i];
 		while(sum > ptr) {
 			selectedIndividuals.push_back(population->getIndividual(i));

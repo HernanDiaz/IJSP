@@ -4,7 +4,6 @@
 *  Created on: Jul 23, 2015
 *      Author: Juan Jose Palacios
 */
-
 #ifndef SRC_UTILS_PARAMETERDB_H_
 #define SRC_UTILS_PARAMETERDB_H_
 
@@ -13,6 +12,9 @@
 #include "heading.h"
 
 namespace FJSP {
+
+#define COMMENT_CHAR '#'
+#define PARAM_SEPARATOR '='
 
 
 	/**

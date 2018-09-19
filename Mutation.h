@@ -4,12 +4,9 @@
 *  Created on: August 1, 2017
 *      Author: jjpalacios
 */
-
 #ifndef SRC_ECOPERATORS_MUTATION_H_
 #define SRC_ECOPERATORS_MUTATION_H_
 
-#include "heading.h"
-#include "SharedVars.h"
 #include "Population.h"
 
 

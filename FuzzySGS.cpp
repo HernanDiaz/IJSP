@@ -56,7 +56,7 @@ void FuzzySGS::reset() {
 //=============================================================================
 //=====  Build schedule  ======================================================
 FuzzySchedule * FuzzySGS_Insertion::buildSchedule(const SharedVars * svars,
-	const std::vector<int> &order) {
+	std::vector<int> &order) {
 
 	if (svars->problem == NULL)
 		throw new FJSPException("SGS", "Problem instance not created");
@@ -199,7 +199,7 @@ void FuzzySGS_Append::setup(const ParameterDB *params) {
 //=============================================================================
 //=====  Build schedule  ======================================================
 FuzzySchedule * FuzzySGS_Append::buildSchedule(const SharedVars * svars,
-	const std::vector<int> &order) {
+	std::vector<int> &order) {
 
 	FuzzyProblem * fuzzyProb =
 		dynamic_cast<FuzzyProblem *>(svars->problem);
@@ -309,7 +309,7 @@ void FuzzySGS_Dense::setup(const ParameterDB *params) {
 //=============================================================================
 //=====  Build schedule  ======================================================
 FuzzySchedule * FuzzySGS_Dense::buildSchedule(const SharedVars * svars,
-	const std::vector<int> &order) {
+	std::vector<int> &order) {
 
 	int chosenTask, jobPred, taskIdx;
 	const FuzzyTask *task;
@@ -439,7 +439,7 @@ void FuzzySGS_fGYT1::setup(const ParameterDB *params) {
 //=============================================================================
 //=====  Build schedule  ======================================================
 FuzzySchedule * FuzzySGS_fGYT1::buildSchedule(const SharedVars * svars,
-	const std::vector<int> &order) {
+	std::vector<int> &order) {
 
 	int jobPred, taskIdx, chosenTask;
 	const FuzzyTask *task;
@@ -561,7 +561,7 @@ void FuzzySGS_fGYT2::setup(const ParameterDB *params) {
 //=============================================================================
 //=====  Build schedule  ======================================================
 FuzzySchedule * FuzzySGS_fGYT2::buildSchedule(const SharedVars * svars,
-	const std::vector<int> &order) {
+	std::vector<int> &order) {
 
 	int jobPred, taskIdx, chosenTask;
 	bool conflict;

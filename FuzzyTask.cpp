@@ -48,6 +48,7 @@ FuzzyTask & FuzzyTask::operator = (const FuzzyTask &src) {
 	this->jp =	src.jp;
 	this->js =	src.js;
 	this->p =	src.p;
+	return *this;
 }
 
 }

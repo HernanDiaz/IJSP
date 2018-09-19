@@ -4,11 +4,9 @@
 *  Created on: Sep 22, 2017
 *      Author: jjpalacios
 */
-
 #ifndef ECOBJECTS_PROBLEM_H_
 #define ECOBJECTS_PROBLEM_H_
 
-#include "heading.h"
 #include "ParameterDB.h"
 
 namespace FJSP {

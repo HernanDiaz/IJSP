@@ -4,7 +4,6 @@
  *  Created on: Jun 23, 2017
  *      Author: jjpalacios
  */
-
 #ifndef SRC_ECOBJECTS_POPULATION_H_
 #define SRC_ECOBJECTS_POPULATION_H_
 

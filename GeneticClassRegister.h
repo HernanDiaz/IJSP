@@ -4,7 +4,6 @@
  *  Created on: Aug 1, 2017
  *      Author: Juan Jose Palacios
  */
-
 #ifndef GENETIC_CLASSREGISTER_H_
 #define GENETIC_CLASSREGISTER_H_
 
@@ -28,13 +27,12 @@
 =============================================================================*/
 
 
-#include "heading.h"
-#include "Individual.h"
 #include "Creation.h"
 #include "Crossover.h"
 #include "Mutation.h"
 #include "Selection.h"
 #include "Replacement.h"
+#include "Decoder.h"
 // ****************************************************************************
 //
 // ADD HERE ALL THE HEADER FILES OF THE OPERATORS YOU HAVE CREATED
@@ -234,9 +232,11 @@ public:
 		// -----  ENCODING FUNCTION  ------------------------------------------
 		EncoderMap[toUpper("permutation")] = &createEncoderInstance<EncoderFJSP_Order>;
 		EncoderMap[toUpper("task-order")] = &createEncoderInstance<EncoderFJSP_Order>;
+		EncoderMap[toUpper("taskorder")] = &createEncoderInstance<EncoderFJSP_Order>;
 		EncoderMap[toUpper("permutation-reap")] = &createEncoderInstance<EncoderFJSP_JobOrder>;
 		EncoderMap[toUpper("permutationreap")] = &createEncoderInstance<EncoderFJSP_JobOrder>;
 		EncoderMap[toUpper("job-order")] = &createEncoderInstance<EncoderFJSP_JobOrder>;
+		EncoderMap[toUpper("joborder")] = &createEncoderInstance<EncoderFJSP_JobOrder>;
 
 		// -----  DECODING FUNCTION  ------------------------------------------
 		DecoderMap[toUpper("permutation")] = &createDecoderInstance<DecoderFJSP_Order>;
@@ -244,9 +244,11 @@ public:
 		DecoderMap[toUpper("permutation-reap")] = &createDecoderInstance<DecoderFJSP_JobOrder>;
 		DecoderMap[toUpper("permutationreap")] = &createDecoderInstance<DecoderFJSP_JobOrder>;
 		DecoderMap[toUpper("job-order")] = &createDecoderInstance<DecoderFJSP_JobOrder>;
+		DecoderMap[toUpper("joborder")] = &createDecoderInstance<DecoderFJSP_JobOrder>;
 
 		// -----  CREATION OPERATORS  -----------------------------------------
 		CreationMap[toUpper("fjsp-random")] = &createCreationInstance<CreationRandomSchedule>;
+		CreationMap[toUpper("fjsprandom")] = &createCreationInstance<CreationRandomSchedule>;
 
 		// -----  CROSSOVER OPERATORS  ----------------------------------------
 		CrossoverMap[toUpper("jox")] = &createCrossoverInstance<Crossover_JOX>;

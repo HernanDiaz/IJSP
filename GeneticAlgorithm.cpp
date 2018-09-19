@@ -467,7 +467,7 @@ std::pair<Solution *, Objective *> GeneticAlgorithm::run(Problem *problem,
 		stats.push_back(this->bestSoFar->getFitness()->toDouble());	// Best solution
 		stats.push_back(currentPopulation->getAverageFitness()); // Average quality
 		evolutionStats.push_back(stats);
-#if DEBUG
+#ifdef DEBUG
 		std::cout << "Generation " << this->generation << ":" << std::endl;
 		std::cout << "Best fitness: " << this->bestSoFar->getFitness();
 		std::cout << std::endl << std::endl;

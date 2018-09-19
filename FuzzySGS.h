@@ -4,7 +4,6 @@
 *  Created on: June 1, 2017
 *      Author: Juan Jose Palacios
 */
-
 #ifndef FJSPPROBLEM_FUZZYSGS_H_
 #define FJSPPROBLEM_FUZZYSGS_H_
 
@@ -58,7 +57,7 @@ protected:
 	/*
 	* Flag indicating if the schedule is initialized
 	*/
-	char isCreated = false;
+	char isCreated;
 
 
 
@@ -69,8 +68,7 @@ public:
 	/*
 	* Default constructor
 	*/
-	FuzzySGS(const ParameterDB *params=NULL)
-		: schedule(NULL), isCreated(false) { }
+	FuzzySGS(const ParameterDB *params = NULL);
 
 
 	/*
@@ -127,7 +125,7 @@ public:
 	* This method requires shared variables, as for instance, the problem
 	*/
 	virtual FuzzySchedule * buildSchedule(const SharedVars * const svars,
-		const std::vector<int> &order) = 0;
+		std::vector<int> &order) = 0;
 
 
 	/*
@@ -233,7 +231,7 @@ public:
 	* the array.
 	*/
 	virtual FuzzySchedule * buildSchedule(const SharedVars * const svars,
-		const std::vector<int> &order);
+		std::vector<int> &order);
 
 
 protected:
@@ -350,7 +348,7 @@ public:
 	* shared variables to have access to the problem to solve
 	*/
 	virtual FuzzySchedule * buildSchedule(const SharedVars * const svars,
-		const std::vector<int> &order);
+		std::vector<int> &order);
 
 
 
@@ -465,7 +463,7 @@ public:
 	* shared variables to have access to the problem to solve
 	*/
 	virtual FuzzySchedule * buildSchedule(const SharedVars * const svars,
-		const std::vector<int> &order);
+		std::vector<int> &order);
 };
 
 
@@ -578,7 +576,7 @@ public:
 	* to solve draws
 	*/
 	virtual FuzzySchedule * buildSchedule(const SharedVars * const svars,
-		const std::vector<int> &order);
+		std::vector<int> &order);
 };
 
 
@@ -681,7 +679,7 @@ public:
 	* to solve draws
 	*/
 	virtual FuzzySchedule * buildSchedule(const SharedVars * const svars,
-		const std::vector<int> &order);
+		std::vector<int> &order);
 };
 
 

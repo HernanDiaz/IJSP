@@ -6,23 +6,24 @@
 *  Created on: Jul 23, 2015
 *      Author: jjpalacios
 */
-
 #ifndef HEADING_H_
 #define HEADING_H_
 
 #include <algorithm>
 #include <cmath>
 #include <ctime>
+#include <time.h>
 #include <fstream>
 #include <iostream>
 #include <limits>
 #include <sstream>
+#include <cstring>
 #include <vector>
 #include <queue>
 #include <map>
+#include <list>
 
 #include "FJSPException.h"
-#include "Random.h"
 #include "RandomMT.h"
 
 #define Infd std::numeric_limits<double>::max()
@@ -66,6 +67,8 @@ static char* getWorkDir(char* buffer, int maxLength) {
 	return getcwd(buffer, maxLength);
 }
 
+#define localtime_s(x, y) localtime_r(y, x)
+
 #endif
 
 // Auxiliary function to convert a value to string
@@ -106,7 +109,7 @@ inline int roundToInt(double a) {
 }
 
 // Auxiliary function to round real numbers
-double round(double a, const int nDigits = 0) {
+static double round(double a, const int nDigits = 0) {
 	double sol = a;
 	int pow = 1;
 	for (int i = 0; i < nDigits; i++)
@@ -117,7 +120,7 @@ double round(double a, const int nDigits = 0) {
 
 
 // Function to compare double numbers up to certain accuracy
-int compareDouble(const double a, const double b) {
+static int compareDouble(const double a, const double b) {
 	if (a < b - AccuracyError)
 		return -1;
 	if (a > b + AccuracyError)

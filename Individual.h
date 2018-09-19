@@ -4,11 +4,9 @@
  *  Created on: June 22, 2017
  *      Author: jjpalacios
  */
-
 #ifndef ECOBJECTS_INDIVIDUAL_H_
 #define ECOBJECTS_INDIVIDUAL_H_
 
-#include "heading.h"
 #include "SharedVars.h"
 #include "Fitness.h"
 #include "Solution.h"
@@ -45,7 +43,7 @@ class Individual {
 	//=========================================================================
 public:
 	// Different types of Individuals implemented
-	static enum Type { ARRAY_INTEGER };
+	enum IndividualType { ARRAY_INTEGER };
 
 	/*
 	* Identifier of the individual
@@ -137,14 +135,14 @@ public:
 	* Check if the phenotype of the individual is updated to the genotype
 	*/
 	bool isPhenotypeUpdated() const {
-		return this->phenotypeUpdated;
+		return (bool)this->phenotypeUpdated;
 	}
 
 	/**
 	* Check if the individual has been already evaluated
 	*/
 	bool isEvaluated() const {
-		return this->evaluated;
+		return (bool)this->evaluated;
 	}
 	
 
@@ -162,7 +160,7 @@ public:
 	*
 	* @return The type of individual
 	*/
-	virtual Type getType() const = 0;
+	virtual IndividualType getType() const = 0;
 };
 
 
@@ -238,8 +236,8 @@ public:
 	/**
 	* Get the genotype of the individual as an array of real values
 	*/
-	virtual std::vector<int> & getGenotype() const {
-		return (const std::vector<int>)this->genotype;
+	virtual std::vector<int> & getGenotype() {
+		return (std::vector<int> &)this->genotype;
 	}
 
 	/**
@@ -274,8 +272,8 @@ public:
 	*
 	* @return The type of individual
 	*/
-	virtual Type getType() const {
-		return Individual::Type::ARRAY_INTEGER;
+	virtual IndividualType getType() const {
+		return Individual::ARRAY_INTEGER;
 	}
 
 

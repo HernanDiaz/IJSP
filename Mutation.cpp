@@ -42,7 +42,7 @@ void Mutation::setup(ParameterDB *parameters) {
 //=============================================================================
 //-----  Apply (Population)  --------------------------------------------------
 void Mutation::apply(Population *population, const SharedVars *svars) const {
-	for(int i=0; i < population->size(); i++) {
+	for(unsigned int i=0; i < population->size(); i++) {
 		if(svars->rng->getProbability() < this->probability)
 			apply(population->getIndividual(i), svars);
 	}
@@ -181,7 +181,7 @@ void MutationInversion::apply(Individual *individual,
 	if (ind != NULL) {
 		int gene;
 		while (left < right) {
-			int gene = ind->getGene(left);
+			gene = ind->getGene(left);
 			ind->setGene(left, ind->getGene(right));
 			ind->setGene(right, gene);
 			left++;

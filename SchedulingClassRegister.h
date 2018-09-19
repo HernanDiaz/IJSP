@@ -1,10 +1,9 @@
 /*
- * ProblemClassRegister.h
+ * SchedulingClassRegister.h
  *
  *  Created on: May 17, 2017
  *      Author: Juan Jose Palacios
  */
-
 #ifndef SCHEDULING_CLASSREGISTER_H_
 #define SCHEDULING_CLASSREGISTER_H_
 
@@ -28,8 +27,6 @@
 =============================================================================*/
 
 
-#include "heading.h"
-#include "DueDate.h"
 #include "FuzzySGS.h"
 // ****************************************************************************
 //
@@ -66,37 +63,17 @@ protected:
 	// Methods to create an instance of different operators.
 	//=========================================================================
 	template<typename T>
-	static DueDate * createDueDateInstance() { return new T; }
-
-	template<typename T>
 	static FuzzySGS * createSGSInstance() { return new T; }
 
 
 	// Mapping for each operator. These is the register of all classes and is
 	// used to create objects of those classes from a string.
 	//=========================================================================
-	static std::map<std::string, DueDate*(*)()>	DueDateMap;
 	static std::map<std::string, FuzzySGS*(*)()> SGSMap;
 
 
 
 public:
-	/**
-	 * Method to create a Due Date from the name given in the
-	 * configuration file
-	 *
-	 * @param name Name of the due date to use
-	 * @return An object of the specified type of due date. Null if the
-	 * type is not registered
-	 */
-	static DueDate * getDueDateObject(std::string name) {
-		std::map<std::string, DueDate*(*)()>::iterator iter;
-		iter = SchedulingClassRegister::DueDateMap.find(toUpper(name));
-		if (iter == DueDateMap.end())
-			return NULL;
-		return iter->second();
-	}
-
 	/**
 	* Method to create a SGS from the name given in the
 	* configuration file
@@ -129,12 +106,6 @@ public:
 	 * in the configuration files
 	 */
 	static void registerClasses() {
-
-		// -----  DUEDATE COMPONENT  ------------------------------------------
-		DueDateMap[toUpper("crisp")] =	&createDueDateInstance<DueDateCrisp>;
-		DueDateMap[toUpper("strict")] = &createDueDateInstance<DueDateCrisp>;
-		DueDateMap[toUpper("linear")] = &createDueDateInstance<DueDateLinear>;
-		DueDateMap[toUpper("flexible")] = &createDueDateInstance<DueDateLinear>;
 
 		// -----  FUZZY SGS TYPE  ---------------------------------------------
 		SGSMap[toUpper("insertion")] = &createSGSInstance<FuzzySGS_Insertion>;

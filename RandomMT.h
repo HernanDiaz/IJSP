@@ -4,7 +4,6 @@
 *  Created on: Jul 23, 2015
 *      Author: Juan Jose Palacios
 */
-
 #ifndef UTILS_RANDOM_MT_H_
 #define UTILS_RANDOM_MT_H_
 

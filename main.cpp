@@ -8,7 +8,7 @@
 #include "EvoLauncher.h"
 
 // Test variables (for debugging)
-#define DEBUG 1
+#define DEBUG
 
 int main(int argc, const char *argv[]) {
 	FJSP::EvoLauncher *launcher;
@@ -28,11 +28,13 @@ int main(int argc, const char *argv[]) {
 
 	} catch(FJSP::FJSPException &ex) {
 		std::cout << ex.what() << std::endl << std::endl;
+		system("PAUSE");
 		return -2;
 	}
 
 	delete launcher;
 
+	system("PAUSE");
 	return 0;
 }
 

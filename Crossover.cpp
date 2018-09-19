@@ -5,9 +5,9 @@
  *      Author: jjpalacios
  */
 
-#include "Crossover.h"
+#include "./Crossover.h"
 
-namespace FuzzyFW {
+namespace FJSP {
 
 //=============================================================================
 //
@@ -18,9 +18,21 @@ namespace FuzzyFW {
 //		CONSTRUCTORS / INITIALIZERS
 //=============================================================================
 //-----  Main constructor  ----------------------------------------------------
-Crossover::Crossover(ParameterDB *parameters) {
+Crossover::Crossover(ParameterDB *parameters)
+: probLabel(CROSSOVER_PROBABILITY), probability(0.0) {
 	if(parameters != NULL)
 		this->setup(parameters);
+}
+
+//-----  Setup method  --------------------------------------------------------
+void Crossover::setup(ParameterDB *parameters) {
+	this->probability = parameters->getDouble(this->probLabel, -1.0);
+	if(compareDouble(this->probability, 0.0) < 0
+		|| compareDouble(this->probability, 1.0) > 0) {
+		std::string err = "Invalid crossover probability.";
+		err += " Incorrect value or missing parameter.";
+		throw new FJSPException("Crossover",err);
+	}
 }
 
 
@@ -29,12 +41,11 @@ Crossover::Crossover(ParameterDB *parameters) {
 //		METHODS
 //=============================================================================
 //-----  apply (Population)  --------------------------------------------------
-void Crossover::apply(Population *population, const double probability,
-	const SharedVarsEvolutionary *svars) const {
+void Crossover::apply(Population *population, const SharedVars *svars) const {
 	for(unsigned int i=0; i < population->size(); i+=2) {
 		// If there are two parents, generate two offspring
 		if((i+1) < population->size()) {
-			if (svars->rng->getProbability() < probability) {
+			if (svars->rng->getProbability() < this->probability) {
 				// Cross the individuals to generate two offspring
 				this->apply(population->getIndividual(i),
 					population->getIndividual(i + 1), svars);
@@ -49,183 +60,220 @@ void Crossover::apply(Population *population, const double probability,
 
 
 
-
 //=============================================================================
 //
-//	Abstract class Crossover_OBC
+//	Class Crossover_JOX
 //
 //=============================================================================
 //=============================================================================
 //		METHODS
 //=============================================================================
-//-----  apply (Pair)  --------------------------------------------------------
-void Crossover_OBC::apply(Individual *ind1, Individual *ind2,
-	const SharedVarsEvolutionary *svars) const {
+//=====  Apply (Individual)  ==================================================
+void Crossover_JOX::apply(Individual *ind1, Individual *ind2,
+	const SharedVars *svars) const {
 
-	FuzzyFW::IndividualArrayInt *idv1, *idv2;
-	std::vector<int> offs1, offs2;
-	unsigned int nGenes, insertPos, parentPos, pos1, pos2;
-	std::vector<char> remove1, remove2;
-	char found;
+	IndividualArrayInt *idv1, *idv2;
 
 	if (ind1->size() != ind2->size()) {
-		throw new FuzzyFWException("Crossover", "Individual sizes must match.");
+		throw new FJSPException("Crossover", "Individual sizes must match.");
 	}
 
 	// Too small for crossover
 	if (ind1->size() < 2 || ind2->size() < 2)
 		return;
+
+	if(dynamic_cast<EncoderFJSP_Order *>(svars->encoder) != NULL) {
+		idv1 = dynamic_cast<IndividualArrayInt *>(ind1);
+		idv2 = dynamic_cast<IndividualArrayInt *>(ind2);
+		return this->applyPermutation(idv1, idv2, svars);
+	}
+	if (dynamic_cast<EncoderFJSP_JobOrder *>(svars->encoder) != NULL) {
+		idv1 = dynamic_cast<IndividualArrayInt *>(ind1);
+		idv2 = dynamic_cast<IndividualArrayInt *>(ind2);
+		return this->applyJobPermutation(idv1, idv2, svars);
+	}
+	std::string errorMsg = "Individuals must be coded as permutation";
+	errorMsg += " to use this crossover operator";
+	throw new FJSPException("Crossover", errorMsg);
+}
+
+
+
+//=====  Apply (Permutation)  =================================================
+void Crossover_JOX::applyPermutation(IndividualArrayInt *ind1,
+	IndividualArrayInt *ind2, const SharedVars *svars) const {
 	
-	idv1 = dynamic_cast<FuzzyFW::IndividualArrayInt *>(ind1);
-	idv2 = dynamic_cast<FuzzyFW::IndividualArrayInt *>(ind2);
-	if (idv1 == NULL || idv2 == NULL) {
-		std::string errorMsg = "This crossover operator can be applied only";
-		errorMsg += " to permutations";
-		throw new FuzzyFWException("Crossover", errorMsg);
+	unsigned int count1, count2;
+	int gene, job;
+	bool different1, different2;
+	std::vector<int> mask;
+	std::vector<int> offs1, offs2;
+
+	// Convert the problem type
+	FuzzyProblem * fuzzyProb =
+		dynamic_cast<FuzzyProblem *>(svars->problem);
+	if (fuzzyProb == NULL) {
+		std::string errorMsg = "This enconding function works only with ";
+		errorMsg += "fuzzy problems.";
+		throw new FJSPException("Creation", errorMsg);
 	}
 
-
-	// Find crossover points
-	nGenes = ind1->size();
-	pos1 = pos2 = svars->rng->getInteger(0, nGenes - 1);
-	while(pos1 == pos2)
-		pos2 = svars->rng->getInteger(0, nGenes - 1);
-	if (pos1 > pos2)
-		std::swap(pos1,pos2);
-
-	// Check the genes contained in the defined string
-	remove1.resize(nGenes, false);
-	remove2.resize(nGenes, false);
-	offs1.resize(nGenes, -1);
-	offs2.resize(nGenes, -1);
-
-	for (unsigned int i = pos1; i <= pos2; i++) {
-		found = false;
-		for (unsigned int j = 0; j < nGenes && !found; j++) {
-			if (idv2->getGene(j) == idv1->getGene(i)) {
-				remove1[j] = true;
-				found = true;
-			}
-		}
-		found = false;
-		for (unsigned int j = 0; j < nGenes && !found; j++) {
-			if (idv1->getGene(j) == idv2->getGene(i)) {
-				remove2[j] = true;
-				found = true;
-			}
-		}
-		offs1[i] = idv1->getGene(i);
-		offs2[i] = idv2->getGene(i);
+	// Choose the jobs to keep in position
+	mask.resize(fuzzyProb->getNumberJobs());
+	for (unsigned int i = 0; i < fuzzyProb->getNumberJobs(); i++) {
+		if (svars->rng->getProbability() < 0.5)
+			mask[i] = 0;
+		else mask[i] = 1;
 	}
-
 
 	// Build the first offspring
-	insertPos = parentPos = 0;
-	while (insertPos < nGenes) {
-		while (remove1[parentPos])
-			parentPos++;
-		offs1[insertPos] = idv2->getGene(parentPos);
-		insertPos++;
-		parentPos++;
-		if (insertPos == pos1)
-			insertPos = pos2 + 1;
+	offs1.resize(ind1->size());
+
+	different1 = false;
+	count1 = count2 = 0;
+	while (count1 < ind1->size()) {
+		gene = ind1->getGene(count1);
+		job = fuzzyProb->getTask(gene)->job;
+
+		if (mask[job] == 1)
+			offs1[count1] = gene;
+		else {
+			gene = ind2->getGene(count2);
+			job = fuzzyProb->getTask(gene)->job;
+
+			while (count2 < ind2->size() - 1 && mask[job] == 1) {
+				count2++;
+				gene = ind2->getGene(count2);
+				job = fuzzyProb->getTask(gene)->job;
+			}
+			offs1[count1] = gene;
+			count2++;
+		}
+		if (offs1[count1] != ind1->getGene(count1))
+			different1 = true;
+		count1++;
 	}
+
 
 	// Build the second offspring
-	insertPos = parentPos = 0;
-	while (insertPos < nGenes) {
-		while (remove2[parentPos])
-			parentPos++;
-		offs2[insertPos] = idv1->getGene(parentPos);
-		insertPos++;
-		parentPos++;
-		if (insertPos == pos1)
-			insertPos = pos2 + 1;
-	}
+	offs2.resize(ind2->size());
 
-	idv1->setGenotype(offs1);
-	idv2->setGenotype(offs2);
-}
+	different2 = false;
+	count1 = count2 = 0;
+	while (count1 < ind2->size()) {
+		gene = ind2->getGene(count1);
+		job = fuzzyProb->getTask(gene)->job;
 
-
-
-
-
-//=============================================================================
-//
-//	Abstract class Crossover_CBC
-//
-//=============================================================================
-//=============================================================================
-//		METHODS
-//=============================================================================
-//-----  apply (Pair)  --------------------------------------------------------
-void Crossover_CBC::apply(Individual *ind1, Individual *ind2,
-	const SharedVarsEvolutionary *svars) const {
-
-	FuzzyFW::IndividualArrayInt *idv1, *idv2;
-	std::vector<int> offs1, offs2, cycleIds;
-	unsigned int nGenes, index, cont, cycle;
-	int initialValue, currentValue;
-
-	if (ind1->size() != ind2->size()) {
-		throw new FuzzyFWException("Crossover", "Individual sizes must match.");
-	}
-
-	// Too small for crossover
-	if (ind1->size() < 2 || ind2->size() < 2)
-		return;
-
-	idv1 = dynamic_cast<FuzzyFW::IndividualArrayInt *>(ind1);
-	idv2 = dynamic_cast<FuzzyFW::IndividualArrayInt *>(ind2);
-	if (idv1 == NULL || idv2 == NULL) {
-		std::string errorMsg = "This crossover operator can be applied only";
-		errorMsg += " to permutations";
-		throw new FuzzyFWException("Crossover", errorMsg);
-	}
-
-	nGenes = ind1->size();
-
-	// Identify the cycles
-	cycle = 1;
-	cycleIds.resize(nGenes, -1);
-	cont = 0;
-	while (cont < nGenes) {
-		// Find the initial value for the cycle
-		index = cycle - 1;
-		while (cycleIds[index] >= 0)
-			index++;
-
-		initialValue = idv1->getGene(index);
-		currentValue = idv2->getGene(index);
-		cycleIds[index] = cycle;
-		cont++;
-
-		// Look for the current value
-		while (currentValue != initialValue) {
-			index = cycle;
-			while (idv1->getGene(index) != currentValue)
-				index++;
-			cycleIds[index] = cycle;
-			cont++;
-			currentValue = idv2->getGene(index);
-		}
-		cycle++;
-	}
-
-	for (unsigned int i = 0; i < nGenes; i++) {
-		if (cycleIds[i] % 2 == 0) {
-			offs1.push_back(idv2->getGene(i));
-			offs2.push_back(idv1->getGene(i));
-		}
+		if (mask[job] == 1)
+			offs2[count1] = gene;
 		else {
-			offs1.push_back(idv1->getGene(i));
-			offs2.push_back(idv2->getGene(i));
+			gene = ind1->getGene(count2);
+			job = fuzzyProb->getTask(gene)->job;
+
+			while (count2 < ind1->size() - 1 && mask[job] == 1) {
+				count2++;
+				gene = ind1->getGene(count2);
+				job = fuzzyProb->getTask(gene)->job;
+			}
+			offs2[count1] = gene;
+			count2++;
 		}
+		if (offs2[count1] != ind2->getGene(count1))
+			different2 = true;
+		count1++;
+	}
+	
+	if (different1)
+		ind1->setGenotype(offs1);
+	if (different2)
+		ind2->setGenotype(offs2);
+}
+
+
+
+//=====  Apply (Permutation with Repetitions)  ================================
+void Crossover_JOX::applyJobPermutation(IndividualArrayInt *ind1,
+	IndividualArrayInt *ind2, const SharedVars *svars) const {
+
+	unsigned int count1, count2;
+	int gene;
+	bool different1, different2;
+	std::vector<int> mask;
+	std::vector<int> offs1, offs2;
+
+
+	// Convert the problem type
+	FuzzyProblem * fuzzyProb =
+		dynamic_cast<FuzzyProblem *>(svars->problem);
+	if (fuzzyProb == NULL) {
+		std::string errorMsg = "This enconding function works only with ";
+		errorMsg += "fuzzy problems.";
+		throw new FJSPException("Creation", errorMsg);
 	}
 
-	idv1->setGenotype(offs1);
-	idv2->setGenotype(offs2);
+	// Choose the jobs to keep in position
+	mask.resize(fuzzyProb->getNumberJobs());
+	for (unsigned int i = 0; i < fuzzyProb->getNumberJobs(); i++) {
+		if (svars->rng->getProbability() < 0.5)
+			mask[i] = 0;
+		else mask[i] = 1;
+	}
+
+	// Build the first offspring
+	offs1.resize(ind1->size());
+
+	different1 = false;
+	count1 = count2 = 0;
+	while (count1 < ind1->size()) {
+		gene = ind1->getGene(count1);
+
+		if (mask[gene] == 1)
+			offs1[count1] = gene;
+		else {
+			gene = ind2->getGene(count2);
+
+			while (count2 < ind2->size() - 1 && mask[gene] == 1) {
+				count2++;
+				gene = ind2->getGene(count2);
+			}
+			offs1[count1] = gene;
+			count2++;
+		}
+		if (offs1[count1] != ind1->getGene(count1))
+			different1 = true;
+		count1++;
+	}
+
+
+	// Build the second offspring
+	offs2.resize(ind2->size());
+
+	different2 = false;
+	count1 = count2 = 0;
+	while (count1 < ind2->size()) {
+		gene = ind2->getGene(count1);
+
+		if (mask[gene] == 1)
+			offs2[count1] = gene;
+		else {
+			gene = ind1->getGene(count2);
+
+			while (count2 < ind1->size() - 1 && mask[gene] == 1) {
+				count2++;
+				gene = ind1->getGene(count2);
+			}
+			offs2[count1] = gene;
+			count2++;
+		}
+		if (offs2[count1] != ind2->getGene(count1))
+			different2 = true;
+		count1++;
+	}
+
+	if (different1)
+		ind1->setGenotype(offs1);
+	if (different2)
+		ind2->setGenotype(offs2);
 }
 
 
@@ -234,94 +282,226 @@ void Crossover_CBC::apply(Individual *ind1, Individual *ind2,
 
 //=============================================================================
 //
-//	Abstract class Crossover_PMX
+//	Class Crossover_Bierwith
 //
 //=============================================================================
 //=============================================================================
 //		METHODS
 //=============================================================================
-//-----  apply (Pair)  --------------------------------------------------------
-void Crossover_PMX::apply(Individual *ind1, Individual *ind2,
-	const SharedVarsEvolutionary *svars) const {
+//=====  Apply (Individual)  ==================================================
+void Crossover_Bierwirth::apply(Individual *ind1, Individual *ind2,
+	const SharedVars *svars) const {
 
-	FuzzyFW::IndividualArrayInt *idv1, *idv2;
-	std::vector<int> offs1, offs2;
-	std::vector<int> origin1, origin2;
-	unsigned int nGenes, pos, pos1, pos2, cont;
+	IndividualArrayInt *idv1, *idv2;
 
 	if (ind1->size() != ind2->size()) {
-		throw new FuzzyFWException("Crossover", "Individual sizes must match.");
+		throw new FJSPException("Crossover", "Individual sizes must match.");
 	}
 
 	// Too small for crossover
 	if (ind1->size() < 2 || ind2->size() < 2)
 		return;
 
-	idv1 = dynamic_cast<FuzzyFW::IndividualArrayInt *>(ind1);
-	idv2 = dynamic_cast<FuzzyFW::IndividualArrayInt *>(ind2);
-	if (idv1 == NULL || idv2 == NULL) {
-		std::string errorMsg = "This crossover operator can be applied only";
-		errorMsg += " to permutations";
-		throw new FuzzyFWException("Crossover", errorMsg);
+	if (dynamic_cast<EncoderFJSP_Order *>(svars->encoder) != NULL) {
+		idv1 = dynamic_cast<IndividualArrayInt *>(ind1);
+		idv2 = dynamic_cast<IndividualArrayInt *>(ind2);
+		return this->applyPermutation(idv1, idv2, svars);
 	}
-
-	nGenes = ind1->size();
-
-	// Find crossover points
-	nGenes = ind1->size();
-	pos1 = pos2 = svars->rng->getInteger(0, nGenes - 1);
-	while (pos1 == pos2)
-		pos2 = svars->rng->getInteger(0, nGenes - 1);
-	if (pos1 > pos2)
-		std::swap(pos1, pos2);
-
-	for (unsigned int i = 0; i < nGenes; i++) {
-		// Look for the gene on the other parent
-		cont = pos1;
-		while (cont <= pos2 && idv1->getGene(cont) != idv2->getGene(i))
-			cont++;
-		if (cont <= pos2)
-			origin1.push_back(cont);
-		else
-			origin1.push_back(-1);
-
-		cont = pos1;
-		while (cont <= pos2 && idv2->getGene(cont) != idv1->getGene(i))
-			cont++;
-		if (cont <= pos2)
-			origin2.push_back(cont);
-		else
-			origin2.push_back(-1);
+	if (dynamic_cast<EncoderFJSP_JobOrder *>(svars->encoder) != NULL) {
+		idv1 = dynamic_cast<IndividualArrayInt *>(ind1);
+		idv2 = dynamic_cast<IndividualArrayInt *>(ind2);
+		return this->applyJobPermutation(idv1, idv2, svars);
 	}
-
-
-	for (unsigned int i = 0; i < nGenes; i++) {
-		if (i >= pos1 && i <= pos2) {
-			offs1.push_back(idv1->getGene(i));
-			offs2.push_back(idv2->getGene(i));
-		}
-
-		pos = i;
-		while (origin1[pos] >= 0)
-			pos = origin1[pos];
-		offs1.push_back(idv2->getGene(pos));
-
-		pos = i;
-		while (origin2[pos] >= 0)
-			pos = origin2[pos];
-		offs2.push_back(idv1->getGene(pos));
-	}
-
-	idv1->setGenotype(offs1);
-	idv2->setGenotype(offs2);
+	std::string errorMsg = "Individuals must be coded as permutation in";
+	errorMsg += " to use this crossover operator";
+	throw new FJSPException("Crossover", errorMsg);
 }
 
 
 
+//=====  Apply (Permutation)  =================================================
+void Crossover_Bierwirth::applyPermutation(IndividualArrayInt *ind1,
+	IndividualArrayInt *ind2, const SharedVars *svars) const {
+
+	std::vector<int> offs1, offs2;
+	unsigned int nGenes, pos1, pos2, length;
+	std::vector<char> content1, content2;
+
+
+	// Find crossover point and string length
+	nGenes = ind1->size();
+	pos1 = svars->rng->getInteger(0, nGenes - 1);
+	length = svars->rng->getInteger(
+		roundToCeil(nGenes / 3.0), nGenes / 2);
+
+	// Check the genes contained in the defined string
+	content1.resize(nGenes, false);
+	content2.resize(nGenes, false);
+
+	for (unsigned int i = 0; i < length; i++) {
+		content1[ind1->getGene(pos1 + i)] = true;
+		content2[ind2->getGene(pos1 + i)] = true;
+	}
+
+	// The crossover makes a clear distinction depending on the selected chain
+	// If all the chain is contained between the boundaries of the genotype:
+	if (pos1 + length < nGenes) {
+
+		// Build the first offspring
+		pos2 = 0;
+		while (offs1.size() < nGenes) {
+			if (pos2 >= nGenes || ind2->getGene(pos2) == ind1->getGene(pos1))
+				for (unsigned int i = pos1; i <= pos2; i++)
+					offs1.push_back(ind1->getGene(i));
+			else if (!content1[ind2->getGene(pos2)])
+				offs1.push_back(ind2->getGene(pos2));
+			pos2++;
+		}
+		// Build the second offspring
+		pos2 = 0;
+		while (offs2.size() < nGenes) {
+			if (pos2 >= nGenes || ind1->getGene(pos2) == ind2->getGene(pos1))
+				for (unsigned int i = pos1; i <= pos2; i++)
+					offs2.push_back(ind2->getGene(i));
+			else if (!content2[ind1->getGene(pos2)])
+				offs2.push_back(ind1->getGene(pos2));
+			pos2++;
+		}
+	}
+
+	// If the chain goes over the boundaries of the genotype:
+	else {
+
+		// Build the first offspring
+		for (unsigned int i = 0; i < pos1 + length % nGenes; i++)
+			offs1.push_back(ind1->getGene(i));
+		for (unsigned int i = 0; offs1.size() < pos1 && i < nGenes; i++)
+			if (!content1[ind2->getGene(i)])
+				offs1.push_back(ind2->getGene(i));
+		for (unsigned int i = pos1; i < nGenes; i++)
+			offs1.push_back(ind1->getGene(i));
+
+		// Build the second offspring
+		for (unsigned int i = 0; i < pos1 + length % nGenes; i++)
+			offs2.push_back(ind2->getGene(i));
+		for (unsigned int i = 0; offs2.size() < pos1 && i < nGenes; i++)
+			if (!content2[ind1->getGene(i)])
+				offs2.push_back(ind1->getGene(i));
+		for (unsigned int i = pos1; i < nGenes; i++)
+			offs2.push_back(ind2->getGene(i));
+
+		
+	}
+	ind1->setGenotype(offs1);
+	ind2->setGenotype(offs2);
+}
 
 
 
+//=====  Apply (Permutation with Repetitions)  ================================
+void Crossover_Bierwirth::applyJobPermutation(IndividualArrayInt *ind1,
+	IndividualArrayInt *ind2, const SharedVars *svars) const {
+
+	std::vector<int> offs1, offs2;
+	unsigned int nGenes, pos1, pos2, length, job;
+	std::vector<char> content1, content2;
+	std::vector<int> counter, genotype1, genotype2;
+
+	nGenes = ind1->size();
+
+	// Convert the problem type
+	FuzzyProblem * fuzzyProb =
+		dynamic_cast<FuzzyProblem *>(svars->problem);
+	if (fuzzyProb == NULL) {
+		std::string errorMsg = "This enconding function works only with ";
+		errorMsg += "fuzzy problems.";
+		throw new FJSPException("Creation", errorMsg);
+	}
+
+	// Generate genotypes without repetition
+	counter.resize(fuzzyProb->getNumberJobs(), 0);
+	genotype1.resize(nGenes);
+	for (unsigned int i = 0; i < nGenes; i++) {
+		job = ind1->getGene(i);
+		genotype1[i] = fuzzyProb->getTaskId(job, counter[job]);
+		counter[job]++;
+	}
+
+	counter.clear();
+	counter.resize(fuzzyProb->getNumberJobs(), 0);
+	genotype2.resize(nGenes);
+	for (unsigned int i = 0; i < nGenes; i++) {
+		job = ind2->getGene(i);
+		genotype2[i] = fuzzyProb->getTaskId(job, counter[job]);
+		counter[job]++;
+	}
 
 
+	// Find crossover point and string length
+	pos1 = svars->rng->getInteger(0, nGenes - 1);
+	length = svars->rng->getInteger(
+		roundToCeil(nGenes / 3.0), nGenes / 2);
+
+	// Check the genes contained in the defined string
+	content1.resize(nGenes, false);
+	content2.resize(nGenes, false);
+
+	for (unsigned int i = 0; i < length; i++) {
+		content1[genotype1[pos1 + i]] = true;
+		content2[genotype2[pos1 + i]] = true;
+	}
+
+	// The crossover makes a clear distinction depending on the selected chain
+	// If all the chain is contained between the boundaries of the genotype:
+	if (pos1 + length < nGenes) {
+
+		// Build the first offspring
+		pos2 = 0;
+		while (offs1.size() < nGenes) {
+			if (pos2 >= nGenes || genotype2[pos2] == genotype1[pos1])
+				for (unsigned int i = pos1; i <= pos2; i++)
+					offs1.push_back(ind1->getGene(i));
+			else if (!content1[genotype2[pos2]])
+				offs1.push_back(ind2->getGene(pos2));
+			pos2++;
+		}
+		// Build the second offspring
+		pos2 = 0;
+		while (offs2.size() < nGenes) {
+			if (pos2 >= nGenes || genotype1[pos2] == genotype2[pos1])
+				for (unsigned int i = pos1; i <= pos2; i++)
+					offs2.push_back(ind2->getGene(i));
+			else if (!content2[genotype1[pos2]])
+				offs2.push_back(ind1->getGene(pos2));
+			pos2++;
+		}
+	}
+
+	// If the chain goes over the boundaries of the genotype:
+	else {
+
+		// Build the first offspring
+		for (unsigned int i = 0; i < pos1 + length % nGenes; i++)
+			offs1.push_back(ind1->getGene(i));
+		for (unsigned int i = 0; offs1.size() < pos1 && i < nGenes; i++)
+			if (!content1[genotype2[i]])
+				offs1.push_back(ind2->getGene(i));
+		for (unsigned int i = pos1; i < nGenes; i++)
+			offs1.push_back(ind1->getGene(i));
+
+		// Build the second offspring
+		for (unsigned int i = 0; i < pos1 + length % nGenes; i++)
+			offs2.push_back(ind2->getGene(i));
+		for (unsigned int i = 0; offs2.size() < pos1 && i < nGenes; i++)
+			if (!content2[genotype1[i]])
+				offs2.push_back(ind1->getGene(i));
+		for (unsigned int i = pos1; i < nGenes; i++)
+			offs2.push_back(ind2->getGene(i));
+
+
+	}
+	ind1->setGenotype(offs1);
+	ind2->setGenotype(offs2);
+}
 
 }

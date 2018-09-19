@@ -4,20 +4,17 @@
  *  Created on: Aug 2, 2017
  *      Author: jjpalacios
  */
-
 #ifndef SRC_ECOPERATORS_REPLACEMENT_H_
 #define SRC_ECOPERATORS_REPLACEMENT_H_
 
-#include "heading.h"
-#include "SharedVars.h"
 #include "Population.h"
 
 
 namespace FJSP {
 
 // Replacement parameters defined in this header file
-#define REPLACE_REPEAT "replace-allow-repeated"
-#define REPLACE_ELITE "replace-elitism-k"
+#define REPLACE_REPEAT "replacement.allow-repeated"
+#define REPLACE_ELITE "replacement.elitism-k"
 
 
 

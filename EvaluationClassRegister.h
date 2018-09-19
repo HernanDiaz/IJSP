@@ -27,22 +27,21 @@
 =============================================================================*/
 
 
-
+#include "Evaluation.h"
 
 // ****************************************************************************
 //
 // ADD HERE ALL THE HEADER FILES OF THE OPERATORS YOU HAVE CREATED
 //
 // ****************************************************************************
-#include "EvaluationFJSP.h"
-#include "EvaluationFVRP.h"
 
 
 
 
 
 
-namespace FuzzyFW {
+
+namespace FJSP {
 
 /**
  * This static class allows to create the different kinds of problem elements.
@@ -106,28 +105,13 @@ public:
 	 */
 	static void registerClasses() {
 
-		// -----  FJSP EVALUATION FUNCTIONS  ----------------------------------
-		EvaluationMap[toUpper("makespan")] =	&createEvaluationInstance<FJSP::EvaluationFJSP_Makespan>;
-		EvaluationMap[toUpper("cmax")] = &createEvaluationInstance<FJSP::EvaluationFJSP_Makespan>;
-		EvaluationMap[toUpper("aimin")] = &createEvaluationInstance<FJSP::EvaluationFJSP_AImin>;
-		EvaluationMap[toUpper("ai_min")] = &createEvaluationInstance<FJSP::EvaluationFJSP_AImin>;
-		EvaluationMap[toUpper("ai_min_icae")] = &createEvaluationInstance<FJSP::EvaluationFJSP_AImin_ICAE>;
-		EvaluationMap[toUpper("aimin_icae")] = &createEvaluationInstance<FJSP::EvaluationFJSP_AImin_ICAE>;
-		EvaluationMap[toUpper("aiavg")] = &createEvaluationInstance<FJSP::EvaluationFJSP_AIavg>;
-		EvaluationMap[toUpper("ai_avg")] = &createEvaluationInstance<FJSP::EvaluationFJSP_AIavg>;
-		EvaluationMap[toUpper("esdmin")] = &createEvaluationInstance<FJSP::EvaluationFJSP_ESDmin>;
-		EvaluationMap[toUpper("esd_min")] = &createEvaluationInstance<FJSP::EvaluationFJSP_ESDmin>;
-		EvaluationMap[toUpper("esdavg")] = &createEvaluationInstance<FJSP::EvaluationFJSP_ESDavg>;
-		EvaluationMap[toUpper("esd_avg")] = &createEvaluationInstance<FJSP::EvaluationFJSP_ESDavg>;
-
-
-		// -----  FVRP EVALUATION FUNCTIONS  ----------------------------------
-		EvaluationMap[toUpper("time")] = &createEvaluationInstance<FVRP::EvaluationFVRP_TimeCost>;
-		EvaluationMap[toUpper("traveltime")] = &createEvaluationInstance<FVRP::EvaluationFVRP_TimeCost>;
-		EvaluationMap[toUpper("time-ctw")] = &createEvaluationInstance<FVRP::EvaluationFVRP_CTW_TimeCost>;
-		EvaluationMap[toUpper("time.ctw")] = &createEvaluationInstance<FVRP::EvaluationFVRP_CTW_TimeCost>;
-		EvaluationMap[toUpper("traveltime-ctw")] = &createEvaluationInstance<FVRP::EvaluationFVRP_CTW_TimeCost>;
-		EvaluationMap[toUpper("traveltime.ctw")] = &createEvaluationInstance<FVRP::EvaluationFVRP_CTW_TimeCost>;
+		// -----  EVALUATION FUNCTION  ----------------------------------------
+		EvaluationMap[toUpper("makespan")] =	&createEvaluationInstance<EvaluationFJSP_Makespan>;
+		EvaluationMap[toUpper("cmax")] = &createEvaluationInstance<EvaluationFJSP_Makespan>;
+		EvaluationMap[toUpper("aimin")] = &createEvaluationInstance<EvaluationFJSP_AImin>;
+		EvaluationMap[toUpper("ai_min")] = &createEvaluationInstance<EvaluationFJSP_AImin>;
+		EvaluationMap[toUpper("aiavg")] = &createEvaluationInstance<EvaluationFJSP_AIavg>;
+		EvaluationMap[toUpper("ai_avg")] = &createEvaluationInstance<EvaluationFJSP_AIavg>;
 	}
 
 };

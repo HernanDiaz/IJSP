@@ -75,18 +75,20 @@ void ReplacementElitist::apply(Population *oldPopulation,
 		worst.push_back(newPopulation->whoIsBest(svars, popSize - i - 1));
 
 	if (this->allowRepeated) {
-		for (int i = 0; i < this->elite; i++)
+		for (unsigned int i = 0; i < this->elite; i++)
 			best.push_back(i);
 	}
 	else {
-		unsigned int cont = 0, find = 0;
+		unsigned int cont = 0, find;
 		while (best.size() < this->elite && cont < oldPopulation->size()) {
 			oldInd = oldPopulation->getBest(svars, cont);
 
 			// Check if already exists
+			find = 1;
+			newInd = newPopulation->getBest(svars, 0);
 			while (find < newPopulation->size()) {
 				newInd = newPopulation->getBest(svars, find);
-				if(newInd->getFitness()->isBetterThan(oldInd->getFitness()))
+				if (newInd->getFitness()->isBetterThan(oldInd->getFitness()))
 					find++;
 				else break;
 			}

@@ -4,11 +4,9 @@
 *  Created on: May 12, 2017
 *      Author: Juan Jose Palacios
 */
-
 #ifndef PROBLEM_FUZZYTASK_H_
 #define PROBLEM_FUZZYTASK_H_
 
-#include "heading.h"
 #include "TFN.h"
 
 

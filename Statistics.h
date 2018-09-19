@@ -4,12 +4,10 @@
  *  Created on: Sep 20, 2017
  *      Author: jjpalacios
  */
-
 #ifndef SRC_ECOBJECTS_STATISTICS_H_
 #define SRC_ECOBJECTS_STATISTICS_H_
 
 
-#include "heading.h"
 #include "Population.h"
 
 

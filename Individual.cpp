@@ -159,7 +159,7 @@ double IndividualArrayInt::euclideanDistance(const Individual *ind) const {
 	double diff;
 	double sum = 0.0;
 
-	if (ind->getType() != Individual::Type::ARRAY_INTEGER) {
+	if (ind->getType() != Individual::ARRAY_INTEGER) {
 		std::string errorMsg = "Cannot measure the distance between ";
 		errorMsg += "individuals of different types";
 		throw new FJSPException("Individual", errorMsg);

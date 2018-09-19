@@ -4,19 +4,12 @@
 *  Created on: Sep 15, 2017
 *      Author: jjpalacios
 */
-
 #ifndef SRC_GENETICALGORITHM_H_
 #define SRC_GENETICALGORITHM_H_
 
 
 #include "EvolutiveAlgorithm.h"
-#include "Creation.h"
-#include "Selection.h"
-#include "Crossover.h"
-#include "Mutation.h"
-#include "Replacement.h"
 #include "Statistics.h"
-#include "Problem.h"
 #include "GeneticClassRegister.h"
 
 
@@ -35,15 +28,15 @@ namespace FJSP {
 #define GA_REPLACE "replacement"	// Replacement operator
 
 #define GA_GENERATIONS "generations"	// Maximum number of iterations
-#define GA_TIME "time-limit"			// Maximum runtime
+#define GA_TIME "timelimit"			// Maximum runtime
 #define GA_EVALUATIONS "evaluations"	// Maximum number of evaluations
-#define GA_NOIMPROVE "no-improvement"	// Maximum number of evaluations
+#define GA_NOIMPROVE "noimprovement"	// Maximum number of evaluations
 
-#define GA_POP_SIZE "pop-size"			// Population size
-#define GA_INDIVIDUAL_TYPE "gene-type"	// Type of individual (integer or real)
+#define GA_POP_SIZE "population.size"			// Population size
+#define GA_INDIVIDUAL_TYPE "gene.type"	// Type of individual (integer or real)
 
-#define GA_PRINT_POPULATION "print-population"	// Shall we print the population?
-#define GA_POP_INTERVAL "print-population.generations"	// Number of generations between printing populations
+#define GA_PRINT_POPULATION "printpopulation"	// Shall we print the population?
+#define GA_POP_INTERVAL "printpopulation.generations"	// Number of generations between printing populations
 
 
 

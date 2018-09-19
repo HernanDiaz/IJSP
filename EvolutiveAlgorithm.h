@@ -4,24 +4,18 @@
 *  Created on : Sep 15, 2017
 * Author : jjpalacios
 */
-#pragma once
+#ifndef SRC_ALGORITHMS_EVOLUTIONARYALGORITHM_H_
+#define SRC_ALGORITHMS_EVOLUTIONARYALGORITHM_H_
 
 
 #include "EvaluationClassRegister.h"
-#include "StatisticsClassRegister.h"
 
 
-namespace FuzzyFW {
+namespace FJSP {
 
 #define OBJECTIVE_FUNCTION "objective"
-#define STATISTICS_ROOT "statistics"
-#define STATISTICS_VALUE "value"
-#define STATISTICS_METRIC "metric"
 
-#define STATISTICS_BEST "best"
-#define STATISTICS_WORST "worst"
-#define STATISTICS_AVG "average"
-#define STATISTICS_SDEV "deviation"
+typedef Fitness Objective;
 
 
 //=============================================================================
@@ -52,7 +46,7 @@ public:
 	/**
 	* Shared variables for the algorithm
 	*/
-	SharedVarsEvolutionary * sharedVariables;
+	SharedVars * sharedVariables;
 
 	/**
 	* Flag indicating the status of the algorithm
@@ -63,11 +57,6 @@ public:
 	* Evaluation function
 	*/
 	Evaluation *evaluator;
-
-	/**
-	* Statistics to show
-	*/
-	std::vector<Statistics *> statistics;
 
 
 
@@ -165,3 +154,5 @@ public:
 
 
 }
+
+#endif /* SRC_ALGORITHMS_GENETICALGORITHM_H_ */

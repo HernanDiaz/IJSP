@@ -4,13 +4,13 @@
 *  Created on: Sep 20, 2017
 *      Author: jjpalacios
 */
-#pragma once
+#ifndef SRC_EVOLAUNCHER_H_
+#define SRC_EVOLAUNCHER_H_
 
-#include "MemeticNeri.h"
-#include "RandomPopulation.h"
+#include "GeneticAlgorithm.h"
 
 
-namespace FuzzyFW {
+namespace FJSP {
 
 	// Parameters defined in this header file
 #define EVO_SEED "seed"	// Seed for the RNG
@@ -84,7 +84,6 @@ namespace FuzzyFW {
 		std::vector< std::vector< std::pair<std::string, double> > > avgStats;
 		std::vector< std::vector< std::vector<double> > > avgEvolStats;
 		std::vector< std::string > avgEvolLabels;
-		std::vector<Fitness *> fitnessValues;
 
 
 
@@ -95,7 +94,7 @@ namespace FuzzyFW {
 		/**
 		* Main constructor. It requires the setup file for the algorithm
 		*/
-		EvoLauncher(const char* algorithmSetup);
+		EvoLauncher(const char * problemPath, const char* algorithmSetup);
 
 		/**
 		* Destructor
@@ -114,7 +113,7 @@ namespace FuzzyFW {
 		*
 		* @return The best solution found among all the runs
 		*/
-		std::string optimise(Problem *problem);
+		std::string optimise();
 
 
 		//=========================================================================
@@ -173,13 +172,6 @@ namespace FuzzyFW {
 		*/
 		void printStatistics(std::ofstream &outputFile);
 
-		/**
-		* Print the objective function values
-		*
-		* @param outputFile File in which print the data
-		*/
-		void printObjectiveValues(std::ofstream &outputFile);
-
 
 		/**
 		* Print the evolution of the algorithm provided by itself
@@ -193,4 +185,6 @@ namespace FuzzyFW {
 	};
 
 }
+
+#endif /* SRC_EVOLAUNCHER_H_ */
 

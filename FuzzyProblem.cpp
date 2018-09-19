@@ -16,7 +16,7 @@ namespace FJSP {
 //====  Default constructor  ==================================================
 FuzzyProblem::FuzzyProblem(const ParameterDB *params)
 	: Problem(params) {
-	SchedulingClassRegister::registerClasses();
+	DueDateClassRegister::registerClasses();
 
 	// Initialize variables
 	this->nJobs = this->nMachines = this->nTasks = 0;
@@ -46,7 +46,10 @@ FuzzyProblem::FuzzyProblem(const ParameterDB *params)
 
 	// Load due-date type
 	this->duedateType = params->getStringLower(PROBLEM_DUEDATES);
-	if (this->duedateType.length() == 0) {
+	if (this->duedateType.compare("NO") == 0
+		|| (this->duedateType.compare("NONE") == 0))
+		this->duedateType = "";
+	else if (this->duedateType.length() == 0) {
 		std::cout << "Warning (Loading problem): Parameter \'";
 		std::cout << PROBLEM_DUEDATES << "\' not found. ";
 		std::cout << "Due-dates will NOT be considered";
@@ -61,6 +64,8 @@ FuzzyProblem::FuzzyProblem(const ParameterDB *params,
 	: Problem(params, inputFile) {
 
 	// Initialize variables
+	DueDateClassRegister::registerClasses();
+
 	this->nJobs = this->nMachines = this->nTasks = 0;
 	this->lb_Makespan = 0.0;
 	this->ub_AImin = 1.0;
@@ -138,7 +143,7 @@ FuzzyProblem::~FuzzyProblem() {
 //		GET/SET METHODS
 //=============================================================================
 //====  Get Number of Tasks  ==================================================
-unsigned int FuzzyProblem::getNumberTasks(const int job) const {
+unsigned int FuzzyProblem::getNumberTasks(const unsigned int job) const {
 	if (job < this->nJobs && job >= 0)
 		return (int)(this->taskSequence[job].size());
 	std::string errorMsg = "Trying to access unexisting job: ";
@@ -168,7 +173,7 @@ double FuzzyProblem::getAIavgUB() const {
 
 
 //====  Get Duedate  ==========================================================
-const DueDate * FuzzyProblem::getDueDate(const int job) const {
+const DueDate * FuzzyProblem::getDueDate(const unsigned int job) const {
 	if (job < this->nJobs && job >= 0) {
 		if (this->dueDate.size() == 0)
 			return NULL;
@@ -183,7 +188,7 @@ const DueDate * FuzzyProblem::getDueDate(const int job) const {
 
 
 //====  Get Task in a job  ====================================================
-int FuzzyProblem::getTaskId(const int job, const int position)
+int FuzzyProblem::getTaskId(const unsigned int job, const int position)
 	const {
 	if (job >= this->nJobs || job < 0) {
 		std::string errorMsg = "Trying to access unexisting job: ";
@@ -204,7 +209,7 @@ int FuzzyProblem::getTaskId(const int job, const int position)
 
 
 //====  Index access  =========================================================
-const FuzzyTask * FuzzyProblem::getTask(const int taskId) const {
+const FuzzyTask * FuzzyProblem::getTask(const unsigned int taskId) const {
 	if (taskId < 0 || taskId >= (int)this->task.size()) {
 		std::string errorMsg = "Trying to access unexisting task: ";
 		errorMsg += valueToString(taskId);
@@ -254,18 +259,19 @@ void FuzzyProblem::loadFile(const char *inputFile) {
 	// Read the machine requirements
 	for (unsigned int i = 0; i < this->nJobs; i++) {
 		getline(input, reader);
-		lineStream = std::stringstream(reader);
-		while (!lineStream) {
-			lineStream >> machine;
+		lineStream.str(reader);
+		while (lineStream >> machine) {
 			preTasks.push_back(new FuzzyTask(preTasks.size(),
 				i, machine));
 		}
+		lineStream.clear();
 	}
 
 	getline(input, reader);
 	getline(input, reader);
 
 	// Read the processing times of the problem and discard null tasks
+	this->taskSequence.resize(this->nJobs);
 	for (size_t i = 0; i < (int)preTasks.size(); i++) {
 		input >> preTasks[i]->p;
 
@@ -312,7 +318,7 @@ void FuzzyProblem::loadDueDates(std::ifstream &input) {
 
 	if (this->duedateType.length() > 0) {
 		// Check due-date types
-		dd = SchedulingClassRegister::getDueDateObject(this->duedateType);
+		dd = DueDateClassRegister::getDueDateObject(this->duedateType);
 		if (dd == NULL) {
 			std::string errorMsg = "The introduced due-date type is not";
 			errorMsg += " valid: \'" + this->duedateType + "\'";
@@ -324,7 +330,7 @@ void FuzzyProblem::loadDueDates(std::ifstream &input) {
 		this->dueDate.push_back(dd);
 
 		for (unsigned int i = 1; i < this->nJobs; i++) {
-			dd = SchedulingClassRegister::getDueDateObject(this->duedateType);
+			dd = DueDateClassRegister::getDueDateObject(this->duedateType);
 			input >> dd;
 			this->dueDate.push_back(dd);
 		}

@@ -23,6 +23,12 @@ namespace FJSP {
 
 		fileReader.open(fileName);
 
+#ifdef _DEBUG
+		char cwd[1024];
+		if (getWorkDir(cwd, sizeof(cwd)) != NULL)
+			std::cout << cwd;
+#endif
+
 		if (!fileReader.is_open()) {
 			std::string error = "Configuration file ";
 			error += fileName;
@@ -145,7 +151,7 @@ namespace FJSP {
 				(line[pos] == ' ' || line[pos] == '\t' || line[pos] == '\r'))
 				pos++;
 
-			if (pos < (int)line.size() && line[pos] != '#') {
+			if (pos < (int)line.size() && line[pos] != COMMENT_CHAR) {
 				lineFound = true;
 			}
 		}
@@ -153,12 +159,14 @@ namespace FJSP {
 
 		bool val = false;
 		for (int i = 0; i < (int)line.size(); i++) {
-			if (line[i] == '=') {
+			if (line[i] == PARAM_SEPARATOR) {
 				val = true;
 				continue;
 			}
 			if (line[i] == ' ' || line[i] == '\t' || line[i] == '\r')
 				continue;
+			if (line[i] == COMMENT_CHAR)
+				break;
 			if (!val)
 				label.push_back(line[i]);
 			else

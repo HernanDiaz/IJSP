@@ -4,11 +4,9 @@
 *  Created on: June 7, 2017
 *      Author: Juan Jose Palacios
 */
-
 #ifndef OBJECTS_FITNESS_H_
 #define OBJECTS_FITNESS_H_
 
-#include "heading.h"
 #include "TFN.h"
 
 namespace FJSP {

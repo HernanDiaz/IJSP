@@ -4,7 +4,6 @@
 *  Created on: May 16, 2017
 *      Author: Juan Jose Palacios
 */
-
 #ifndef FJSPPROBLEM_FUZZYSCHEDULE_H_
 #define FJSPPROBLEM_FUZZYSCHEDULE_H_
 
@@ -13,6 +12,11 @@
 
 
 namespace FJSP {
+
+
+class FuzzyProblem; // Forward declaration
+
+
 
 //=========================================================================
 //
@@ -59,7 +63,7 @@ struct ScheduledTaskInfo {
 * @author Juan Jose Palacios
 *
 */
-class FuzzySchedule : public Solution
+class FuzzySchedule : public Solution 
 {
 	//=====================================================================
 	//		FIELDS
@@ -175,7 +179,7 @@ public:
 	* information of the scheduled tasks. The dynamic information
 	* can be accessed through the public field itself
 	*/
-	const FuzzyTask * operator[](const int index) const;
+	const FuzzyTask * operator[](const unsigned int index) const;
 
 	/**
 	* Converts the solution to a string

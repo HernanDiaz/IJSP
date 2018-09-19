@@ -25,7 +25,7 @@ Population::Population(const Population &source)
 	this->order.resize(source.order.size());
 
 	// Clone all the individuals from the source population
-	for (int i = 0; i < source.size(); i++) {
+	for (unsigned int i = 0; i < source.size(); i++) {
 		this->individual[i] = source.individual[i]->clone();
 		this->order[i] = source.order[i];
 	}
@@ -121,8 +121,6 @@ int Population::whoIsBest(const SharedVars *svars, const unsigned int k) {
 //===== Get Average Fitness  ==================================================
 double Population::getAverageFitness() const {
 	double sum=0.0;
-	Fitness *fit;
-	int intValue;
 	TFN tfnValue;
 	for(size_t i=0; i < this->individual.size(); i++) {
 		if(!this->individual[i]->isEvaluated())

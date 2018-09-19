@@ -4,14 +4,20 @@
  *  Created on: July 14, 2017
  *      Author: jjpalacios
  */
-#pragma once
+#ifndef SRC_ECOPERATORS_CROSSOVER_H_
+#define SRC_ECOPERATORS_CROSSOVER_H_
 
+#include "Encoder.h"
 #include "Population.h"
-#include "SharedVarsEvolutionary.h"
 
 
-namespace FuzzyFW {
-	
+namespace FJSP {
+
+// Crossover parameters defined in this header file
+#define CROSSOVER_PROBABILITY "crossover.probability"
+
+
+
 
 
 //=============================================================================
@@ -36,6 +42,15 @@ class Crossover {
 	//		COMMON FIELDS
 	//=========================================================================
 public:
+	/**
+	 * Name of the probability parameter to get from the configuration file
+	 */
+	std::string probLabel;
+
+	/**
+	 * Probability to apply the operator
+	 */
+	double probability;
 
 
 
@@ -50,9 +65,9 @@ public:
 
 	/**
 	 * Loads the needed parameters.
-	 * Nothing to load here
+	 * Loads the crossover probability
 	 */
-	virtual void setup(ParameterDB *parameters) { }
+	virtual void setup(ParameterDB *parameters);
 
 	/**
 	 * Destructor
@@ -74,7 +89,7 @@ public:
 	 * @param svars Shared elements of the algorithm
 	 */
 	virtual void apply(Individual *ind1,
-			Individual *ind2, const SharedVarsEvolutionary *svars) const=0;
+			Individual *ind2, const SharedVars *svars) const=0;
 
 	/**
 	 * Apply the crossover operator to all pairs in the population. The
@@ -83,8 +98,7 @@ public:
 	 * @param population Population of individuals to mate
 	 * @param svars Shared elements of the algorithm
 	 */
-	virtual void apply(Population *population, const double probability,
-		const SharedVarsEvolutionary *svars) const;
+	virtual void apply(Population *population, const SharedVars *svars) const;
 
 	/**
 	 * Get the name and setup of the operator
@@ -101,36 +115,147 @@ public:
 
 //=============================================================================
 //
-//	Abstract class Crossover_OBC
+//	Class Crossover_JOX
 //
 //=============================================================================
 /**
-* Order-based crossover for permutations
-*
-* @author jjpalacios
-*
-*/
-class Crossover_OBC : public Crossover {
+ * Job Order Crossover operator. This poerator is especifically designed to
+ * work on job shop scheduling problems.
+ *
+ * The operator chooses a random set of jobs from parent 1 and keeps all
+ * operations belonging to those jobs in their original position. The rest
+ * of the chromosome is then filled by scheduling the remaining tasks following
+ * the ordering given by the second parent.
+ *
+ * @author jjpalacios
+ *
+ */
+class Crossover_JOX : public Crossover {
 	//=========================================================================
 	//		CONSTRUCTORS / INITIALIZERS
 	//=========================================================================
 public:
 	/**
-	* Default constructor
-	*/
-	explicit Crossover_OBC(ParameterDB *parameters = NULL)
+	 * Constructor using the parameters file
+	 */
+	Crossover_JOX(ParameterDB *parameters = NULL)
 		: Crossover(parameters) { }
 
 	/**
-	* Loads the needed parameters.
-	* Loads the crossover probability
+	 * Loads extra parameters.
+	 */
+	virtual void setup(ParameterDB *parameters) {
+		Crossover::setup(parameters);
+	}
+
+	/**
+	 * Destructor
+	 */
+	virtual ~Crossover_JOX() { }; 	// Nothing to destroy here
+
+
+
+	//=========================================================================
+	//		METHODS
+	//=========================================================================
+public:
+	/**
+	 * Apply the crossover operator to a pair of individuals and produces two
+	 * offspring. The offspring will automatically replace their parents
+	 *
+	 * @param ind1 First parent for the mating
+	 * @param ind2 Second parent for the mating
+	 * @param svars Shared elements of the algorithm
+	 * @return The two offspring produced
+	 */
+	virtual void apply(Individual *ind1,
+			Individual *ind2, const SharedVars *svars) const;
+
+	/**
+	 * Get the name and setup of the operator
+	 *
+	 * @return A string of parameter values. The first string is the name of
+	 * the operator
+	 */
+	virtual std::vector<std::string> getName() const {
+		std::vector<std::string> setup;
+		setup.push_back("JOX");
+		setup.push_back(";Probability;" + valueToString(this->probability));
+		return setup;
+	}
+
+protected:
+	/**
+	 * Crossover operator depending on the type of individual we are
+	 * receiving
+	 *
+	 * @param ind1 First parent for the mating
+	 * @param ind2 Second parent for the mating
+	 * @param svars Shared elements of the algorithm
+	 * @return The two offspring produced
+	 */
+	virtual void applyPermutation(IndividualArrayInt *ind1,
+		IndividualArrayInt *ind2, const SharedVars *svars) const;
+
+	virtual void applyJobPermutation(IndividualArrayInt *ind1,
+		IndividualArrayInt *ind2, const SharedVars *svars) const;
+
+};
+
+
+
+
+
+//=============================================================================
+//
+//	Class Crossover_Bierwirth
+//
+//=============================================================================
+/**
+* General Order Crossover operator proposed by Bierwtih in this paper:
+*		Bierwirth, C. A Generalized Permutation Approach to Jobshop Scheduling
+*		with Genetic Algorithms. OR Spectrum (17), 87-92. 1995
+*
+* The operator chooses a random sequence of genes from parent 1. Then, in
+* order to generate the offspring, it copies the genes of the second parent
+* that are not included in the previously selected sequence until the first
+* gene of the sequecne is found. At that point, the sequence is included and
+* then the genotype refill with the remaining genes of the second parent.
+* Example:
+*	Parent 1: A B B A C A B C B C
+*	Parent 2: B A B B C A C C B A
+*	Substring in parent 1: * * * A C A B * * *
+*	Locate the key gene: B A B B* C* [A] C C B A*
+*	Offspring: B A B [A C A B] C C B
+*		
+* Bierwith establishes that the length of the substring must be always in the
+* interval [1/3, 1/2] times the length of the genotype
+*
+* @author jjpalacios
+*
+*/
+class Crossover_Bierwirth : public Crossover {
+	//=========================================================================
+	//		CONSTRUCTORS / INITIALIZERS
+	//=========================================================================
+public:
+	/**
+	* Constructor using the parameters file
 	*/
-	//virtual void setup(ParameterDB *parameters);
+	Crossover_Bierwirth(ParameterDB *parameters = NULL)
+		: Crossover(parameters) { }
+
+	/**
+	* Loads extra parameters.
+	*/
+	virtual void setup(ParameterDB *parameters) {
+		Crossover::setup(parameters);
+	}
 
 	/**
 	* Destructor
 	*/
-	virtual ~Crossover_OBC() { }; 	// Nothing to destroy here
+	virtual ~Crossover_Bierwirth() { }; 	// Nothing to destroy here
 
 
 
@@ -145,10 +270,10 @@ public:
 	* @param ind1 First parent for the mating
 	* @param ind2 Second parent for the mating
 	* @param svars Shared elements of the algorithm
+	* @return The two offspring produced
 	*/
 	virtual void apply(Individual *ind1,
-		Individual *ind2, const SharedVarsEvolutionary *svars) const;
-
+		Individual *ind2, const SharedVars *svars) const;
 
 	/**
 	* Get the name and setup of the operator
@@ -157,147 +282,29 @@ public:
 	* the operator
 	*/
 	virtual std::vector<std::string> getName() const {
-		std::vector<std::string> name;
-		name.push_back("Order-Based");
-		return name;
+		std::vector<std::string> setup;
+		setup.push_back("GOX-Bierwirth");
+		setup.push_back(";Probability;" + valueToString(this->probability));
+		return setup;
 	}
-};
 
-
-
-
-
-//=============================================================================
-//
-//	Abstract class Crossover_CBC
-//
-//=============================================================================
-/**
-* Cycle-based crossover for permutations
-*
-* @author jjpalacios
-*
-*/
-class Crossover_CBC : public Crossover {
-	//=========================================================================
-	//		CONSTRUCTORS / INITIALIZERS
-	//=========================================================================
-public:
+protected:
 	/**
-	* Default constructor
-	*/
-	explicit Crossover_CBC(ParameterDB *parameters = NULL)
-		: Crossover(parameters) { }
-
-	/**
-	* Loads the needed parameters.
-	* Loads the crossover probability
-	*/
-	//virtual void setup(ParameterDB *parameters);
-
-	/**
-	* Destructor
-	*/
-	virtual ~Crossover_CBC() { }; 	// Nothing to destroy here
-
-
-
-	//=========================================================================
-	//		METHODS
-	//=========================================================================
-public:
-	/**
-	* Apply the crossover operator to a pair of individuals and produces two
-	* offspring. The offspring will automatically replace their parents
+	* Crossover operator depending on the type of individual we are
+	* receiving
 	*
 	* @param ind1 First parent for the mating
 	* @param ind2 Second parent for the mating
 	* @param svars Shared elements of the algorithm
+	* @return The two offspring produced
 	*/
-	virtual void apply(Individual *ind1,
-		Individual *ind2, const SharedVarsEvolutionary *svars) const;
+	virtual void applyPermutation(IndividualArrayInt *ind1,
+		IndividualArrayInt *ind2, const SharedVars *svars) const;
 
-	/**
-	* Get the name and setup of the operator
-	*
-	* @return A string of parameter values. The first string is the name of
-	* the operator
-	*/
-	virtual std::vector<std::string> getName() const {
-		std::vector<std::string> name;
-		name.push_back("Cycle-Based");
-		return name;
-	}
+	virtual void applyJobPermutation(IndividualArrayInt *ind1,
+		IndividualArrayInt *ind2, const SharedVars *svars) const;
 };
-
-
-
-
-
-//=============================================================================
-//
-//	Abstract class Crossover_PMX
-//
-//=============================================================================
-/**
-* PMX crossover for permutations
-*
-* @author jjpalacios
-*
-*/
-class Crossover_PMX : public Crossover {
-	//=========================================================================
-	//		CONSTRUCTORS / INITIALIZERS
-	//=========================================================================
-public:
-	/**
-	* Default constructor
-	*/
-	explicit Crossover_PMX(ParameterDB *parameters = NULL)
-		: Crossover(parameters) { }
-
-	/**
-	* Loads the needed parameters.
-	* Loads the crossover probability
-	*/
-	//virtual void setup(ParameterDB *parameters);
-
-	/**
-	* Destructor
-	*/
-	virtual ~Crossover_PMX() { }; 	// Nothing to destroy here
-
-
-
-	//=========================================================================
-	//		METHODS
-	//=========================================================================
-public:
-	/**
-	* Apply the crossover operator to a pair of individuals and produces two
-	* offspring. The offspring will automatically replace their parents
-	*
-	* @param ind1 First parent for the mating
-	* @param ind2 Second parent for the mating
-	* @param svars Shared elements of the algorithm
-	*/
-	virtual void apply(Individual *ind1,
-		Individual *ind2, const SharedVarsEvolutionary *svars) const;
-
-
-	/**
-	* Get the name and setup of the operator
-	*
-	* @return A string of parameter values. The first string is the name of
-	* the operator
-	*/
-	virtual std::vector<std::string> getName() const {
-		std::vector<std::string> name;
-		name.push_back("PMX");
-		return name;
-	}
-};
-
-
 
 }
+
+#endif /* SRC_ECOPERATORS_CROSSOVER_H_ */

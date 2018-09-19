@@ -4,13 +4,12 @@
 *  Created on: May 12, 2017
 *      Author: Juan Jose Palacios
 */
-
 #ifndef FJSPPROBLEM_FUZZYPROBLEM_H_
 #define FJSPPROBLEM_FUZZYPROBLEM_H_
 
 #include "FuzzyTask.h"
 #include "Problem.h"
-#include "SchedulingClassRegister.h"
+#include "DueDateClassRegister.h"
 
 
 namespace FJSP {
@@ -190,7 +189,7 @@ public:
 	/**
 	* Get the number of operations in a specific job
 	*/
-	unsigned int getNumberTasks(const int job) const;
+	unsigned int getNumberTasks(const unsigned int job) const;
 
 
 	/**
@@ -221,20 +220,20 @@ public:
 	* Get the due-date of a given job.
 	* Returns NULL if there is no due-date for this job
 	*/
-	const DueDate * getDueDate(const int job) const;
+	const DueDate * getDueDate(const unsigned int job) const;
 
 
 	/**
 	* Get the Id of the task in a specific position of a job.
 	* Returns -1 if the task does not exist
 	*/
-	int getTaskId(const int job, const int position) const;
+	int getTaskId(const unsigned int job, const int position) const;
 
 
 	/**
 	* Gets a specific task
 	*/
-	const FuzzyTask * getTask(const int taskId) const;
+	const FuzzyTask * getTask(const unsigned int taskId) const;
 
 
 	//=====================================================================

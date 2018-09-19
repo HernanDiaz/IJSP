@@ -7,6 +7,7 @@
 
 #include "FuzzySchedule.h"
 
+
 namespace FJSP {
 
 
@@ -109,7 +110,7 @@ FuzzySchedule & FuzzySchedule::operator=(const FuzzySchedule & source) {
 
 
 //====  Index access  =========================================================
-const FuzzyTask * FuzzySchedule::operator[](const int index) const {
+const FuzzyTask * FuzzySchedule::operator[](const unsigned int index) const {
 	if (index < 0) {
 		std::string errorMsg = "Trying to access unexisting task: ";
 		errorMsg += valueToString(index);
@@ -178,9 +179,10 @@ void FuzzySchedule::addTask(const int taskIdx, TFN & ST, const int macSuc) {
 		if (i == 0)
 			this->taskOrder[0] = taskIdx;
 	}
+	else
+		this->taskOrder[this->nScheduledTasks] = taskIdx;
 
 	this->tailsUpdated = false;
-	this->isSorted = false;
 	this->nScheduledTasks++;
 }
 
