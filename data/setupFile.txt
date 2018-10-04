@@ -1,0 +1,143 @@
+
+# Test Setup file to debug the Framework
+
+# This line is a comment
+
+
+# GENERIC PARAMETERS
+# ===============================================
+# ALGORITHM to use:
+algorithm = Memetic
+
+# SEED for the RNG (none by default)
+seed = 1
+
+# Number of RUNS for the algorithm (1 by default)
+runs =  10
+
+
+# PROBLEM DESCRIPTION
+# ===============================================
+# Time Windows are present in the problem: no / deadline / crisp / linear (no by default)
+problem.duedates = linear
+
+# Read lower/upper bounds: yes/no (no by default)
+problem.hasbounds = yes
+
+
+# ALGORITHM SETUP
+# ===============================================
+# OBJECTIVE function: Makespan, AImin, AIavg, ESDmin, ESDavg
+objective = ESDavg
+#evaluation.ai.method = exact # for AI objective functions
+evaluation.lamarckism = yes
+#evaluation.tfn.comparison = EV	# for fuzzy objective functions: Component / EV / Sakawa
+#evaluation.tfn.maximum = Component	# for fuzzy objective functions: Component / EV / Sakawa
+
+# CODIFICATION strategy: TaskOrder, JobOrder
+codification = JobOrder
+
+# DECODIFICATION strategy: TaskOrder, JobOrder
+decodification = JobOrder
+
+#	Decodification SGS: Semi, Dense, Insertion, fGyT1, fGyT2
+decode.sgs = insertion
+
+#sgs.append.maximum = Component / EV / Sakawa	# for dense, fGyT1 and fGyT2
+#sgs.dense.compare = Component / EV / Sakawa	# for dense
+#sgs.gyt.delta = 1	# for fGyT1 and fGyT2
+
+# CREATION operator: FJSP-Random
+creation = FJSP-Random
+creation.sgs = insertion
+
+#sgs.append.maximum = Component / EV / Sakawa 	# for dense, fGyT1 and fGyT2
+#sgs.dense.compare = Component / EV / Sakawa	# for dense
+#sgs.gyt.delta = 1	# for fGyT1 and fGyT2
+
+
+# CROSSOVER operator: OBC, CBC, PMX, JOX, GOX, GPMX, PPX
+crossover = JOX
+crossover.probability = 0.9
+
+# MUTATION operator: Insertion, Inversion, Swap
+mutation = inversion
+mutation-probability = 0.10
+
+# SELECTION operator: Random, Shuffle, SUS, Roulette, Tournament
+selection = shuffle
+#selection.tournament-size = 3	# for tournament selection
+#selection.roulette-interpolate = yes	# for Roulette and SUS
+
+# REPLACEMENT strategy; Generational, Parents
+replacement = parents
+replacement.allow-repeated = no
+# replacement.elitism-k	# for generational (elitism)
+
+# STOPping criterion (choose one or more)
+# generations = 200
+# timelimit = 60	# in seconds
+# evaluations = 20000
+noImprovement = 15	# Evaluations without improvement
+
+# Population Size
+population.size = 10
+
+# STATISTICAL DATA	
+printPopulation = yes
+printPopulation.generations = 10	# prints the population every n iterations
+statistics.1.metric = best
+statistics.1.value = ESDmin
+statistics.2.metric = average
+statistics.2.value = ESDmin
+
+statistics.3.metric = best
+statistics.3.value = ESDavg
+statistics.4.metric = average
+statistics.4.value = ESDavg
+
+statistics.5.metric = best
+statistics.5.value = AImin
+statistics.6.metric = average
+statistics.6.value = AImin
+
+statistics.7.metric = best
+statistics.7.value = AIavg
+statistics.8.metric = average
+statistics.8.value = AIavg
+
+
+
+
+
+# LOCAL SEARCH PARAMETERS
+# ===============================================
+# Local Search Algorithm: HillClimbing, GradientDescent, Tabu
+localsearch = HillClimbing
+# Optional sttoping criteria for HC algorithms
+#localsearch.max-iterations = 1000
+#localsearch.max-evaluations = 1000
+#localsearch.max_time = 10.0
+#localsearch.bad-iterations = 5	# For Tabu Search
+
+# Guide the local search using  (no by default)
+localsearch.estimation-guide = no
+
+# Use the estimations as lower/upperd bounds of the objective function (no by default)
+localsearch.filter = yes
+
+# Neighbourhood structure to use: fjsp.makespan.n1, fjsp.AIavg.n1, fjsp.AImin.n1, fjsp.ESDavg.n1, fjsp.ESDmin.n1
+localsearch.neighbourhood = fjsp.ESDavg.n1
+
+# Estimator for neighbours
+neighbourhood.estimator = heads&tails
+
+# When o apply the Local Search: none, initial, final, period, stuck
+localsearch.frequency = period
+localsearch.period = 1	# for period or stuck
+
+# Individuals to apply the LS to: best, worst, all, percentage value [0,1]
+localsearch.target = 0.75
+
+# Update individuals with the result of the local search: yes/no (yes by default)
+localsearch.lamarckism = yes

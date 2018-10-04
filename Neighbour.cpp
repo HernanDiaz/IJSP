@@ -60,6 +60,9 @@ void Neighbour::setEvaluation(Solution *sol, Fitness *fitness) {
 		delete this->solution.second;
 	this->solution.second = fitness;
 
-	this->evaluated = true;
+	if (sol != NULL)
+		this->evaluated = true;
+	else
+		this->estimated = false;
 }
 }

@@ -219,7 +219,7 @@ StatisticsNeriBest::StatisticsNeriBest(STAT_TYPE flag)
 double StatisticsNeriBest::getValue(const FuzzyFW::SharedVarsEvolutionary * svars,
 	FuzzyFW::Population *population) {
 
-	double best, worst, avg, sol;
+	double best, avg, sol;
 
 	if (population->size() <= 1)
 		return 0.0;

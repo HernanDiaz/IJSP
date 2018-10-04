@@ -580,7 +580,6 @@ bool GeneticAlgorithm::stop() {
 //-----  compute Statistics  --------------------------------------------------
 void GeneticAlgorithm::computeStatistics(Population *currentPopulation) {
 	std::vector<double> stats;
-	double best, sum;
 	double runtime = this->totalRuntime / (double)CLOCKS_PER_SEC;
 
 	if (!this->showEvolutionTime && this->generation < this->nextSplit)

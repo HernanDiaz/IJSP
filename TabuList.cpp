@@ -128,4 +128,14 @@ void TabuList::reduceSize(unsigned int newSize) {
 	}
 }
 
+
+//-----  Forces the list size  ------------------------------------------------
+void TabuList::forceSize(unsigned int newSize) {
+	while (newSize < this->listSize) {
+		delete *(--tabuList.end());
+		tabuList.pop_back();
+		this->listSize--;
+	}
+}
+
 }

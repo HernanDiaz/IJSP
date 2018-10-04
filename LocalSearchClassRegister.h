@@ -27,6 +27,7 @@
 
 
 #include "LocalSearch.h"
+#include "LocalSearchAmico.h"
 // ****************************************************************************
 //
 // ADD HERE ALL THE HEADER FILES OF THE OPERATORS YOU HAVE CREATED
@@ -142,6 +143,8 @@ public:
 			&createLocalSearchInstance<LS_Tabu>;
 		LocalSearchMap[toUpper("tabu")] =
 			&createLocalSearchInstance<LS_Tabu>;
+		LocalSearchMap[toUpper("amico")] =
+			&createLocalSearchInstance<LS_Tabu_Amico>;
 
 
 		// -----  NEIGHBOURHOOD STRUCTURES  ---------------------------------------

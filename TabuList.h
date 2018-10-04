@@ -145,6 +145,13 @@ public:
 	* The discarded neighbours are the oldes ones
 	*/
 	void reduceSize(unsigned int newSize);
+
+	/*
+	* Reduce the list size to the given value.
+	* The discarded neighbours are the oldes ones.
+	* Forces the change of size under/above the limits
+	*/
+	void forceSize(unsigned int newSize);
 };
 
 }
