@@ -337,7 +337,8 @@ FullSolution LS_Tabu::apply(const Solution *solution,
 		while (index < nNeighbours) {
 			estimation = this->neighbourhood->getEstimation(index, svars);
 			isTabu = this->tabuList->isTabu(this->neighbourhood->getNeighbour(index));
-			isLastNeighbour = lastNeighbour->isReverse(this->neighbourhood->getNeighbour(index));
+			if(lastNeighbour != NULL)
+				isLastNeighbour = lastNeighbour->isReverse(this->neighbourhood->getNeighbour(index));
 
 			if (!this->estimationFilter || best == NULL || estimation->isBetterThan(best)) {
 				if (this->estimationGuided) {
