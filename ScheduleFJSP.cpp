@@ -49,9 +49,9 @@ ScheduleFJSP::ScheduleFJSP(const ScheduleFJSP & source) {
 //		GET/SET METHODS
 //=============================================================================
 //====  Get topological order  ================================================
-std::vector<int> & ScheduleFJSP::getTaskOrder() {
+std::vector<int> & ScheduleFJSP::getTaskOrder(FuzzyFW::Random *rng) {
 	if (!this->isSorted)
-		this->updateTopologicalOrder();
+		this->updateTopologicalOrder(rng);
 	return this->taskOrder;
 }
 
@@ -209,10 +209,13 @@ void ScheduleFJSP::reset() {
 
 
 //====  update Topological Order  =============================================
-void ScheduleFJSP::updateTopologicalOrder() {
+void ScheduleFJSP::updateTopologicalOrder(FuzzyFW::Random *rng) {
 	if (this->isSorted)
 		return;
-	this->quicksortTasks(0, this->nScheduledTasks - 1, new FuzzyFW::Random());
+	if(rng == NULL)
+		this->quicksortTasks(0, this->nScheduledTasks - 1, new FuzzyFW::Random());
+	else
+		this->quicksortTasks(0, this->nScheduledTasks - 1, rng);
 	this->isSorted = true;
 }
 

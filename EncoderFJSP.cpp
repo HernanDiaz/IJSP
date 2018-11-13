@@ -39,7 +39,7 @@ void EncoderFJSP_Order::encode(FuzzyFW::Solution *solution,
 		throw new FJSPException("Encoding", errorMsg);
 	}
 
-	intIndiv->updateGenotype(schedule->getTaskOrder());
+	intIndiv->updateGenotype(schedule->getTaskOrder(svars->rng));
 }
 
 
@@ -59,7 +59,7 @@ FuzzyFW::Individual * EncoderFJSP_Order::encode(FuzzyFW::Solution *solution,
 		throw new FJSPException("Encoding", errorMsg);
 	}
 
-	return new FuzzyFW::IndividualArrayInt(schedule->getTaskOrder());
+	return new FuzzyFW::IndividualArrayInt(schedule->getTaskOrder(svars->rng));
 }
 
 
@@ -105,7 +105,7 @@ void EncoderFJSP_JobOrder::encode(FuzzyFW::Solution *solution,
 		throw new FJSPException("Encoding", errorMsg);
 	}
 
-	genotype = schedule->getTaskOrder();
+	genotype = schedule->getTaskOrder(svars->rng);
 	for (size_t i = 0; i < genotype.size(); i++)
 		genotype[i] = (*fuzzyProb)[genotype[i]]->job;
 	
@@ -139,7 +139,7 @@ FuzzyFW::Individual * EncoderFJSP_JobOrder::encode(
 		throw new FJSPException("Encoding", errorMsg);
 	}
 
-	taskOrder = schedule->getTaskOrder();
+	taskOrder = schedule->getTaskOrder(svars->rng);
 	genotype.resize(taskOrder.size());
 	for (size_t i = 0; i < taskOrder.size(); i++)
 		genotype[i] = (*fuzzyProb)[taskOrder[i]]->job;

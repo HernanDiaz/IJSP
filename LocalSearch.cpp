@@ -304,15 +304,16 @@ FullSolution LS_Tabu::apply(const Solution *solution,
 	const Fitness *fitness, const SharedVars *svars) {
 
 	int index, nNeighbours, bestNeighbor;
-	unsigned int isTabu;
+	FullSolution current, bestSolution;
+	Fitness *estimation, *realValue, *best;
+	std::vector<int> randomArray;
+	Neighbour *lastNeighbour = NULL;
+
+	unsigned int isTabu, isLastNeighbour;
 	this->evaluations = 0;
 	this->neighbours = 0;
 	this->iterations = 0;
 	this->badIterations = 0;
-
-	FullSolution current, bestSolution;
-	Fitness *estimation, *realValue, *best;
-	std::vector<int> randomArray;
 
 	this->neighbourhood->setInitialSolution(solution->clone(),
 		fitness->clone(), svars);
@@ -336,11 +337,13 @@ FullSolution LS_Tabu::apply(const Solution *solution,
 		while (index < nNeighbours) {
 			estimation = this->neighbourhood->getEstimation(index, svars);
 			isTabu = this->tabuList->isTabu(this->neighbourhood->getNeighbour(index));
+			isLastNeighbour = lastNeighbour->isReverse(this->neighbourhood->getNeighbour(index));
 
 			if (!this->estimationFilter || best == NULL || estimation->isBetterThan(best)) {
 				if (this->estimationGuided) {
 					if ((best == NULL || estimation->isBetterThan(best))
-						&& (!isTabu || estimation->isBetterThan(bestSolution.second))) {
+						&& (!isTabu || estimation->isBetterThan(bestSolution.second))
+						&& (lastNeighbour == NULL || !isLastNeighbour)) {
 						best = estimation;
 						bestNeighbor = index;
 					}
@@ -361,6 +364,10 @@ FullSolution LS_Tabu::apply(const Solution *solution,
 		}
 
 		if (bestNeighbor >= 0) {
+			if (lastNeighbour != NULL)
+				delete lastNeighbour;
+			lastNeighbour = this->neighbourhood->getNeighbour(bestNeighbor)->clone();
+
 			this->tabuList->addNeighbour(this->neighbourhood->getNeighbour(bestNeighbor));
 			this->neighbourhood->acceptNeighbour(bestNeighbor, svars);
 			current = this->neighbourhood->getCurrentSolution();
@@ -384,6 +391,8 @@ FullSolution LS_Tabu::apply(const Solution *solution,
 			this->badIterations = this->maxBadIterations;
 	}
 
+	if(lastNeighbour == NULL)
+		delete lastNeighbour;
 	return bestSolution;
 }
 

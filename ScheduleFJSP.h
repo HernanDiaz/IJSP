@@ -144,7 +144,7 @@ public:
 	* Get the topoligal order of the tasks using a given comparison
 	* system
 	*/
-	std::vector<int> & getTaskOrder();
+	std::vector<int> & getTaskOrder(FuzzyFW::Random *rng = NULL);
 
 	/**
 	* Get the completion time of a machine
@@ -216,7 +216,7 @@ protected:
 	/**
 	* Updates the topological order of the tasks
 	*/
-	void updateTopologicalOrder();
+	void updateTopologicalOrder(FuzzyFW::Random *rng = NULL);
 
 	/**
 	* Compute the topological order using a quuicksort algorithm
