@@ -103,6 +103,21 @@ public:
 		return this->listSize;
 	}
 
+	/*
+	* Set the minimum list size
+	*/
+	virtual void setMinSize(unsigned int value) {
+		this->minSize = value;
+	}
+
+	/*
+	* Set the maximum list size
+	*/
+	virtual void setMaxSize(unsigned int value) {
+		reduceSize(value);
+		this->maxSize = value;
+	}
+
 
 	virtual std::vector<std::string> getName() const {
 		std::vector<std::string> setup;

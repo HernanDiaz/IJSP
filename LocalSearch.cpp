@@ -343,8 +343,7 @@ FullSolution LS_Tabu::apply(const Solution *solution,
 			if (!this->estimationFilter || best == NULL || estimation->isBetterThan(best)) {
 				if (this->estimationGuided) {
 					if ((best == NULL || estimation->isBetterThan(best))
-						&& (!isTabu || estimation->isBetterThan(bestSolution.second))
-						&& (lastNeighbour == NULL || !isLastNeighbour)) {
+						&& (!isTabu || estimation->isBetterThan(bestSolution.second))) {
 						best = estimation;
 						bestNeighbor = index;
 					}
@@ -353,7 +352,8 @@ FullSolution LS_Tabu::apply(const Solution *solution,
 					realValue = this->neighbourhood->evaluateNeighbour(index, svars, true);
 					this->evaluations++;
 					if ((best == NULL || realValue->isBetterThan(best))
-						&& (!isTabu || realValue->isBetterThan(bestSolution.second))) {
+						&& (!isTabu || realValue->isBetterThan(bestSolution.second))
+						&& (lastNeighbour == NULL || !isLastNeighbour)) {
 						best = realValue;
 						bestNeighbor = index;
 					}
@@ -392,7 +392,7 @@ FullSolution LS_Tabu::apply(const Solution *solution,
 			this->badIterations = this->maxBadIterations;
 	}
 
-	if(lastNeighbour == NULL)
+	if(lastNeighbour != NULL)
 		delete lastNeighbour;
 	return bestSolution;
 }

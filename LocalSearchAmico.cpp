@@ -20,13 +20,24 @@ namespace FuzzyFW {
 //-----  Main constructor  ----------------------------------------------------
 LS_Tabu_Amico::LS_Tabu_Amico(ParameterDB *parameters)
 	: TcycleLabel(FUZZYFW_LS_AMICO_CYCLE), Tcycle(1), cycleControlList(),
+	LambdaLabel(FUZZYFW_LS_AMICO_LAMBDA), Lambda(Infi),
+	minALabel(FUZZYFW_LS_AMICO_MINA), minA(1),
+	minBLabel(FUZZYFW_LS_AMICO_MINB), minB(1),
+	maxALabel(FUZZYFW_LS_AMICO_MAXA), maxA(Infi),
+	maxBLabel(FUZZYFW_LS_AMICO_MAXB), maxB(Infi),
 	LS_Tabu(parameters) { }
 
 
 //-----  Copy constructor  ----------------------------------------------------
 LS_Tabu_Amico::LS_Tabu_Amico(const LS_Tabu_Amico &source)
 	: TcycleLabel(source.TcycleLabel), Tcycle(source.Tcycle),
-	cycleControlList(),	LS_Tabu(source) { 
+	cycleControlList(),	
+	LambdaLabel(source.LambdaLabel), Lambda(source.Lambda),
+	minALabel(source.minALabel), minA(source.minA),
+	minBLabel(source.minBLabel), minB(source.minB),
+	maxALabel(source.maxALabel), maxA(source.maxA),
+	maxBLabel(source.maxBLabel), maxB(source.maxB),
+	LS_Tabu(source) {
 	
 	std::pair<Neighbour *, Fitness *> witness;
 	for (size_t i = 0; i < source.cycleControlList.size(); i++) {
@@ -42,6 +53,15 @@ void LS_Tabu_Amico::setup(ParameterDB *parameters) {
 	// Loads the maximum number of iterations
 	this->Tcycle = parameters->getInteger(this->TcycleLabel, 1);
 	
+	// Loads the Lambda parameter
+	this->Lambda = parameters->getInteger(this->LambdaLabel, Infi);
+
+	// Loads the boundaries for the tabu list sizes
+	this->minA = parameters->getInteger(this->minALabel, 1);
+	this->minB = parameters->getInteger(this->minBLabel, 1);
+	this->maxA = parameters->getInteger(this->maxALabel, Infi);
+	this->maxB = parameters->getInteger(this->maxBLabel, Infi);
+
 	LS_Tabu::setup(parameters);
 }
 
@@ -55,7 +75,7 @@ FullSolution LS_Tabu_Amico::apply(const Solution *solution,
 	const Fitness *fitness, const SharedVars *svars) {
 
 	int index, nNeighbours, bestNeighbor;
-	unsigned int isTabu;
+	unsigned int isTabu, lambdaCount, rand;
 	this->evaluations = 0;
 	this->neighbours = 0;
 	this->iterations = 0;
@@ -66,6 +86,7 @@ FullSolution LS_Tabu_Amico::apply(const Solution *solution,
 	std::vector<int> randomArray;
 	std::pair<Neighbour *, Fitness *> witness;
 
+	// Set the initial solution of the nieghbourhood
 	this->neighbourhood->setInitialSolution(solution->clone(),
 		fitness->clone(), svars);
 	current = this->neighbourhood->getCurrentSolution();
@@ -74,11 +95,23 @@ FullSolution LS_Tabu_Amico::apply(const Solution *solution,
 
 	bool improves = true;
 	this->cycleCount = 0;
+	lambdaCount = 0;
+
+	// Set the tabu list
+	this->updateTabuListBounds(svars);
 	this->tabuList->clear();
+	 
 	while (!this->stoppingCriteria()) {
 		improves = false;
 		bestNeighbor = -1;
 		best = NULL;
+		
+		if (lambdaCount + 1 >= this->Lambda) {
+			this->updateTabuListBounds(svars);
+			lambdaCount = 0;
+		}
+		else
+			lambdaCount++;
 
 		nNeighbours =
 			this->neighbourhood->findNewNeighbours(svars);
@@ -164,6 +197,17 @@ void LS_Tabu_Amico::resetCycleControl() {
 		delete this->cycleControlList[i].second;
 	}
 	this->cycleControlList.clear();
+}
+
+
+
+//-----  Method for updating the tabu list size boundaries  -------------------
+void LS_Tabu_Amico::updateTabuListBounds(const SharedVars *svars) {
+	unsigned int rand;
+	rand = svars->rng->getInteger(minA, minB);
+	this->tabuList->setMinSize(rand);
+	rand = svars->rng->getInteger(maxA, maxB);
+	this->tabuList->setMaxSize(rand);
 }
 
 

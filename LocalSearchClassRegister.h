@@ -26,8 +26,8 @@
 =============================================================================*/
 
 
-#include "LocalSearch.h"
 #include "LocalSearchAmico.h"
+
 // ****************************************************************************
 //
 // ADD HERE ALL THE HEADER FILES OF THE OPERATORS YOU HAVE CREATED
@@ -36,6 +36,7 @@
 #include "NeighbourhoodFJSP_Cmax.h"
 #include "NeighbourhoodFJSP_AI.h"
 #include "NeighbourhoodFJSP_ESD.h"
+#include "LocalSearchAmicoFJSP.h"
 
 
 
@@ -145,6 +146,8 @@ public:
 			&createLocalSearchInstance<LS_Tabu>;
 		LocalSearchMap[toUpper("amico")] =
 			&createLocalSearchInstance<LS_Tabu_Amico>;
+		LocalSearchMap[toUpper("amicofjsp")] =
+			&createLocalSearchInstance<FJSP::LS_Tabu_Amico_FJSP>;
 
 
 		// -----  NEIGHBOURHOOD STRUCTURES  ---------------------------------------

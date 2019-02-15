@@ -38,6 +38,11 @@ namespace FuzzyFW {
 */
 
 #define FUZZYFW_LS_AMICO_CYCLE "localsearch.Tcycle"
+#define FUZZYFW_LS_AMICO_LAMBDA "localsearch.Lambda"
+#define FUZZYFW_LS_AMICO_MINA "localsearch.min.lower"
+#define FUZZYFW_LS_AMICO_MINB "localsearch.min.upper"
+#define FUZZYFW_LS_AMICO_MAXA "localsearch.max.lower"
+#define FUZZYFW_LS_AMICO_MAXB "localsearch.max.upper"
 
 class LS_Tabu_Amico : public LS_Tabu {
 	//=========================================================================
@@ -49,6 +54,21 @@ protected:
 	*/
 	std::string TcycleLabel;
 	unsigned int Tcycle;
+
+	/*
+	* Lambda parameter. Fixes the number of iterations with a fix list size
+	*/
+	std::string LambdaLabel;
+	unsigned int Lambda;
+
+	/*
+	* Bounds for minimum and maximum tabu list sizes
+	*/
+	std::string minALabel, minBLabel;
+	unsigned int minA, minB;
+	std::string maxALabel, maxBLabel;
+	unsigned int maxA, maxB;
+
 
 	/*
 	* List of visited neighbours for cycle control
@@ -106,6 +126,12 @@ protected:
 
 
 	/**
+	* Updates the minimum and maximum tabu list sizes
+	*/
+	virtual void updateTabuListBounds(const SharedVars *svars);
+
+
+	/**
 	* Checks if movement has been done earlier
 	*/
 	virtual bool isRepeatedMove(Neighbour *neighbour, Fitness *fitness);
@@ -143,6 +169,16 @@ public:
 		for (size_t i = 0; i < tabu.size(); i++) {
 			setup.push_back(";" + tabu[i]);
 		}
+		setup.push_back(";Tcycle:;"
+			+ valueToString(this->Tcycle));
+		setup.push_back(";Lambda:;"
+			+ valueToString(this->Lambda));
+		setup.push_back(";Min tabu list size:;["
+			+ valueToString(this->minA) + ", "
+			+ valueToString(this->minB));
+		setup.push_back(";Max tabu list size:;["
+			+ valueToString(this->maxA) + ", "
+			+ valueToString(this->maxB));
 		setup.push_back(";Max. Iterations without Improve:;"
 			+ valueToString(this->maxBadIterations));
 		if (this->maxIterations >= 0)
