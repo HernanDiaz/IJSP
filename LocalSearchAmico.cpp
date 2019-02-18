@@ -75,37 +75,38 @@ FullSolution LS_Tabu_Amico::apply(const Solution *solution,
 	const Fitness *fitness, const SharedVars *svars) {
 
 	int index, nNeighbours, bestNeighbor;
-	unsigned int isTabu, lambdaCount, rand;
+	FullSolution current, bestSolution;
+	Fitness *estimation, *realValue, *best;
+	std::vector<int> randomArray;
+	Neighbour *bestFoundNeighbor, *lastNeighbour = NULL;
+	std::pair<Neighbour *, Fitness *> witness;
+
+	unsigned int isTabu, isLastNeighbour, lambdaCount;
 	this->evaluations = 0;
 	this->neighbours = 0;
 	this->iterations = 0;
 	this->badIterations = 0;
+	this->cycleCount = 0;
+	lambdaCount = 0;
 
-	FullSolution current, bestSolution;
-	Fitness *estimation, *realValue, *best;
-	std::vector<int> randomArray;
-	std::pair<Neighbour *, Fitness *> witness;
-
-	// Set the initial solution of the nieghbourhood
+	// Set the initial solution of the neighbourhood
 	this->neighbourhood->setInitialSolution(solution->clone(),
 		fitness->clone(), svars);
 	current = this->neighbourhood->getCurrentSolution();
 	bestSolution.first = solution->clone();
 	bestSolution.second = fitness->clone();
 
-	bool improves = true;
-	this->cycleCount = 0;
-	lambdaCount = 0;
-
 	// Set the tabu list
 	this->updateTabuListBounds(svars);
 	this->tabuList->clear();
-	 
+
+	bool improves = true;
 	while (!this->stoppingCriteria()) {
 		improves = false;
 		bestNeighbor = -1;
 		best = NULL;
-		
+
+		// Update the min/max tabu list sizes
 		if (lambdaCount + 1 >= this->Lambda) {
 			this->updateTabuListBounds(svars);
 			lambdaCount = 0;
@@ -113,18 +114,23 @@ FullSolution LS_Tabu_Amico::apply(const Solution *solution,
 		else
 			lambdaCount++;
 
+		// Find the neighbours of the current solution
 		nNeighbours =
 			this->neighbourhood->findNewNeighbours(svars);
 		this->neighbours += nNeighbours;
 		this->neighbourhood->sortByEstimation(svars);
 
+		// Iterate over the neighbours looking for the best
 		index = 0;
 		while (index < nNeighbours) {
 			estimation = this->neighbourhood->getEstimation(index, svars);
 			isTabu = this->tabuList->isTabu(this->neighbourhood->getNeighbour(index));
+			if (lastNeighbour != NULL)
+				isLastNeighbour = lastNeighbour->isReverse(this->neighbourhood->getNeighbour(index));
 
 			if (!this->estimationFilter || best == NULL || estimation->isBetterThan(best)) {
 				if (this->estimationGuided) {
+					// Pick the neighbour with the best fitness estimation
 					if ((best == NULL || estimation->isBetterThan(best))
 						&& (!isTabu || estimation->isBetterThan(bestSolution.second))) {
 						best = estimation;
@@ -132,10 +138,12 @@ FullSolution LS_Tabu_Amico::apply(const Solution *solution,
 					}
 				}
 				else {
+					// Pick the neighbour with the best real fitness
 					realValue = this->neighbourhood->evaluateNeighbour(index, svars, true);
 					this->evaluations++;
 					if ((best == NULL || realValue->isBetterThan(best))
-						&& (!isTabu || realValue->isBetterThan(bestSolution.second))) {
+						&& (!isTabu || realValue->isBetterThan(bestSolution.second))
+						&& (lastNeighbour == NULL || !isLastNeighbour)) {
 						best = realValue;
 						bestNeighbor = index;
 					}
@@ -146,22 +154,29 @@ FullSolution LS_Tabu_Amico::apply(const Solution *solution,
 				index = nNeighbours;
 		}
 
+		// If it has found a neighbour to move to...
 		if (bestNeighbor >= 0) {
-			this->tabuList->addNeighbour(this->neighbourhood->getNeighbour(bestNeighbor));
+			if (lastNeighbour != NULL)
+				delete lastNeighbour;
+			bestFoundNeighbor = this->neighbourhood->getNeighbour(bestNeighbor);
+			lastNeighbour = bestFoundNeighbor->clone();
 
-			if (this->isRepeatedMove(this->neighbourhood->getNeighbour(bestNeighbor),
-				this->neighbourhood->getNeighbour(bestNeighbor)->getEvaluatedFitness()))
+			this->tabuList->addNeighbour(bestFoundNeighbor);
+
+			// Check if the solution has been visited in the past
+			if (isRepeatedMove(bestFoundNeighbor, bestFoundNeighbor->getEvaluatedFitness()))
 				cycleCount++;
 			else {
 				cycleCount = 0;
-				witness.first = this->neighbourhood->getNeighbour(bestNeighbor)->clone();
+				witness.first = bestFoundNeighbor->clone();
 				witness.first->setEvaluation(NULL, NULL);
-				witness.second = this->neighbourhood->getNeighbour(bestNeighbor)->getEvaluatedFitness()->clone();
+				witness.second = bestFoundNeighbor->getEvaluatedFitness()->clone();
 				this->cycleControlList.push_back(witness);
 			}
 
-			if (this->neighbourhood->getNeighbour(bestNeighbor)->getEvaluatedFitness()->isBetterThan(current.second))
-				this->tabuList->reduceSize(this->tabuList->size()-1);
+			if (bestFoundNeighbor->getEvaluatedFitness()->isBetterThan(current.second))
+				this->tabuList->reduceSize(this->tabuList->size() - 1);
+
 			this->neighbourhood->acceptNeighbour(bestNeighbor, svars);
 			current = this->neighbourhood->getCurrentSolution();
 			this->iterations++;
@@ -173,7 +188,7 @@ FullSolution LS_Tabu_Amico::apply(const Solution *solution,
 				delete bestSolution.second;
 				bestSolution.first = current.first->clone();
 				bestSolution.second = current.second->clone();
-				improves = true;
+				improves = true;			
 				this->badIterations = 0;
 				this->tabuList->forceSize(1);
 			}
@@ -185,8 +200,14 @@ FullSolution LS_Tabu_Amico::apply(const Solution *solution,
 			this->badIterations = this->maxBadIterations;
 	}
 
+	// Free memory
+	if (lastNeighbour != NULL)
+		delete lastNeighbour;
+	resetCycleControl();
+
 	return bestSolution;
 }
+
 
 
 

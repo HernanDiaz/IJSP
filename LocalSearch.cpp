@@ -300,6 +300,7 @@ bool LS_Tabu::stoppingCriteria() {
 //=============================================================================
 //		METHODS
 //=============================================================================
+//-----  Apply method  --------------------------------------------------------
 FullSolution LS_Tabu::apply(const Solution *solution,
 	const Fitness *fitness, const SharedVars *svars) {
 
@@ -315,6 +316,7 @@ FullSolution LS_Tabu::apply(const Solution *solution,
 	this->iterations = 0;
 	this->badIterations = 0;
 
+	// Set the initial solution of the nieghbourhood
 	this->neighbourhood->setInitialSolution(solution->clone(),
 		fitness->clone(), svars);
 	current = this->neighbourhood->getCurrentSolution();
@@ -398,3 +400,4 @@ FullSolution LS_Tabu::apply(const Solution *solution,
 }
 
 }
+
