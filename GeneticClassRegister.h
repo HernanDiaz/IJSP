@@ -39,7 +39,7 @@
 #include "DecoderFJSP.h"
 #include "DecoderFVRP.h"
 
-
+#include "CreationIJSP.h"
 
 
 
@@ -284,6 +284,9 @@ public:
 		// -----  CREATION OPERATORS  -----------------------------------------
 		CreationMap[toUpper("fjsp-random")] = &createCreationInstance<FJSP::CreationRandomSchedule>;
 		CreationMap[toUpper("fjsprandom")] = &createCreationInstance<FJSP::CreationRandomSchedule>;
+
+		CreationMap[toUpper("ijsp-random")] = &createCreationInstance<IJSP::CreationRandomSchedule>;
+		CreationMap[toUpper("ijsprandom")] = &createCreationInstance<IJSP::CreationRandomSchedule>;
 
 		// -----  CROSSOVER OPERATORS  ----------------------------------------
 		CrossoverMap[toUpper("jox")] = &createCrossoverInstance<FJSP::Crossover_JOX>;

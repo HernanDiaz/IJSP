@@ -28,6 +28,8 @@
 
 #include "SGS_FJSP_Insertion.h"
 #include "SGS_FJSP_Append.h"
+#include "SGS_IJSP_Insertion.h"
+
 
 // ****************************************************************************
 //
@@ -92,7 +94,9 @@ public:
 	}
 		
 
-
+	static IJSP::SGS_IJSP* getSGSObject(){
+		return new IJSP::SGS_IJSP_Insertion();
+	}
 
 
 	// ************************************************************************
