@@ -56,7 +56,7 @@ FuzzyFW::Individual * CreationRandomSchedule::createIndividual(
 		dynamic_cast<ProblemIJSP *>(svars->problem);
 	if (fuzzyProb == NULL) {
 		std::string errorMsg = "This enconding function works only with ";
-		errorMsg += "fuzzy problems.";
+		errorMsg += "interval problems.";
 		throw new IJSPException("Creation", errorMsg);
 	}
 

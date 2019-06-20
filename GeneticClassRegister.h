@@ -38,7 +38,7 @@
 #include "CrossoverFJSP.h"
 #include "DecoderFJSP.h"
 #include "DecoderFVRP.h"
-
+#include "DecoderIJSP.h"
 #include "CreationIJSP.h"
 
 
@@ -271,6 +271,16 @@ public:
 		EncoderMap[toUpper("permutationreap")] = &createEncoderInstance<FJSP::EncoderFJSP_JobOrder>;
 		EncoderMap[toUpper("job-order")] = &createEncoderInstance<FJSP::EncoderFJSP_JobOrder>;
 		EncoderMap[toUpper("joborder")] = &createEncoderInstance<FJSP::EncoderFJSP_JobOrder>;
+	    // -----  ENCODING FUNCTION  IJSP------------------------------------------
+		EncoderMap[toUpper("ijsp.permutation")] = &createEncoderInstance<IJSP::EncoderIJSP_Order>;
+		EncoderMap[toUpper("ijsp.task-order")] = &createEncoderInstance<IJSP::EncoderIJSP_Order>;
+		EncoderMap[toUpper("ijsp.taskorder")] = &createEncoderInstance<IJSP::EncoderIJSP_Order>;
+		EncoderMap[toUpper("ijsp.permutation-reap")] = &createEncoderInstance<IJSP::EncoderIJSP_JobOrder>;
+		EncoderMap[toUpper("ijsp.permutationreap")] = &createEncoderInstance<IJSP::EncoderIJSP_JobOrder>;
+		EncoderMap[toUpper("ijsp.job-order")] = &createEncoderInstance<IJSP::EncoderIJSP_JobOrder>;
+		EncoderMap[toUpper("ijsp.joborder")] = &createEncoderInstance<IJSP::EncoderIJSP_JobOrder>;
+				
+		
 
 		// -----  DECODING FUNCTION  ------------------------------------------
 		DecoderMap[toUpper("permutation")] = &createDecoderInstance<FJSP::DecoderFJSP_Order>;
@@ -280,11 +290,19 @@ public:
 		DecoderMap[toUpper("permutationreap")] = &createDecoderInstance<FJSP::DecoderFJSP_JobOrder>;
 		DecoderMap[toUpper("job-order")] = &createDecoderInstance<FJSP::DecoderFJSP_JobOrder>;
 		DecoderMap[toUpper("joborder")] = &createDecoderInstance<FJSP::DecoderFJSP_JobOrder>;
+		// -----  DECODING FUNCTION IJSP ------------------------------------------
+		DecoderMap[toUpper("ijsp.permutation")] = &createDecoderInstance<IJSP::DecoderIJSP_Order>;
+		DecoderMap[toUpper("ijsp.task-order")] = &createDecoderInstance<IJSP::DecoderIJSP_Order>;
+		DecoderMap[toUpper("ijsp.taskorder")] = &createDecoderInstance<IJSP::DecoderIJSP_Order>;
+		DecoderMap[toUpper("ijsp.permutation-reap")] = &createDecoderInstance<IJSP::DecoderIJSP_JobOrder>;
+		DecoderMap[toUpper("ijsp.permutationreap")] = &createDecoderInstance<IJSP::DecoderIJSP_JobOrder>;
+		DecoderMap[toUpper("ijsp.job-order")] = &createDecoderInstance<IJSP::DecoderIJSP_JobOrder>;
+		DecoderMap[toUpper("ijsp.joborder")] = &createDecoderInstance<IJSP::DecoderIJSP_JobOrder>;
 
 		// -----  CREATION OPERATORS  -----------------------------------------
 		CreationMap[toUpper("fjsp-random")] = &createCreationInstance<FJSP::CreationRandomSchedule>;
 		CreationMap[toUpper("fjsprandom")] = &createCreationInstance<FJSP::CreationRandomSchedule>;
-
+		// -----  CREATION OPERATORS  IJSP-----------------------------------------
 		CreationMap[toUpper("ijsp-random")] = &createCreationInstance<IJSP::CreationRandomSchedule>;
 		CreationMap[toUpper("ijsprandom")] = &createCreationInstance<IJSP::CreationRandomSchedule>;
 

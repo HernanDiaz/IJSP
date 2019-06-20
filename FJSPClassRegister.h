@@ -93,7 +93,7 @@ public:
 		return iter->second();
 	}
 		
-
+	//TODO
 	static IJSP::SGS_IJSP* getSGSObject(){
 		return new IJSP::SGS_IJSP_Insertion();
 	}

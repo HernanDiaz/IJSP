@@ -27,7 +27,7 @@ ScheduleIJSP * SGS_IJSP_Insertion::buildSchedule(
 	ProblemIJSP * fjspProb =
 		dynamic_cast<ProblemIJSP *>(svars->problem);
 	if (fjspProb == NULL) {
-		std::string errorMsg = "This SGS can be only used on Fuzzy Problems.";
+		std::string errorMsg = "This SGS can be only used on Interval Problems.";
 		throw new IJSPException("SGS", errorMsg);
 	}
 
