@@ -35,6 +35,7 @@
 //
 // ****************************************************************************
 #include "EvaluationFJSP.h"
+#include "EvaluationIJSP.h"
 #include "EvaluationFVRP.h"
 
 
@@ -119,6 +120,21 @@ public:
 		EvaluationMap[toUpper("esd_min")] = &createEvaluationInstance<FJSP::EvaluationFJSP_ESDmin>;
 		EvaluationMap[toUpper("esdavg")] = &createEvaluationInstance<FJSP::EvaluationFJSP_ESDavg>;
 		EvaluationMap[toUpper("esd_avg")] = &createEvaluationInstance<FJSP::EvaluationFJSP_ESDavg>;
+
+
+		// -----  IJSP EVALUATION FUNCTIONS  ----------------------------------
+		EvaluationMap[toUpper("ijsp.makespan")] = &createEvaluationInstance<IJSP::EvaluationIJSP_Makespan>;
+		EvaluationMap[toUpper("ijsp.cmax")] = &createEvaluationInstance<IJSP::EvaluationIJSP_Makespan>;
+		EvaluationMap[toUpper("ijsp.aimin")] = &createEvaluationInstance<IJSP::EvaluationIJSP_AImin>;
+		EvaluationMap[toUpper("ijsp.ai_min")] = &createEvaluationInstance<IJSP::EvaluationIJSP_AImin>;
+		EvaluationMap[toUpper("ijsp.ai_min_icae")] = &createEvaluationInstance<IJSP::EvaluationIJSP_AImin_ICAE>;
+		EvaluationMap[toUpper("ijsp.aimin_icae")] = &createEvaluationInstance<IJSP::EvaluationIJSP_AImin_ICAE>;
+		EvaluationMap[toUpper("ijsp.aiavg")] = &createEvaluationInstance<IJSP::EvaluationIJSP_AIavg>;
+		EvaluationMap[toUpper("ijsp.ai_avg")] = &createEvaluationInstance<IJSP::EvaluationIJSP_AIavg>;
+		EvaluationMap[toUpper("ijsp.esdmin")] = &createEvaluationInstance<IJSP::EvaluationIJSP_ESDmin>;
+		EvaluationMap[toUpper("ijsp.esd_min")] = &createEvaluationInstance<IJSP::EvaluationIJSP_ESDmin>;
+		EvaluationMap[toUpper("ijsp.esdavg")] = &createEvaluationInstance<IJSP::EvaluationIJSP_ESDavg>;
+		EvaluationMap[toUpper("ijsp.esd_avg")] = &createEvaluationInstance<IJSP::EvaluationIJSP_ESDavg>;
 
 
 		// -----  FVRP EVALUATION FUNCTIONS  ----------------------------------

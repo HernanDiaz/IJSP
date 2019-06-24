@@ -38,6 +38,8 @@
 #include "NeighbourhoodFJSP_ESD.h"
 #include "LocalSearchAmicoFJSP.h"
 
+#include "NeighbourhoodIJSP_ESD.h"
+
 
 
 
@@ -130,11 +132,11 @@ public:
 	static void registerClasses() {
 
 		// -----  LOCAL SEARCH METHOD  ----------------------------------------
-		LocalSearchMap[toUpper("hillclimbing")] = 
+		LocalSearchMap[toUpper("hillclimbing")] =
 			&createLocalSearchInstance<LS_HillClimbing>;
-		LocalSearchMap[toUpper("hill-climbing")] = 
+		LocalSearchMap[toUpper("hill-climbing")] =
 			&createLocalSearchInstance<LS_HillClimbing>;
-		LocalSearchMap[toUpper("hc")] = 
+		LocalSearchMap[toUpper("hc")] =
 			&createLocalSearchInstance<LS_HillClimbing>;
 		LocalSearchMap[toUpper("gradientdescent")] =
 			&createLocalSearchInstance<LS_GradientDescent>;
@@ -150,7 +152,7 @@ public:
 			&createLocalSearchInstance<FJSP::LS_Tabu_Amico_FJSP>;
 
 
-		// -----  NEIGHBOURHOOD STRUCTURES  ---------------------------------------
+		// -----  NEIGHBOURHOOD STRUCTURES  FJSP---------------------------------------
 		NeighbourhoodMap[toUpper("fjsp.makespan.n1")] =
 			&createNeighbourhoodInstance<FJSP::NB_ParallelN1_MakespanFJSP>;
 		NeighbourhoodMap[toUpper("fjsp.aiavg.n1")] =
@@ -163,6 +165,12 @@ public:
 			&createNeighbourhoodInstance<FJSP::NB_ParallelN1_ESDavgFJSP>;
 		NeighbourhoodMap[toUpper("fjsp.esdmin.n1")] =
 			&createNeighbourhoodInstance<FJSP::NB_ParallelN1_ESDminFJSP>;
+
+		// -----  NEIGHBOURHOOD STRUCTURES  IJSP---------------------------------------
+		NeighbourhoodMap[toUpper("ijsp.esdavg.n1")] =
+			&createNeighbourhoodInstance<IJSP::NB_ParallelN1_ESDavgIJSP>;
+		NeighbourhoodMap[toUpper("ijsp.esdmin.n1")] =
+			&createNeighbourhoodInstance<IJSP::NB_ParallelN1_ESDminIJSP>;
 	}
 
 };
