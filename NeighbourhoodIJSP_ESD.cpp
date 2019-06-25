@@ -2,12 +2,11 @@
 * Neighbourhood_ESD.cpp
 *
 *  Created on: June 24, 2019
-*      Author: hernan diaz
+*      Author: Hernan Diaz
 */
 
 #include "NeighbourhoodIJSP_ESD.h"
 
-//TODO NeighbourFJSP_Arc
 
 namespace IJSP {
 	//=============================================================================
@@ -27,7 +26,7 @@ namespace IJSP {
 	{
 		for (size_t i = 0; i < source.neighbours.size(); i++) {
 			if (source.neighbours[i] != NULL)
-				neighbours.push_back(new FJSP::NeighbourFJSP_Arc(*source.neighbours[i]));
+				neighbours.push_back(new NeighbourIJSP_Arc(*source.neighbours[i]));
 			else
 				neighbours.push_back(NULL);
 		}
@@ -233,7 +232,7 @@ namespace IJSP {
 								&& this->neighbours[this->numNeighbours] != NULL)
 								this->neighbours[this->numNeighbours]->setValues(task.mp, taskId);
 							else
-								this->neighbours.push_back(new FJSP::NeighbourFJSP_Arc(task.mp, taskId));
+								this->neighbours.push_back(new NeighbourIJSP_Arc(task.mp, taskId));
 							this->numNeighbours++;
 							added[task.mp] = true;
 						}
@@ -280,7 +279,7 @@ namespace IJSP {
 			throw new IJSPException("Neighbourhood", errorMsg);
 		}
 
-		FJSP::NeighbourFJSP_Arc *arc = this->neighbours[idx];
+		NeighbourIJSP_Arc *arc = this->neighbours[idx];
 		if (arc->x < 0 || arc->y < 0)
 			return NULL;
 
@@ -402,7 +401,7 @@ namespace IJSP {
 
 
 		// Update tails
-		FJSP::NeighbourFJSP_Arc *arc = this->neighbours[idx];
+		NeighbourIJSP_Arc *arc = this->neighbours[idx];
 
 		taskQueue.push(arc->x);
 		taskQueue.push(arc->y);
@@ -562,7 +561,7 @@ namespace IJSP {
 			throw new IJSPException("Neighbourhood", errorMsg);
 		}
 
-		FJSP::NeighbourFJSP_Arc *arc = this->neighbours[idx];
+		NeighbourIJSP_Arc *arc = this->neighbours[idx];
 		FuzzyFW::TFN tailX, tailY, headX, headY;
 		FuzzyFW::TFN Ctime;
 		int mpy, jpy, msy, jsy;
@@ -735,7 +734,7 @@ namespace IJSP {
 								&& this->neighbours[this->numNeighbours] != NULL)
 								this->neighbours[this->numNeighbours]->setValues(task.mp, taskId);
 							else
-								this->neighbours.push_back(new FJSP::NeighbourFJSP_Arc(task.mp, taskId));
+								this->neighbours.push_back(new NeighbourIJSP_Arc(task.mp, taskId));
 							this->numNeighbours++;
 							added[task.mp] = true;
 						}
@@ -782,7 +781,7 @@ namespace IJSP {
 			throw new IJSPException("Neighbourhood", errorMsg);
 		}
 
-		FJSP::NeighbourFJSP_Arc *arc = this->neighbours[idx];
+		NeighbourIJSP_Arc *arc = this->neighbours[idx];
 		if (arc->x < 0 || arc->y < 0)
 			return NULL;
 
@@ -875,7 +874,7 @@ namespace IJSP {
 			throw new IJSPException("Neighbourhood", errorMsg);
 		}
 
-		FJSP::NeighbourFJSP_Arc *arc = this->neighbours[idx];
+		NeighbourIJSP_Arc *arc = this->neighbours[idx];
 		FuzzyFW::TFN tailX, tailY, headX, headY;
 		FuzzyFW::TFN Ctime;
 		int mpy, jpy, msy, jsy;

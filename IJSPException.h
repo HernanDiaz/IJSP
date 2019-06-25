@@ -2,7 +2,7 @@
 * IJSPException.h
 *
 *  Created on: June 18, 2019
-*      Author: Hernan Diaz Rodriguez
+*      Author: Hernan Diaz
 */
 #pragma once
 
@@ -16,7 +16,7 @@ namespace IJSP {
 	*
 	* Allows to customize text messages to be shown after an expcetion occurs
 	*
-	* @author Hernan Diaz
+	* @author hdiaz
 	*
 	*/
 	class IJSPException : public std::exception {

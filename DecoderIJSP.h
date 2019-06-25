@@ -1,8 +1,8 @@
 /*
- * DecoderFJSP.h
+ * DecoderIJSP.h
  *
- *  Created on: September 12, 2017
- *      Author: jjpalacios
+ *  Created on: June 25, 2019
+ *      Author: Hernan Diaz
  */
 #pragma once
 
@@ -17,14 +17,14 @@ namespace IJSP {
 
 //=============================================================================
 //
-//	Abstract class DecoderFJSP
+//	Abstract class DecoderIJSP
 //
 //=============================================================================
 /**
 * This class creates a method apply that receives a genotype and generates
 * a fuzzy schedule from it by using a SGS
 *
-* @author jjpalacios
+* @author hdiaz
 *
 */
 class DecoderIJSP : public FuzzyFW::Decoder {
@@ -78,14 +78,14 @@ public:
 
 //=============================================================================
 //
-//	Class DecoderFJSP_Order
+//	Class DecoderIJSP_Order
 //
 //=============================================================================
 /**
 * This class creates a method apply that receives a genotype in the form
 * of a task permutation and generates a solution using a specific SGS
 *
-* @author jjpalacios
+* @author hdiaz
 *
 */
 class DecoderIJSP_Order : public DecoderIJSP {
@@ -161,14 +161,14 @@ public:
 
 //=============================================================================
 //
-//	Class DecoderFJSP_JobOrder
+//	Class DecoderIJSP_JobOrder
 //
 //=============================================================================
 /**
 * This class creates a method apply that receives a genotype and generates
 * a fuzzy schedule from it by using a SGS
 *
-* @author jjpalacios
+* @author hdiaz
 *
 */
 class DecoderIJSP_JobOrder : public DecoderIJSP {

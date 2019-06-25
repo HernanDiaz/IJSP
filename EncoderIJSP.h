@@ -1,8 +1,8 @@
 /*
- * EncoderFJSP.h
+ * EncoderIJSP.h
  *
- *  Created on: September 13, 2017
- *      Author: jjpalacios
+ *  Created on: June 25, 2019
+ *      Author: hdiaz
  */
 #pragma once
 
@@ -14,7 +14,7 @@
 namespace IJSP {
 //=============================================================================
 //
-//	Class EncoderFJSP_Order
+//	Class EncoderIJSP_Order
 //
 //=============================================================================
 /**
@@ -22,7 +22,7 @@ namespace IJSP {
 * contains the topological order of the solution in it. 
 * Tasks are numbered from 0 to n-1, begin n the number of tasks or operations.
 *
-* @author jjpalacios
+* @author hdiaz
 *
 */
 class EncoderIJSP_Order : public FuzzyFW::Encoder {
@@ -96,7 +96,7 @@ public:
 
 //=============================================================================
 //
-//	Class EncoderFJSP_JobOrder
+//	Class EncoderIJSP_JobOrder
 //
 //=============================================================================
 /**
@@ -104,7 +104,7 @@ public:
 * contains the topological order of the solution in it.
 * Each task is codified with the number of job it belongs to
 *
-* @author jjpalacios
+* @author hdiaz
 *
 */
 class EncoderIJSP_JobOrder : public FuzzyFW::Encoder {

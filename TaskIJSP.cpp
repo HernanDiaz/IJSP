@@ -2,7 +2,7 @@
 * TaskIJSP.cpp
 *
 *  Created on: June 06, 2019
-*      Author: Hernan Diaz Rodriguez
+*      Author: Hernan Diaz
 */
 
 #include "TaskIJSP.h"

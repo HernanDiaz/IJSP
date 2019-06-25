@@ -1,8 +1,8 @@
 /*
 * EvaluationIJSP.cpp
 *
-*  Created on: July 10, 2017
-*      Author: Juan Jose Palacios
+*  Created on: June 25, 2019
+*      Author: Hernan Diaz
 */
 
 #include "EvaluationIJSP.h"
@@ -12,7 +12,7 @@ namespace IJSP {
 
 //=============================================================================
 //
-//	Class EvaluationFJSP_Makespan
+//	Class EvaluationIJSP_Makespan
 //
 //=============================================================================
 //=============================================================================
@@ -25,6 +25,7 @@ EvaluationIJSP_Makespan::EvaluationIJSP_Makespan(
 	tfnMaximum(FuzzyFW::TFN::M_COMPONENT),
 	compareLabel(IJSP_EVALUATION_COMPARE), tfnCompare(FuzzyFW::TFN::C_EV),
 	Evaluation(parameters) {
+	//TODO IJSPClassRegister
 	FJSP::FJSPClassRegister::registerClasses();
 }
 
@@ -404,7 +405,7 @@ double EvaluationIJSP_AImin::agreementIndex(
 
 //=============================================================================
 //
-//	Class EvaluationFJSP_AImin_ICAE
+//	Class EvaluationIJSP_AImin_ICAE
 //
 //=============================================================================
 //=============================================================================

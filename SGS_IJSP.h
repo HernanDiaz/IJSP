@@ -1,8 +1,8 @@
 /*
-* SGS_FJSP.h
+* SGS_IJSP.h
 *
-*  Created on: June 1, 2017
-*      Author: Juan Jose Palacios
+*  Created on: June 25, 2019
+*      Author: Hernan Diaz
 */
 
 #pragma once
@@ -25,7 +25,7 @@ namespace IJSP {
 * and many others having stochastic components. To ensure that results
 * can be replicate, that means that the class will need acces to the RNG.
 *
-* @author Juan Jose Palacios
+* @author hdiaz
 *
 */
 

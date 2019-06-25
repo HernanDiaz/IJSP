@@ -36,6 +36,7 @@
 // ****************************************************************************
 #include "CreationFJSP.h"
 #include "CrossoverFJSP.h"
+#include "CrossoverIJSP.h"
 #include "DecoderFJSP.h"
 #include "DecoderFVRP.h"
 #include "DecoderIJSP.h"
@@ -269,8 +270,8 @@ public:
 		EncoderMap[toUpper("taskorder")] = &createEncoderInstance<FJSP::EncoderFJSP_Order>;
 		EncoderMap[toUpper("permutation-reap")] = &createEncoderInstance<FJSP::EncoderFJSP_JobOrder>;
 		EncoderMap[toUpper("permutationreap")] = &createEncoderInstance<FJSP::EncoderFJSP_JobOrder>;
-		EncoderMap[toUpper("job-order")] = &createEncoderInstance<FJSP::EncoderFJSP_JobOrder>;
-		EncoderMap[toUpper("joborder")] = &createEncoderInstance<FJSP::EncoderFJSP_JobOrder>;
+		//EncoderMap[toUpper("job-order")] = &createEncoderInstance<FJSP::EncoderFJSP_JobOrder>;
+		//EncoderMap[toUpper("joborder")] = &createEncoderInstance<FJSP::EncoderFJSP_JobOrder>;
 	
 		// -----  DECODING FUNCTION  ------------------------------------------
 		DecoderMap[toUpper("permutation")] = &createDecoderInstance<FJSP::DecoderFJSP_Order>;
@@ -324,8 +325,14 @@ public:
 
 		// -----  CREATION OPERATORS  -----------------------------------------
     	CreationMap[toUpper("ijsp-random")] = &createCreationInstance<IJSP::CreationRandomSchedule>;
-		CreationMap[toUpper("ijsprandom")] = &createCreationInstance<IJSP::CreationRandomSchedule>;
+		CreationMap[toUpper("ijsp.random")] = &createCreationInstance<IJSP::CreationRandomSchedule>;
+
 		// -----  CROSSOVER OPERATORS  ----------------------------------------
+		CrossoverMap[toUpper("ijsp.jox")] = &createCrossoverInstance<IJSP::Crossover_JOX>;
+		CrossoverMap[toUpper("ijsp.gox")] = &createCrossoverInstance<IJSP::Crossover_GOXBierwirth>;
+		CrossoverMap[toUpper("ijsp.biertwirth")] = &createCrossoverInstance<IJSP::Crossover_GOXBierwirth>;
+		CrossoverMap[toUpper("ijsp.gpmx")] = &createCrossoverInstance<IJSP::Crossover_GPMXBierwirth>;
+		CrossoverMap[toUpper("ijsp.ppx")] = &createCrossoverInstance<IJSP::Crossover_PPXBierwirth>;
 
 		// -----  MUTATION OPERATORS  -----------------------------------------
 

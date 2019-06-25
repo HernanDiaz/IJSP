@@ -1,12 +1,12 @@
 /*
-* NeighbourhoodFJSP_ESD.h
+* NeighbourhoodIJSP_ESD.h
 *
-*  Created on: Oct 11, 2017
-*      Author: jjpalacios
+*  Created on: June 25, 2019
+*      Author: Hernan Diaz
 */
 #pragma once
 
-#include "NeighbourFJSP.h"
+#include "NeighbourIJSP.h"
 #include "Neighbourhood.h"
 #include "ScheduleIJSP.h"
 
@@ -30,7 +30,7 @@ namespace IJSP {
 * considered a critical path. N1 considers the reversal of all arcs that belong
 * to at least one critical path
 *
-* @author jjpalacios
+* @author hdiaz
 *
 */
 class NB_ParallelN1_ESDavgIJSP : public FuzzyFW::Neighbourhood {
@@ -66,7 +66,7 @@ protected:
 	/*
 	* Array of neighbours generated
 	*/
-	std::vector<FJSP::NeighbourFJSP_Arc *> neighbours;
+	std::vector<NeighbourIJSP_Arc *> neighbours;
 
 
 	/*
@@ -233,7 +233,7 @@ protected:
 * considered a critical path. N1 considers the reversal of all arcs that belong
 * to at least one critical path
 *
-* @author jjpalacios
+* @author hdiaz
 *
 */
 class NB_ParallelN1_ESDminIJSP : public NB_ParallelN1_ESDavgIJSP {

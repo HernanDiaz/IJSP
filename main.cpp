@@ -15,7 +15,7 @@ int main(int argc, const char *argv[]) {
 
 	if(argc < 3) {
 		std::cout << "ERROR: Not enough input arguments." << std::endl;
-		std::cout << "\t Use: MetaFJSP <setup_file> <problem_file> [log_folder]" << std::endl;
+		std::cout << "\t Use: MetaIJSP <setup_file> <problem_file> [log_folder]" << std::endl;
 		return 0;
 	}
 
@@ -27,7 +27,7 @@ int main(int argc, const char *argv[]) {
 		problem = new IJSP::ProblemIJSP(argv[2]);
 		launcher->optimise(problem);
 
-	} catch(FJSP::FJSPException &ex) {
+	} catch(IJSP::IJSPException &ex) {
 		std::cout << ex.what() << std::endl << std::endl;
 		//system("PAUSE");
 		return -2;

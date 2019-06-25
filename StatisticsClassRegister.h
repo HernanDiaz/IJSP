@@ -34,6 +34,7 @@
 // ****************************************************************************
 #include "StatisticsDiversity.h"
 #include "StatisticsFJSP.h"
+#include "StatisticsIJSP.h"
 #include "StatisticsFVRP.h"
 
 
@@ -126,6 +127,18 @@ public:
 		StatsMap[toUpper("esd_min")] = &createStatsInstance<FJSP::StatisticsESDmin>;
 		StatsMap[toUpper("esdavg")] = &createStatsInstance<FJSP::StatisticsESDavg>;
 		StatsMap[toUpper("esd_avg")] = &createStatsInstance<FJSP::StatisticsESDavg>;
+
+		// -----  IJSP OBJECTS  -----------------------------------------------
+		StatsMap[toUpper("ijsp.makespan")] = &createStatsInstance<IJSP::StatisticsMakespan>;
+		StatsMap[toUpper("ijsp.cmax")] = &createStatsInstance<IJSP::StatisticsMakespan>;
+		StatsMap[toUpper("ijsp.aimin")] = &createStatsInstance<IJSP::StatisticsAImin>;
+		StatsMap[toUpper("ijsp.ai_min")] = &createStatsInstance<IJSP::StatisticsAImin>;
+		StatsMap[toUpper("ijsp.aiavg")] = &createStatsInstance<IJSP::StatisticsAIavg>;
+		StatsMap[toUpper("ijsp.ai_avg")] = &createStatsInstance<IJSP::StatisticsAIavg>;
+		StatsMap[toUpper("ijsp.esdmin")] = &createStatsInstance<IJSP::StatisticsESDmin>;
+		StatsMap[toUpper("ijsp.esd_min")] = &createStatsInstance<IJSP::StatisticsESDmin>;
+		StatsMap[toUpper("ijsp.esdavg")] = &createStatsInstance<IJSP::StatisticsESDavg>;
+		StatsMap[toUpper("ijsp.esd_avg")] = &createStatsInstance<IJSP::StatisticsESDavg>;
 
 		// -----  FVRP OBJECTS  -----------------------------------------------
 		StatsMap[toUpper("cost")] = &createStatsInstance<FVRP::StatisticsTimeCost>;

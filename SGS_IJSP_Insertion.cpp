@@ -1,8 +1,8 @@
 /*
-* SGS_FJSP_Insertion.cpp
+* SGS_IJSP_Insertion.cpp
 *
-*  Created on: June 1, 2017
-*      Author: Juan Jose Palacios
+*  Created on: June 25, 2019
+*      Author: Hernan Diaz
 */
 
 #include "SGS_IJSP_Insertion.h"
@@ -11,7 +11,7 @@ namespace IJSP {
 
 //=============================================================================
 //
-//	Class SGS_FJSP_Insertion
+//	Class SGS_IJSP_Insertion
 //
 //=============================================================================
 //=============================================================================

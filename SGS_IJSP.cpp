@@ -1,8 +1,8 @@
 /*
-* SGS_FJSP.cpp
+* SGS_IJSP.cpp
 *
-*  Created on: June 1, 2017
-*      Author: Juan Jose Palacios
+*  Created on: June 25, 2019
+*      Author: Hernan Diaz
 */
 
 #include "SGS_IJSP.h"
@@ -11,7 +11,7 @@ namespace IJSP {
 
 //=============================================================================
 //
-//	Abstract class SGS_FJSP
+//	Abstract class SGS_IJSP
 //
 //=============================================================================
 //=============================================================================

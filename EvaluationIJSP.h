@@ -1,8 +1,8 @@
 /*
  * EvaluationIJSP.h
  *
- *  Created on: July 10, 2017
- *      Author: jjpalacios
+ *  Created on: June 25, 2017
+ *      Author: hdiaz
  */
 #pragma once
 
@@ -163,7 +163,7 @@ public:
 * This class implements the required methods to compute the minimum Agreement
 * Index of a given individual or population
 *
-* @author jjpalacios
+* @author hdiaz
 *
 */
 class EvaluationIJSP_AImin : public FuzzyFW::Evaluation {
@@ -359,7 +359,7 @@ public:
 * This class implements the required methods to compute the average Agreement
 * Index of a given individual or population
 *
-* @author jjpalacios
+* @author hdiaz
 *
 */
 class EvaluationIJSP_AIavg : public EvaluationIJSP_AImin {
@@ -457,7 +457,7 @@ public:
 * This class implements the required methods to compute the minimum
 * Expected Satisfaction Degree of a given individual or population
 *
-* @author jjpalacios
+* @author hdiaz
 *
 */
 class EvaluationIJSP_ESDmin : public FuzzyFW::Evaluation {
@@ -557,7 +557,7 @@ public:
 * This class implements the required methods to compute the average Expected
 * Satisfaction Degree of a given individual or population
 *
-* @author jjpalacios
+* @author hdiaz
 *
 */
 class EvaluationIJSP_ESDavg : public EvaluationIJSP_ESDmin {

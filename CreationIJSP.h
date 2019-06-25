@@ -1,8 +1,8 @@
 /*
  * Creation.h
  *
- *  Created on: Aug 4, 2017
- *      Author: jjpalacios
+ *  Created on: June 25, 2019
+ *      Author: hdiaz
  */
 #pragma once
 
@@ -29,7 +29,7 @@ namespace IJSP {
  * This class generates an initial individual/population by creating a
  * random schedule and then codifying it with the respective strategy
  *
- * @author jjpalacios
+ * @author hdiaz
  *
  */
 class CreationRandomSchedule : public FuzzyFW::Creation {

@@ -1,8 +1,8 @@
 /*
- * EncoderFJSP.cpp
+ * EncoderIJSP.cpp
  *
- *  Created on: Sep 14, 2017
- *      Author: jjpalacios
+ *  Created on: June 25, 2019
+ *      Author: hdiaz
  */
 
 #include "EncoderIJSP.h"
@@ -11,7 +11,7 @@ namespace IJSP {
 
 //=============================================================================
 //
-//	Class EncoderFJSP_Order
+//	Class EncoderIJSP_Order
 //
 //=============================================================================
 //=============================================================================
@@ -67,7 +67,7 @@ FuzzyFW::Individual * EncoderIJSP_Order::encode(FuzzyFW::Solution *solution,
 
 //=============================================================================
 //
-//	Class EncoderFJSP_JobOrder
+//	Class EncoderIJSP_JobOrder
 //
 //=============================================================================
 //=============================================================================

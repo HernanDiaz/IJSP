@@ -1,8 +1,8 @@
 /*
-* ProblemFJSP.cpp
+* ProblemIJSP.cpp
 *
-*  Created on: May 15, 2017
-*      Author: Juan Jose Palacios
+*  Created on: June 25, 2019
+*      Author: Hernan Diaz
 */
 
 #include "ProblemIJSP.h"

@@ -4,7 +4,7 @@
 * Problem IJSP.h
 *
 *  Created on: June 18, 2019
-*      Author: Hernan Diaz Rodriguez
+*      Author: Hernan Diaz 
 */
 #pragma once
 
@@ -60,7 +60,7 @@ namespace IJSP {
 	  * An array with the bounds in this order: E[Cmax], AImin, AImax
 	  *
 	  *
-	  * @author Hernan Diaz Rodriguez
+	  * @author hdiaz
 	  *
 	  */
 

@@ -2,7 +2,7 @@
 * TaskIJSP.h
 *
 *  Created on: June 18, 2019
-*      Author: Hernan Diaz Rodriguez
+*      Author: Hernan Diaz
 */
 #pragma once
 
@@ -21,7 +21,7 @@ namespace IJSP {
 * of an interval job shop scheduling instance. That is, it represents operation
 * such that processing times are Intervals (Interval in this versions)
 *
-* @author Hernan Diaz Rodriguez
+* @author hdiaz
 *
 */
 

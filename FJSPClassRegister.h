@@ -85,6 +85,9 @@ public:
 	* @return An object of the specified type of SGS_FJSP. Null if the
 	* type is not registered
 	*/
+
+
+	
 	static SGS_FJSP * getSGSObject(std::string name) {
 		std::map<std::string, SGS_FJSP*(*)()>::iterator iter;
 		iter = FJSPClassRegister::SGSMap.find(toUpper(name));
