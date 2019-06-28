@@ -47,16 +47,16 @@ ScheduleIJSP * SGS_IJSP_Insertion::buildSchedule(
 
 
 //=====  Schedule a task  =====================================================
-FuzzyFW::TFN SGS_IJSP_Insertion::scheduleTask(const TaskIJSP *task,
+FuzzyFW::Interval SGS_IJSP_Insertion::scheduleTask(const TaskIJSP *task,
 	const int taskIdx) {
 
 	int mp, ms; // Machine predecessor and successor
-	FuzzyFW::TFN Stime;	// Starting time
-	FuzzyFW::TFN mtHead, mtPT;
+	FuzzyFW::Interval Stime;	// Starting time
+	FuzzyFW::Interval mtHead, mtPT;
 	char found;	// Big gap found in the schedule
 	// Comparisons are made component by component
-	FuzzyFW::TFN::Compare cpComp = FuzzyFW::TFN::C_COMPONENT;
-	FuzzyFW::TFN::Maximum maxComp = FuzzyFW::TFN::M_COMPONENT;
+	FuzzyFW::Interval::Compare cpComp = FuzzyFW::Interval::C_COMPONENT;
+	FuzzyFW::Interval::Maximum maxComp = FuzzyFW::Interval::M_COMPONENT;
 
 	int mac = task->machine;
 	int job = task->job;

@@ -101,14 +101,14 @@ namespace IJSP {
 		// Compute the tails of the operations
 		int mp, jp, ms, js, taskIdx, mac;
 		std::queue<int> taskQueue;
-		FuzzyFW::TFN::Maximum maxType = FuzzyFW::TFN::M_COMPONENT;
+		FuzzyFW::Interval::Maximum maxType = FuzzyFW::Interval::M_COMPONENT;
 
 		std::vector<char> visited(problem->getNumberTasks(), false);
 		this->tails.clear();
 		this->tails.resize(problem->getNumberTasks());
 
 		for (unsigned int i = 0; i < problem->getNumberTasks(); i++) {
-			this->tails[i].resize(problem->getNumberJobs(), FuzzyFW::TFN(-1, -1, -1));
+			this->tails[i].resize(problem->getNumberJobs(), FuzzyFW::Interval(-1, -1));
 		}
 
 		// Look for the last task of each job
@@ -147,7 +147,7 @@ namespace IJSP {
 					if (job == schedule->taskInfo[taskIdx].task->job) {
 						this->tails[taskIdx][job] =
 							maximum(this->tails[ms][job] + schedule->taskInfo[ms].task->p,
-								FuzzyFW::TFN(0, 0, 0), maxType);
+								FuzzyFW::Interval(0, 0), maxType);
 					}
 					else {
 						this->tails[taskIdx][job] =
@@ -158,9 +158,9 @@ namespace IJSP {
 				// Last node of the job and the machine
 				else {
 					if (job == schedule->taskInfo[taskIdx].task->job)
-						this->tails[taskIdx][job] = FuzzyFW::TFN(0, 0, 0);
+						this->tails[taskIdx][job] = FuzzyFW::Interval(0, 0);
 					else
-						this->tails[taskIdx][job] = FuzzyFW::TFN(-Infd, -Infd, -Infd);
+						this->tails[taskIdx][job] = FuzzyFW::Interval(-Infd, -Infd);
 				}
 			}
 
@@ -263,7 +263,7 @@ namespace IJSP {
 		int job, mac;
 		int jsx, jsy, mpx, msy;
 		int z, mpz, jpz, msz, jsz;
-		FuzzyFW::TFN newHead;
+		FuzzyFW::Interval newHead;
 		std::queue<int> taskQueue;
 
 		if (idx < 0 || idx > this->numNeighbours) {
@@ -333,16 +333,16 @@ namespace IJSP {
 			if (jpz != -1 && mpz != -1)
 				newHead = maximum(newSolution->taskInfo[mpz].head + newSolution->taskInfo[mpz].task->p,
 					newSolution->taskInfo[jpz].head + newSolution->taskInfo[jpz].task->p,
-					FuzzyFW::TFN::M_COMPONENT);
+					FuzzyFW::Interval::M_COMPONENT);
 			else if (mpz != -1)
 				newHead = newSolution->taskInfo[mpz].head + newSolution->taskInfo[mpz].task->p;
 			else if (jpz != -1)
 				newHead = newSolution->taskInfo[jpz].head + newSolution->taskInfo[jpz].task->p;
 			else
-				newHead = FuzzyFW::TFN(0, 0, 0);
+				newHead = FuzzyFW::Interval(0, 0);
 
 			if (!(newSolution->taskInfo[z].head.isEqualTo(newHead,
-				FuzzyFW::TFN::Compare::C_COMPONENT))) {
+				FuzzyFW::Interval::Compare::C_COMPONENT))) {
 				newSolution->taskInfo[z].head = newHead;
 				if (msz != -1) taskQueue.push(msz);
 				if (jsz != -1) taskQueue.push(jsz);
@@ -371,9 +371,9 @@ namespace IJSP {
 		char tailChange;
 		int taskJob;
 		int z, msz, jsz;
-		FuzzyFW::TFN newTail;
+		FuzzyFW::Interval newTail;
 		std::queue<int> taskQueue;
-		FuzzyFW::TFN::Maximum maxType = FuzzyFW::TFN::M_COMPONENT;
+		FuzzyFW::Interval::Maximum maxType = FuzzyFW::Interval::M_COMPONENT;
 
 		if (idx < 0 || idx > this->numNeighbours || this->neighbours[idx] == NULL) {
 			std::string errorMsg = "Trying to access a non-existing neighbour";
@@ -433,7 +433,7 @@ namespace IJSP {
 					if (job == taskJob) {
 						newTail =
 							maximum(this->tails[msz][job] + schedule->taskInfo[msz].task->p,
-								FuzzyFW::TFN(0, 0, 0), maxType);
+								FuzzyFW::Interval(0, 0), maxType);
 					}
 					else {
 						newTail = this->tails[msz][job] + schedule->taskInfo[msz].task->p;
@@ -443,11 +443,11 @@ namespace IJSP {
 				// Last node of the job and the machine
 				else {
 					if (job == taskJob)
-						newTail = FuzzyFW::TFN(0, 0, 0);
+						newTail = FuzzyFW::Interval(0, 0);
 					else
-						newTail = FuzzyFW::TFN(-Infd, -Infd, -Infd);
+						newTail = FuzzyFW::Interval(-Infd, -Infd);
 				}
-				if (!(this->tails[z][job].isEqualTo(newTail, FuzzyFW::TFN::C_COMPONENT))) {
+				if (!(this->tails[z][job].isEqualTo(newTail, FuzzyFW::Interval::C_COMPONENT))) {
 					tailChange = true;
 					this->tails[z][job] = newTail;
 				}
@@ -487,7 +487,7 @@ namespace IJSP {
 				this->estimateHeadsTails(problem, idx);
 			else
 				this->neighbours[idx]->setEstimatedQuality(
-					new FuzzyFW::FitnessTFN(FuzzyFW::TFN(Infd, Infd, Infd), false));
+					new FuzzyFW::FitnessInterval(FuzzyFW::Interval(Infd, Infd), false));
 		}
 		return this->neighbours[idx]->getEstimatedQuality();
 	}
@@ -562,15 +562,15 @@ namespace IJSP {
 		}
 
 		NeighbourIJSP_Arc *arc = this->neighbours[idx];
-		FuzzyFW::TFN tailX, tailY, headX, headY;
-		FuzzyFW::TFN Ctime;
+		FuzzyFW::Interval tailX, tailY, headX, headY;
+		FuzzyFW::Interval Ctime;
 		int mpy, jpy, msy, jsy;
 		int mpx, jpx, msx, jsx;
 		int mac;
 		unsigned int x = arc->x;
 		unsigned int y = arc->y;
 		double sum = 0.0;
-		FuzzyFW::TFN::Maximum maxType = FuzzyFW::TFN::M_COMPONENT;
+		FuzzyFW::Interval::Maximum maxType = FuzzyFW::Interval::M_COMPONENT;
 
 		mac = schedule->taskInfo[x].task->machine;
 		mpy = schedule->taskInfo[y].mp;
@@ -593,18 +593,18 @@ namespace IJSP {
 		if (mpx != -1 && jpy != -1)
 			headY = maximum(schedule->taskInfo[mpx].head + schedule->taskInfo[mpx].task->p,
 				schedule->taskInfo[jpy].head + schedule->taskInfo[jpy].task->p,
-				FuzzyFW::TFN::M_COMPONENT);
+				FuzzyFW::Interval::M_COMPONENT);
 		else if (mpx != -1)
 			headY = schedule->taskInfo[mpx].head + schedule->taskInfo[mpx].task->p;
 		else if (jpy != -1)
 			headY = schedule->taskInfo[jpy].head + schedule->taskInfo[jpy].task->p;
-		else headY = FuzzyFW::TFN(0, 0, 0);
+		else headY = FuzzyFW::Interval(0, 0);
 
 		// New head for task X
 		if (jpx != -1)
 			headX = maximum(headY + schedule->taskInfo[y].task->p,
 				schedule->taskInfo[jpx].head + schedule->taskInfo[jpx].task->p,
-				FuzzyFW::TFN::M_COMPONENT);
+				FuzzyFW::Interval::M_COMPONENT);
 		else headX = headY + schedule->taskInfo[y].task->p;
 
 		for (unsigned int job = 0; job < problem->getNumberJobs(); job++) {
@@ -622,7 +622,7 @@ namespace IJSP {
 				if (job == schedule->taskInfo[arc->x].task->job) {
 					tailX =
 						maximum(this->tails[msy][job] + schedule->taskInfo[msy].task->p,
-							FuzzyFW::TFN(0, 0, 0), maxType);
+							FuzzyFW::Interval(0, 0), maxType);
 				}
 				else {
 					tailX = this->tails[msy][job] + schedule->taskInfo[msy].task->p;
@@ -631,9 +631,9 @@ namespace IJSP {
 			// Last node of the job and the machine
 			else {
 				if (job == schedule->taskInfo[arc->x].task->job)
-					tailX = FuzzyFW::TFN(0, 0, 0);
+					tailX = FuzzyFW::Interval(0, 0);
 				else
-					tailX = FuzzyFW::TFN(-Infd, -Infd, -Infd);
+					tailX = FuzzyFW::Interval(-Infd, -Infd);
 			}
 
 
@@ -647,7 +647,7 @@ namespace IJSP {
 				if (job == schedule->taskInfo[arc->y].task->job) {
 					tailY =
 						maximum(tailX + schedule->taskInfo[arc->x].task->p,
-							FuzzyFW::TFN(0, 0, 0), maxType);
+							FuzzyFW::Interval(0, 0), maxType);
 				}
 				else {
 					tailY = tailX + schedule->taskInfo[arc->x].task->p;
@@ -658,7 +658,7 @@ namespace IJSP {
 			if (tailX.expectedValue() >= 0 || tailY.expectedValue() >= 0) {
 				Ctime = maximum(headX + schedule->taskInfo[x].task->p + tailX,
 					headY + schedule->taskInfo[y].task->p + tailY,
-					FuzzyFW::TFN::M_COMPONENT);
+					FuzzyFW::Interval::M_COMPONENT);
 			}
 			else
 				Ctime = this->schedule->getCTJob(job);
@@ -765,7 +765,7 @@ namespace IJSP {
 		int jsx, jsy, mpx, msy;
 		int z, mpz, jpz, msz, jsz;
 		double jobESD;
-		FuzzyFW::TFN newHead;
+		FuzzyFW::Interval newHead;
 		std::queue<int> taskQueue;
 
 		if (idx < 0 || idx > this->numNeighbours) {
@@ -835,14 +835,14 @@ namespace IJSP {
 			if (jpz != -1 && mpz != -1)
 				newHead = maximum(newSolution->taskInfo[mpz].head + newSolution->taskInfo[mpz].task->p,
 					newSolution->taskInfo[jpz].head + newSolution->taskInfo[jpz].task->p,
-					FuzzyFW::TFN::M_COMPONENT);
+					FuzzyFW::Interval::M_COMPONENT);
 			else if (jpz == -1)
 				newHead = newSolution->taskInfo[mpz].head + newSolution->taskInfo[mpz].task->p;
 			else
 				newHead = newSolution->taskInfo[jpz].head + newSolution->taskInfo[jpz].task->p;
 
 			if (!(newSolution->taskInfo[z].head.isEqualTo(newHead,
-				FuzzyFW::TFN::Compare::C_COMPONENT))) {
+				FuzzyFW::Interval::Compare::C_COMPONENT))) {
 				newSolution->taskInfo[z].head = newHead;
 				if (msz != -1) taskQueue.push(msz);
 				if (jsz != -1) taskQueue.push(jsz);
@@ -875,15 +875,15 @@ namespace IJSP {
 		}
 
 		NeighbourIJSP_Arc *arc = this->neighbours[idx];
-		FuzzyFW::TFN tailX, tailY, headX, headY;
-		FuzzyFW::TFN Ctime;
+		FuzzyFW::Interval tailX, tailY, headX, headY;
+		FuzzyFW::Interval Ctime;
 		int mpy, jpy, msy, jsy;
 		int mpx, jpx, msx, jsx;
 		int mac;
 		unsigned int x = arc->x;
 		unsigned int y = arc->y;
 		double esd, minESD = 2.0;
-		FuzzyFW::TFN::Maximum maxType = FuzzyFW::TFN::M_COMPONENT;
+		FuzzyFW::Interval::Maximum maxType = FuzzyFW::Interval::M_COMPONENT;
 
 		mac = schedule->taskInfo[x].task->machine;
 		mpy = schedule->taskInfo[y].mp;
@@ -910,13 +910,13 @@ namespace IJSP {
 			headY = schedule->taskInfo[mpx].head + schedule->taskInfo[mpx].task->p;
 		else if (jpy != -1)
 			headY = schedule->taskInfo[jpy].head + schedule->taskInfo[jpy].task->p;
-		else headY = FuzzyFW::TFN(0, 0, 0);
+		else headY = FuzzyFW::Interval(0, 0);
 
 		// New head for task X
 		if (jpx != -1)
 			headX = maximum(headY + schedule->taskInfo[y].task->p,
 				schedule->taskInfo[jpx].head + schedule->taskInfo[jpx].task->p,
-				FuzzyFW::TFN::M_COMPONENT);
+				FuzzyFW::Interval::M_COMPONENT);
 		else headX = headY + schedule->taskInfo[y].task->p;
 
 		for (unsigned int job = 0; job < problem->getNumberJobs(); job++) {
@@ -934,7 +934,7 @@ namespace IJSP {
 				if (job == schedule->taskInfo[arc->x].task->job) {
 					tailX =
 						maximum(this->tails[msy][job] + schedule->taskInfo[msy].task->p,
-							FuzzyFW::TFN(0, 0, 0), maxType);
+							FuzzyFW::Interval(0, 0), maxType);
 				}
 				else {
 					tailX = this->tails[msy][job] + schedule->taskInfo[msy].task->p;
@@ -943,9 +943,9 @@ namespace IJSP {
 			// Last node of the job and the machine
 			else {
 				if (job == schedule->taskInfo[arc->x].task->job)
-					tailX = FuzzyFW::TFN(0, 0, 0);
+					tailX = FuzzyFW::Interval(0, 0);
 				else
-					tailX = FuzzyFW::TFN(-Infd, -Infd, -Infd);
+					tailX = FuzzyFW::Interval(-Infd, -Infd);
 			}
 
 
@@ -958,7 +958,7 @@ namespace IJSP {
 			else if (job == schedule->taskInfo[arc->y].task->job) {
 				tailY =
 					maximum(tailX + schedule->taskInfo[arc->x].task->p,
-						FuzzyFW::TFN(0, 0, 0), maxType);
+						FuzzyFW::Interval(0, 0), maxType);
 			}
 			else {
 				tailY = tailX + schedule->taskInfo[arc->x].task->p;
@@ -968,7 +968,7 @@ namespace IJSP {
 			if (tailX.expectedValue() >= 0 || tailY.expectedValue() > 0) {
 				Ctime = maximum(headX + schedule->taskInfo[x].task->p + tailX,
 					headY + schedule->taskInfo[y].task->p + tailY,
-					FuzzyFW::TFN::M_COMPONENT);
+					FuzzyFW::Interval::M_COMPONENT);
 			}
 			else
 				Ctime = this->schedule->getCTJob(job);

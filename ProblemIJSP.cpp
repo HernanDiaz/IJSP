@@ -230,7 +230,7 @@ namespace IJSP {
 		std::vector<TaskIJSP *> preTasks;
 		unsigned int machine, lastTask, job;
 		size_t jobSize;
-		FuzzyFW::TFN duration;
+		FuzzyFW::Interval duration;
 
 		if (!this->isSetup) {
 			std::string errorMsg;
@@ -283,8 +283,8 @@ namespace IJSP {
 		for (size_t i = 0; i < (int)preTasks.size(); i++) {
 			input >> preTasks[i]->p;
 
-			if (preTasks[i]->p.isGreaterEqualTo(FuzzyFW::TFN(0, 0, 0),
-				FuzzyFW::TFN::C_COMPONENT)) {
+			if (preTasks[i]->p.isGreaterEqualTo(FuzzyFW::Interval(0, 0),
+				FuzzyFW::Interval::C_COMPONENT)) {
 				// Job predecessor
 				job = preTasks[i]->job;
 				if (this->taskSequence[job].size() > 0) {

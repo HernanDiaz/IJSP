@@ -7,6 +7,7 @@
 #pragma once
 
 #include "TFN.h"
+#include "Interval.h"
 
 namespace FuzzyFW {
 
@@ -27,7 +28,7 @@ namespace FuzzyFW {
 */
 class Fitness {
 public:
-	enum Type { INTEGER, DOUBLE, FUZZY, LEXICOGRAPHIC };
+	enum Type { INTEGER, DOUBLE, FUZZY, LEXICOGRAPHIC, INTERVAL };
 
 
 	//=========================================================================
@@ -490,5 +491,135 @@ private:
 	*/
 	const FitnessTFN * convertType(const Fitness *f) const;
 };
+
+
+//=============================================================================
+//
+//	Class FitnessTFN
+//
+//=============================================================================
+/**
+* Class were the fitness values are of type TFN
+*
+* @author Juan Jose Palacios
+*
+*/
+class FitnessInterval : public Fitness {
+	//=========================================================================
+	//		FIELDS
+	//=========================================================================
+public:
+	/*
+	* Comparison strategy
+	*/
+	static Interval::Compare FitnessCompareStrategy;
+
+
+
+protected:
+	/*
+	* Fitness value
+	*/
+	Interval value;
+
+
+
+	//=========================================================================
+	//		CONSTRUCTORS / INITIALIZERS
+	//=========================================================================
+public:
+	/*
+	* Default constructor
+	*/
+	FitnessInterval(bool maxim = true) : Fitness(maxim) { }
+
+	/*
+	* Main constructor
+	*/
+	FitnessInterval(const Interval & tfn, bool maxim = true)
+		: Fitness(maxim), value(tfn) { }
+
+	/*
+	* Copy constructor
+	*/
+	FitnessInterval(const FitnessInterval &fitness)
+		: Fitness(fitness), value(fitness.value) { }
+
+
+	/*
+	* Destructor
+	*/
+	virtual ~FitnessInterval() { }
+
+
+	/*
+	* Clone method for inherited instances
+	*/
+	virtual Fitness* clone() const {
+		return new FitnessInterval(*this);
+	}
+
+
+
+	//=========================================================================
+	//		GET / SET METHODS
+	//=========================================================================
+public:
+	/*
+	* Gets the type of the Fitness to be identified
+	*/
+	virtual Fitness::Type getType() const {
+		return Fitness::Type::INTERVAL;
+	}
+
+	/*
+	* Gets the fitness value
+	*/
+	Interval getValue() const {
+		return this->value;
+	}
+
+	/*
+	* Sets the fitness value
+	*/
+	void setValue(const Interval source) {
+		this->value = source;
+	}
+
+	/*
+	* Converts the Fitness into a string
+	*/
+	virtual std::string toString() const {
+		return this->value.toString();
+	}
+
+	/*
+	* Converts the Fitness into a double value
+	*/
+	virtual double toDouble() const {
+		return this->value.expectedValue();
+	}
+
+
+
+	//=========================================================================
+	//		METHODS
+	//=========================================================================
+public:
+	virtual bool isBetterOrEqualTo(const Fitness * f) const;
+	virtual bool isBetterThan(const Fitness * f) const;
+	virtual bool isEqualTo(const Fitness * f) const;
+	virtual bool isWorseThan(const Fitness * f) const;
+	virtual bool isWorseOrEqualTo(const Fitness * f) const;
+
+private:
+	/*
+	* Auxiliary method: Casting of Fitness types to TFN type
+	* to make comparisons
+	*/
+	const FitnessInterval * convertType(const Fitness *f) const;
+};
+
+
 
 }

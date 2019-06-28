@@ -27,7 +27,7 @@ namespace IJSP {
 */
 struct ScheduledTaskInfo {
 	const TaskIJSP *task;	// Scheduled task
-	FuzzyFW::TFN head;		// Starting time (head)
+	FuzzyFW::Interval head;		// Starting time (head)
 	int mp;		// Machine predecessor
 	int ms;		// Machine successor
 };
@@ -149,12 +149,12 @@ public:
 	/**
 	* Get the completion time of a machine
 	*/
-	FuzzyFW::TFN getCTMachine(const unsigned int machine) const;
+	FuzzyFW::Interval getCTMachine(const unsigned int machine) const;
 
 	/**
 	* Get the completion time of a job
 	*/
-	FuzzyFW::TFN getCTJob(const unsigned int job) const;
+	FuzzyFW::Interval getCTJob(const unsigned int job) const;
 
 
 	/**
@@ -204,7 +204,7 @@ public:
 	/**
 	* Add a new task to the schedule
 	*/
-	void addTask(const int taskIdx, FuzzyFW::TFN & ST, const int macSuc);
+	void addTask(const int taskIdx, FuzzyFW::Interval & ST, const int macSuc);
 
 	/**
 	* Clears the schedule

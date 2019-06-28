@@ -126,7 +126,7 @@ protected:
 	* strategies to do this, so this method must be adapted for each SGS.
 	* Returns the starting time assigned to the operation
 	*/
-	virtual FuzzyFW::TFN scheduleTask(const TaskIJSP *task,
+	virtual FuzzyFW::Interval scheduleTask(const TaskIJSP *task,
 		const int taskIdx) = 0;
 };
 

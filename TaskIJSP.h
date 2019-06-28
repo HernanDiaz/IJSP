@@ -6,7 +6,7 @@
 */
 #pragma once
 
-#include "TFN.h"
+#include "Interval.h"
 
 
 namespace IJSP {
@@ -59,7 +59,7 @@ public:
 	/**
 	* Task processing time
 	*/
-	FuzzyFW::TFN p;
+	FuzzyFW::Interval p;
 
 
 
@@ -81,7 +81,7 @@ public:
 	* Duration constructor
 	*/
 	TaskIJSP(int id, int job, int machine, int jobPred, int jobSuc, 
-		FuzzyFW::TFN pt);
+		FuzzyFW::Interval pt);
 
 	/**
 	* Copy constructor

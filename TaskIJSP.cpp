@@ -14,18 +14,18 @@ namespace IJSP {
 //=============================================================================
 //====  Default constructor  ==================================================
 TaskIJSP::TaskIJSP() :
-	id(0), machine(-1), job(-1), jp(-1), js(-1), p(FuzzyFW::TFN(0, 0, 0))
+	id(0), machine(-1), job(-1), jp(-1), js(-1), p(FuzzyFW::Interval(0, 0))
 { }
 
 //====  Full constructor  =====================================================
 TaskIJSP::TaskIJSP(int id, int job, int machine, int jobPred, int jobSuc)
 	: id(id), machine(machine), job(job), jp(jobPred), js(jobSuc),
-	p(FuzzyFW::TFN(0, 0, 0))
+	p(FuzzyFW::Interval(0, 0))
 { }
 	
 //====  Duration constructor  =================================================
 TaskIJSP::TaskIJSP(int id, int job, int machine, int jobPred,
-	int jobSuc, FuzzyFW::TFN pt) :
+	int jobSuc, FuzzyFW::Interval pt) :
 	id(id), machine(machine), job(job), jp(jobPred), js(jobSuc), p(pt)
 { }
 	

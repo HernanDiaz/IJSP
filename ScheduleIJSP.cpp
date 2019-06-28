@@ -57,7 +57,7 @@ std::vector<int> & ScheduleIJSP::getTaskOrder(FuzzyFW::Random *rng) {
 
 
 //====  Get Machine Completion Time  ==========================================
-FuzzyFW::TFN ScheduleIJSP::getCTMachine(const unsigned int machine) const {
+FuzzyFW::Interval ScheduleIJSP::getCTMachine(const unsigned int machine) const {
 	if (machine < 0 || machine >= this->problem->getNumberMachines()) {
 		std::string errorMsg = "Trying to access unexisting machine: ";
 		errorMsg += valueToString(machine);
@@ -66,13 +66,13 @@ FuzzyFW::TFN ScheduleIJSP::getCTMachine(const unsigned int machine) const {
 
 	int lastTask = this->lastTaskMachine[machine];
 	if (lastTask < 0)
-		return FuzzyFW::TFN(0, 0, 0);
+		return FuzzyFW::Interval(0, 0);
 	return this->taskInfo[lastTask].head + this->taskInfo[lastTask].task->p;
 }
 
 
 //====  Get Job Completion Time  ==============================================
-FuzzyFW::TFN ScheduleIJSP::getCTJob(const unsigned int job) const {
+FuzzyFW::Interval ScheduleIJSP::getCTJob(const unsigned int job) const {
 	if (job < 0 || job >= this->problem->getNumberJobs()) {
 		std::string errorMsg = "Trying to access unexisting job: ";
 		errorMsg += valueToString(job);
@@ -81,7 +81,7 @@ FuzzyFW::TFN ScheduleIJSP::getCTJob(const unsigned int job) const {
 
 	int lastTask = this->lastTaskJob[job];
 	if (lastTask < 0)
-		return FuzzyFW::TFN(0, 0, 0);
+		return FuzzyFW::Interval(0, 0);
 	return this->taskInfo[lastTask].head + this->taskInfo[lastTask].task->p;
 }
 
@@ -126,14 +126,14 @@ const TaskIJSP * ScheduleIJSP::operator[](const unsigned int index) const {
 //		METHODS
 //=============================================================================
 //====  addTask Method  =======================================================
-void ScheduleIJSP::addTask(const int taskIdx, FuzzyFW::TFN & ST,
+void ScheduleIJSP::addTask(const int taskIdx, FuzzyFW::Interval & ST,
 	const int macSuc) {
 
 	const TaskIJSP * task = (*(this->problem))[taskIdx];
 	int mac = task->machine;
 	int job = task->job;
 	int macPred;
-	FuzzyFW::TFN::Compare cev = FuzzyFW::TFN::C_EV;
+	FuzzyFW::Interval::Compare cev = FuzzyFW::Interval::C_EV;
 
 	this->taskInfo[taskIdx].task = task;
 	this->taskInfo[taskIdx].head = ST;
@@ -195,7 +195,7 @@ void ScheduleIJSP::reset() {
 	this->isSorted = true;
 
 	for (size_t i = 0; i < this->taskInfo.size(); i++) {
-		this->taskInfo[i].head = FuzzyFW::TFN(-1, -1, -1);
+		this->taskInfo[i].head = FuzzyFW::Interval(-1, -1);
 		this->taskInfo[i].mp = this->taskInfo[i].mp = -1;
 		this->taskOrder[i] = -1;
 	}
@@ -223,8 +223,8 @@ void ScheduleIJSP::updateTopologicalOrder(FuzzyFW::Random *rng) {
 //====  apply quicksort to sort tasks  ========================================
 void ScheduleIJSP::quicksortTasks(int left, int right, FuzzyFW::Random *rng) {
 	int pivot;
-	FuzzyFW::TFN pivotValue;
-	FuzzyFW::TFN::Compare cp = FuzzyFW::TFN::C_EV;
+	FuzzyFW::Interval pivotValue;
+	FuzzyFW::Interval::Compare cp = FuzzyFW::Interval::C_EV;
 
 	if (left >= right)
 		return;

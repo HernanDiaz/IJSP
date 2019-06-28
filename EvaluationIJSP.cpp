@@ -22,8 +22,8 @@ namespace IJSP {
 EvaluationIJSP_Makespan::EvaluationIJSP_Makespan(
 	FuzzyFW::ParameterDB *parameters)
 	: maximumLabel(IJSP_EVALUATION_MAXIMUM),
-	tfnMaximum(FuzzyFW::TFN::M_COMPONENT),
-	compareLabel(IJSP_EVALUATION_COMPARE), tfnCompare(FuzzyFW::TFN::C_EV),
+	intervalMaximum(FuzzyFW::Interval::M_COMPONENT),
+	compareLabel(IJSP_EVALUATION_COMPARE), intervalCompare(FuzzyFW::Interval::C_EV),
 	Evaluation(parameters) {
 	//TODO IJSPClassRegister
 	FJSP::FJSPClassRegister::registerClasses();
@@ -33,8 +33,8 @@ EvaluationIJSP_Makespan::EvaluationIJSP_Makespan(
 //-----  Copy constructor  ----------------------------------------------------
 EvaluationIJSP_Makespan::EvaluationIJSP_Makespan(
 	const EvaluationIJSP_Makespan & source)
-	: maximumLabel(source.maximumLabel), tfnMaximum(source.tfnMaximum),
-	compareLabel(source.compareLabel), tfnCompare(source.tfnCompare),
+	: maximumLabel(source.maximumLabel), intervalMaximum(source.intervalMaximum),
+	compareLabel(source.compareLabel), intervalCompare(source.intervalCompare),
 	Evaluation(source) { }
 
 
@@ -51,8 +51,8 @@ void EvaluationIJSP_Makespan::setup(FuzzyFW::ParameterDB *parameters) {
 		std::string errorMsg = this->maximumLabel + " parameter not found.";
 		throw new IJSPException("Evaluation", errorMsg);
 	}
-	this->tfnMaximum = FuzzyFW::TFN::getMaximum(maxName);
-	if (this->tfnMaximum == FuzzyFW::TFN::M_Err) {
+	this->intervalMaximum = FuzzyFW::Interval::getMaximum(maxName);
+	if (this->intervalMaximum == FuzzyFW::Interval::M_Err) {
 		std::string errorMsg = "Invalid value for parameter ";
 		errorMsg += "\'" + this->maximumLabel + "\': \'";
 		errorMsg += maxName + "\'";
@@ -65,14 +65,14 @@ void EvaluationIJSP_Makespan::setup(FuzzyFW::ParameterDB *parameters) {
 		std::string errorMsg = this->compareLabel + " parameter not found.";
 		throw new IJSPException("Evaluation", errorMsg);
 	}
-	this->tfnCompare = FuzzyFW::TFN::getComparison(compareName);
-	if (this->tfnCompare == FuzzyFW::TFN::C_Err) {
+	this->intervalCompare = FuzzyFW::Interval::getComparison(compareName);
+	if (this->intervalCompare == FuzzyFW::Interval::C_Err) {
 		std::string errorMsg = "Invalid value for parameter ";
 		errorMsg += "\'" + this->compareLabel + "\': \'";
 		errorMsg += compareName + "\'";
 		throw new IJSPException("Evaluation", errorMsg);
 	}
-	FuzzyFW::FitnessTFN::FitnessCompareStrategy = this->tfnCompare;
+	FuzzyFW::FitnessInterval::FitnessCompareStrategy = this->intervalCompare;
 }
 
 
@@ -88,7 +88,7 @@ FuzzyFW::Objective * EvaluationIJSP_Makespan::getObjectiveFunction(
 	FuzzyFW::Solution * solution;
 	ScheduleIJSP * schedule;
 	ProblemIJSP *fuzzyProb;
-	FuzzyFW::TFN makespan = FuzzyFW::TFN(0, 0, 0);
+	FuzzyFW::Interval makespan = FuzzyFW::Interval(0, 0);
 
 	// Evaluate the individual to find the phenotype
 	if (individual->isPhenotypeUpdated())
@@ -113,10 +113,10 @@ FuzzyFW::Objective * EvaluationIJSP_Makespan::getObjectiveFunction(
 
 	// Compute the makespan
 	for (unsigned int i = 0; i < fuzzyProb->getNumberJobs(); i++) {
-		makespan = maximum(makespan, schedule->getCTJob(i), this->tfnMaximum);
+		makespan = maximum(makespan, schedule->getCTJob(i), this->intervalMaximum);
 	}
 
-	return new FuzzyFW::FitnessTFN(makespan, false);
+	return new FuzzyFW::FitnessInterval(makespan, false);
 }
 
 
@@ -129,7 +129,7 @@ FuzzyFW::Fitness * EvaluationIJSP_Makespan::evaluate(
 	FuzzyFW::Solution * solution;
 	ScheduleIJSP * schedule;
 	ProblemIJSP *fuzzyProb;
-	FuzzyFW::TFN makespan = FuzzyFW::TFN(0, 0, 0);
+	FuzzyFW::Interval makespan = FuzzyFW::Interval(0, 0);
 
 	// Evaluate the individual to find the phenotype
 	if (individual->isPhenotypeUpdated())
@@ -148,20 +148,20 @@ FuzzyFW::Fitness * EvaluationIJSP_Makespan::evaluate(
 		dynamic_cast<ProblemIJSP *>(svars->problem);
 	if (fuzzyProb == NULL) {
 		std::string errorMsg = "This evaluation function works only with ";
-		errorMsg += "fuzzy problems.";
+		errorMsg += "Interval problems.";
 		throw new IJSPException("Evaluation", errorMsg);
 	}
 
 	// Compute the makespan
 	for (unsigned int i = 0; i < fuzzyProb->getNumberJobs(); i++) {
-		makespan = maximum(makespan, schedule->getCTJob(i), this->tfnMaximum);
+		makespan = maximum(makespan, schedule->getCTJob(i), this->intervalMaximum);
 	}
 
 	if (this->lamarckism)
 		svars->encoder->encode(schedule, individual, svars);
 	if (!individual->isPhenotypeUpdated())
 		individual->updatePhenotype(schedule->clone());
-	return new FuzzyFW::FitnessTFN(makespan, false);
+	return new FuzzyFW::FitnessInterval(makespan, false);
 }
 
 
@@ -327,15 +327,17 @@ FuzzyFW::Fitness * EvaluationIJSP_AImin::evaluate(
 //----- Agreement Index  ------------------------------------------------------
 double EvaluationIJSP_AImin::agreementIndex(
 	const FuzzyFW::TimeWindow * const tw,
-	const FuzzyFW::TFN & completionTime, const bool exact) {
+	const FuzzyFW::Interval & completionTime, const bool exact) {
 
-	if (exact)
-		return tw->agreementIndex(completionTime);
 
 	double c1 = completionTime.a;
-	double c2 = completionTime.b;
-	double c3 = completionTime.c;
+	double c2 = (completionTime.b+completionTime.a)/2;
+	double c3 = completionTime.b;
 	double d1, d2;
+
+	if (exact)
+		//TODO definir agreementIndex para Intervalos
+		return tw->agreementIndex(FuzzyFW::TFN(c1,c2,c3));
 
 	if (tw->getType() == FuzzyFW::TimeWindow::Type::DEADLINE) {
 		const FuzzyFW::TimeWindowDeadline * ddl =

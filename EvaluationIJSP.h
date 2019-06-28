@@ -20,8 +20,8 @@ namespace IJSP {
 *	How to compute the maximum of TFN (Makespan)
 */
 #define IJSP_EVALUATION_AI "evaluation.ai.method"
-#define IJSP_EVALUATION_COMPARE "evaluation.tfn.comparison"
-#define IJSP_EVALUATION_MAXIMUM "evaluation.tfn.maximum"
+#define IJSP_EVALUATION_COMPARE "evaluation.interval.comparison"
+#define IJSP_EVALUATION_MAXIMUM "evaluation.interval.maximum"
 
 
 /*
@@ -58,7 +58,7 @@ protected:
 	/*
 	* Strategy to use to compute the maximum of job completion times
 	*/
-	FuzzyFW::TFN::Maximum tfnMaximum;
+	FuzzyFW::Interval::Maximum intervalMaximum;
 
 	/*
 	* Label for the strategy to ccompare values
@@ -68,7 +68,7 @@ protected:
 	/*
 	* Strategy to use to compare the job completion times
 	*/
-	FuzzyFW::TFN::Compare tfnCompare;
+	FuzzyFW::Interval::Compare intervalCompare;
 
 
 
@@ -143,9 +143,9 @@ public:
 		std::vector<std::string> name;
 		name.push_back("Makespan");
 		name.push_back(";Maximum:;"
-			+ FuzzyFW::TFN::getMaximum(this->tfnMaximum));
+			+ FuzzyFW::Interval::getMaximum(this->intervalMaximum));
 		name.push_back(";Comparisons:;"
-			+ FuzzyFW::TFN::getComparison(this->tfnCompare));
+			+ FuzzyFW::Interval::getComparison(this->intervalCompare));
 		return name;
 	}
 };
@@ -262,7 +262,7 @@ public:
 	* Calculates the agreement index of a completion time against a due-date
 	*/
 	static double agreementIndex(const FuzzyFW::TimeWindow * const dd,
-		const FuzzyFW::TFN &completionTime, const bool exact);
+		const FuzzyFW::Interval &completionTime, const bool exact);
 };
 
 
@@ -541,7 +541,7 @@ public:
 	* Calculates the agreement index of a completion time against a due-date
 	*/
 	static double satisfactionDegree(const FuzzyFW::TimeWindow * const dd,
-		const FuzzyFW::TFN &completionTime);
+		const FuzzyFW::Interval &completionTime);
 };
 
 

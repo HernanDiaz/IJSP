@@ -72,7 +72,7 @@ protected:
 	/*
 	* Matrix of tails for each operation on each job
 	*/
-	std::vector< std::vector<FuzzyFW::TFN> > tails;
+	std::vector< std::vector<FuzzyFW::Interval> > tails;
 
 
 
