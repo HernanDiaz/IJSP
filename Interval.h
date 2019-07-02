@@ -218,28 +218,6 @@ public:
 	double membership(const double r) const;
 
 
-
-	/**
-	* Possibility of the Interval being lesser or equal than the real value r
-	*/
-	double possibility(const double r) const;
-
-
-
-	/**
-	* Possibility of the Interval being lesser or equal than the real value r
-	*/
-	double necessity(const double r) const;
-
-
-
-	/**
-	* Possibility of the Interval being lesser or equal than the real value r
-	*/
-	double credibility(const double r) const;
-
-
-
 	/**
 	* Converts the Interval into a string
 	*/

@@ -278,40 +278,6 @@ double Interval::membership(const double r) const {
 }
 
 
-
-//====  Possibility function  =================================================
-//TODO repasar
-double Interval::possibility(const double r) const {
-	double pivot = (this->a + this->b) / 2;
-	if (compareDouble(r, this->a) <= 0)
-		return 0.0;
-	if (compareDouble(r, pivot) >= 0)
-		return 1.0;
-	return (r - this->a) / (pivot - this->a);
-}
-
-
-
-//====  Necessity function  =================================================
-//TODO Repasar
-double Interval::necessity(const double r) const {
-	double pivot = (this->a + this->b) / 2;
-	if (compareDouble(r, pivot) <= 0)
-		return 0.0;
-	if (compareDouble(r, this->b) >= 0)
-		return 1.0;
-	return (r - pivot) / (this->b - pivot);
-}
-
-
-
-//====  Credibility function  =================================================
-double Interval::credibility(const double r) const {
-	return (this->possibility(r) + this->necessity(r)) / 2;
-}
-
-
-
 //====  Funcion toString  =====================================================
 std::string Interval::toString() const {
 	return "(" + valueToString(this->a) + "," + valueToString(this->b) + ")"; 
