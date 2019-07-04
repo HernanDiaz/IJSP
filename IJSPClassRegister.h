@@ -1,8 +1,8 @@
 /*
- * FJSPClassRegister.h
+ * IJSPClassRegister.h
  *
- *  Created on: May 17, 2017
- *      Author: Juan Jose Palacios
+ *  Created on: Jul 04, 2019
+ *      Author: Hernan Diaz Rodriguez
  */
 #pragma once
 
@@ -26,8 +26,9 @@
 =============================================================================*/
 
 
-#include "SGS_FJSP_Insertion.h"
-#include "SGS_FJSP_Append.h"
+#include "SGS_IJSP_Insertion.h"
+#include "SGS_IJSP_Append.h"
+
 
 // ****************************************************************************
 //
@@ -41,7 +42,7 @@
 
 
 
-namespace FJSP {
+namespace IJSP {
 
 /**
  * This static class allows to create the different kinds of problem elements.
@@ -56,21 +57,21 @@ namespace FJSP {
  * by inheriting from the respective abstract class and than come here to
  * register the name of the new operator.
  *
- * @author Juan Jose Palacios
+ * @author hdiaz
  *
  */
-struct FJSPClassRegister {
+struct IJSPClassRegister {
 protected:
 	// Methods to create an instance of different operators.
 	//=========================================================================
 	template<typename T>
-	static SGS_FJSP * createSGSInstance() { return new T; }
+	static SGS_IJSP * createSGSInstance() { return new T; }
 
 
 	// Mapping for each operator. These is the register of all classes and is
 	// used to create objects of those classes from a string.
 	//=========================================================================
-	static std::map<std::string, SGS_FJSP*(*)()> SGSMap;
+	static std::map<std::string, SGS_IJSP*(*)()> SGSMap;
 
 
 
@@ -86,16 +87,14 @@ public:
 
 
 	
-	static SGS_FJSP * getSGSObject(std::string name) {
-		std::map<std::string, SGS_FJSP*(*)()>::iterator iter;
-		iter = FJSPClassRegister::SGSMap.find(toUpper(name));
+	static SGS_IJSP * getSGSObject(std::string name) {
+		std::map<std::string, SGS_IJSP*(*)()>::iterator iter;
+		iter = IJSPClassRegister::SGSMap.find(toUpper(name));
 		if (iter == SGSMap.end())
 			return NULL;
 		return iter->second();
 	}
 		
-
-
 	// ************************************************************************
 	//
 	// ADD HERE ALL YOUR NEW CLASSES WITH THE NAME YOU WANT TO USE IN THE
@@ -109,22 +108,12 @@ public:
 	 */
 	static void registerClasses() {
 
-		// -----  FUZZY SGS TYPE  ---------------------------------------------
-		SGSMap[toUpper("insertion")] = &createSGSInstance<SGS_FJSP_Insertion>;
-		SGSMap[toUpper("active")] = &createSGSInstance<SGS_FJSP_Insertion>;
-		SGSMap[toUpper("append")] = &createSGSInstance<SGS_FJSP_Append>;
-		SGSMap[toUpper("semi")] = &createSGSInstance<SGS_FJSP_Append>;
-		SGSMap[toUpper("semi-active")] = &createSGSInstance<SGS_FJSP_Append>;
-		SGSMap[toUpper("semiactive")] = &createSGSInstance<SGS_FJSP_Append>;
-		SGSMap[toUpper("dense")] = &createSGSInstance<SGS_FJSP_Dense>;
-		SGSMap[toUpper("gyt1")] = &createSGSInstance<SGS_FJSP_fGYT1>;
-		SGSMap[toUpper("gyt-1")] = &createSGSInstance<SGS_FJSP_fGYT1>;
-		SGSMap[toUpper("fgyt1")] = &createSGSInstance<SGS_FJSP_fGYT1>;
-		SGSMap[toUpper("fgyt-1")] = &createSGSInstance<SGS_FJSP_fGYT1>;
-		SGSMap[toUpper("gyt2")] = &createSGSInstance<SGS_FJSP_fGYT2>;
-		SGSMap[toUpper("gyt-2")] = &createSGSInstance<SGS_FJSP_fGYT2>;
-		SGSMap[toUpper("fgyt2")] = &createSGSInstance<SGS_FJSP_fGYT2>;
-		SGSMap[toUpper("fgyt-2")] = &createSGSInstance<SGS_FJSP_fGYT2>;
+		SGSMap[toUpper("insertion")] = &createSGSInstance<SGS_IJSP_Insertion>;
+		SGSMap[toUpper("active")] = &createSGSInstance<SGS_IJSP_Insertion>;
+		SGSMap[toUpper("append")] = &createSGSInstance<SGS_IJSP_Append>;
+		SGSMap[toUpper("semi")] = &createSGSInstance<SGS_IJSP_Append>;
+		SGSMap[toUpper("semi-active")] = &createSGSInstance<SGS_IJSP_Append>;
+		SGSMap[toUpper("semiactive")] = &createSGSInstance<SGS_IJSP_Append>;
 	}
 
 };

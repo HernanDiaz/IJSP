@@ -7,7 +7,7 @@
 #pragma once
 
 #include "Creation.h"
-#include "FJSPClassRegister.h"
+#include "IJSPClassRegister.h"
 #include "EncoderFJSP.h"
 
 #include "ProblemIJSP.h"

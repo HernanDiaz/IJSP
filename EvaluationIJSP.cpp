@@ -26,7 +26,7 @@ EvaluationIJSP_Makespan::EvaluationIJSP_Makespan(
 	compareLabel(IJSP_EVALUATION_COMPARE), intervalCompare(FuzzyFW::Interval::C_EV),
 	Evaluation(parameters) {
 	//TODO IJSPClassRegister
-	FJSP::FJSPClassRegister::registerClasses();
+	IJSP::IJSPClassRegister::registerClasses();
 }
 
 

@@ -28,8 +28,7 @@ void CreationRandomSchedule::setup(FuzzyFW::ParameterDB *parameters) {
 		errorMsg += " during the evaluation of individuals";
 		throw new IJSPException("Evaluation", errorMsg);
 	}
-	//this->sgs = FJSP::FJSPClassRegister::getSGSObject(sgsType);
-	this->sgs = FJSP::FJSPClassRegister::getSGSObject();
+	this->sgs = IJSPClassRegister::getSGSObject(sgsType);
 	if (this->sgs == NULL) {
 		std::string errorMsg = "The introduced SGS is not";
 		errorMsg += " recognised: \'" + sgsType + "\'";

@@ -6,7 +6,7 @@
  */
 #pragma once
 
-#include "FJSPClassRegister.h"
+#include "IJSPClassRegister.h"
 #include "Decoder.h"
 #include "EncoderIJSP.h"
 
