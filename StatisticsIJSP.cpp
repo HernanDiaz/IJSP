@@ -20,7 +20,7 @@ namespace IJSP {
 StatisticsMakespan::StatisticsMakespan(STAT_TYPE flag)
 	: Statistics(flag) {
 	FuzzyFW::ParameterDB *newParams = new FuzzyFW::ParameterDB();
-	newParams->setParameter(IJSP_EVALUATION_COMPARE, "COMPONENT");
+	newParams->setParameter(IJSP_EVALUATION_COMPARE, "EV");
 	newParams->setParameter(IJSP_EVALUATION_MAXIMUM, "COMPONENT");
 	newParams->setParameter(FUZZYFW_EVALUATION_LAMARCK, "NO");
 	this->evaluation = new EvaluationIJSP_Makespan(newParams);

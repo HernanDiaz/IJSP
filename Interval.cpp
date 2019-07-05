@@ -280,7 +280,7 @@ double Interval::membership(const double r) const {
 
 //====  Funcion toString  =====================================================
 std::string Interval::toString() const {
-	return "(" + valueToString(this->a) + "," + valueToString(this->b) + ")"; 
+	return "(" + valueToString(this->a) + ", " + valueToString(this->b) + ")"; 
 }
 
 
