@@ -21,6 +21,8 @@ std::string Interval::getComparison(Interval::Compare cmp) {
 		return "Expected Value";
 	case C_SAKAWA:
 		return "Ranking Sakawa";
+	case C_JIANG:
+		return "Ranking Jiang 2008";
 	}
 	return "N/A";
 }
@@ -38,6 +40,8 @@ Interval::Compare Interval::getComparison(std::string str) {
 		return C_SAKAWA;
 	if (toUpper(str).compare("RANKING") == 0)
 		return C_SAKAWA;
+	if (toUpper(str).compare("JIANG") == 0)
+		return C_JIANG;
 	return C_Err;
 }
 
@@ -51,6 +55,8 @@ std::string Interval::getMaximum(Interval::Maximum mxm) {
 		return "Expected Value";
 	case M_SAKAWA:
 		return "Ranking Sakawa";
+	case M_JIANG:
+		return "Ranking Jiang";
 	}
 	return "N/A";
 }
@@ -67,6 +73,8 @@ Interval::Maximum Interval::getMaximum(std::string str) {
 		return M_SAKAWA;
 	if (toUpper(str).compare("LEI") == 0)
 		return M_SAKAWA;
+	if (toUpper(str).compare("JIANG") == 0)
+		return M_JIANG;
 	if (toUpper(str).compare("RANKING") == 0)
 		return M_SAKAWA;
 	return M_Err;
@@ -139,7 +147,7 @@ Interval & Interval::operator-=(const Interval &t) {
 //====  Equality  =============================================================
 bool Interval::isEqualTo(const Interval t, const Compare cp) const {
 	switch (cp) {
-
+	case C_JIANG:
 	case C_COMPONENT:
 		return (compareDouble(this->a, t.a) == 0
 			&& compareDouble(this->b, t.b) == 0);
@@ -158,6 +166,30 @@ bool Interval::isEqualTo(const Interval t, const Compare cp) const {
 //====  Greater than  =========================================================
 bool Interval::isGreaterThan(const Interval t, const Compare cp) const {
 	switch (cp) {
+	case C_JIANG:
+		//A > pdB iff P(A<=B) <0.5
+		//i) Al >= Br
+		if (compareDouble(this->a, t.b) >= 0) return true;
+		//vi) Ar <= Bl
+		if (compareDouble(this->b, t.a) <= 0) return false;
+		
+		double longA = this->b - this->a;
+		double longB = t.b - t.a;
+
+		//ii) Bl <= Al < Br <= Ar
+		if (compareDouble(t.a, this->a) <= 0) {
+			if (compareDouble(t.b, this->b) <= 0)
+				return (0.5* ((t.b - this->a) / longA)*((t.b - this->a) / longB)) < 0.5;
+			//v) Bl <= Al < Ar < Br
+			return (((t.b - this->b)/longB)+ 0.5 * longA/longB) < 0.5;
+		}
+		//iv) Al < Bl <= Ar < Br
+		if(compareDouble(this->b, t.b) < 0)
+			return ((t.a - this->a) / longA) + (((this->b - t.a) / longA)*((t.b - this->b) / longB))
+				+ 0.5*((this->b - t.a) / longA)*((this->b - t.a) / longB) < 0.5;
+		//iii) Al < Bl < Br <= Ar
+		return (((t.a - this->a) / longA) + 0.5 * longB/longA) < 0.5;
+	
 
 	case C_COMPONENT:
 		return (compareDouble(this->a, t.a) > 0
@@ -292,7 +324,9 @@ std::string Interval::toString() const {
 std::ifstream & operator >> (std::ifstream & is, Interval & t)
 {
 	char c;
-	is >> c >> t.a >> c >> t.b >> c ;
+   //TODO adaptation to load data from fuzzy problems
+	double d;
+	is >> c >> t.a >> c >> d >> c >> t.b >> c;
 	return is;
 }
 

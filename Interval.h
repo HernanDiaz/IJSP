@@ -41,7 +41,7 @@ public:
 	*	- Sakawa: Comparison made using the Sakawa ranking method
 	* Detailed explanations on each method are given inside the class
 	*/
-	enum Compare {C_COMPONENT, C_EV, C_SAKAWA, C_Err};
+	enum Compare {C_COMPONENT, C_EV, C_SAKAWA, C_JIANG, C_Err};
 
 	
 	/*
@@ -50,7 +50,7 @@ public:
 	*	- EV: Takes the interval with higher Expected Value
 	*	- Sakawa: Maximum made using the Sakawa ranking method
 	*/
-	enum Maximum { M_COMPONENT, M_EV, M_SAKAWA, M_Err};
+	enum Maximum { M_COMPONENT, M_EV, M_SAKAWA, M_JIANG, M_Err};
 	
 	/**
 	* Methods to create a Interval Comparison strategy from a string
