@@ -55,8 +55,8 @@ FuzzyFW::Interval SGS_IJSP_Insertion::scheduleTask(const TaskIJSP *task,
 	FuzzyFW::Interval mtHead, mtPT;
 	char found;	// Big gap found in the schedule
 	// Comparisons are made component by component
-	FuzzyFW::Interval::Compare cpComp = FuzzyFW::Interval::C_COMPONENT;
-	FuzzyFW::Interval::Maximum maxComp = FuzzyFW::Interval::M_COMPONENT;
+	FuzzyFW::Interval::Compare cpComp = FuzzyFW::Interval::C_JIANG;
+	FuzzyFW::Interval::Maximum maxComp = FuzzyFW::Interval::M_JIANG;
 
 	int mac = task->machine;
 	int job = task->job;

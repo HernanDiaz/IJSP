@@ -19,7 +19,7 @@ namespace IJSP {
 //=============================================================================
 //=====  Default constructor  =================================================
 SGS_IJSP_Append::SGS_IJSP_Append(const FuzzyFW::ParameterDB *params)
-	: maximumLabel(FJSP_SGS_APPEND_MAXIMUM), intervalMaximum(FuzzyFW::Interval::M_COMPONENT),
+	: maximumLabel(FJSP_SGS_APPEND_MAXIMUM), intervalMaximum(FuzzyFW::Interval::M_JIANG),
 	SGS_IJSP(params) {
 }
 

@@ -172,24 +172,26 @@ bool Interval::isGreaterThan(const Interval t, const Compare cp) const {
 		if (compareDouble(this->a, t.b) >= 0) return true;
 		//vi) Ar <= Bl
 		if (compareDouble(this->b, t.a) <= 0) return false;
-		
-		double longA = this->b - this->a;
-		double longB = t.b - t.a;
+		else {
 
-		//ii) Bl <= Al < Br <= Ar
-		if (compareDouble(t.a, this->a) <= 0) {
-			if (compareDouble(t.b, this->b) <= 0)
-				return (0.5* ((t.b - this->a) / longA)*((t.b - this->a) / longB)) < 0.5;
-			//v) Bl <= Al < Ar < Br
-			return (((t.b - this->b)/longB)+ 0.5 * longA/longB) < 0.5;
-		}
-		//iv) Al < Bl <= Ar < Br
-		if(compareDouble(this->b, t.b) < 0)
-			return ((t.a - this->a) / longA) + (((this->b - t.a) / longA)*((t.b - this->b) / longB))
+			double longA = this->b - this->a;
+			double longB = t.b - t.a;
+
+			//ii) Bl <= Al < Br <= Ar
+			if (compareDouble(t.a, this->a) <= 0) {
+				if (compareDouble(t.b, this->b) <= 0)
+					return (0.5* ((t.b - this->a) / longA)*((t.b - this->a) / longB)) < 0.5;
+				//v) Bl <= Al < Ar < Br
+				return (((t.b - this->b) / longB) + 0.5 * longA / longB) < 0.5;
+			}
+			//iv) Al < Bl <= Ar < Br
+			if (compareDouble(this->b, t.b) < 0)
+				return ((t.a - this->a) / longA) + (((this->b - t.a) / longA)*((t.b - this->b) / longB))
 				+ 0.5*((this->b - t.a) / longA)*((this->b - t.a) / longB) < 0.5;
-		//iii) Al < Bl < Br <= Ar
-		return (((t.a - this->a) / longA) + 0.5 * longB/longA) < 0.5;
-	
+			//iii) Al < Bl < Br <= Ar
+			return (((t.a - this->a) / longA) + 0.5 * longB / longA) < 0.5;
+		}
+		throw new FuzzyFWException("Interval", "Code unreachable");
 
 	case C_COMPONENT:
 		return (compareDouble(this->a, t.a) > 0
@@ -260,6 +262,12 @@ Interval maximum(const Interval & x, const Interval & y, const Interval::Maximum
 			sol = x;
 		else sol = y;
 		break;
+
+	case Interval::M_JIANG:
+		if (x.isGreaterThan(y, Interval::C_JIANG))
+			sol = x;
+		else sol = y;
+		break;
 	}
 	return sol;
 }
@@ -281,6 +289,12 @@ Interval minimum(const Interval & x, const Interval & y, const Interval::Maximum
 
 	case Interval::M_SAKAWA:
 		if (x.isLesserThan(y, Interval::C_SAKAWA))
+			sol = x;
+		else sol = y;
+		break;
+
+	case Interval::M_JIANG:
+		if (x.isLesserThan(y, Interval::C_JIANG))
 			sol = x;
 		else sol = y;
 		break;
