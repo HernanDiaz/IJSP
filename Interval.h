@@ -158,16 +158,8 @@ public:
 	*/
 	bool isGreaterThan(const Interval t, const Compare cp) const;
 
-	/**
-	* Check if the current TFN is greater or equal to a given one using a
-	* specific comparison method
-	*/
 	bool isGreaterEqualTo(const Interval t, const Compare cp) const;
-
-	/**
-	* Check if the current TFN is lesser than a given one using a
-	* specific comparison method
-	*/
+	
 	bool isLesserThan(const Interval t, const Compare cp) const;
 
 	/**
@@ -223,7 +215,9 @@ public:
 	*/
 	std::string toString() const;
 
-
+private:
+	
+	double Lei2011Formula(const Interval & t) const;
 
 	//=========================================================================
 	//		INPUT / OUTPUT

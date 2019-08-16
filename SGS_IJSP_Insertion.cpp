@@ -9,107 +9,113 @@
 
 namespace IJSP {
 
-//=============================================================================
-//
-//	Class SGS_IJSP_Insertion
-//
-//=============================================================================
-//=============================================================================
-//		METHODS
-//=============================================================================
-//=====  Build schedule  ======================================================
-ScheduleIJSP * SGS_IJSP_Insertion::buildSchedule(
-	const FuzzyFW::SharedVars * svars, std::vector<int> &order) {
+	//=============================================================================
+	//
+	//	Class SGS_IJSP_Insertion
+	//
+	//=============================================================================
+	//=============================================================================
+	//		METHODS
+	//=============================================================================
+	//=====  Build schedule  ======================================================
+	ScheduleIJSP * SGS_IJSP_Insertion::buildSchedule(
+		const FuzzyFW::SharedVars * svars, std::vector<int> &order) {
 
-	if (svars->problem == NULL)
-		throw new IJSPException("SGS", "Problem instance not created");
+		if (svars->problem == NULL)
+			throw new IJSPException("SGS", "Problem instance not created");
 
-	ProblemIJSP * fjspProb =
-		dynamic_cast<ProblemIJSP *>(svars->problem);
-	if (fjspProb == NULL) {
-		std::string errorMsg = "This SGS can be only used on Interval Problems.";
-		throw new IJSPException("SGS", errorMsg);
+		ProblemIJSP * fjspProb =
+			dynamic_cast<ProblemIJSP *>(svars->problem);
+		if (fjspProb == NULL) {
+			std::string errorMsg = "This SGS can be only used on Interval Problems.";
+			throw new IJSPException("SGS", errorMsg);
+		}
+
+		if (this->isCreated)
+			this->schedule->reset();
+		else {
+			this->schedule = new ScheduleIJSP(fjspProb);
+			this->isCreated = true;
+		}
+
+		for (size_t i = 0; i < order.size(); i++) {
+			this->scheduleTask((*fjspProb)[order[i]], order[i]);
+		}
+		this->schedule->verifyScheduling();
+
+		return this->schedule;
 	}
 
-	if (this->isCreated)
-		this->schedule->reset();
-	else {
-		this->schedule = new ScheduleIJSP(fjspProb);
-		this->isCreated = true;
-	}
 
-	for (size_t i = 0; i < order.size(); i++) {
-		this->scheduleTask((*fjspProb)[order[i]], order[i]);
-	}
+	//=====  Schedule a task  =====================================================
+	FuzzyFW::Interval SGS_IJSP_Insertion::scheduleTask(const TaskIJSP *task,
+		const int taskIdx) {
 
-	return this->schedule;
-}
+		int mp, ms; // Machine predecessor and successor
+		FuzzyFW::Interval Stime;	// Starting time
+		FuzzyFW::Interval mtHead, mtPT;
+		char found;	// Big gap found in the schedule
+		// Comparisons are made component by component
+		FuzzyFW::Interval::Compare cpComp = FuzzyFW::Interval::C_JIANG;
+		FuzzyFW::Interval::Maximum maxComp = FuzzyFW::Interval::M_COMPONENT;
 
+		int mac = task->machine;
+		int job = task->job;
 
-//=====  Schedule a task  =====================================================
-FuzzyFW::Interval SGS_IJSP_Insertion::scheduleTask(const TaskIJSP *task,
-	const int taskIdx) {
+		// Check if this task can be scheduled
+		if (task->jp != this->schedule->lastTaskJob[job]) {
+			std::string errorMsg;
+			errorMsg = "Job precedence constraint is being violated. Scheduling ";
+			errorMsg += "task " + valueToString(taskIdx) + " after task ";
+			errorMsg += valueToString(this->schedule->lastTaskJob[job]);
+			throw new IJSPException("SGS", errorMsg);
+		}
 
-	int mp, ms; // Machine predecessor and successor
-	FuzzyFW::Interval Stime;	// Starting time
-	FuzzyFW::Interval mtHead, mtPT;
-	char found;	// Big gap found in the schedule
-	// Comparisons are made component by component
-	FuzzyFW::Interval::Compare cpComp = FuzzyFW::Interval::C_JIANG;
-	FuzzyFW::Interval::Maximum maxComp = FuzzyFW::Interval::M_JIANG;
-
-	int mac = task->machine;
-	int job = task->job;
-
-	// Check if this task can be scheduled
-	if (task->jp != this->schedule->lastTaskJob[job]) {
-		std::string errorMsg;
-		errorMsg = "Job precedence constraint is being violated. Scheduling ";
-		errorMsg += "task " + valueToString(taskIdx) + " after task ";
-		errorMsg += valueToString(this->schedule->lastTaskJob[job]);
-		throw new IJSPException("SGS", errorMsg);
-	}
-
-	// If I could schedule the task just after its job predecessor, who
-	// would be the machine predecessor and successors...
-	Stime = this->schedule->getCTJob(job);
-	ms = -1;
-	mp = this->schedule->lastTaskMachine[mac];
-	if (mp != -1)
-		mtHead = this->schedule->taskInfo[mp].head;
-
-	while (mp != -1 && mtHead.isGreaterEqualTo(Stime, cpComp)) {
-		ms = mp;
-		mp = this->schedule->taskInfo[ms].mp;
+		// If I could schedule the task just after its job predecessor, who
+		// would be the machine predecessor and successors...
+		Stime = this->schedule->getCTJob(job);
+		ms = -1;
+		mp = this->schedule->lastTaskMachine[mac];
 		if (mp != -1)
 			mtHead = this->schedule->taskInfo[mp].head;
-	}
 
-	// Update the heuristic Starting time that task could take
-	if (mp != -1) {
-		mtHead = this->schedule->taskInfo[mp].head;
-		mtPT = this->schedule->taskInfo[mp].task->p;
-		Stime = maximum(Stime, mtHead + mtPT, maxComp);
-	}
-
-	// Look for the actual minimum starting time for the task
-	found = false;
-	while (!found && ms != -1) {
-		mtHead = this->schedule->taskInfo[ms].head;
-		mtPT = this->schedule->taskInfo[ms].task->p;
-
-		if (mtHead.isGreaterEqualTo(Stime + task->p, cpComp))
-			found = true;
-		else {
-			mp = ms;
-			Stime = maximum(Stime, mtHead + mtPT, maxComp);
-			ms = this->schedule->taskInfo[mp].ms;
+		while (mp != -1 && mtHead.isGreaterEqualTo(Stime, cpComp)) {
+			ms = mp;
+			mp = this->schedule->taskInfo[ms].mp;
+			if (mp != -1)
+				mtHead = this->schedule->taskInfo[mp].head;
 		}
+
+		// Update the heuristic Starting time that task could take
+		if (mp != -1) {
+			mtHead = this->schedule->taskInfo[mp].head;
+			mtPT = this->schedule->taskInfo[mp].task->p;
+			Stime = maximum(Stime, mtHead + mtPT, maxComp);
+		}
+
+		// Look for the actual minimum starting time for the task
+		found = false;
+		while (!found && ms != -1) {
+			mtHead = this->schedule->taskInfo[ms].head;
+			mtPT = this->schedule->taskInfo[ms].task->p;
+
+			if (mtHead.isGreaterEqualTo(Stime + task->p, cpComp))
+				found = true;
+			else {
+				mp = ms;
+				Stime = maximum(Stime, mtHead + mtPT, maxComp);
+				ms = this->schedule->taskInfo[mp].ms;
+			}
+		}
+
+		// Update the schedule
+		this->schedule->addTask(taskIdx, Stime, ms);
+
+		// Repair schedule
+		this->schedule->repairScheduledTimes(taskIdx);
+
+		return Stime;
 	}
 
-	// Update the schedule
-	this->schedule->addTask(taskIdx, Stime, ms);
-	return Stime;
 }
 
-}

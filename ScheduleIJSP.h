@@ -205,6 +205,15 @@ public:
 	* Add a new task to the schedule
 	*/
 	void addTask(const int taskIdx, FuzzyFW::Interval & ST, const int macSuc);
+	/**
+	* repair times of the sheduling after the task so there is no overlapping
+	*/
+	void repairScheduledTimes(const int taskIdx);
+	/*
+	*verifies that the scheduling is correct
+	*/
+	void verifyScheduling();
+	
 
 	/**
 	* Clears the schedule
@@ -217,7 +226,10 @@ protected:
 	* Updates the topological order of the tasks
 	*/
 	void updateTopologicalOrder(FuzzyFW::Random *rng = NULL);
-
+	/**
+	* adjusts head of a succcessor after completion of the current task
+	*/
+	bool adjustHead(const ScheduledTaskInfo currentTask, ScheduledTaskInfo* successor);
 	/**
 	* Compute the topological order using a quuicksort algorithm
 	*/

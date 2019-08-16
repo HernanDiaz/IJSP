@@ -4,9 +4,9 @@
 *  Created on: June 25, 2019
 *      Author: Hernan Diaz
 */
-
+#include <cstdio>
+using namespace std;
 #include "ScheduleIJSP.h"
-
 
 namespace IJSP {
 
@@ -217,6 +217,87 @@ void ScheduleIJSP::updateTopologicalOrder(FuzzyFW::Random *rng) {
 	else
 		this->quicksortTasks(0, this->nScheduledTasks - 1, rng);
 	this->isSorted = true;
+}
+
+//====  repair times of the sheduling so there is no overlapping ===================================
+void ScheduleIJSP::repairScheduledTimes(const int taskIdx) {
+	if (taskIdx < 0 || taskIdx >=  this->taskInfo.size()) return;
+	
+	IJSP::ScheduledTaskInfo currentTask = this->taskInfo[taskIdx];
+	IJSP::ScheduledTaskInfo* repairedTask;
+
+	//repair job successor
+	if (currentTask.task->js >= 0 && currentTask.task->js < this->taskInfo.size()) {
+		repairedTask = &(this->taskInfo[currentTask.task->js]);
+		if (repairedTask->task && adjustHead(currentTask, repairedTask)) {
+			this->repairScheduledTimes(repairedTask->task->id);
+		}
+	}
+
+	//repair machine successor
+	if (currentTask.ms >=0 && currentTask.ms < this->taskInfo.size()) {
+		repairedTask = &(this->taskInfo[currentTask.ms]);
+		if (repairedTask -> task && adjustHead(currentTask, repairedTask)) {
+			this->repairScheduledTimes(repairedTask->task->id);
+		}
+	}
+
+}
+
+//====  adjusts head of a succcessor after completion of the current task===========================
+bool ScheduleIJSP::adjustHead(const ScheduledTaskInfo currentTask, ScheduledTaskInfo* successor) {
+	FuzzyFW::Interval completionTime = currentTask.head + currentTask.task->p;
+	bool repairNeed = false;
+	
+	if (successor->head.a < 0 || successor->head.b < 0) return false;
+
+	if (completionTime.a > successor->head.a) {
+		successor->head.a = completionTime.a;
+	    repairNeed = true;
+	}
+	if (completionTime.b > successor->head.b) {
+	   successor->head.b = completionTime.b;
+    	repairNeed = true;
+	}
+
+	return repairNeed && successor->task;
+}
+
+
+void ScheduleIJSP::verifyScheduling() {
+	//We verify task by task that the job restrictions are correct
+	FuzzyFW::Interval::Compare comp = FuzzyFW::Interval::C_COMPONENT;
+	for (int i = 0; i < this->lastTaskJob.size(); i++) {
+		ScheduledTaskInfo currentTask = this->taskInfo[this->lastTaskJob[i]];
+		while (currentTask.task->jp >= 0 && currentTask.task->jp < this->taskInfo.size()) {
+			ScheduledTaskInfo jobPredeccessor = this->taskInfo[currentTask.task->jp];
+			if (currentTask.head.isLesserThan(jobPredeccessor.head + jobPredeccessor.task->p, comp)) {
+				throw new IJSPException("Schedule", "Error scheduling tasks in job number" + valueToString(jobPredeccessor.task->job) +
+					": id = " + valueToString(jobPredeccessor.task->id) + "; head = " + valueToString(jobPredeccessor.head) +
+					"; p = " + valueToString(jobPredeccessor.task->p) + "; total = " + valueToString(jobPredeccessor.head + jobPredeccessor.task->p) +
+					" AND id = " + valueToString(currentTask.task->id) + "; head = " + valueToString(currentTask.head));
+					
+			}
+			currentTask = jobPredeccessor;
+		}
+		
+
+	}
+	//We verify task by task that the machine restrictions are correct
+	for (int i = 0; i < this->lastTaskMachine.size(); i++) {
+		ScheduledTaskInfo currentTask = this->taskInfo[this->lastTaskMachine[i]];
+		while (currentTask.mp >= 0 && currentTask.mp < this->taskInfo.size()) {
+			ScheduledTaskInfo machinePredeccessor = this->taskInfo[currentTask.mp];
+			if (currentTask.head.isLesserThan(machinePredeccessor.head + machinePredeccessor.task->p, comp)) {
+				throw new IJSPException("Schedule", "Error scheduling tasks in machine" + valueToString(machinePredeccessor.task->machine) +
+					": id = " + valueToString(machinePredeccessor.task->id) + "; head = " + valueToString(machinePredeccessor.head) +
+					"; p = " + valueToString(machinePredeccessor.task->p) + "; total = " + valueToString(machinePredeccessor.head + machinePredeccessor.task->p) +
+					" AND id = " + valueToString(currentTask.task->id) + "; head = " + valueToString(currentTask.head));
+			}
+			currentTask = machinePredeccessor;
+		}
+
+	}
 }
 
 
