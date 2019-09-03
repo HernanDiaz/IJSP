@@ -23,9 +23,9 @@ EvaluationIJSP_Makespan::EvaluationIJSP_Makespan(
 	FuzzyFW::ParameterDB *parameters)
 	: maximumLabel(IJSP_EVALUATION_MAXIMUM),
 	intervalMaximum(FuzzyFW::Interval::M_COMPONENT),
-	compareLabel(IJSP_EVALUATION_COMPARE), intervalCompare(FuzzyFW::Interval::C_EV),
+	compareLabel(IJSP_EVALUATION_COMPARE), 
+	intervalCompare(FuzzyFW::Interval::C_EV),
 	Evaluation(parameters) {
-	//TODO IJSPClassRegister
 	IJSP::IJSPClassRegister::registerClasses();
 }
 

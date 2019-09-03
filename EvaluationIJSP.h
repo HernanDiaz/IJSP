@@ -16,8 +16,8 @@ namespace IJSP {
 * Parameters:
 *	SGS to use during evaluation
 *	Type of AI calculation
-*	How to compare objective functions that are TFNs
-*	How to compute the maximum of TFN (Makespan)
+*	How to compare objective functions that are Intervals
+*	How to compute the maximum of Intervals (Makespan)
 */
 #define IJSP_EVALUATION_AI "evaluation.ai.method"
 #define IJSP_EVALUATION_COMPARE "evaluation.interval.comparison"

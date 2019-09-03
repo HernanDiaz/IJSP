@@ -65,7 +65,7 @@ namespace FuzzyFW {
 	Interval::Maximum Interval::getMaximum(std::string str) {
 		if (toUpper(str).compare("COMPONENT") == 0)
 			return M_COMPONENT;
-		if (toUpper(str).compare("EV"))
+		if (toUpper(str).compare("EV") == 0)
 			return M_EV;
 		if (toUpper(str).compare("EXPECTEDVALUE") == 0)
 			return M_EV;

@@ -57,6 +57,7 @@ namespace IJSP {
 		char found;	// Big gap found in the schedule
 		// Comparisons are made component by component
 		FuzzyFW::Interval::Compare cpComp = FuzzyFW::Interval::C_JIANG;
+		//FuzzyFW::Interval::Compare cpComp = FuzzyFW::Interval::C_COMPONENT;
 		FuzzyFW::Interval::Maximum maxComp = FuzzyFW::Interval::M_COMPONENT;
 
 		int mac = task->machine;
