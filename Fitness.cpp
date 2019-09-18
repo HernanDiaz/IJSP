@@ -203,7 +203,7 @@ const FitnessTFN * FitnessTFN::convertType(const Fitness *f) const {
 //	Class FitnessInterval
 //
 //=============================================================================
-Interval::Compare FitnessInterval::FitnessCompareStrategy = Interval::C_EV;
+Interval::Compare FitnessInterval::FitnessCompareStrategy = Interval::C_JIANG;
 
 //=============================================================================
 //		METHODS

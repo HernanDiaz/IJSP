@@ -161,6 +161,6 @@ FuzzyFW::Fitness * EvaluationIJSP_Makespan::evaluate(
 		svars->encoder->encode(schedule, individual, svars);
 	if (!individual->isPhenotypeUpdated())
 		individual->updatePhenotype(schedule->clone());
-	return new FuzzyFW::FitnessInterval(makespan, false);
+ 	return new FuzzyFW::FitnessInterval(makespan, false);
 }
 }

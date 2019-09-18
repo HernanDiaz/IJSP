@@ -495,13 +495,13 @@ private:
 
 //=============================================================================
 //
-//	Class FitnessTFN
+//	Class FitnessInterval
 //
 //=============================================================================
 /**
-* Class were the fitness values are of type TFN
+* Class were the fitness values are of type Interval
 *
-* @author Juan Jose Palacios
+* @author Hernán Díaz Rodríguez
 *
 */
 class FitnessInterval : public Fitness {
@@ -614,7 +614,7 @@ public:
 
 private:
 	/*
-	* Auxiliary method: Casting of Fitness types to TFN type
+	* Auxiliary method: Casting of Fitness types to Interval type
 	* to make comparisons
 	*/
 	const FitnessInterval * convertType(const Fitness *f) const;

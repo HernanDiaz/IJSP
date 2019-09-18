@@ -6,6 +6,8 @@
 */
 
 #include "SGS_IJSP_Insertion.h"
+#include <iostream>
+using namespace std;
 
 namespace IJSP {
 
@@ -104,6 +106,11 @@ namespace IJSP {
 				found = true;
 			else {
 				mp = ms;
+				//Se necesita este maximo, o stime es siempre menor que tmthead+mtpt??
+				/*
+				if (Stime.isGreaterThan(mtHead + mtPT, FuzzyFW::Interval::C_COMPONENT)) {
+					cout << "Es mayor: Stime: " << Stime << "\tmtHead+mtPt: " << mtHead + mtPT << endl;
+				}*/
 				Stime = maximum(Stime, mtHead + mtPT, maxComp);
 				ms = this->schedule->taskInfo[mp].ms;
 			}

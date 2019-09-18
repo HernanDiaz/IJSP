@@ -115,10 +115,7 @@ namespace FuzzyFW {
 	Interval Interval::operator+(const Interval &t) const {
 		return Interval(this->a + t.a, this->b + t.b);
 	}
-	Interval Interval::operator-(const Interval &t) const {
-		return Interval(this->a - t.a, this->b - t.b);
-	}
-
+	
 	//====  Asignment overload  ===================================================
 	Interval & Interval::operator=(const Interval &t) {
 		this->a = t.a;
@@ -132,14 +129,7 @@ namespace FuzzyFW {
 		this->b += t.b;
 		return *this;
 	}
-
-	Interval & Interval::operator-=(const Interval &t) {
-		this->a -= t.a;
-		this->b -= t.b;
-		return *this;
-	}
-
-
+	
 
 	//=============================================================================
 	//		COMPARATORS
