@@ -29,6 +29,12 @@ namespace IJSP {
 *
 */
 
+/*
+* Parameters:
+*	How to compare objective functions that are Intervals
+*/
+#define IJSP_SGS_COMPARE "sgs.interval.comparison"
+
 class SGS_IJSP
 {
 	//=========================================================================
@@ -45,7 +51,15 @@ protected:
 	*/
 	char isCreated;
 
+	/*
+	* Label to indicate the operator to compare intervals
+	*/
+	const std::string compareLabel;
 
+	/*
+	* Operator used to compare intervals in the SGS (component by default)
+	*/
+	FuzzyFW::Interval::Compare cpComp;
 
 	//=========================================================================
 	//		CONSTRUCTORS / INITIALIZERS
@@ -72,7 +86,23 @@ public:
 	/*
 	* Read the user parameters if needed
 	*/
-	virtual void setup(const FuzzyFW::ParameterDB *params) { } // Nothing to load
+	virtual void setup(const FuzzyFW::ParameterDB *params) { 
+		// Load comparison strategy parameter
+		std::string compareName = params->getString(this->compareLabel);
+		
+		if (compareName.length() == 0) {
+			std::string errorMsg = this->compareLabel + " parameter not found.";
+			throw new IJSPException("SGS_IJSP", errorMsg);
+		}
+		this->cpComp = FuzzyFW::Interval::getComparison(compareName);
+		if (this->cpComp == FuzzyFW::Interval::C_Err) {
+			std::string errorMsg = "Invalid value for parameter ";
+			errorMsg += "\'" + this->compareLabel + "\': \'";
+			errorMsg += compareName + "\'";
+			throw new IJSPException("SGS", errorMsg);
+		}
+	
+	}
 
 
 	/*

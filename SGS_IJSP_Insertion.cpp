@@ -57,9 +57,7 @@ namespace IJSP {
 		FuzzyFW::Interval Stime;	// Starting time
 		FuzzyFW::Interval mtHead, mtPT;
 		char found;	// Big gap found in the schedule
-		// Comparisons are made component by component
-		FuzzyFW::Interval::Compare cpComp = FuzzyFW::Interval::C_JIANG;
-		//FuzzyFW::Interval::Compare cpComp = FuzzyFW::Interval::C_COMPONENT;
+		// Maxims are made component by component
 		FuzzyFW::Interval::Maximum maxComp = FuzzyFW::Interval::M_COMPONENT;
 
 		int mac = task->machine;
@@ -82,7 +80,7 @@ namespace IJSP {
 		if (mp != -1)
 			mtHead = this->schedule->taskInfo[mp].head;
 
-		while (mp != -1 && mtHead.isGreaterEqualTo(Stime, cpComp)) {
+		while (mp != -1 && mtHead.isGreaterEqualTo(Stime, this->cpComp)) {
 			ms = mp;
 			mp = this->schedule->taskInfo[ms].mp;
 			if (mp != -1)
@@ -96,21 +94,18 @@ namespace IJSP {
 			Stime = maximum(Stime, mtHead + mtPT, maxComp);
 		}
 
+
 		// Look for the actual minimum starting time for the task
+		
 		found = false;
 		while (!found && ms != -1) {
 			mtHead = this->schedule->taskInfo[ms].head;
 			mtPT = this->schedule->taskInfo[ms].task->p;
 
-			if (mtHead.isGreaterEqualTo(Stime + task->p, cpComp))
+			if (mtHead.isGreaterEqualTo(Stime + task->p, this->cpComp))
 				found = true;
 			else {
 				mp = ms;
-				//Se necesita este maximo, o stime es siempre menor que tmthead+mtpt??
-				/*
-				if (Stime.isGreaterThan(mtHead + mtPT, FuzzyFW::Interval::C_COMPONENT)) {
-					cout << "Es mayor: Stime: " << Stime << "\tmtHead+mtPt: " << mtHead + mtPT << endl;
-				}*/
 				Stime = maximum(Stime, mtHead + mtPT, maxComp);
 				ms = this->schedule->taskInfo[mp].ms;
 			}

@@ -215,7 +215,7 @@ public:
 	*/
 	std::string toString() const;
 
-private:
+
 	
 	double Lei2011Formula(const Interval & t) const;
 

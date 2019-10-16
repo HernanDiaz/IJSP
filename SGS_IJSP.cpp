@@ -19,16 +19,18 @@ namespace IJSP {
 //=============================================================================
 //=====  Default constructor  =================================================
 SGS_IJSP::SGS_IJSP(const FuzzyFW::ParameterDB *params)
-	: schedule(NULL), isCreated(false) {
+	: schedule(NULL), isCreated(false), compareLabel(IJSP_SGS_COMPARE){
 	if (params != NULL)
 		this->setup(params);
 }
 
 
 //=====  Copy constructor  ====================================================
-SGS_IJSP::SGS_IJSP(const SGS_IJSP &source) {
+SGS_IJSP::SGS_IJSP(const SGS_IJSP &source)
+	: compareLabel(source.compareLabel) {
 	this->schedule = new ScheduleIJSP(*source.schedule);
 	this->isCreated = source.isCreated;
+	this->cpComp = source.cpComp;
 }
 
 
@@ -41,5 +43,7 @@ void SGS_IJSP::reset() {
 	if (this->isCreated)
 		this->schedule->reset();
 }
+
+
 
 }

@@ -152,8 +152,9 @@ std::string EvoLauncher::optimise(Problem *problem) {
 }
 
 
-
-
+bool EvoLauncher::isInTestMode() {
+	return this->testMode;
+}
 
 //=============================================================================
 //		CONFIGURATION METHODS
@@ -196,6 +197,9 @@ void EvoLauncher::loadConfiguration(const char* paramsFile) {
 	}
 
 	this->setupAlgorithm(algorithmName);
+
+	this->testMode = this->setup->getBoolean(EVO_TEST_MODE,false); 
+
 }
 
 

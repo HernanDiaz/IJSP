@@ -16,6 +16,7 @@ namespace FuzzyFW {
 #define EVO_SEED "seed"	// Seed for the RNG
 #define EVO_ALGORITHM "algorithm"	// Algorithm to use as optimisation method
 #define EVO_RUNS "runs"				// Number of runs for algorithm
+#define EVO_TEST_MODE "testMode"   // label for the test mode
 
 // Name for sets of solutions
 #define EVO_OUTPUT_SOLS "Sols"
@@ -78,6 +79,11 @@ namespace FuzzyFW {
 		int seed;
 
 		/**
+		* flag for the test mode
+		*/
+		bool testMode = false;
+
+		/**
 		* Private statistics obtained from the algorithm
 		*/
 		std::vector< std::vector< std::pair<std::string, double> > > avgTimes;
@@ -115,6 +121,13 @@ namespace FuzzyFW {
 		* @return The best solution found among all the runs
 		*/
 		std::string optimise(Problem *problem);
+
+		/**
+		* Method used to specify if the eecution is set in test mode
+		*
+		* @return true if the algorthm is in test mode
+		*/
+		bool isInTestMode();
 
 
 		//=========================================================================

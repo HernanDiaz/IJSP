@@ -4,10 +4,14 @@
  *  Created on: Sep 22, 2017
  *      Author: jjpalacios
  */
+#include <iostream>
+using namespace std;
+
 
 #include "EvoLauncher.h"
 #include "ProblemIJSP.h"
-
+#include "ProblemIJSP.h"
+//#include "mainTest.cpp"
 
 int main(int argc, const char *argv[]) {
 	FuzzyFW::EvoLauncher *launcher;
@@ -23,6 +27,12 @@ int main(int argc, const char *argv[]) {
 		launcher = new FuzzyFW::EvoLauncher(argv[1]);
 		if(argc > 3)
 			launcher->setLogFolder(argv[3]);
+		/*
+		if (launcher->isInTestMode()) {
+			mainTest::testMain();
+			system("PAUSE");
+			return 0;
+		}*/
 
 		problem = new IJSP::ProblemIJSP(argv[2]);
 		launcher->optimise(problem);
