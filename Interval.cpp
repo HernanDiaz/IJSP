@@ -105,8 +105,7 @@ namespace FuzzyFW {
 		this->a = source.a;
 		this->b = source.b;
 	}
-
-
+	
 
 	//=============================================================================
 	//		OPERATORS

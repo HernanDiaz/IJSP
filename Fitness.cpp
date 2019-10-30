@@ -62,6 +62,7 @@ bool FitnessDouble::isWorseOrEqualTo(const Fitness * f) const {
 const FitnessDouble * FitnessDouble::convertType(const Fitness *f) const {
 	if (f->getType() == Fitness::Type::DOUBLE)
 		return dynamic_cast<const FitnessDouble *>(f);
+	return new FuzzyFW::FitnessDouble(f->toDouble(), true);  
 	throw new FuzzyFWException("Fitness",
 		"Comparison of incompatible fitness values");
 }

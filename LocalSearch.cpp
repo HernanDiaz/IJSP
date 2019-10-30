@@ -351,9 +351,10 @@ FullSolution LS_Tabu::apply(const Solution *solution,
 					}
 				}
 				else {
-					realValue = this->neighbourhood->evaluateNeighbour(index, svars, true);
+					realValue = this->neighbourhood->evaluateNeighbour(index, svars, false);
 					this->evaluations++;
-					if ((best == NULL || realValue->isBetterThan(best))
+					if (realValue != NULL
+						&& (best == NULL || realValue->isBetterThan(best))
 						&& (!isTabu || realValue->isBetterThan(bestSolution.second))
 						&& (lastNeighbour == NULL || !isLastNeighbour)) {
 						best = realValue;

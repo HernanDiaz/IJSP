@@ -25,6 +25,7 @@ EvoLauncher::EvoLauncher(const char* algorithmSetup) {
 	this->seed = 1;
 	this->logFolder = "." + FSEP;
 	this->problem = NULL;
+	this->testMode = false;
 
 	this->loadConfiguration(algorithmSetup);
 }

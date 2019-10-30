@@ -81,7 +81,7 @@ namespace FuzzyFW {
 		/**
 		* flag for the test mode
 		*/
-		bool testMode = false;
+		bool testMode;
 
 		/**
 		* Private statistics obtained from the algorithm
