@@ -41,7 +41,7 @@ public:
 	*	- Sakawa: Comparison made using the Sakawa ranking method
 	* Detailed explanations on each method are given inside the class
 	*/
-	enum Compare {C_COMPONENT, C_EV, C_SAKAWA, C_JIANG, C_Err};
+	enum Compare {C_COMPONENT, C_EV, C_SAKAWA, C_JIANG, C_LEX1, C_LEX2, C_YX, C_Err};
 
 	
 	/*

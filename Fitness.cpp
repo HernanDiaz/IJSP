@@ -204,7 +204,7 @@ const FitnessTFN * FitnessTFN::convertType(const Fitness *f) const {
 //	Class FitnessInterval
 //
 //=============================================================================
-Interval::Compare FitnessInterval::FitnessCompareStrategy = Interval::C_JIANG;
+Interval::Compare FitnessInterval::FitnessCompareStrategy = Interval::C_EV;
 
 //=============================================================================
 //		METHODS
@@ -224,8 +224,7 @@ bool FitnessInterval::isBetterOrEqualTo(const Fitness * f) const {
 bool FitnessInterval::isBetterThan(const Fitness * f) const {
 	const FitnessInterval *ft = this->convertType(f);
 	if (this->maximize)
-		return this->value.isGreaterThan(ft->value,
-			this->FitnessCompareStrategy);
+		return this->value.isGreaterThan(ft->value,this->FitnessCompareStrategy);
 	return this->value.isLesserThan(ft->value,
 		this->FitnessCompareStrategy);
 }

@@ -23,6 +23,12 @@ namespace FuzzyFW {
 			return "Ranking Sakawa";
 		case C_JIANG:
 			return "Ranking Jiang 2008";
+		case C_LEX1:
+			return "Lexicographical 1";
+		case C_LEX2:
+			return "Lexicographical 2";
+		case C_YX:
+			return "Xu and Yager";
 		}
 		return "N/A";
 	}
@@ -42,6 +48,12 @@ namespace FuzzyFW {
 			return C_SAKAWA;
 		if (toUpper(str).compare("JIANG") == 0)
 			return C_JIANG;
+		if (toUpper(str).compare("LEX1") == 0)
+			return C_LEX1;
+		if (toUpper(str).compare("LEX2") == 0)
+			return C_LEX2;
+		if (toUpper(str).compare("YX") == 0)
+			return C_YX;
 		return C_Err;
 	}
 
@@ -141,6 +153,8 @@ namespace FuzzyFW {
 			return this->Lei2011Formula(t) == 0.5;
 
 		case C_COMPONENT:
+		case C_LEX1:
+		case C_LEX2:
 			return (compareDouble(this->a, t.a) == 0
 				&& compareDouble(this->b, t.b) == 0);
 
@@ -150,6 +164,10 @@ namespace FuzzyFW {
 		case C_SAKAWA:
 			return (compareDouble(this->expectedValue(), t.expectedValue()) == 0)
 				&& (compareDouble(this->b - this->a, t.b - t.a) == 0);
+		case C_YX:
+			return (compareDouble(this->a+this->b, t.a+t.b) == 0)
+				&& (compareDouble(this->b - this->a, t.b - t.a) == 0);
+
 		}
 		throw new FuzzyFWException("Interval", "Comparison method unknown");
 	}
@@ -174,6 +192,16 @@ namespace FuzzyFW {
 				return true;
 			return (compareDouble(this->expectedValue(), t.expectedValue()) == 0)
 				&& (compareDouble(this->b - this->a, t.b - t.a) > 0);
+
+		case C_LEX1: return !(compareDouble(this->a, t.a) < 0
+			|| ((compareDouble(this->a, t.a) == 0) && (compareDouble(this->b, t.b) <= 0)));
+
+		case C_LEX2:return !(compareDouble(this->b, t.b) < 0
+			|| ((compareDouble(this->b, t.b) == 0) && (compareDouble(this->a, t.a) <= 0)));
+
+		case C_YX: return !(compareDouble(this->a + this->b, t.a + t.b) < 0
+			|| ((compareDouble(this->a + this->b, t.a + t.b) == 0) && (compareDouble(this->b - this->a, t.b - t.a) < 0)));
+
 		}
 		throw new FuzzyFWException("Interval", "Comparison method unknown");
 
@@ -187,7 +215,7 @@ namespace FuzzyFW {
 		case C_JIANG:
 			//A > pdB iff P(A>=B) < 0.5 && A = pdB iff P(A>=B) = 0.5
 			return this->Lei2011Formula(t) <= 0.5;
-
+			
 		case C_COMPONENT:
 			return (compareDouble(this->a, t.a) >= 0
 				&& compareDouble(this->b, t.b) >= 0);
@@ -200,6 +228,16 @@ namespace FuzzyFW {
 				return true;
 			return (compareDouble(this->expectedValue(), t.expectedValue()) == 0)
 				&& (compareDouble(this->b - this->a, t.b - t.a) >= 0);
+
+		case C_LEX1: return !(compareDouble(this->a, t.a) < 0
+			|| ((compareDouble(this->a, t.a) == 0) && (compareDouble(this->b, t.b) < 0)));
+			
+		case C_LEX2:return !(compareDouble(this->b, t.b) < 0
+			|| ((compareDouble(this->b, t.b) == 0) && (compareDouble(this->a, t.a) < 0)));
+
+		case C_YX: return !(compareDouble(this->a+this->b, t.a+t.b) < 0
+			|| ((compareDouble(this->a + this->b, t.a + t.b) == 0) && (compareDouble(this->b-this->a, t.b-t.a) < 0)));
+
 		}
 		throw new FuzzyFWException("Interval", "Comparison method unknown");
 	}
