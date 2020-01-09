@@ -8,6 +8,7 @@
 
 #include "MemeticNeri.h"
 #include "RandomPopulation.h"
+#include "RobustnessAnalyzer.h"
 
 
 namespace FuzzyFW {
@@ -82,6 +83,8 @@ namespace FuzzyFW {
 		* flag for the test mode
 		*/
 		bool testMode;
+
+		Robustness::RobustnessAnalyzer analyzer;
 
 		/**
 		* Private statistics obtained from the algorithm

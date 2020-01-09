@@ -76,6 +76,8 @@ std::string EvoLauncher::optimise(Problem *problem) {
 	// Open output file for solutions
 	std::ofstream outputFile;
 	std::string outputName = this->logFolder + FSEP;
+	// Open output for the sturdiness analyzer
+	this->analyzer.open(outputName + signature);
 	outputName += signature + "_" + EVO_OUTPUT_SOLS + ".csv";
 
 	outputFile.open(outputName.c_str());
@@ -107,6 +109,11 @@ std::string EvoLauncher::optimise(Problem *problem) {
 		outputFile << solution.first->toString() << ";";
 		outputFile << solution.second->toString() << std::endl;
 
+		//Sturdiness analysis
+		//SturdinessAnalyzer->analyze(problem, solution, setup); problem -> ?? solution ->ScheduleIJSP  setup -> ParametersDB
+		// Meter en el archivo de configuracion: numero de repeticiones del sturdiness y nombre del fichero para numeros aleatorios.
+		this->analyzer.analyze(problem, solution.first, setup, run);
+
 		// Print evolution data
 		std::vector< std::vector<double> > evolStats;
 		evolStats = algorithm->getEvolution(this->avgEvolLabels);
@@ -123,6 +130,7 @@ std::string EvoLauncher::optimise(Problem *problem) {
 		}
 	}
 	outputFile.close();
+	this->analyzer.close();
 
 	// Open output file
 	outputName = this->logFolder + FSEP;
