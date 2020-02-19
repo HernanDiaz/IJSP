@@ -558,6 +558,11 @@ double TimeWindowLinear::agreementIndex(const double c)  const {
 std::istream & TimeWindowLinear::readFromStream(std::istream & is) {
 	char c;
 	is >> c >> this->d1 >> c >> this->d2 >> c;
+	/*
+	// Uncomment for CRISP Timewindows
+	this->d1 = (this->d1 + this->d2) / 2;
+	this->d2 = this->d1;
+	*/
 	this->loadedData = true;
 	return is;
 }

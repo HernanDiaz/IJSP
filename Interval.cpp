@@ -6,6 +6,8 @@
 */
 
 #include "Interval.h"
+#include <iostream>
+using namespace std;
 
 namespace FuzzyFW {
 
@@ -192,19 +194,17 @@ namespace FuzzyFW {
 				return true;
 			return (compareDouble(this->expectedValue(), t.expectedValue()) == 0)
 				&& (compareDouble(this->b - this->a, t.b - t.a) > 0);
+		case C_LEX1: 
+			return !(compareDouble(this->a, t.a) < 0 || ((compareDouble(this->a, t.a) == 0) && (compareDouble(this->b, t.b) <= 0)));
 
-		case C_LEX1: return !(compareDouble(this->a, t.a) < 0
-			|| ((compareDouble(this->a, t.a) == 0) && (compareDouble(this->b, t.b) <= 0)));
-
-		case C_LEX2:return !(compareDouble(this->b, t.b) < 0
-			|| ((compareDouble(this->b, t.b) == 0) && (compareDouble(this->a, t.a) <= 0)));
-
+		case C_LEX2:
+			return !(compareDouble(this->b, t.b) < 0 || ((compareDouble(this->b, t.b) == 0) && (compareDouble(this->a, t.a) <= 0)));
+			
 		case C_YX: return !(compareDouble(this->a + this->b, t.a + t.b) < 0
-			|| ((compareDouble(this->a + this->b, t.a + t.b) == 0) && (compareDouble(this->b - this->a, t.b - t.a) < 0)));
+			|| ((compareDouble(this->a + this->b, t.a + t.b) == 0) && (compareDouble(this->b - this->a, t.b - t.a) <= 0)));
 
 		}
 		throw new FuzzyFWException("Interval", "Comparison method unknown");
-
 	}
 
 
@@ -392,9 +392,16 @@ namespace FuzzyFW {
 	std::ifstream & operator >> (std::ifstream & is, Interval & t)
 	{
 		char c;
-		//TODO adaptation to load data from fuzzy problems
 		double d;
+		//Load data from triangular fuzzy problems
 		is >> c >> t.a >> c >> d >> c >> t.b >> c;
+		//Load data from interval problems
+		//is >> c >> t.a >> c >> t.b >> c;
+		/*
+		//CRISP Intervals
+		t.a = (t.a + t.b) / 2;
+		t.b = t.a;
+		*/
 		return is;
 	}
 

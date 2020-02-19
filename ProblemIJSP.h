@@ -228,6 +228,14 @@ namespace IJSP {
 			return this->dueDate.size() > 0;
 		}
 
+		/**
+		* Returns number of dueDates
+		*/
+		bool dueDatesSize() const {
+			return this->dueDate.size();
+		}
+
+
 
 		/**
 		* Get the due-date of a given job.

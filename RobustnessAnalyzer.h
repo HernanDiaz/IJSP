@@ -10,6 +10,9 @@
 #include "ScheduleIJSP.h"
 #include "IJSPException.h"
 #include "RobustnessFileWriter.h"
+#include "ScenarioManager.h"
+#include "Evaluation.h"
+#include "EvaluationIJSP.h"
 #include "Random.h"
 
 
@@ -31,15 +34,25 @@ public:
 
 	RobustnessFileWriter writer;
 
+	ScenarioManager scenarioManager;
+
 	RobustnessAnalyzer();
 
-	void open(std::string outputName);
+	void open(FuzzyFW::Problem *problem, std::string outputPrefix, std::string signature);
 
 	void close();
 	
-	void analyze(FuzzyFW::Problem *problem, FuzzyFW::Solution * solution, const FuzzyFW::ParameterDB *params, int numRun);
+	void analyze(FuzzyFW::Problem *problem, FuzzyFW::Solution * solution, FuzzyFW::Fitness* objective , const  FuzzyFW::ParameterDB *params, int numRun);
+
+	unsigned int getRandomDuration(const IJSP::TaskIJSP* task, unsigned int rep);
+
+	unsigned int getDueDate(const unsigned int numJob, unsigned int rep);
+
+protected:
+
+	void analyzeMakespan(const IJSP::ProblemIJSP *problemIJSP, IJSP::ScheduleIJSP * schedule, FuzzyFW::FitnessInterval * fitness, const FuzzyFW::ParameterDB *params, int numRun);
 	
-	int getRandomDuration(const IJSP::TaskIJSP* task);
+	void analyzeTardiness(const IJSP::ProblemIJSP *problemIJSP, IJSP::ScheduleIJSP * schedule, FuzzyFW::FitnessInterval * fitness, const FuzzyFW::ParameterDB *params, int numRun);
 
 };
 }

@@ -73,3 +73,36 @@ void IntervalTest::testLei2011AisGreaterEqualToB() {
 	b = FuzzyFW::Interval(8, 13);
 	CPPUNIT_ASSERT(a.isGreaterEqualTo(b, FuzzyFW::Interval::C_JIANG));
 }
+
+void IntervalTest::testLex1AisGreaterThanB() {
+	FuzzyFW::Interval a = FuzzyFW::Interval(3, 7);
+	FuzzyFW::Interval b = FuzzyFW::Interval(1, 5);
+	CPPUNIT_ASSERT(a.isGreaterThan(b, FuzzyFW::Interval::C_LEX1));
+	a = FuzzyFW::Interval(1, 5);
+	b = FuzzyFW::Interval(1, 3);
+	CPPUNIT_ASSERT(a.isGreaterThan(b, FuzzyFW::Interval::C_LEX1));
+	a = FuzzyFW::Interval(1, 5);
+	b = FuzzyFW::Interval(1, 5);
+	CPPUNIT_ASSERT(!a.isGreaterThan(b, FuzzyFW::Interval::C_LEX1));
+	a = FuzzyFW::Interval(1, 5);
+	b = FuzzyFW::Interval(1, 6);
+	CPPUNIT_ASSERT(!a.isGreaterThan(b, FuzzyFW::Interval::C_LEX1));
+}
+
+void IntervalTest::testLex2AisGreaterThanB() {
+	FuzzyFW::Interval a = FuzzyFW::Interval(3, 7);
+	FuzzyFW::Interval b = FuzzyFW::Interval(1, 5);
+	CPPUNIT_ASSERT(a.isGreaterThan(b, FuzzyFW::Interval::C_LEX2));
+	a = FuzzyFW::Interval(1, 5);
+	b = FuzzyFW::Interval(1, 3);
+	CPPUNIT_ASSERT(a.isGreaterThan(b, FuzzyFW::Interval::C_LEX2));
+  	a = FuzzyFW::Interval(1, 5);
+	b = FuzzyFW::Interval(1, 5);
+	CPPUNIT_ASSERT(!a.isGreaterThan(b, FuzzyFW::Interval::C_LEX2));
+	a = FuzzyFW::Interval(1, 5);
+	b = FuzzyFW::Interval(1, 6);
+	CPPUNIT_ASSERT(!a.isGreaterThan(b, FuzzyFW::Interval::C_LEX2));
+	a = FuzzyFW::Interval(2, 6);
+	b = FuzzyFW::Interval(1, 6);
+	CPPUNIT_ASSERT(a.isGreaterThan(b, FuzzyFW::Interval::C_LEX2));
+}

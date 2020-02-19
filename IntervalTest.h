@@ -25,6 +25,8 @@ class IntervalTest : public CppUnit::TestFixture {
 	CPPUNIT_TEST(testLei2011FormulaCase5);
 	CPPUNIT_TEST(testLei2011AEqualsA);
 	CPPUNIT_TEST(testLei2011AisGreaterEqualToB);
+	CPPUNIT_TEST(testLex1AisGreaterThanB);
+	CPPUNIT_TEST(testLex2AisGreaterThanB);
 	CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -45,5 +47,9 @@ public:
 	void IntervalTest::testLei2011AEqualsA();
 
 	void IntervalTest::testLei2011AisGreaterEqualToB();
+
+	void IntervalTest::testLex1AisGreaterThanB();
+
+	void IntervalTest::testLex2AisGreaterThanB();
 };
 
