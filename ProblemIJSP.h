@@ -231,7 +231,7 @@ namespace IJSP {
 		/**
 		* Returns number of dueDates
 		*/
-		bool dueDatesSize() const {
+		int dueDatesSize() const {
 			return this->dueDate.size();
 		}
 
@@ -241,7 +241,7 @@ namespace IJSP {
 		* Get the due-date of a given job.
 		* Returns NULL if there is no due-date for this job
 		*/
-		const FuzzyFW::TimeWindow * getTimeWindow(const unsigned int job) const;
+		FuzzyFW::TimeWindow * getTimeWindow(const unsigned int job) const;
 
 
 		/**
@@ -254,7 +254,7 @@ namespace IJSP {
 		/**
 		* Gets a specific task
 		*/
-		const TaskIJSP * getTask(const unsigned int taskId) const;
+		TaskIJSP * getTask(const unsigned int taskId) const;
 
 
 		//=====================================================================
@@ -279,6 +279,8 @@ namespace IJSP {
 		* Load all data from the stored file
 		*/
 		virtual void loadFile(const char *inputFile = NULL);
+
+		virtual void saveFile(const char *outputFile = NULL);
 
 
 	protected:

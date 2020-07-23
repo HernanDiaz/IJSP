@@ -9,7 +9,7 @@
 
 
 
-namespace Robustness {
+namespace PostExecution {
 
 
 	//=============================================================================
@@ -23,8 +23,9 @@ namespace Robustness {
 	void RobustnessFileWriter::open(std::string outputName)
 	{
 		// Open output file for solutions
-		std::string finalOutputName = outputName + "_" + STURDINESS_OUTPUT_SOLS + ".csv";
+		std::string finalOutputName = outputName + "_" + ROBUSTNESS_OUTPUT_SOLS + ".csv";
 		outputFile.open(finalOutputName.c_str());
+
 		if (!outputFile.is_open()) {
 			std::string err = "It was impossible to generate the output ";
 			err += "files. They may be opened or the logFolder does ";
@@ -43,21 +44,21 @@ namespace Robustness {
 		for (int i = 0; i < numIter; i++) {
 			outputFile << "S";
 			outputFile <<(i+1);
-			outputFile << STURDINESS_COL_SEPARATOR; 
+			outputFile << ROBUSTNESS_COL_SEPARATOR; 
 		}
 		outputFile << "Avg";
-		outputFile << STURDINESS_COL_SEPARATOR;
+		outputFile << ROBUSTNESS_COL_SEPARATOR;
 		this->endline();
 	}
 
 	void RobustnessFileWriter::write(double value) {
 		outputFile << value;
-		outputFile << STURDINESS_COL_SEPARATOR;
+		outputFile << ROBUSTNESS_COL_SEPARATOR;
 	}
 
 	void RobustnessFileWriter::write(std::string value) {
 		outputFile << value;
-		outputFile << STURDINESS_COL_SEPARATOR;
+		outputFile << ROBUSTNESS_COL_SEPARATOR;
 	}
 
 	void RobustnessFileWriter::endline() {

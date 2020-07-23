@@ -8,7 +8,7 @@
 #include "heading.h"
 #include "ScenarioManager.h"
 
-namespace Robustness {
+namespace PostExecution {
 
 
 	//=============================================================================
@@ -16,7 +16,7 @@ namespace Robustness {
 	//=============================================================================
 	//====  Default constructor  ==================================================
 	ScenarioManager::ScenarioManager() {
-		rnd.init(STURDINESS_INITIAL_SEED);
+		rnd.init(ROBUSTNESS_INITIAL_SEED);
 	}
 
 	void ScenarioManager::init(const IJSP::ProblemIJSP *problem, std::string outputPrefix, const int numScenarios) {
@@ -29,7 +29,7 @@ namespace Robustness {
 	}
 
 	 std::string ScenarioManager::getFileName(const IJSP::ProblemIJSP *problem) {
-		return problem->getName() + "_" + STURDINESS_OUTPUT_SCEN_NAME + ".csv";
+		return problem->getName() + "_" + ROBUSTNESS_OUTPUT_SCEN_NAME + ".csv";
 	}
 
 	void ScenarioManager::generateScenarios(const IJSP::ProblemIJSP *problem, std::string outputPrefix, const int numScenarios){

@@ -558,11 +558,39 @@ double TimeWindowLinear::agreementIndex(const double c)  const {
 std::istream & TimeWindowLinear::readFromStream(std::istream & is) {
 	char c;
 	is >> c >> this->d1 >> c >> this->d2 >> c;
+
 	/*
-	// Uncomment for CRISP Timewindows
+	this->d1 = this->d1 * 10;
+	this->d2 = this->d2 * 10;
+	*/
+	
+	// Uncomment for CRISP Timewindows -1
+	/*
 	this->d1 = (this->d1 + this->d2) / 2;
 	this->d2 = this->d1;
 	*/
+	/*
+	//-0.5
+	double diff = this->d2 - this->d1;
+	this->d1 += diff/4;
+	this->d2 -= diff/4;
+	*/
+	/*
+	//0.1
+	double diff = this->d2 - this->d1;
+	this->d1 -= diff * 0.05;
+	this->d2 += diff * 0.05;
+	*/
+	/*
+	//0.2
+	double diff = this->d2 - this->d1;
+	this->d1 -= diff * 0.1;
+	this->d2 += diff * 0.1;
+	*/
+
+	if (this->d1 < 0) {
+		this->d1 = 0;
+	}
 	this->loadedData = true;
 	return is;
 }
@@ -575,7 +603,7 @@ std::string TimeWindowLinear::toString() {
 		throw FuzzyFWException("Time Window", errorMsg);
 	}
 	std::string value = "(" + valueToString(this->d1);
-	value = "," + valueToString(this->d2) + ")";
+	value += "," + valueToString(this->d2) + ")";
 	return value;
 }
 }

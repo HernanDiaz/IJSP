@@ -55,107 +55,110 @@ std::string EvoLauncher::optimise(Problem *problem) {
 
 	// Read the problem in memory
 	this->problem = problem;
+
 	this->problem->setup(this->setup);
-	this->problem->loadFile();
+    this->problem->loadFile();
+			
+			std::cout << "Experiment " << signature << std::endl << std::endl;
+			std::cout << "Solving instance " << this->problem->getName() << std::endl;
 
-	std::cout << "Experiment " << signature << std::endl << std::endl;
-	std::cout << "Solving instance " << this->problem->getName() << std::endl;
+			signature = this->generateSignature();
+			
+		   // Initialize the algorithm
+			this->algorithm->prepareToRun(this->setup);
 
-	signature = this->generateSignature();
-	
+			// Prepare average data
+			this->avgTimes.clear();
+			this->avgStats.clear();
+			this->avgEvolStats.clear();
+			this->fitnessValues.clear();
 
-	// Initialize the algorithm
-	this->algorithm->prepareToRun(this->setup);
+			// Open output file for solutions
+			std::ofstream outputFile;
+			std::string outputName = this->logFolder + FSEP;
+			// Open output for the robustness analyzer
+			this->analyzer.open(problem, outputName, signature, setup);
+			outputName += signature + "_" + EVO_OUTPUT_SOLS + ".csv";
 
-	// Prepare average data
-	this->avgTimes.clear();
-	this->avgStats.clear();
-	this->avgEvolStats.clear();
-	this->fitnessValues.clear();
+			outputFile.open(outputName.c_str());
+			if (!outputFile.is_open()) {
+				std::string err = "It was impossible to generate the output ";
+				err += "files. They may be opened or the logFolder does ";
+				err += "not exist";
+				throw new FuzzyFWException("Environment", err);
+			}
+			outputFile << "Run;Solution;Objective Value" << std::endl;
 
-	// Open output file for solutions
-	std::ofstream outputFile;
-	std::string outputName = this->logFolder + FSEP;
-	// Open output for the sturdiness analyzer
-	this->analyzer.open(problem, outputName, signature);
-	outputName += signature + "_" + EVO_OUTPUT_SOLS + ".csv";
+			for (int run = 0; run < numRuns; run++) {
+				std::cout << "Run " << run + 1 << "..." << std::endl;
+				// Run the algorithm
+				solution = this->algorithm->run(this->problem,
+					signature + valueToString(run + 1), this->logFolder, this->seed + run);
 
-	outputFile.open(outputName.c_str());
-	if (!outputFile.is_open()) {
-		std::string err = "It was impossible to generate the output ";
-		err += "files. They may be opened or the logFolder does ";
-		err += "not exist";
-		throw new FuzzyFWException("Environment", err);
-	}
-	outputFile << "Run;Solution;Objective Value" << std::endl;
+				// Print setup
+				this->avgTimes.push_back(algorithm->getRuntime());
 
-	for (int run = 0; run < numRuns; run++) {
-		std::cout << "Run " << run + 1 << "..." << std::endl;
-		// Run the algorithm
-		solution = this->algorithm->run(this->problem,
-			signature + valueToString(run+1), this->logFolder, this->seed + run);
+				// Print basic statistics
+				this->avgStats.push_back(algorithm->getStatistics());
 
-		// Print setup
-		this->avgTimes.push_back(algorithm->getRuntime());
+				// Keep the fitness value
+				this->fitnessValues.push_back(solution.second);
 
-		// Print basic statistics
-		this->avgStats.push_back(algorithm->getStatistics());
+				// Information about the set of solutions
+				outputFile << run + 1 << ";";
+				outputFile << solution.first->toString() << ";";
+				outputFile << solution.second->toString() << std::endl;
 
-		// Keep the fitness value
-		this->fitnessValues.push_back(solution.second);
+				//Post execution analysis
+				this->analyzer.analyze(problem, solution.first, solution.second, setup, run);
 
-		// Information about the set of solutions
-		outputFile << run + 1 << ";";
-		outputFile << solution.first->toString() << ";";
-		outputFile << solution.second->toString() << std::endl;
+				// Print evolution data
+				std::vector< std::vector<double> > evolStats;
+				evolStats = algorithm->getEvolution(this->avgEvolLabels);
+				this->avgEvolStats.push_back(evolStats);
 
-		this->analyzer.analyze(problem, solution.first, solution.second, setup, run);
+				// Look for the best solution
+				if (run == 0
+					|| solution.second->isBetterThan(bestSolution.second)) {
+					bestSolution.first = solution.first;
+					bestSolution.second = solution.second;
+				}
+				else {
+					delete solution.first;
+				}
+			}
+			outputFile.close();
+			this->analyzer.close();
 
-		// Print evolution data
-		std::vector< std::vector<double> > evolStats;
-		evolStats = algorithm->getEvolution(this->avgEvolLabels);
-		this->avgEvolStats.push_back(evolStats);
+			// Open output file
+			outputName = this->logFolder + FSEP;
+			outputName += signature + ".csv";
 
-		// Look for the best solution
-		if (run == 0
-			|| solution.second->isBetterThan(bestSolution.second)) {
-			bestSolution.first = solution.first;
-			bestSolution.second = solution.second;
-		}
-		else {
-			delete solution.first;
-		}
-	}
-	outputFile.close();
-	this->analyzer.close();
+			outputFile.open(outputName.c_str());
+			if (!outputFile.is_open()) {
+				std::string err = "It was impossible to generate the output ";
+				err += "files. They may be opened or the logFolder does ";
+				err += "not exist";
+				throw new FuzzyFWException("Environment", err);
+			}
 
-	// Open output file
-	outputName = this->logFolder + FSEP;
-	outputName += signature + ".csv";
+			algorithm->printSetupTree(outputFile);
+			outputFile << std::endl;
+			this->printRuntimes(outputFile);
+			outputFile << std::endl;
+			this->printStatistics(outputFile);
+			outputFile << std::endl;
+			this->printObjectiveValues(outputFile);
+			outputFile << std::endl;
+			this->printEvolutionTrace(outputFile);
 
-	outputFile.open(outputName.c_str());
-	if (!outputFile.is_open()) {
-		std::string err = "It was impossible to generate the output ";
-		err += "files. They may be opened or the logFolder does ";
-		err += "not exist";
-		throw new FuzzyFWException("Environment", err);
-	}
+			outputFile.close();
 
-	algorithm->printSetupTree(outputFile);
-	outputFile << std::endl;
-	this->printRuntimes(outputFile);
-	outputFile << std::endl;
-	this->printStatistics(outputFile);
-	outputFile << std::endl;
-	this->printObjectiveValues(outputFile);
-	outputFile << std::endl;
-	this->printEvolutionTrace(outputFile);
+			std::cout << "The process has finished!" << std::endl;
 
-	outputFile.close();
-
-	std::cout << "The process has finished!" << std::endl;
 	return bestSolution.first->toString();
 }
+
 
 
 bool EvoLauncher::isInTestMode() {

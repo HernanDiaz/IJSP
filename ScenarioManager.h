@@ -13,10 +13,10 @@
 #include "Random.h"
 
 
-namespace Robustness {
-#define STURDINESS_NUM_ITERATIONS 1000
-#define STURDINESS_INITIAL_SEED 1
-#define STURDINESS_OUTPUT_SCEN_NAME "Scenarios"
+namespace PostExecution {
+#define ROBUSTNESS_NUM_ITERATIONS 1000
+#define ROBUSTNESS_INITIAL_SEED 1
+#define ROBUSTNESS_OUTPUT_SCEN_NAME "Scenarios"
 
 	class ScenarioManager {
 		//=====================================================================

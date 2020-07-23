@@ -8,10 +8,10 @@
 #include "heading.h"
 #include "FuzzyFWException.h"
 
-namespace Robustness {
+namespace PostExecution {
 	// Name for sets of solutions
-#define STURDINESS_OUTPUT_SOLS "Robustness"
-#define STURDINESS_COL_SEPARATOR ";"
+#define ROBUSTNESS_OUTPUT_SOLS "Robustness"
+#define ROBUSTNESS_COL_SEPARATOR ";"
 	   
 class RobustnessFileWriter {
 	//=====================================================================

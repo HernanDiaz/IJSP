@@ -171,7 +171,7 @@ namespace IJSP {
 
 
 	//====  Get Duedate  ==========================================================
-	const FuzzyFW::TimeWindow * ProblemIJSP::getTimeWindow(const unsigned int job)
+	FuzzyFW::TimeWindow * ProblemIJSP::getTimeWindow(const unsigned int job)
 		const {
 		if (job < this->nJobs && job >= 0) {
 			if (this->dueDate.size() == 0)
@@ -208,7 +208,7 @@ namespace IJSP {
 
 
 	//====  Index access  =========================================================
-	const TaskIJSP * ProblemIJSP::getTask(const unsigned int taskId) const {
+	TaskIJSP * ProblemIJSP::getTask(const unsigned int taskId) const {
 		if (taskId < 0 || taskId >= (int)this->task.size()) {
 			std::string errorMsg = "Trying to access unexisting task: ";
 			errorMsg += valueToString(taskId);
@@ -314,7 +314,69 @@ namespace IJSP {
 		this->loadBounds(input);
 
 		input.close();
+
+		this->saveFile(inputFile);
 		this->scalarize();
+	}
+
+
+
+	//=============================================================================
+	//		METHODS
+	//=============================================================================
+	//====  Save data to file  ==================================================
+	void ProblemIJSP::saveFile(const char *outputFile) {
+		std::ofstream output;
+	
+
+		if (!this->isSetup) {
+			std::string errorMsg;
+			errorMsg = "The problem file cannot be written before the reading";
+		   throw new IJSPException("Problem", errorMsg);
+		}
+
+		// Open the problem file
+
+		output.open(this->problemPath);
+		if (!output.is_open()) {
+			std::string errorMsg;
+			errorMsg = "The problem file \'" + std::string(outputFile);
+			errorMsg += +"\' has not been found.";
+			throw new IJSPException("Problem", errorMsg);
+		}
+
+	   // Write the number of jobs and machines
+		output << std::endl;
+		output << this->nJobs << std::endl;
+		output << std::endl;
+		output << this->nMachines << std::endl;
+		output << std::endl;
+			
+		// Write the machine requirements
+		for (unsigned int i = 0; i < this->task.size(); i++) {
+		    	output << this->task[i]->machine<<"\t";
+				if ((i+1)%this->nMachines == 0) {
+					output << std::endl;
+				}
+	    }
+		output << std::endl;
+
+		// Write intervals
+		for (unsigned int i = 0; i < this->task.size(); i++) {
+	     		output << this->task[i]->p<<"\t";
+				if ((i+1)%this->nMachines == 0) {
+					output << std::endl;
+				}
+		}
+		output << std::endl;
+
+		// Write due dates
+		for (unsigned int i = 0; i < this->dueDate.size(); i++) {
+			output << this->dueDate[i] << "\t";;
+		}
+		output << std::endl;
+
+		output.close();
 	}
 
 

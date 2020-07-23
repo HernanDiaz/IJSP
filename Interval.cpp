@@ -394,14 +394,37 @@ namespace FuzzyFW {
 		char c;
 		double d;
 		//Load data from triangular fuzzy problems
-		is >> c >> t.a >> c >> d >> c >> t.b >> c;
+		//is >> c >> t.a >> c >> d >> c >> t.b >> c;
 		//Load data from interval problems
-		//is >> c >> t.a >> c >> t.b >> c;
+		is >> c >> t.a >> c >> t.b >> c;
+
 		/*
-		//CRISP Intervals
+		t.a = t.a * 10;
+		t.b = t.b * 10;
+		*/
+		
+		//CRISP Intervals -1
+		/*
 		t.a = (t.a + t.b) / 2;
 		t.b = t.a;
 		*/
+		/*
+		//0.2
+		double diff = t.b - t.a;
+		t.a -= diff * 0.1;
+		t.b += diff * 0.1;
+		*/
+		/*
+		//0.4
+		double diff = t.b - t.a;
+		t.a -= diff * 0.2;
+		t.b += diff * 0.2;
+		*/
+
+		if (t.a < 0) {
+			t.a = 0;
+		}
+		
 		return is;
 	}
 
