@@ -5,38 +5,22 @@
 *      Author: Hernan Diaz Rodriguez
 */
 #pragma once
-#include "Problem.h"
-#include "Solution.h"
 #include "ScheduleIJSP.h"
-
-#include "Evaluation.h"
 #include "EvaluationIJSP.h"
-#include "RobustnessException.h"
-#include "RobustnessClassRegister.h"
-#include "RobustnessAnalyzer.h"
 
 namespace PostExecution {
+	   
 class PostExecutionAnalyzer {
 	//=====================================================================
 	//		FIELDS
 	//=====================================================================
 
 public:
-	/**
-	* Default constructor
-	*/
-	PostExecutionAnalyzer();
 
-	void open(FuzzyFW::Problem *problem, std::string outputPrefix, std::string signature, const FuzzyFW::ParameterDB *params);
+	virtual void close() = 0;
 
-	void close();
-		
-	void analyze(FuzzyFW::Problem *problem, FuzzyFW::Solution * solution, FuzzyFW::Fitness* objective , const  FuzzyFW::ParameterDB *params, int numRun);
+	virtual void open(FuzzyFW::Problem *problem, std::string outputPrefix, std::string signature) = 0;
 
-private:
-
-	RobustnessAnalyzer* robustnessAnalyzer;
-
-	void loadRobustnessAnalyzer(const FuzzyFW::ParameterDB *params);
+	virtual void analyze(FuzzyFW::Problem *problem, FuzzyFW::Solution * solution, FuzzyFW::Fitness* objective, const  FuzzyFW::ParameterDB *params, int numRun) = 0;
 };
 }

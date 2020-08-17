@@ -315,7 +315,8 @@ namespace IJSP {
 
 		input.close();
 
-		this->saveFile(inputFile);
+		//Use this to save the input file to a starndard format
+		//this->saveFile(inputFile);
 		this->scalarize();
 	}
 

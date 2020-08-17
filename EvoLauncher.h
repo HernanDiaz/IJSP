@@ -8,7 +8,7 @@
 
 #include "MemeticNeri.h"
 #include "RandomPopulation.h"
-#include "PostExecutionAnalyzer.h"
+#include "PostExecutionManager.h"
 
 
 namespace FuzzyFW {
@@ -84,7 +84,7 @@ namespace FuzzyFW {
 		*/
 		bool testMode;
 
-		PostExecution::PostExecutionAnalyzer analyzer;
+		PostExecution::PostExecutionManager analyzer;
 
 		/**
 		* Private statistics obtained from the algorithm

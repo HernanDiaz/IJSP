@@ -8,18 +8,18 @@
 #include "ScheduleIJSP.h"
 #include "EvaluationIJSP.h"
 #include "Random.h"
-#include "RobustnessException.h"
+#include "PostExecutionException.h"
 #include "ScenarioManager.h"
 #include "RobustnessFileWriter.h"
-#include "RobustnessAnalyzer.h"
+#include "PostExecutionAnalyzer.h"
 
 
 namespace PostExecution {
-#define ROBUSTNESS_NUM_ITERATIONS 1000
+#define ROBUSTNESS_NUM_ITERATIONS 10000
 #define ROBUSTNESS_INITIAL_SEED 1
 #define	ROBUSTNESS_ROW_PREFIX "R"
 	   
-class IJSPRobustnessAnalyzer: public RobustnessAnalyzer {
+class IJSPRobustnessAnalyzer: public PostExecutionAnalyzer {
 	//=====================================================================
 	//		FIELDS
 	//=====================================================================
@@ -48,9 +48,9 @@ public:
 
 	void analyze(FuzzyFW::Problem *problem, FuzzyFW::Solution * solution, FuzzyFW::Fitness* objective, const  FuzzyFW::ParameterDB *params, int numRun);
 	
-	IJSP::ScheduleIJSP * IJSPRobustnessAnalyzer::castSchedule(FuzzyFW::Solution* solution);
+	IJSP::ScheduleIJSP * castSchedule(FuzzyFW::Solution* solution);
 
-	IJSP::ProblemIJSP* IJSPRobustnessAnalyzer::castProblem(FuzzyFW::Problem* problem);
+	IJSP::ProblemIJSP* castProblem(FuzzyFW::Problem* problem);
 
 	FuzzyFW::FitnessInterval* castFitness(FuzzyFW::Fitness* objective);
 };

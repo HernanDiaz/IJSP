@@ -6,10 +6,6 @@
 */
 #include "IJSPRobustnessAnalyzerTardiness.h"
 
-#include <iostream>
-using namespace std;
-
-
 namespace PostExecution {
 
 
@@ -24,7 +20,7 @@ namespace PostExecution {
 		std::vector<unsigned int> mMkspan(problemIJSP->getNumberMachines());
 		std::vector<unsigned int> jMkspan(problemIJSP->getNumberJobs());
 		std::vector<int> taskOrder = schedule->getTaskOrder();
-		double avg = 0;
+		long double avg = 0;
 		this->writer.write(ROBUSTNESS_ROW_PREFIX + valueToString(numRun + 1));
 		for (int rep = 0; rep < ROBUSTNESS_NUM_ITERATIONS; rep++) {
 			//Reset data structures to 0
@@ -49,7 +45,7 @@ namespace PostExecution {
 			avg += tardiness;
 			this->writer.write(tardiness);
 		}
-		this->writer.write(double(avg) / ROBUSTNESS_NUM_ITERATIONS);
+		this->writer.write(long double(avg) / ROBUSTNESS_NUM_ITERATIONS);
 		//Print fitness of the solution
 
 		this->writer.write(fitness->getValue().a);

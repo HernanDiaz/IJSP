@@ -6,10 +6,6 @@
 */
 #include "IJSPRobustnessAnalyzerMakespan.h"
 
-#include <iostream>
-using namespace std;
-
-
 namespace PostExecution {
 
 

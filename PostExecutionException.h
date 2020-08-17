@@ -1,5 +1,5 @@
 /*
-* RobustnessException.h
+* PostExecutionException.h
 *
 *  Created on: June 18, 2020
 *      Author: Hernan Diaz
@@ -19,21 +19,21 @@ namespace PostExecution {
 	* @author hdiaz
 	*
 	*/
-	class RobustnessException : public std::exception {
+	class PostExecutionException : public std::exception {
 	protected:
 		std::string cause;
 
 	public:
-		explicit RobustnessException(const std::string & errorMessage) : std::exception() {
+		explicit PostExecutionException(const std::string & errorMessage) : std::exception() {
 			this->cause = "Fatal error (FSch): " + errorMessage;
 		}
 
-		explicit RobustnessException(const std::string & where,
+		explicit PostExecutionException(const std::string & where,
 			const std::string & errorMessage) : std::exception() {
 			this->cause = "Fatal error (FSch:" + where + "): " + errorMessage;
 		}
 
-		~RobustnessException() throw() {};
+		~PostExecutionException() throw() {};
 
 		//! Overload of method what to get the new message
 		const char* what() const throw() {

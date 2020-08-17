@@ -1,5 +1,5 @@
 /*
- * RobustnessClassRegister.h
+ * PostExecutionClassRegister.h
  *
  *  Created on: Jul 04, 2020
  *      Author: Hernan Diaz Rodriguez
@@ -27,6 +27,7 @@
 
 #include "IJSPRobustnessAnalyzerMakespan.h"
 #include "IJSPRobustnessAnalyzerTardiness.h"
+#include "MakespanMRAnalyzer.h"
 
 
 // ****************************************************************************
@@ -59,18 +60,18 @@ namespace PostExecution {
  * @author hdiaz
  *
  */
-struct RobustnessClassRegister {
+struct PostExecutionClassRegister {
 protected:
 	// Methods to create an instance of different operators.
 	//=========================================================================
 	template<typename T>
-	static RobustnessAnalyzer* createRobustnessInstance() { return new T; }
+	static PostExecutionAnalyzer* createRobustnessInstance() { return new T; }
 
 
 	// Mapping for each operator. These is the register of all classes and is
 	// used to create objects of those classes from a string.
 	//=========================================================================
-	static std::map<std::string, RobustnessAnalyzer*(*)()> SGSMap;
+	static std::map<std::string, PostExecutionAnalyzer*(*)()> SGSMap;
 
 
 
@@ -84,9 +85,17 @@ public:
 	* type is not registered
 	*/
 
-	static RobustnessAnalyzer * getRobustnessObject(std::string name) {
-		std::map<std::string, RobustnessAnalyzer*(*)()>::iterator iter;
-		iter = RobustnessClassRegister::SGSMap.find(toUpper(name));
+	static PostExecutionAnalyzer * getRobustnessObject(std::string name) {
+		std::map<std::string, PostExecutionAnalyzer*(*)()>::iterator iter;
+		iter = PostExecutionClassRegister::SGSMap.find(toUpper(name));
+		if (iter == SGSMap.end())
+			return NULL;
+		return iter->second();
+	}
+
+	static PostExecutionAnalyzer * getMakespanMRObject(std::string name) {
+		std::map<std::string, PostExecutionAnalyzer*(*)()>::iterator iter;
+		iter = PostExecutionClassRegister::SGSMap.find(toUpper(name)+".MAKESPANMR");
 		if (iter == SGSMap.end())
 			return NULL;
 		return iter->second();
@@ -107,6 +116,7 @@ public:
 
 		SGSMap[toUpper("ijsp.tardiness")] = &createRobustnessInstance<IJSPRobustnessAnalyzerTardiness>;
 		SGSMap[toUpper("ijsp.makespan")] = &createRobustnessInstance<IJSPRobustnessAnalyzerMakespan>;
+		SGSMap[toUpper("ijsp.makespan.makespanMR")] = &createRobustnessInstance<MakespanMRAnalyzer>;
 	}
 
 };
