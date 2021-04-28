@@ -23,13 +23,13 @@ namespace PostExecution {
 
 	void PostExecutionManager::analyze(FuzzyFW::Problem *problem, FuzzyFW::Solution * solution, FuzzyFW::Fitness* objective, const FuzzyFW::ParameterDB *params, int numRun) {
 		this->robustnessAnalyzer->analyze(problem, solution, objective, params, numRun);
-		this->IJSPTardinessAnalyzer->analyze(problem, solution, objective, params, numRun);
+		//this->IJSPTardinessAnalyzer->analyze(problem, solution, objective, params, numRun);
 	}
 		
 	void PostExecutionManager::open(FuzzyFW::Problem *problem, std::string outputPrefix, std::string signature, const FuzzyFW::ParameterDB *params) {
 	    this->loadAnalyzers(params);
 		this->robustnessAnalyzer->open(problem, outputPrefix, signature);
-		this->IJSPTardinessAnalyzer->open(problem, outputPrefix, signature);
+		//this->IJSPTardinessAnalyzer->open(problem, outputPrefix, signature);
 	}
 
 	void PostExecutionManager::loadAnalyzers(const FuzzyFW::ParameterDB *params) {

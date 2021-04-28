@@ -45,7 +45,7 @@ namespace PostExecution {
 			avg += tardiness;
 			this->writer.write(tardiness);
 		}
-		this->writer.write(long double(avg) / ROBUSTNESS_NUM_ITERATIONS);
+		this->writer.write(avg / ROBUSTNESS_NUM_ITERATIONS);
 		//Print fitness of the solution
 
 		this->writer.write(fitness->getValue().a);

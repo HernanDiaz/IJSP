@@ -106,7 +106,7 @@ void MakespanMRAnalyzer::analyzeObjectiveFunction(const IJSP::ProblemIJSP *probl
 		this->writer.endline();
 	}
 	//Makespan distribution output
-	calculateMakespanDistribution(schedule, tailsDistro, makespanDistro);
+	this->calculateMakespanDistribution(schedule, tailsDistro, makespanDistro);
 	this->writer.write("Makespan:");
 	this->writer.endline();
 	this->writer.write(fitness->getValue().a);
@@ -162,9 +162,8 @@ std::vector<int> MakespanMRAnalyzer::orderLastTasks(const IJSP::ScheduleIJSP * s
 	//ordering criterion >B >A
 	std::vector<int> orderedTasks(schedule->lastTaskMachine.size());
 	for (int i = 0; i < schedule->lastTaskMachine.size(); i++) {
-		bool inserted = false;
 		int token = schedule->lastTaskMachine[i];
-		for (int j = 0; j < i && !inserted; j++) {
+		for (int j = 0; j < i ; j++) {
 			FuzzyFW::Interval tailA = schedule->taskInfo[orderedTasks[j]].head + schedule->taskInfo[orderedTasks[j]].task->p;
 			FuzzyFW::Interval tailB = schedule->taskInfo[token].head + schedule->taskInfo[token].task->p;
 				if (tailB.b > tailA.b || (tailB.b == tailA.b) && (tailB.a > tailA.a)){
@@ -186,14 +185,14 @@ std::vector<int> MakespanMRAnalyzer::orderLastTasks(const IJSP::ScheduleIJSP * s
 		int jp = schedule->taskInfo[taskId].task->jp;
 		//there are no predecessors
 		if (mp < 0 && jp < 0) {
-			tailsDistro[taskId] = new vector<double>(tail.b-tail.a + 1, 1/(tail.b-tail.a +1));
+			tailsDistro[taskId] = new std::vector<double>(int (tail.b-tail.a + 1), 1/(tail.b-tail.a +1));
 			return;
 		}
 
 		std::vector<double> prevtailDist = getPreviousTailDistribution(schedule, taskId, tailsDistro);
-		std::vector<double> currentTailDistInit(schedule->taskInfo[taskId].task->p.b - schedule->taskInfo[taskId].task->p.a +1, 1 / (schedule->taskInfo[taskId].task->p.b - schedule->taskInfo[taskId].task->p.a + 1));
+		std::vector<double> currentTailDistInit(int (schedule->taskInfo[taskId].task->p.b - schedule->taskInfo[taskId].task->p.a +1), 1 / (schedule->taskInfo[taskId].task->p.b - schedule->taskInfo[taskId].task->p.a + 1));
 		
-		tailsDistro[taskId] = new vector<double>(tail.b - tail.a + 1, 0);
+		tailsDistro[taskId] = new std::vector<double>(int (tail.b - tail.a + 1), 0);
 		for (int i = 0; i < prevtailDist.size(); i++) {
 			for (int j = 0; j < currentTailDistInit.size(); j++) {
 				(*tailsDistro[taskId])[i+j] += prevtailDist[i] * currentTailDistInit[j];
@@ -212,7 +211,7 @@ std::vector<int> MakespanMRAnalyzer::orderLastTasks(const IJSP::ScheduleIJSP * s
 		//There is intersection
 		double maxA = tailB.a > tailA.a ? tailB.a : tailA.a;
 		if ((tailB.b > tailA.b) || ((tailB.b == tailA.b) && (tailB.a >= tailA.a))) {
-			std::vector<double> prevtailDist(tailB.b - maxA + 1, 0);
+			std::vector<double> prevtailDist(int (tailB.b - maxA + 1), 0);
 			for (int i = 0; i <= tailB.b - tailB.a; i++) {
 				for (int j = 0; j <= tailA.b - tailA.a; j++) {
 					int val = max(tailB.a + i, tailA.a + j);
@@ -221,7 +220,7 @@ std::vector<int> MakespanMRAnalyzer::orderLastTasks(const IJSP::ScheduleIJSP * s
 			}
 			return prevtailDist;
 		}
-		std::vector<double> prevtailDist(tailA.b - maxA + 1, 0);
+		std::vector<double> prevtailDist(int (tailA.b - maxA + 1), 0);
 		for (int i = 0; i <= tailA.b - tailA.a; i++) {
 			for (int j = 0; j <= tailB.b - tailB.a; j++) {
 				int val = max(tailA.a + i, tailB.a + j);
