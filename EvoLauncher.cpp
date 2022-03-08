@@ -227,6 +227,10 @@ void EvoLauncher::setupAlgorithm(const std::string name) {
 		this->algorithm = new MemeticNeri(this->setup);
 	else if (toUpper(name).compare("GA-TOOL-RANDOMPOPULATION") == 0)
 		this->algorithm = new RandomPopulation(this->setup);
+	else if (toUpper(name).compare("ABC") == 0)
+		this->algorithm = new ArtificialBeeColony(this->setup);
+	else if (toUpper(name).compare("ABCT") == 0)
+		this->algorithm = new ArtificialBeeColonyThread(this->setup);
 	else {
 		std::string err = "Solving algorithm \'" + name + "\' unknown";
 		throw FuzzyFWException("Loading", err);

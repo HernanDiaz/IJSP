@@ -71,7 +71,10 @@ protected:
 	*/
 	char phenotypeUpdated;
 
-
+	/**
+	* Number of trials performed on this individual
+	*/
+	unsigned int num_trials;
 
 	//=========================================================================
 	//		CONSTRUCTORS / INITIALIZERS
@@ -143,7 +146,21 @@ public:
 	char isEvaluated() const {
 		return this->evaluated;
 	}
-	
+
+	/**
+	* Gets the number of trials performed on this individual
+	*/
+	unsigned int getNumTrials() const {
+		return this->num_trials;
+	}
+
+	/**
+	* Sets the number of trials performed on this individual
+	*/
+	 void setNumTrials(unsigned int numTrials) {
+		 this->num_trials = numTrials;
+	}
+
 
 	/**
 	 * Print the genotype into a string. Each gene is separated by a blank

@@ -84,6 +84,10 @@ public:
 		return setup;
 	}
 
+	virtual Crossover* clone() const {
+		return new Crossover_JOX();
+	}
+
 protected:
 	/**
 	 * Crossover operator depending on the type of individual we are
@@ -159,7 +163,7 @@ public:
 	*/
 	virtual ~Crossover_GOXBierwirth() { }; 	// Nothing to destroy here
 
-
+	
 
 	//=========================================================================
 	//		METHODS
@@ -188,6 +192,10 @@ public:
 		std::vector<std::string> setup;
 		setup.push_back("GOX-Bierwirth");
 		return setup;
+	}
+
+	virtual Crossover* clone() const {
+		return new Crossover_GOXBierwirth();
 	}
 
 protected:
@@ -297,6 +305,10 @@ public:
 		return setup;
 	}
 
+	virtual Crossover* clone() const {
+		return new Crossover_GPMXBierwirth();
+	}
+
 protected:
 	/**
 	* Crossover operator depending on the type of individual we are
@@ -397,6 +409,10 @@ public:
 		std::vector<std::string> setup;
 		setup.push_back("PPX-Bierwirth");
 		return setup;
+	}
+
+	virtual Crossover* clone() const {
+		return new Crossover_PPXBierwirth();
 	}
 
 protected:

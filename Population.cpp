@@ -42,9 +42,11 @@ Population::~Population() {
 
 
 //=====  Clear Method  ========================================================
-void Population::clear() {
-	for(size_t i=0; i < individual.size(); i++)
+void Population::clear(bool del) {
+	if (del) {
+	for (size_t i = 0; i < individual.size(); i++)
 		delete this->individual[i];
+	}	
 	this->individual.clear();
 	this->order.clear();
 	this->sorted = true;
@@ -105,6 +107,17 @@ Individual * Population::getBest(const SharedVars *svars,
 	}
 	this->sort(svars->rng);
 	return this->individual[order[k]];
+}
+
+
+//=====  Replace Best  ================================================
+Individual * Population::replaceBest(const SharedVars *svars, const unsigned int index,
+	Individual *newInd) {
+	if (index < 0 || index >(int)this->individual.size())
+		throw new FuzzyFWException("Population",
+			"Access to a non-existing individual");
+	this->sort(svars->rng);
+	return (this->replaceIndividual(order[index], newInd));
 }
 
 

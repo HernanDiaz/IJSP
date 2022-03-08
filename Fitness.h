@@ -113,8 +113,7 @@ public:
 	virtual bool isBetterThan(const Fitness * f) const = 0;
 	virtual bool isEqualTo(const Fitness * f) const = 0;
 	virtual bool isWorseThan(const Fitness * f) const = 0;
-	virtual bool isWorseOrEqualTo(const Fitness * f)
-		const = 0;
+	virtual bool isWorseOrEqualTo(const Fitness * f) const = 0;
 };
 
 

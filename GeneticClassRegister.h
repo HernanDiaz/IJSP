@@ -326,13 +326,24 @@ public:
 		// -----  CREATION OPERATORS  -----------------------------------------
     	CreationMap[toUpper("ijsp-random")] = &createCreationInstance<IJSP::CreationRandomSchedule>;
 		CreationMap[toUpper("ijsp.random")] = &createCreationInstance<IJSP::CreationRandomSchedule>;
-
+		CreationMap[toUpper("ijsp.SRT.makespan")] = &createCreationInstance<IJSP::CreationSRTIntervalMkSchedule>;
+		CreationMap[toUpper("ijsp.SNTF.makespan")] = &createCreationInstance<IJSP::CreationSNTFIntervalMkSchedule>;
+		
+		CreationMap[toUpper("ijsp.SPJF.makespan")] = &createCreationInstance<IJSP::CreationSPJFIntervalMkSchedule>;		   //Shortest processed time job first
+		CreationMap[toUpper("ijsp.LPJF.makespan")] = &createCreationInstance<IJSP::CreationSPJFInverseIntervalMkSchedule>; //Longest processed time job first
+		CreationMap[toUpper("ijsp.SRTF.makespan")] = &createCreationInstance<IJSP::CreationLRTFInverseIntervalMkSchedule>; //Shortest remaining time first
+		CreationMap[toUpper("ijsp.LRTF.makespan")] = &createCreationInstance<IJSP::CreationLRTFIntervalMkSchedule>;        //Longest remaining time first
+		CreationMap[toUpper("ijsp.STPT.makespan")] = &createCreationInstance<IJSP::CreationSCTFIntervalMkSchedule>;        //Shortest total processing time
+		CreationMap[toUpper("ijsp.LTPT.makespan")] = &createCreationInstance<IJSP::CreationLCTFIntervalMkSchedule>;		   //Longest total processing time
+		CreationMap[toUpper("ijsp.Manager.makespan")] = &createCreationInstance<IJSP::CreationManagerIntervalMkSchedule>;
+		
 		// -----  CROSSOVER OPERATORS  ----------------------------------------
 		CrossoverMap[toUpper("ijsp.jox")] = &createCrossoverInstance<IJSP::Crossover_JOX>;
 		CrossoverMap[toUpper("ijsp.gox")] = &createCrossoverInstance<IJSP::Crossover_GOXBierwirth>;
 		CrossoverMap[toUpper("ijsp.biertwirth")] = &createCrossoverInstance<IJSP::Crossover_GOXBierwirth>;
 		CrossoverMap[toUpper("ijsp.gpmx")] = &createCrossoverInstance<IJSP::Crossover_GPMXBierwirth>;
 		CrossoverMap[toUpper("ijsp.ppx")] = &createCrossoverInstance<IJSP::Crossover_PPXBierwirth>;
+
 
 		// -----  MUTATION OPERATORS  -----------------------------------------
 

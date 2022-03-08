@@ -37,7 +37,6 @@
 #include "NeighbourhoodIJSP_Cmax.h"
 #include "NeighbourhoodFJSP_AI.h"
 #include "NeighbourhoodFJSP_ESD.h"
-#include "NeighbourhoodIJSP_ESD.h"
 #include "LocalSearchAmicoFJSP.h"
 
 
@@ -170,10 +169,8 @@ public:
 		// -----  NEIGHBOURHOOD STRUCTURES  IJSP---------------------------------------
 		NeighbourhoodMap[toUpper("ijsp.makespan.n1")] =
 			&createNeighbourhoodInstance<IJSP::NB_ParallelN1_MakespanIJSP>;
-		NeighbourhoodMap[toUpper("ijsp.esdavg.n1")] =
-			&createNeighbourhoodInstance<IJSP::NB_ParallelN1_ESDavgIJSP>;
-		NeighbourhoodMap[toUpper("ijsp.esdmin.n1")] =
-			&createNeighbourhoodInstance<IJSP::NB_ParallelN1_ESDminIJSP>;
+		NeighbourhoodMap[toUpper("ijsp.makespan.n2")] =
+			&createNeighbourhoodInstance<IJSP::NB_ParallelN2_MakespanIJSP>;
 	}
 
 };

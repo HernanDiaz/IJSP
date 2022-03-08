@@ -93,6 +93,11 @@ public:
 	 * the operator
 	 */
 	virtual std::vector<std::string> getName() const=0;
+
+	/**
+ * Clone operator for the case of inheritance
+ */
+	virtual Crossover* clone() const = 0;
 };
 
 
@@ -161,6 +166,13 @@ public:
 		name.push_back("Order-Based");
 		return name;
 	}
+
+	/**
+* Clone operator for the case of inheritance
+*/
+	virtual Crossover* clone() const {
+		return new Crossover_OBC();
+	}
 };
 
 
@@ -227,6 +239,10 @@ public:
 		std::vector<std::string> name;
 		name.push_back("Cycle-Based");
 		return name;
+	}
+
+	virtual Crossover* clone() const {
+		return new Crossover_CBC();
 	}
 };
 
@@ -295,6 +311,10 @@ public:
 		std::vector<std::string> name;
 		name.push_back("PMX");
 		return name;
+	}
+
+	virtual Crossover* clone() const {
+		return new Crossover_PMX();
 	}
 };
 

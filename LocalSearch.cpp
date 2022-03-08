@@ -139,7 +139,7 @@ FullSolution LS_HillClimbing::apply(const Solution *solution,
 					realValue = this->neighbourhood->evaluateNeighbour(index, svars, true);
 
 					this->evaluations++;
-					if (realValue->isBetterThan(current.second)) {
+					if (realValue!= NULL && realValue->isBetterThan(current.second)) {
 						improves = true;
 						this->neighbourhood->acceptNeighbour(index, svars);
 						current = this->neighbourhood->getCurrentSolution();
@@ -213,7 +213,7 @@ FullSolution LS_GradientDescent::apply(const Solution *solution,
 				else {
 					realValue = this->neighbourhood->evaluateNeighbour(index, svars, true);
 					this->evaluations++;
-					if (realValue->isBetterThan(best)) {
+					if (realValue!= NULL && realValue->isBetterThan(best)) {
 						best = realValue;
 						bestNeighbor = index;
 					}

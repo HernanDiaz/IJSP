@@ -20,12 +20,12 @@ namespace FuzzyFW {
 //-----  Default constructor  -------------------------------------------------
 Individual::Individual(const int idx)
 	: evaluated(false), phenotypeUpdated(false),
-	phenotype(NULL), fitness(NULL), id(idx) { }
+	phenotype(NULL), fitness(NULL), id(idx), num_trials(0) { }
 
 
 //-----  Copy constructor  ----------------------------------------------------
 Individual::Individual(const Individual &source)
-: evaluated(source.evaluated), phenotypeUpdated(source.phenotypeUpdated),
+: evaluated(source.evaluated), phenotypeUpdated(source.phenotypeUpdated), num_trials(source.num_trials),
 id(source.id) {
 	if (source.phenotype != NULL)
 		this->phenotype = source.phenotype->clone();
@@ -41,10 +41,14 @@ id(source.id) {
 
 //-----  Destructor  ----------------------------------------------------------
 Individual::~Individual() {
-	if (this->fitness != NULL)
-		delete this->fitness;
-	if (this->phenotype != NULL)
+	if (this->phenotype != NULL) {
 		delete this->phenotype;
+	}
+	if (this->fitness != NULL) {
+		delete this->fitness;
+	}
+	
+		
 }
 
 
@@ -99,6 +103,7 @@ IndividualArrayInt::IndividualArrayInt(const std::vector<int> &genes)
 IndividualArrayInt::IndividualArrayInt(const IndividualArrayInt &source)
 	: Individual(source) {
 	this->genotype = source.genotype;
+	this->num_trials = source.num_trials;
 }
 
 

@@ -79,7 +79,7 @@ public:
 	 * Clears the objects of the population. This will delete forever all
 	 * the individuals in the population
 	 */
-	void clear();
+	void clear(bool del = true);
 
 
 
@@ -143,6 +143,10 @@ public:
 	 */
 	Individual * getBest(const SharedVars * svars, const unsigned int k=0);
 
+
+
+	//=====  Replace Best  ================================================
+	Individual * replaceBest(const SharedVars *svars, const unsigned int index, Individual *newInd);
 
 	/**
 	 * Gets the position where the Kth best individual is placed

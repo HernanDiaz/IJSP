@@ -7,6 +7,8 @@
 #pragma once
 
 #include "MemeticNeri.h"
+#include "ArtificialBeeColony.h"
+#include "ArtificialBeeColonyThread.h"
 #include "RandomPopulation.h"
 #include "PostExecutionManager.h"
 
