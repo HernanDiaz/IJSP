@@ -9,6 +9,8 @@
 #include "MemeticNeri.h"
 #include "ArtificialBeeColony.h"
 #include "ArtificialBeeColonyThread.h"
+#include "ArtificialBeeColonyPSO.h"
+#include "ArtificialBeeColonyCell.h"
 #include "RandomPopulation.h"
 #include "PostExecutionManager.h"
 

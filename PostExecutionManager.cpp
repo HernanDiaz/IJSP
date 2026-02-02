@@ -45,16 +45,17 @@ namespace PostExecution {
 			errorMsg += " recognised: \'" + sgsType + "\'";
 			throw new PostExecutionException("Robustness", errorMsg);
 		}
+		/*
 		this->IJSPTardinessAnalyzer = PostExecutionClassRegister::getMakespanMRObject(sgsType);
 		if (this->IJSPTardinessAnalyzer == NULL) {
 			std::string errorMsg = "The introduced objective function is not";
 			errorMsg += " recognised: \'" + sgsType + "\'";
 			throw new PostExecutionException("Robustness", errorMsg);
-		}
+		}*/
 	}
 
 	void PostExecutionManager::close() {
 		this->robustnessAnalyzer->close();
-		this->IJSPTardinessAnalyzer->close();
+		//this->IJSPTardinessAnalyzer->close();
 	}
 }

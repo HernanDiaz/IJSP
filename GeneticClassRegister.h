@@ -251,7 +251,14 @@ public:
 		SelectionMap[toUpper("sus")] = &createSelectionInstance<SelectionSUS>;
 		SelectionMap[toUpper("roulette")] = &createSelectionInstance<SelectionRoulette>;
 		SelectionMap[toUpper("tournament")] = &createSelectionInstance<SelectionTournament>;
-
+		SelectionMap[toUpper("elite")] = &createSelectionInstance <SelectionElite>;
+		SelectionMap[toUpper("L5")] = &createSelectionInstance <SelectionCellL5>;
+		SelectionMap[toUpper("L9")] = &createSelectionInstance <SelectionCellL9>;
+		SelectionMap[toUpper("C9")] = &createSelectionInstance <SelectionCellC9>;
+		SelectionMap[toUpper("C13")] = &createSelectionInstance <SelectionCellC13>;
+		SelectionMap[toUpper("R5")] = &createSelectionInstance <SelectionCellR5>;
+		SelectionMap[toUpper("R13")] = &createSelectionInstance <SelectionCellR13>;
+		
 		// -----  REPLACEMENT OPERATORS  --------------------------------------
 		ReplacementMap[toUpper("generational")] = &createReplacementInstance<ReplacementElitist>;
 		ReplacementMap[toUpper("simple")] = &createReplacementInstance<ReplacementElitist>;

@@ -353,4 +353,412 @@ Individual * SelectionRandom::select(Population *population,
 }
 
 
+//=============================================================================
+//
+//	Class EliteSelection
+//
+//=============================================================================
+//=============================================================================
+//		METHODS
+//=============================================================================
+//-----  select  --------------------------------------------------------------
+Individual * SelectionElite::select(Population *population,
+	const SharedVars *svars) const {
+	int elite_size = svars->parameters->getInteger(ELITE_SIZE);
+	int randomValue = svars->rng->getInteger(0, elite_size);
+	return population->getIndividual(randomValue);
+}
+
+
+
+//-----  apply  --------------------------------------------------------------
+Population * SelectionElite::apply(Population *population, const unsigned int n,
+	const SharedVars *svars) const {
+	Population * newPopulation = new Population();
+	Individual * selected;
+	
+	while (newPopulation->size() < n) {
+		for (unsigned int i = 0;  newPopulation->size() < n; i++) {
+			selected = select(population, svars);
+			newPopulation->addIndividual(selected->clone());
+		}
+	}
+
+	return newPopulation;
+}
+
+//=============================================================================
+//
+//	Class SelectionCellR5
+//
+//=============================================================================
+//=============================================================================
+//		METHODS
+//=============================================================================
+//-----  select  --------------------------------------------------------------
+Individual * SelectionCellR5::select(Population *population,
+	const SharedVars *svars) const {
+	int elite_size = svars->parameters->getInteger(ELITE_SIZE);
+	int randomValue = svars->rng->getInteger(0, elite_size);
+	return population->getIndividual(randomValue);
+}
+
+//-----  apply  --------------------------------------------------------------
+Population * SelectionCellR5::apply(Population *population, const unsigned int n,
+	const SharedVars *svars) const {
+	std::vector<int> coords;
+	coords.push_back(n);
+	Population* grid = new Population();
+	for (int i = 0; i < 5; i++) {
+		int index = svars->rng->getInteger(0, population->size()-1);
+		while  (std::find(coords.begin(), coords.end(), index) != coords.end()) {
+			index = svars->rng->getInteger(0, population->size()-1);
+		}
+		coords.push_back(index);
+		grid->addIndividual(population->getIndividual(index)->clone());
+	}
+	return grid;
+}
+
+
+
+//=============================================================================
+//
+//	Class SelectionCellR13
+//
+//=============================================================================
+//=============================================================================
+//		METHODS
+//=============================================================================
+//-----  select  --------------------------------------------------------------
+Individual * SelectionCellR13::select(Population *population,
+	const SharedVars *svars) const {
+	int elite_size = svars->parameters->getInteger(ELITE_SIZE);
+	int randomValue = svars->rng->getInteger(0, elite_size);
+	return population->getIndividual(randomValue);
+}
+
+//-----  apply  --------------------------------------------------------------
+Population * SelectionCellR13::apply(Population *population, const unsigned int n,
+	const SharedVars *svars) const {
+	std::vector<int> coords;
+	coords.push_back(n);
+	Population* grid = new Population();
+	for (int i = 0; i < 13; i++) {
+		int index = svars->rng->getInteger(0, population->size() - 1);
+		while (std::find(coords.begin(), coords.end(), index) != coords.end()) {
+			index = svars->rng->getInteger(0, population->size() - 1);
+		}
+		coords.push_back(index);
+		grid->addIndividual(population->getIndividual(index)->clone());
+	}
+	return grid;
+}
+
+//=============================================================================
+//
+//	Class SelectionCellL5
+//
+//=============================================================================
+//=============================================================================
+//		METHODS
+//=============================================================================
+//-----  select  --------------------------------------------------------------
+Individual * SelectionCellL5::select(Population *population,
+	const SharedVars *svars) const {
+	int elite_size = svars->parameters->getInteger(ELITE_SIZE);
+	int randomValue = svars->rng->getInteger(0, elite_size);
+	return population->getIndividual(randomValue);
+}
+
+std::vector<int> SelectionCellL5::getCellsIndex(const unsigned int size, const unsigned int n) const {
+	std::vector<int> coords(4);
+	int square = sqrt(size);
+	//coords[0] = n;
+	//E
+	/*
+	if (n > 0) {
+		coords[0] = n - 1;
+	}
+	else coords[0] = size - 1;
+	//W
+	if (n < size - 1) {
+		coords[1] = n + 1;
+	}
+	else coords[1] = 0;
+	*/
+	//E
+	if (n == 0 || n % square == 0) {
+		coords[0] = n + square - 1;
+	}
+	else coords[0] = n - 1;
+
+	//W
+	if ((n + 1) % square == 0 || n == size - 1) {
+		coords[1] = n - square + 1;
+	}
+	else coords[1] = n + 1;
+	
+	//N
+	
+	if (n < square) {
+		coords[2] = size - square + n;
+	}
+	else coords[2] = n - square;
+	//S
+	if (n < size - square) {
+		coords[3] = n + square;
+	}
+	else coords[3] = square - size + n;
+	return coords;
+}
+
+//-----  apply  --------------------------------------------------------------
+Population * SelectionCellL5::apply(Population *population, const unsigned int n,
+	const SharedVars *svars) const {
+	Population* grid = new Population();
+	std::vector<int> coords = getCellsIndex(population->size(), n);
+	for (int i = 0; i < coords.size(); i++) {
+		if (coords[i] >= 0 && coords[i] < population->size()) {
+			grid->addIndividual(population->getIndividual(coords[i])->clone());
+		}
+	}
+	return grid;
+}
+
+//=============================================================================
+//
+//	Class SelectionCellL9
+//
+//=============================================================================
+//=============================================================================
+//		METHODS
+//=============================================================================
+//-----  select  --------------------------------------------------------------
+Individual * SelectionCellL9::select(Population *population,
+	const SharedVars *svars) const {
+	int elite_size = svars->parameters->getInteger(ELITE_SIZE);
+	int randomValue = svars->rng->getInteger(0, elite_size);
+	return population->getIndividual(randomValue);
+}
+
+std::vector<int> SelectionCellL9::getCellsIndex(const unsigned int size, const unsigned int n) const {
+	std::vector<int> coords = SelectionCellL5::getCellsIndex(size, n);
+	int square = sqrt(size);
+	/*
+	//East +1
+	if (n > 1) {
+		coords.push_back(n - 2);
+	}
+	else coords.push_back(size - 2 - n);
+	//West +1 
+	if (n < size - 2) {
+		coords.push_back(n + 2);
+	}
+	else coords.push_back(n - size + 2);
+	*/
+
+	//East +1
+	 //E
+	if (n == 0 || n == 1 || n % square == 0 || (n - 1) % square == 0) {
+		coords.push_back(n + square - 2);
+	}
+	else coords.push_back(n - 2);
+
+	//West +1 
+	if ((n + 1) % square == 0 || n == size - 1 || n == size - 2 || (n + 2) % square == 0) {
+		coords.push_back(n - square + 2);
+	}
+	else coords.push_back(n + 2);
+	   	 
+	//North +1
+	
+    if (n < 2 * square) {
+		coords.push_back(size - square - square + n);
+	}
+	else coords.push_back(n - square - square);
+	//South +1 
+	if (n < size - square - square) {
+		coords.push_back(n + square + square);
+	}
+	else coords.push_back(square + square - size + n);
+	return coords;
+}
+
+//-----  apply  --------------------------------------------------------------
+Population * SelectionCellL9::apply(Population *population, const unsigned int n,
+	const SharedVars *svars) const {
+	Population* grid = new Population();
+	std::vector<int> coords = getCellsIndex(population->size(), n);
+	for (int i = 0; i < coords.size(); i++) {
+		if (coords[i] >= 0 && coords[i] < population->size()) {
+			grid->addIndividual(population->getIndividual(coords[i])->clone());
+		}
+	}
+	return grid;
+}
+
+
+
+//=============================================================================
+//
+//	Class Selection9Cell
+//
+//=============================================================================
+//=============================================================================
+//		METHODS
+//=============================================================================
+//-----  select  --------------------------------------------------------------
+Individual * SelectionCellC9::select(Population *population,
+	const SharedVars *svars) const {
+	int elite_size = svars->parameters->getInteger(ELITE_SIZE);
+	int randomValue = svars->rng->getInteger(0, elite_size);
+	return population->getIndividual(randomValue);
+}
+
+std::vector<int> SelectionCellC9::getCellsIndex(const unsigned int size, const unsigned int n) const {
+	std::vector<int> coords = SelectionCellL5::getCellsIndex(size, n);
+	int square = sqrt(size);
+
+	//NorthW
+	if (n < square - 1) {
+		coords.push_back(size - square + n + 1);
+	}
+	else if (n == square - 1) {
+		coords.push_back(size - square);
+	}
+	else if ((n + 1) % square == 0 || n == size - 1) {
+		coords.push_back(n - square - square + 1);
+	}
+	else coords.push_back(n - square + 1);
+	//SouthW
+
+	if (n == size - 1) {
+		coords.push_back(0);
+	}
+	else if (n > size - square - 1) {
+		coords.push_back(n - size + square + 1);
+	}
+	else if ((n + 1) % square == 0) {
+		coords.push_back(n + 1);
+	}
+	else coords.push_back(n + square + 1);
+
+	//NorthE
+
+	if (n == 0) {
+		coords.push_back(size - 1);
+	}
+	else if (n < square) {
+		coords.push_back(size - (square - n) - 1);
+	}
+	else if (n%square == 0) {
+		coords.push_back(n - 1);
+	}
+	else coords.push_back(n - square - 1);
+
+	//SoutheE
+	if (n == 0 || n % square == 0) {
+		coords.push_back(n + square + square - 1);
+	}
+	else if (n > size - square) {
+		coords.push_back(n + square - size - 1);
+	}
+	else coords.push_back(n + square - 1);
+
+	/*
+	//NorthW
+	if (n < square - 1) {
+		coords.push_back(size - square + n + 1);
+	}
+	else if (n == square - 1) {
+		coords.push_back(0);
+	}
+	else {
+		coords.push_back(n - square + 1);
+	}
+	//SouthW
+	if (n < size - square - 1) {
+		coords.push_back(n + square + 1);
+	}
+	else if (n < size - square) {
+		coords.push_back(0);
+	}
+	else {
+		coords.push_back(square - size + n + 1);
+	}
+	//NorthE
+	if (n <= square) {
+		coords.push_back(size - (square - n) - 1);
+	}
+	else coords.push_back(n - square - 1);
+	//SoutheE
+	if (n <= size - square) {
+		coords.push_back(n + square - 1);
+	}
+	else coords.push_back(square - size + n - 1);
+	*/
+	return coords;
+}
+
+
+//-----  apply  --------------------------------------------------------------
+Population * SelectionCellC9::apply(Population *population, const unsigned int n,
+	const SharedVars *svars) const {
+	Population* grid = new Population();
+	std::vector<int> coords = getCellsIndex(population->size(), n);
+	for (int i = 0; i < coords.size(); i++) {
+		if (coords[i] >= 0 && coords[i] < population->size()) {
+			grid->addIndividual(population->getIndividual(coords[i])->clone());
+		}
+	}
+	return grid;
+}
+
+//=============================================================================
+//
+//	Class Selection13Cell
+//
+//=============================================================================
+//=============================================================================
+//		METHODS
+//=============================================================================
+//-----  select  --------------------------------------------------------------
+Individual * SelectionCellC13::select(Population *population,
+	const SharedVars *svars) const {
+	int elite_size = svars->parameters->getInteger(ELITE_SIZE);
+	int randomValue = svars->rng->getInteger(0, elite_size);
+	return population->getIndividual(randomValue);
+}
+
+std::vector<int> SelectionCellC13::getCellsIndex(const unsigned int size, const unsigned int n) const {
+	std::vector<int> coord1 = SelectionCellC9::getCellsIndex(size, n);
+	SelectionCellL9 selL9;
+	std::vector<int> coord2 = selL9.getCellsIndex(size, n);
+	unsigned int coord1Size = coord1.size();
+	for (int i = 0; i < coord2.size(); i++) {
+		bool repeated = false;
+		for (int j = 0; j < coord1Size; j++) {
+			if (coord2[i] == coord1[j]) repeated = true;
+		}
+		if (!repeated) coord1.push_back(coord2[i]);
+	}
+	std::cout << coord1.size() << std::endl;
+	return coord1;
+}
+
+
+//-----  apply  --------------------------------------------------------------
+Population * SelectionCellC13::apply(Population *population, const unsigned int n,
+	const SharedVars *svars) const {
+	Population* grid = new Population();
+	std::vector<int> coords = getCellsIndex(population->size(), n);
+	for (int i = 0; i < coords.size(); i++) {
+		if (coords[i] >= 0 && coords[i] < population->size()) {
+			grid->addIndividual(population->getIndividual(coords[i])->clone());
+		}
+	}
+	return grid;
+}
+
 }

@@ -356,6 +356,7 @@ TFN minimum(const TFN & x, const TFN & y, const TFN::Maximum mt) {
 //====  Function expectedValue  ===============================================
 double TFN::expectedValue() const {
 	return (this->a + 2 * this->b + this->c) / 4.0;
+
 }
 
 

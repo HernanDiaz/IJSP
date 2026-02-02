@@ -13,6 +13,6 @@ namespace IJSP {
  * Initialize all static variables in SchedulingClassRegister
  */
 	std::map<std::string, SGS_IJSP*(*)()>	IJSPClassRegister::SGSMap;
-
+	
 
 }

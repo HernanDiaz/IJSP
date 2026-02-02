@@ -1,7 +1,7 @@
 /*
- * PostExecutionClassRegister.h
+ * SimulatedCoolingClassRegister.h
  *
- *  Created on: Jul 04, 2020
+ *  Created on: May 06, 2022
  *      Author: Hernan Diaz Rodriguez
  */
 #pragma once
@@ -25,10 +25,10 @@
  * problem components
 =============================================================================*/
 
-#include "IJSPRobustnessAnalyzerMakespan.h"
-#include "FJSPRobustnessAnalyzerMakespan.h"
-#include "IJSPRobustnessAnalyzerTardiness.h"
-#include "MakespanMRAnalyzer.h"
+
+#include "SGS_IJSP_Insertion.h"
+#include "SGS_IJSP_Append.h"
+#include "NonMonotonicAdaptativeCooling.h"
 
 
 // ****************************************************************************
@@ -43,7 +43,7 @@
 
 
 
-namespace PostExecution {
+namespace FuzzyFW {
 
 /**
  * This static class allows to create the different kinds of problem elements.
@@ -61,43 +61,32 @@ namespace PostExecution {
  * @author hdiaz
  *
  */
-struct PostExecutionClassRegister {
+struct NonMonSimulatedCoolingClassRegister {
 protected:
-	// Methods to create an instance of different operators.
+	// Methods to create an instance 
 	//=========================================================================
 	template<typename T>
-	static PostExecutionAnalyzer* createRobustnessInstance() { return new T; }
+	static Non_Monotonic_Adaptative_Cooling * createNMACInstance() { return new T; }
 
-
-	// Mapping for each operator. These is the register of all classes and is
+	// Mapping. These is the register of all classes and is
 	// used to create objects of those classes from a string.
 	//=========================================================================
-	static std::map<std::string, PostExecutionAnalyzer*(*)()> SGSMap;
-
-
+	static std::map<std::string, Non_Monotonic_Adaptative_Cooling*(*)()> NMACMap;
 
 public:
 	/**
-	* Method to create a SGS from the name given in the
+	* Method to create a MAC from the name given in the
 	* configuration file
 	*
-	* @param name Name of the SGS to use
-	* @return An object of the specified type of SGS_FJSP. Null if the
+	* @param name Name of the MAC to use
+	* @return An object of the specified type of MAC. Null if the
 	* type is not registered
 	*/
-
-	static PostExecutionAnalyzer * getRobustnessObject(std::string name) {
-		std::map<std::string, PostExecutionAnalyzer*(*)()>::iterator iter;
-		iter = PostExecutionClassRegister::SGSMap.find(toUpper(name));
-		if (iter == SGSMap.end())
-			return NULL;
-		return iter->second();
-	}
-
-	static PostExecutionAnalyzer * getMakespanMRObject(std::string name) {
-		std::map<std::string, PostExecutionAnalyzer*(*)()>::iterator iter;
-		iter = PostExecutionClassRegister::SGSMap.find(toUpper(name)+".MAKESPANMR");
-		if (iter == SGSMap.end())
+	   
+	static Non_Monotonic_Adaptative_Cooling * getNMACObject(std::string name) {
+		std::map<std::string, Non_Monotonic_Adaptative_Cooling*(*)()>::iterator iter;
+		iter = NonMonSimulatedCoolingClassRegister::NMACMap.find(toUpper(name));
+		if (iter == NMACMap.end())
 			return NULL;
 		return iter->second();
 	}
@@ -114,13 +103,12 @@ public:
 	 * in the configuration files
 	 */
 	static void registerClasses() {
-
-		SGSMap[toUpper("ijsp.tardiness")] = &createRobustnessInstance<IJSPRobustnessAnalyzerTardiness>;
-		SGSMap[toUpper("ijsp.makespan")] = &createRobustnessInstance<IJSPRobustnessAnalyzerMakespan>;
-		SGSMap[toUpper("ijsp.makespan.makespanMR")] = &createRobustnessInstance<MakespanMRAnalyzer>;
-		SGSMap[toUpper("makespan")] = &createRobustnessInstance<FJSPRobustnessAnalyzerMakespan>;
+		NMACMap[toUpper("Adaptive_Non_Mon_Cooling")] = &createNMACInstance<Adaptive_Non_Mon_Cooling>; 
+		NMACMap[toUpper("Adaptive_Quadratic_Non_Mon_Cooling")] = &createNMACInstance<Adaptive_Quadratic_Non_Mon_Cooling>;
+		NMACMap[toUpper("Disabled_Non_Mon_Cooling")] = &createNMACInstance<Disabled_Non_Mon_Cooling>;
 	}
 
 };
 
 }
+

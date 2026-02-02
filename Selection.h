@@ -9,12 +9,12 @@
 
 #include "Population.h"
 
-
 namespace FuzzyFW {
 
 // Selection parameters defined in this header file
 #define SELECTION_SIZE "selection.tournament-size"
 #define SELECTION_ROULETTE "selection.roulette-interpolate"
+#define	ELITE_SIZE	"elite.size" //Selection mechanism to select number of elements in elite 
 
 
 
@@ -517,6 +517,428 @@ public:
 		return setup;
 	}
 };
+
+
+//=============================================================================
+//
+//	Class SelectionElite
+//
+//=============================================================================
+/**
+ * This class implements an elite selection. It just chooses one individual
+ * at random between the best N individuals in the population
+ *
+ * @author hdiaz
+ *
+ */
+class SelectionElite : public Selection {
+public:
+	//=========================================================================
+	//		CONSTRUCTORS / INITIALIZERS
+	//=========================================================================
+public:
+	/**
+	 * Default constructor
+	 */
+	explicit SelectionElite(ParameterDB *parameters = NULL)
+		: Selection(parameters) { }
+
+	/**
+	 * Destructor
+	 */
+	virtual ~SelectionElite() { }; 	// Nothing to destroy here
+
+
+
+	//=========================================================================
+	//		METHODS
+	//=========================================================================
+public:
+	/**
+	 *
+	 * @param population Population from which select an individual
+	 * @param svars Shared elements of the algorithm
+	 * @return The selected individual
+	 */
+	virtual Individual * select(Population *population,
+		const SharedVars *svars) const;
+
+
+
+	virtual Population * apply(Population *population, const unsigned int n,
+		const SharedVars *svars) const;
+	/**
+	 * Get the name and setup of the operator
+	 *
+	 * @return A string of parameter values. The first string is the name of
+	 * the operator
+	 */
+	virtual std::vector<std::string> getName() const {
+		std::vector<std::string> setup;
+		setup.push_back("Elite");
+		return setup;
+	}
+};
+
+//=============================================================================
+//
+//	Class Selection4Cell
+//
+//=============================================================================
+/**
+ * This class implements cellular selection, returns 4 random cells
+ *
+ * @author hdiaz
+ *
+ */
+class SelectionCellR5 : public Selection {
+public:
+	//=========================================================================
+	//		CONSTRUCTORS / INITIALIZERS
+	//=========================================================================
+public:
+	/**
+	 * Default constructor
+	 */
+	explicit SelectionCellR5(ParameterDB *parameters = NULL)
+		: Selection(parameters) { }
+
+	/**
+	 * Destructor
+	 */
+	virtual ~SelectionCellR5() { }; 	// Nothing to destroy here
+
+
+
+	//=========================================================================
+	//		METHODS
+	//=========================================================================
+public:
+	/**
+	 *
+	 * @param population Population from which select an individual
+	 * @param svars Shared elements of the algorithm
+	 * @return The selected individual
+	 */
+	virtual Individual * select(Population *population,
+		const SharedVars *svars) const;
+
+	virtual Population * apply(Population *population, const unsigned int n,
+		const SharedVars *svars) const;
+	/**
+	 * Get the name and setup of the operator
+	 *
+	 * @return A string of parameter values. The first string is the name of
+	 * the operator
+	 */
+	virtual std::vector<std::string> getName() const {
+		std::vector<std::string> setup;
+		setup.push_back("SelectionCellR5");
+		return setup;
+	}
+};
+
+class SelectionCellR13 : public Selection {
+public:
+	//=========================================================================
+	//		CONSTRUCTORS / INITIALIZERS
+	//=========================================================================
+public:
+	/**
+	 * Default constructor
+	 */
+	explicit SelectionCellR13(ParameterDB *parameters = NULL)
+		: Selection(parameters) { }
+
+	/**
+	 * Destructor
+	 */
+	virtual ~SelectionCellR13() { }; 	// Nothing to destroy here
+
+
+
+	//=========================================================================
+	//		METHODS
+	//=========================================================================
+public:
+	/**
+	 *
+	 * @param population Population from which select an individual
+	 * @param svars Shared elements of the algorithm
+	 * @return The selected individual
+	 */
+	virtual Individual * select(Population *population,
+		const SharedVars *svars) const;
+
+	virtual Population * apply(Population *population, const unsigned int n,
+		const SharedVars *svars) const;
+	/**
+	 * Get the name and setup of the operator
+	 *
+	 * @return A string of parameter values. The first string is the name of
+	 * the operator
+	 */
+	virtual std::vector<std::string> getName() const {
+		std::vector<std::string> setup;
+		setup.push_back("SelectionCellR13");
+		return setup;
+	}
+};
+//=============================================================================
+//
+//	Class Selection4Cell
+//
+//=============================================================================
+/**
+ * This class implements cellular selection, returns 4 cells, n, s, e, w
+ *
+ * @author hdiaz
+ *
+ */
+class SelectionCellL5 : public Selection {
+public:
+	//=========================================================================
+	//		CONSTRUCTORS / INITIALIZERS
+	//=========================================================================
+public:
+	/**
+	 * Default constructor
+	 */
+	explicit SelectionCellL5(ParameterDB *parameters = NULL)
+		: Selection(parameters) { }
+
+	/**
+	 * Destructor
+	 */
+	virtual ~SelectionCellL5() { }; 	// Nothing to destroy here
+
+
+
+	//=========================================================================
+	//		METHODS
+	//=========================================================================
+public:
+	/**
+	 *
+	 * @param population Population from which select an individual
+	 * @param svars Shared elements of the algorithm
+	 * @return The selected individual
+	 */
+	virtual Individual * select(Population *population,
+		const SharedVars *svars) const;
+
+	/**
+	 *
+	 * @param population Population from which select an individual
+	 * @param svars Shared elements of the algorithm
+	 * @return The index of the selected food sources accoding to this selection criteria
+	 */
+	virtual std::vector<int> getCellsIndex(const unsigned int size, const unsigned int n) const;
+		
+	virtual Population * apply(Population *population, const unsigned int n,
+		const SharedVars *svars) const;
+	/**
+	 * Get the name and setup of the operator
+	 *
+	 * @return A string of parameter values. The first string is the name of
+	 * the operator
+	 */
+	virtual std::vector<std::string> getName() const {
+		std::vector<std::string> setup;
+		setup.push_back("SelectionCellL5");
+		return setup;
+	}
+};
+
+class SelectionCellL9 : public SelectionCellL5 {
+public:
+	//=========================================================================
+	//		CONSTRUCTORS / INITIALIZERS
+	//=========================================================================
+public:
+	/**
+	 * Default constructor
+	 */
+	explicit SelectionCellL9(ParameterDB *parameters = NULL)
+		: SelectionCellL5(parameters) { }
+
+	/**
+	 * Destructor
+	 */
+	virtual ~SelectionCellL9() { }; 	// Nothing to destroy here
+
+
+
+	//=========================================================================
+	//		METHODS
+	//=========================================================================
+public:
+	/**
+	 *
+	 * @param population Population from which select an individual
+	 * @param svars Shared elements of the algorithm
+	 * @return The selected individual
+	 */
+	virtual Individual * select(Population *population,
+		const SharedVars *svars) const;
+
+	/**
+	 *
+	 * @param population Population from which select an individual
+	 * @param svars Shared elements of the algorithm
+	 * @return The index of the selected food sources accoding to this selection criteria
+	 */
+	virtual std::vector<int> getCellsIndex(const unsigned int size, const unsigned int n) const;
+
+	virtual Population * apply(Population *population, const unsigned int n,
+		const SharedVars *svars) const;
+	/**
+	 * Get the name and setup of the operator
+	 *
+	 * @return A string of parameter values. The first string is the name of
+	 * the operator
+	 */
+	virtual std::vector<std::string> getName() const {
+		std::vector<std::string> setup;
+		setup.push_back("SelectionCellL9");
+		return setup;
+	}
+};
+
+
+//=============================================================================
+//
+//	Class Selection9Cell
+//
+//=============================================================================
+/**
+ * This class implements cellular selection, returns 8 cells, n, s, e, w, nw, sw, ne, se
+ *
+ * @author hdiaz
+ *
+ */
+class SelectionCellC9 : public SelectionCellL5 {
+public:
+	//=========================================================================
+	//		CONSTRUCTORS / INITIALIZERS
+	//=========================================================================
+public:
+	/**
+	 * Default constructor
+	 */
+	explicit SelectionCellC9(ParameterDB *parameters = NULL)
+		: SelectionCellL5(parameters) { }
+
+	/**
+	 * Destructor
+	 */
+	virtual ~SelectionCellC9() { }; 	// Nothing to destroy here
+
+
+
+	//=========================================================================
+	//		METHODS
+	//=========================================================================
+public:
+	/**
+	 *
+	 * @param population Population from which select an individual
+	 * @param svars Shared elements of the algorithm
+	 * @return The selected individual
+	 */
+	virtual Individual * select(Population *population,
+		const SharedVars *svars) const;
+
+	/**
+	 *
+	 * @param population Population from which select an individual
+	 * @param svars Shared elements of the algorithm
+	 * @return The index of the selected food sources accoding to this selection criteria
+	 */
+	virtual std::vector<int> getCellsIndex(const unsigned int size, const unsigned int n) const;
+
+	virtual Population * apply(Population *population, const unsigned int n,
+		const SharedVars *svars) const;
+	/**
+	 * Get the name and setup of the operator
+	 *
+	 * @return A string of parameter values. The first string is the name of
+	 * the operator
+	 */
+	virtual std::vector<std::string> getName() const {
+		std::vector<std::string> setup;
+		setup.push_back("SelectionCellC9");
+		return setup;
+	}
+};
+
+
+//=============================================================================
+//
+//	Class Selection9Cell
+//
+//=============================================================================
+/**
+ * This class implements cellular selection, returns 8 cells, n, s, e, w, nw, sw, ne, se
+ *
+ * @author hdiaz
+ *
+ */
+class SelectionCellC13 : public SelectionCellC9 {
+public:
+	//=========================================================================
+	//		CONSTRUCTORS / INITIALIZERS
+	//=========================================================================
+public:
+	/**
+	 * Default constructor
+	 */
+	explicit SelectionCellC13(ParameterDB *parameters = NULL)
+		: SelectionCellC9(parameters) { }
+
+	/**
+	 * Destructor
+	 */
+	virtual ~SelectionCellC13() { }; 	// Nothing to destroy here
+
+
+
+	//=========================================================================
+	//		METHODS
+	//=========================================================================
+public:
+	/**
+	 *
+	 * @param population Population from which select an individual
+	 * @param svars Shared elements of the algorithm
+	 * @return The selected individual
+	 */
+	virtual Individual * select(Population *population,
+		const SharedVars *svars) const;
+
+	/**
+	 *
+	 * @param population Population from which select an individual
+	 * @param svars Shared elements of the algorithm
+	 * @return The index of the selected food sources accoding to this selection criteria
+	 */
+	virtual std::vector<int> getCellsIndex(const unsigned int size, const unsigned int n) const;
+
+	virtual Population * apply(Population *population, const unsigned int n,
+		const SharedVars *svars) const;
+	/**
+	 * Get the name and setup of the operator
+	 *
+	 * @return A string of parameter values. The first string is the name of
+	 * the operator
+	 */
+	virtual std::vector<std::string> getName() const {
+		std::vector<std::string> setup;
+		setup.push_back("SelectionCellC13");
+		return setup;
+	}
+};
+
 
 
 }

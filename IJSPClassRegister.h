@@ -67,14 +67,15 @@ protected:
 	template<typename T>
 	static SGS_IJSP * createSGSInstance() { return new T; }
 
+	
+
 
 	// Mapping for each operator. These is the register of all classes and is
 	// used to create objects of those classes from a string.
 	//=========================================================================
 	static std::map<std::string, SGS_IJSP*(*)()> SGSMap;
 
-
-
+	
 public:
 	/**
 	* Method to create a SGS from the name given in the
@@ -94,6 +95,8 @@ public:
 			return NULL;
 		return iter->second();
 	}
+
+
 		
 	// ************************************************************************
 	//

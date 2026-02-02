@@ -1,11 +1,11 @@
 /*
 * MemeticAlgorithm.cpp
 *
-*  Created on: Oct 13, 2015
-*      Author: jjpalacios
+*  Created on: Oct 13, 2022
+*      Author: hdiaz
 */
 
-#include "ArtificialBeeColony.h"
+#include "ArtificialBeeColonyPSO.h"
 #include <iostream>
 #include <set>
 
@@ -21,7 +21,7 @@ namespace FuzzyFW {
 	//		CONSTRUCTORS / INITIALIZERS
 	//=============================================================================
 	//-----  Main constructor  ----------------------------------------------------
-	ArtificialBeeColony::ArtificialBeeColony(ParameterDB *params)
+	ArtificialBeeColonyPSO::ArtificialBeeColonyPSO(ParameterDB *params)
 		: GeneticAlgorithm(params) {
 
 		LocalSearchClassRegister::registerClasses();
@@ -43,13 +43,13 @@ namespace FuzzyFW {
 
 
 	//-----  Destructor  ----------------------------------------------------------
-	ArtificialBeeColony::~ArtificialBeeColony() {
+	ArtificialBeeColonyPSO::~ArtificialBeeColonyPSO() {
 		delete localSearch;
 	}
 
 
 	//-----  clearAll  ------------------------------------------------------------
-	void ArtificialBeeColony::clearAll() {
+	void ArtificialBeeColonyPSO::clearAll() {
 		GeneticAlgorithm::clearAll();
 		delete this->neighbourhood;
 		delete this->localSearch;
@@ -75,8 +75,8 @@ namespace FuzzyFW {
 	//		GET/SET METHODS
 	//=============================================================================
 	//-----  printSetupTree  ------------------------------------------------------
-	void ArtificialBeeColony::printSetupTree(std::ofstream & output) const {
-		output << "Artificial Bee Colony" << std::endl;
+	void ArtificialBeeColonyPSO::printSetupTree(std::ofstream & output) const {
+		output << "Artificial Bee Colony PSO" << std::endl;
 
 		output << "Problem to solve:;"
 			<< this->sharedVariables->problem->getName() << std::endl;
@@ -197,7 +197,7 @@ namespace FuzzyFW {
 
 
 	//-----  getStatistics  -------------------------------------------------------
-	std::vector< std::pair<std::string, double> > ArtificialBeeColony::getStatistics()
+	std::vector< std::pair<std::string, double> > ArtificialBeeColonyPSO::getStatistics()
 		const {
 		std::vector< std::pair<std::string, double> > stats;
 
@@ -250,7 +250,7 @@ namespace FuzzyFW {
 
 
 	//-----  getRuntime  ----------------------------------------------------------
-	std::vector< std::pair<std::string, double> > ArtificialBeeColony::getRuntime()
+	std::vector< std::pair<std::string, double> > ArtificialBeeColonyPSO::getRuntime()
 		const {
 		std::vector< std::pair<std::string, double> > times;
 		double percentage, totalPerc = 0.0;
@@ -306,7 +306,7 @@ namespace FuzzyFW {
 	//		METHODS
 	//=============================================================================
 	//-----  prepareToRun  --------------------------------------------------------
-	void ArtificialBeeColony::prepareToRun(ParameterDB *params) {
+	void ArtificialBeeColonyPSO::prepareToRun(ParameterDB *params) {
 		// Loads the specific parameters
 		std::string value;
 
@@ -387,7 +387,7 @@ namespace FuzzyFW {
 
 
 	//-----  checkSetup  ----------------------------------------------------------
-	bool ArtificialBeeColony::checkSetup() {
+	bool ArtificialBeeColonyPSO::checkSetup() {
 		bool correct = true;
 		std::string err = "";
 
@@ -424,7 +424,7 @@ namespace FuzzyFW {
 
 	//-----  RUN !!  --------------------------------------------------------------
 	//=============================================================================
-	std::pair<Solution *, Objective *> ArtificialBeeColony::run(Problem *problem,
+	std::pair<Solution *, Objective *> ArtificialBeeColonyPSO::run(Problem *problem,
 		std::string signature, std::string logFolder, int rngSeed) {
 
 		Population *currentPopulation;
@@ -516,280 +516,86 @@ namespace FuzzyFW {
 			algorithmTime = clock();
 			//Employed bee phase
 			Individual* bestFoodSource = this->bestSoFar->clone();
-			std::vector<int> elite;
 
 			int elite_value = this->sharedVariables->parameters->getInteger(ELITE_SELECTION);
 			int elite_size = this->sharedVariables->parameters->getInteger(ELITE_SIZE);
-			switch (elite_value) {
-			case 8: {//Estrategia 8, coger el que tenga mas intentos de mejor a peor que no haya sido escogido previamente
-				if (bestFoodSource) {
-					delete bestFoodSource;
-				}
-				unsigned int max_trials = 0;
-				int k = 0;
-				int num_ind = 0;
-				while (k < currentPopulation->size()) {
-					if (currentPopulation->getIndividual(k)->getNumTrials() > max_trials) {
-						//&&	!cross_indiv.count(currentPopulation->getBest(this->sharedVariables, k)->getFitness())) {
-						max_trials = currentPopulation->getIndividual(k)->getNumTrials();
-						num_ind = k;
-					}
-					k++;
-				}
 
-				for (k = 0; k < currentPopulation->size(); k++) {
-					if (currentPopulation->getIndividual(k)->getNumTrials() == max_trials) {
-						elite.push_back(k);
-					}
-				}
-				unsigned int foodSourceID = this->sharedVariables->rng->getInteger(0, elite.size() - 1);
-				bestFoodSource = currentPopulation->getIndividual(elite[foodSourceID])->clone();
-				break;
-			}
-			case 4: {//Estrategia 4, coger el que tenga mas intentos de mejor a peor que no haya sido escogido previamente
-				if (bestFoodSource) {
-					delete bestFoodSource;
-				}
-				unsigned int max_trials = 0;
-				int k = 0;
-				int num_ind = 0;
-				while (k < currentPopulation->size()) {
-					if (currentPopulation->getBest(this->sharedVariables, k)->getNumTrials() > max_trials) {
-						//&&	!cross_indiv.count(currentPopulation->getBest(this->sharedVariables, k)->getFitness())) {
-						max_trials = currentPopulation->getBest(this->sharedVariables, k)->getNumTrials();
-						num_ind = k;
-					}
-					k++;
-				}
-				bestFoodSource = currentPopulation->getBest(this->sharedVariables, num_ind)->clone();
-				//cross_indiv.insert(bestFoodSource->getFitness());
-				break;
-			}
-			case 7:
-			case 3: {
-				//Estrategia 3, coger el que no haya sido cogido previamente de mejor a peor
-				if (bestFoodSource) {
-					delete bestFoodSource;
-				}
-				int k = 0;
-				while (k < currentPopulation->size() && cross_indiv.count(currentPopulation->getBest(this->sharedVariables, k)->getFitness())) { k++; }
-				if (k == currentPopulation->size()) {
-					unsigned int foodSourceID = this->sharedVariables->rng->getInteger(0, 20);
-					bestFoodSource = currentPopulation->getBest(this->sharedVariables, foodSourceID)->clone();
-				}
-				else {
-					bestFoodSource = currentPopulation->getBest(this->sharedVariables, k)->clone();
-				}
-				cross_indiv.insert(bestFoodSource->getFitness()->clone());
-				break;
-			}
-			case 6:
-			case 2: {
-				if (bestFoodSource) {
-					delete bestFoodSource;
-				}
-				//estrategia 2, coger de forma aleatoria uno de los 20 primeros
+			for (int i = 0; i < currentPopulation->size(); i++) {
+				//Coger de forma aleatoria uno de los 20 primeros como best food source
+				timePoint = clock();
 				unsigned int foodSourceID = this->sharedVariables->rng->getInteger(0, elite_size);
+				this->evaluator->evaluatePopulation(this->sharedVariables, currentPopulation, false);
+				currentPopulation->sort(this->sharedVariables->rng, true);
+				if (bestFoodSource != NULL) {
+					delete bestFoodSource;
+				}
 				if (foodSourceID == 0) {
 					bestFoodSource = this->bestSoFar->clone();
 				}
 				else {
-					bestFoodSource = currentPopulation->getBest(this->sharedVariables, foodSourceID-1)->clone();
+					bestFoodSource = currentPopulation->getBest(this->sharedVariables, foodSourceID - 1)->clone();
 				}
-				break;
-			}
-			case 5:
-			case 1: {
-				if (bestFoodSource) {
-					delete bestFoodSource;
+				this->selectionTime += clock() - timePoint;
+				timePoint = clock();
+				Population currentFoodSources;
+				Individual* currentFoodSource = currentPopulation->getIndividual(i);
+				Individual* destiny = currentPopulation->getIndividual(i)->clone();
+				this->mutation->apply(destiny, this->sharedVariables);
+				this->mutationTime += clock() - timePoint;
+				timePoint = clock();
+				currentFoodSources.addIndividual(bestFoodSource->clone());
+				currentFoodSources.addIndividual(destiny->clone());
+				if (destiny != NULL) {
+					delete destiny;
 				}
-				//estrategia por defecto coger el mejor
-				bestFoodSource = this->bestSoFar->clone();
-				break;
-			}
-			}
+				this->crossover->apply(&currentFoodSources, this->crossoverProb, this->sharedVariables);
+				this->evaluator->evaluatePopulation(this->sharedVariables, &currentFoodSources, false);
+				// Conditions to apply the local search
+				this->crossoverTime += clock() - timePoint;
+				timePoint = clock();
 
-			for (int i = 0; i < currentPopulation->size(); i++) {
-				if (this->sharedVariables->rng->getProbability() < this->crossoverProb) {
-					Population currentFoodSources;
-					Individual* currentFoodSource = currentPopulation->getIndividual(i);
-					//Add bestfoodSource and currentFoodSource 
-					currentFoodSources.addIndividual(bestFoodSource->clone());
-					currentFoodSources.addIndividual(currentFoodSource->clone());
-					//Cross bestfoodSource and currentFoodSource 
-					this->crossover->apply(&currentFoodSources, this->crossoverProb, this->sharedVariables);
-					//Add currentFoodSource  (por lo que veo la operación de crossover modifica los individuos)
-					Individual* currentFoodSourceClone = currentFoodSource->clone();
-					currentFoodSources.addIndividual(currentFoodSourceClone);
-					//Evaluo solo los individuos resultantes del cruce (cuando se utiliza clone, se mantiene si los individuos estan evaludos o no?)
-					this->evaluator->evaluatePopulation(this->sharedVariables, &currentFoodSources, false);
-					Individual* bestLocal = currentFoodSources.getBest(this->sharedVariables);
-					//If the best local food source is better than the currentFoodSource we replace it
-					if (bestLocal->getFitness()->isBetterThan(currentFoodSourceClone->getFitness())
-						&& !bestLocal->getFitness()->isEqualTo(this->bestSoFar->getFitness())) {
-						Individual* bestlocalClone = bestLocal->clone();
-						delete currentPopulation->replaceIndividual(i, bestlocalClone);
-						bestlocalClone->setNumTrials(0);
+				if (this->lsFrequency == LS_Frequency::MALS_PERIOD
+					|| this->lsFrequency == LS_Frequency::MALS_INITIAL
+					&& this->generation % this->lsPeriod == 0)
+				{
+					this->applyLocalSearch(&currentFoodSources);
+				}
+				this->localSearchTime += clock() - timePoint;
+				timePoint = clock();
+				this->evaluator->evaluatePopulation(this->sharedVariables, &currentFoodSources, false);
+				Individual* bestLocal = currentFoodSources.getBest(this->sharedVariables);
+				//If the best local food source is better than the currentFoodSource we replace it
+				if (bestLocal->getFitness()->isBetterThan(currentFoodSource->getFitness())
+					&& !bestLocal->getFitness()->isEqualTo(this->bestSoFar->getFitness())) {
+					Individual* bestlocalClone = bestLocal->clone();
+					delete currentPopulation->replaceIndividual(i, bestlocalClone);
+					bestlocalClone->setNumTrials(0);
 
+				}
+				else if (this->simulatedCooling != NULL
+					&& this->simulatedCooling->isSelected(currentFoodSource, bestLocal, this->sharedVariables, this->generation + 1)) {
+					Individual* bestlocalClone = bestLocal->clone();
+					delete currentPopulation->replaceIndividual(i, bestlocalClone);
+					bestlocalClone->setNumTrials(0);
 					}
-					else if (this->simulatedCooling != NULL
-						&& this->simulatedCooling->isSelected(currentFoodSourceClone, bestLocal, this->sharedVariables, this->generation + 1)) {
-						Individual* bestlocalClone = bestLocal->clone();
-						delete currentPopulation->replaceIndividual(i, bestlocalClone);
-						bestlocalClone->setNumTrials(0);
-					}
-					else {
-						currentFoodSource->setNumTrials(currentFoodSource->getNumTrials() + 1);
-					}
-
-					//NEW
-					if (elite_value > 4) {
-
-						switch (elite_value) {
-						case 5: {
-							Population bestLocalbestGlobal;
-							bestLocalbestGlobal.addIndividual(bestLocal->clone());
-							Individual* bestFoodSourceClone = bestFoodSource->clone();
-							bestLocalbestGlobal.addIndividual(bestFoodSourceClone);
-							this->evaluator->evaluatePopulation(this->sharedVariables, &bestLocalbestGlobal, false);
-							Individual* bestGlobal = bestLocalbestGlobal.getBest(this->sharedVariables);
-
-							if (bestGlobal->getFitness()->isBetterThan(bestFoodSourceClone->getFitness())) {
-								delete bestFoodSource;
-								bestFoodSource = bestGlobal->clone();
-							}
-							bestLocalbestGlobal.clear(true);
-							break;
-						}
-						case 6: {
-							//estrategia 2, coger de forma aleatoria uno de los 20 primeros
-							unsigned int foodSourceID = this->sharedVariables->rng->getInteger(0, elite_size);
-							this->evaluator->evaluatePopulation(this->sharedVariables, currentPopulation, false);
-							currentPopulation->sort(this->sharedVariables->rng, true);
-							delete bestFoodSource;
-							if (foodSourceID == 0) {
-								bestFoodSource = this->bestSoFar->clone();
-							}
-							else {
-								bestFoodSource = currentPopulation->getBest(this->sharedVariables, foodSourceID - 1)->clone();
-							}
-							break;
-						}
-						case 7: {
-							//Estrategia 3, coger el que no haya sido cogido previamente de mejor a peor
-							delete bestFoodSource;
-							int k = 0;
-							while (k < currentPopulation->size() && cross_indiv.count(currentPopulation->getBest(this->sharedVariables, k)->getFitness())) { k++; }
-							if (k == currentPopulation->size()) {
-								unsigned int foodSourceID = this->sharedVariables->rng->getInteger(0, 20);
-								bestFoodSource = currentPopulation->getBest(this->sharedVariables, foodSourceID)->clone();
-							}
-							else {
-								bestFoodSource = currentPopulation->getBest(this->sharedVariables, k)->clone();
-							}
-							cross_indiv.insert(bestFoodSource->getFitness()->clone());
-							break;
-						}
-						case 8: {
-							delete bestFoodSource;
-							unsigned int foodSourceID = this->sharedVariables->rng->getInteger(0, elite.size() - 1);
-							bestFoodSource = currentPopulation->getIndividual(elite[foodSourceID])->clone();
-							break;
-						}
-
-						}
-					}
-					currentFoodSources.clear(true);
+				else {
+					currentFoodSource->setNumTrials(currentFoodSource->getNumTrials() + 1);
 				}
-			}
-			// Onlooker bee phase
-			if (bestFoodSource) {
-				delete bestFoodSource;
-			}
-					
-			for (unsigned int i = 0; i < currentPopulation->size(); i++) {
-				if (this->sharedVariables->rng->getProbability() < this->mutationProb) {
-					Individual* origin = currentPopulation->getIndividual(i);
-					if (origin->getNumTrials() < this->sharedVariables->parameters->getInteger(MAX_NUM_TRIALS)) {
-						Individual* destiny = currentPopulation->getIndividual(i)->clone();
-						this->mutation->apply(destiny, this->sharedVariables);
-						Fitness* fitness = this->evaluator->evaluate(this->sharedVariables, destiny);
-						destiny->updateFitness(fitness);
-						if (destiny->getFitness()->isBetterThan(origin->getFitness())
-							&& !destiny->getFitness()->isEqualTo(this->bestSoFar->getFitness())) {
-							delete currentPopulation->replaceIndividual(i, destiny);
-							destiny->setNumTrials(0);
-						}
-						else if (this->simulatedCooling!=NULL 
-							&& this->simulatedCooling->isSelected(origin,destiny,this->sharedVariables,this->generation+1)){
-							/*
-							std::cout << "Gen: " << this->generation+1 << "\tT: " << this->simulatedCooling->getTemperature(origin, destiny, generation+1);
-							std::cout << "\tMonotonic: " << this->simulatedCooling->getMonotonicTemperature(generation+1) << "\tCorrective: " << this->simulatedCooling->getAdaptativeFactor(origin,destiny);
-							std::cout << "\tOrigin: " << origin->getFitness()->toDouble() << "\tDest" << destiny->getFitness()->toDouble() << std::endl;
-							*/
-							//std::cout << log(1 + this->generation + 1) << std::endl;
-							
-							//else if (this->sharedVariables->rng->getInteger(0, 150) < (150 - this->generation)) {
-							delete currentPopulation->replaceIndividual(i, destiny);
-							destiny->setNumTrials(0);
-						}
-						else {
-							delete destiny;
-							origin->setNumTrials(origin->getNumTrials() + 1);
-						}
+				
+				if (currentFoodSource->getNumTrials() >= this->sharedVariables->parameters->getInteger(MAX_NUM_TRIALS)) {
+					Population* newPopulation = this->creation->createPopulation(1, this->sharedVariables);
+					this->evaluator->evaluatePopulation(this->sharedVariables, newPopulation, false);
+
+					if (this->lsFrequency == LS_Frequency::MALS_INITIAL) {
+						this->applyLocalSearch(newPopulation);
 					}
+					delete currentPopulation->replaceIndividual(i, newPopulation->getBest(this->sharedVariables, 0));
+					newPopulation->clear(false);
+					delete newPopulation;
+					this->evaluator->evaluatePopulation(this->sharedVariables, currentPopulation, true);
 				}
-
+				this->replacementTime += clock() - timePoint;
 			}
-			
-			//	Scout bee phase
-			int numSourceAfterLimit = 0;
-			//We check the number of food sources that surpass the maximum number of trials
-			for (int i = 0; i < currentPopulation->size(); i++) {
-				if (currentPopulation->getIndividual(i)->getNumTrials() >= this->sharedVariables->parameters->getInteger(MAX_NUM_TRIALS)) {
-					numSourceAfterLimit++;
-				}
-			}
-
-			this->abc_replacements += numSourceAfterLimit;
-			//We replace those food sources with fresh ones.
-			if (numSourceAfterLimit > 0) {
-				Population* newPopulation = this->creation->createPopulation(numSourceAfterLimit, this->sharedVariables);
-				this->evaluator->evaluatePopulation(this->sharedVariables, newPopulation, false);
-
-				if (this->lsFrequency == LS_Frequency::MALS_INITIAL) {
-					this->applyLocalSearch(newPopulation);
-				}
-				int j = 0;
-				for (int i = 0; i < currentPopulation->size(); i++) {
-					if (currentPopulation->getIndividual(i)->getNumTrials() >= this->sharedVariables->parameters->getInteger(MAX_NUM_TRIALS)) {
-						delete currentPopulation->replaceIndividual(i, newPopulation->getBest(this->sharedVariables, j));
-						j++;
-					}
-				}
-				newPopulation->clear(false);
-				delete newPopulation;
-				this->evaluator->evaluatePopulation(this->sharedVariables, currentPopulation, true);
-			}
-
-
-			// Conditions to apply the local search
-			
-			timePoint = clock();
-			std::ofstream outfile;
-			outfile.open("LocalSearchdebugN1.txt", std::ios_base::app); // append instead of overwrite
-			outfile << "Localsearch generation " << this->generation << std::endl;
-			currentPopulation->printCSV(outfile);
-			outfile.close();
-			if (this->lsFrequency == LS_Frequency::MALS_PERIOD
-				|| this->lsFrequency == LS_Frequency::MALS_INITIAL
-				&& this->generation % this->lsPeriod == 0)
-			{
-				this->applyLocalSearch(currentPopulation);
-			}
-			this->localSearchTime += clock() - timePoint;
-			
-
 			this->generation++;
 
 			if (currentPopulation->getBest(sharedVariables)->getFitness()
@@ -797,7 +603,6 @@ namespace FuzzyFW {
 				this->iterationsNI = 0;
 			else
 				this->iterationsNI++;
-
 
 			if (this->bestSoFar != NULL) {
 				if (currentPopulation->getBest(this->sharedVariables)->getFitness()->isBetterThan(this->bestSoFar->getFitness())) {
@@ -822,7 +627,6 @@ namespace FuzzyFW {
 #endif // DEBUG
 			algorithmTime = clock();
 		}
-
 		this->finished = true;
 
 		algorithmTime = clock();
@@ -836,10 +640,9 @@ namespace FuzzyFW {
 		return returnValue;
 	}
 
-
-
+	
 	//-----  Evaluate the population  ---------------------------------------------
-	void ArtificialBeeColony::evaluatePopulation(Population *current) {
+	void ArtificialBeeColonyPSO::evaluatePopulation(Population *current) {
 		clock_t timePoint;
 
 		timePoint = clock();
@@ -876,7 +679,7 @@ namespace FuzzyFW {
 	}*/
 
 	//-----  Apply the local search to the individuals  ---------------------------
-	void ArtificialBeeColony::applyLocalSearch(Population *population) {
+	void ArtificialBeeColonyPSO::applyLocalSearch(Population *population) {
 		std::vector<unsigned int> selection(population->size());
 		unsigned int targetIndividuals, chosen, best, position;
 		best = NULL;
@@ -901,7 +704,6 @@ namespace FuzzyFW {
 		if (this->lsTarget == LS_Target::MALS_SOME) {
 
 			// Take the best individual and then random individuals until
-
 			// filling the quota
 			for (size_t i = 0; i < selection.size(); i++)
 				selection[i] = i;
@@ -930,7 +732,7 @@ namespace FuzzyFW {
 
 
 	//-----  Apply the local search to one individual  ----------------------------
-	void ArtificialBeeColony::applyLocalSearch(Population *population,
+	void ArtificialBeeColonyPSO::applyLocalSearch(Population *population,
 		const unsigned int individualIdx) {
 		Individual *target;
 		FullSolution optimised;

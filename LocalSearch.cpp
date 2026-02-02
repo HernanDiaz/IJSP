@@ -108,7 +108,10 @@ FullSolution LS_HillClimbing::apply(const Solution *solution,
 	this->neighbourhood->setInitialSolution(solution->clone(),
 		fitness->clone(), svars);
 	current = this->neighbourhood->getCurrentSolution();
-
+	std::ofstream outfile;
+	outfile.open("LocalSearchdebugN1.txt", std::ios_base::app); // append instead of overwrite
+	outfile << "HillClimbing for solution " << solution->toString() << std::endl;
+	outfile.close();
 	bool improves = true;
 	while (improves && !this->stoppingCriteria()) {
 		improves = false;
@@ -149,7 +152,8 @@ FullSolution LS_HillClimbing::apply(const Solution *solution,
 			}
 			if (!improves) {
 				//this->neighbourhood->discardNeighbour(next);
-				std::swap(randomArray[next], randomArray[randomArray.size() - 1]);
+				//std::swap(randomArray[next], randomArray[randomArray.size() - 1]); BUG
+				std::swap(randomArray[next], randomArray[nNeighbours -1]);
 				nNeighbours--;
 			}
 		}

@@ -63,7 +63,7 @@ namespace FuzzyFW {
 	* @author hdiaz
 	*
 	*/
-	class ArtificialBeeColony : public GeneticAlgorithm {
+	class ArtificialBeeColonyPSO : public GeneticAlgorithm {
 		//=========================================================================
 		//		FIELDS
 		//=========================================================================
@@ -146,12 +146,12 @@ namespace FuzzyFW {
 		* Constructor using the parameters file.
 		* Reads the parameters file, but does not initialize objects
 		*/
-		explicit ArtificialBeeColony(ParameterDB *params = NULL);
+		explicit ArtificialBeeColonyPSO(ParameterDB *params = NULL);
 
 		/**
 		* Destructor
 		*/
-		virtual ~ArtificialBeeColony();
+		virtual ~ArtificialBeeColonyPSO();
 
 
 	protected:

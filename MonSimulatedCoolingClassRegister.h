@@ -1,7 +1,7 @@
 /*
- * PostExecutionClassRegister.h
+ * SimulatedCoolingClassRegister.h
  *
- *  Created on: Jul 04, 2020
+ *  Created on: May 06, 2022
  *      Author: Hernan Diaz Rodriguez
  */
 #pragma once
@@ -25,10 +25,10 @@
  * problem components
 =============================================================================*/
 
-#include "IJSPRobustnessAnalyzerMakespan.h"
-#include "FJSPRobustnessAnalyzerMakespan.h"
-#include "IJSPRobustnessAnalyzerTardiness.h"
-#include "MakespanMRAnalyzer.h"
+
+#include "SGS_IJSP_Insertion.h"
+#include "SGS_IJSP_Append.h"
+#include "MonotonicAdaptativeCooling.h"
 
 
 // ****************************************************************************
@@ -43,7 +43,7 @@
 
 
 
-namespace PostExecution {
+namespace FuzzyFW {
 
 /**
  * This static class allows to create the different kinds of problem elements.
@@ -61,46 +61,36 @@ namespace PostExecution {
  * @author hdiaz
  *
  */
-struct PostExecutionClassRegister {
+struct MonSimulatedCoolingClassRegister {
 protected:
-	// Methods to create an instance of different operators.
+	// Methods to create an instance 
 	//=========================================================================
 	template<typename T>
-	static PostExecutionAnalyzer* createRobustnessInstance() { return new T; }
+	static Monotonic_Adaptative_Cooling * createMACInstance() { return new T; }
 
-
-	// Mapping for each operator. These is the register of all classes and is
+	// Mapping. These is the register of all classes and is
 	// used to create objects of those classes from a string.
 	//=========================================================================
-	static std::map<std::string, PostExecutionAnalyzer*(*)()> SGSMap;
-
-
-
+	static std::map<std::string, Monotonic_Adaptative_Cooling*(*)()> MACMap;
+	
 public:
 	/**
-	* Method to create a SGS from the name given in the
+	* Method to create a MAC from the name given in the
 	* configuration file
 	*
-	* @param name Name of the SGS to use
-	* @return An object of the specified type of SGS_FJSP. Null if the
+	* @param name Name of the MAC to use
+	* @return An object of the specified type of MAC. Null if the
 	* type is not registered
 	*/
-
-	static PostExecutionAnalyzer * getRobustnessObject(std::string name) {
-		std::map<std::string, PostExecutionAnalyzer*(*)()>::iterator iter;
-		iter = PostExecutionClassRegister::SGSMap.find(toUpper(name));
-		if (iter == SGSMap.end())
+	   
+	static Monotonic_Adaptative_Cooling * getMACObject(std::string name) {
+		std::map<std::string, Monotonic_Adaptative_Cooling*(*)()>::iterator iter;
+		iter = MonSimulatedCoolingClassRegister::MACMap.find(toUpper(name));
+		if (iter == MACMap.end())
 			return NULL;
 		return iter->second();
 	}
 
-	static PostExecutionAnalyzer * getMakespanMRObject(std::string name) {
-		std::map<std::string, PostExecutionAnalyzer*(*)()>::iterator iter;
-		iter = PostExecutionClassRegister::SGSMap.find(toUpper(name)+".MAKESPANMR");
-		if (iter == SGSMap.end())
-			return NULL;
-		return iter->second();
-	}
 		
 	// ************************************************************************
 	//
@@ -114,13 +104,17 @@ public:
 	 * in the configuration files
 	 */
 	static void registerClasses() {
-
-		SGSMap[toUpper("ijsp.tardiness")] = &createRobustnessInstance<IJSPRobustnessAnalyzerTardiness>;
-		SGSMap[toUpper("ijsp.makespan")] = &createRobustnessInstance<IJSPRobustnessAnalyzerMakespan>;
-		SGSMap[toUpper("ijsp.makespan.makespanMR")] = &createRobustnessInstance<MakespanMRAnalyzer>;
-		SGSMap[toUpper("makespan")] = &createRobustnessInstance<FJSPRobustnessAnalyzerMakespan>;
+		MACMap[toUpper("Exponential_Multiplicative_Cooling")] = &createMACInstance<Exponential_Multiplicative_Cooling>;
+		MACMap[toUpper("Logaritmic_Multiplicative_Cooling")] = &createMACInstance<Logaritmic_Multiplicative_Cooling>;
+		MACMap[toUpper("Linear_Cooling")] = &createMACInstance<Linear_Cooling>;
+		MACMap[toUpper("Linear_Multiplicative_Cooling")] = &createMACInstance<Linear_Multiplicative_Cooling>;
+		MACMap[toUpper("Quadratic_Multiplicative_Cooling")] = &createMACInstance<Quadratic_Multiplicative_Cooling>;
+		MACMap[toUpper("Linear_Additive_Cooling")] = &createMACInstance<Linear_Additive_Cooling>; 
+		MACMap[toUpper("Quadratic_Additive_Cooling")] = &createMACInstance<Quadratic_Additive_Cooling>;
+		MACMap[toUpper("Trigonometric_Additive_Cooling")] = &createMACInstance<Trigonometric_Additive_Cooling>;
 	}
 
 };
 
 }
+

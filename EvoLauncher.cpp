@@ -231,6 +231,10 @@ void EvoLauncher::setupAlgorithm(const std::string name) {
 		this->algorithm = new ArtificialBeeColony(this->setup);
 	else if (toUpper(name).compare("ABCT") == 0)
 		this->algorithm = new ArtificialBeeColonyThread(this->setup);
+	else if (toUpper(name).compare("ABCPSO") == 0)
+		this->algorithm = new ArtificialBeeColonyPSO(this->setup);
+	else if (toUpper(name).compare("ABCCELL") == 0)
+		this->algorithm = new ArtificialBeeColonyCell(this->setup);
 	else {
 		std::string err = "Solving algorithm \'" + name + "\' unknown";
 		throw FuzzyFWException("Loading", err);

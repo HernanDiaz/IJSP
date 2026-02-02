@@ -40,8 +40,19 @@ public:
 	*/
 	unsigned int y;
 
+	/*
+	* Destination node of the arc
+	*/
+	unsigned int z;
 
-
+	/*
+	* type of the arc
+	* 0 a b pasa a  ->b->a->   solo un arco
+	* 1 ->b  c->a-> mpmpmp == -1 o no bloque critico
+	* 2 ->f->d  e-> ms == -1 o no bloque critico
+	* 3 ->c->b->a-> en los dos
+	*/
+	unsigned int tipo;
 
 
 	//=========================================================================
@@ -52,13 +63,13 @@ public:
 	* Default constructor.
 	*/
 	explicit NeighbourIJSP_Arc()
-		: Neighbour(), x(0), y(0) { }
+		: Neighbour(), x(0), y(0), z(0), tipo(0)  { }
 		
 	/*
 	* Main constructor.
 	*/
-	explicit NeighbourIJSP_Arc(const int x, const int y)
-		: Neighbour(), x(x), y(y) { }
+	explicit NeighbourIJSP_Arc(const int x, const int y, const int z=0, const int tipo=0)
+		: Neighbour(), x(x), y(y), z(z), tipo(tipo) { }
 
 	/**
 	* Copy constructor
@@ -86,8 +97,8 @@ public:
 	/*
 	* Sets the nodes of the arc
 	*/
-	virtual void setValues(const unsigned int x, const unsigned int y);
-
+	virtual void setValues(const unsigned int x, const unsigned int y, const unsigned int z = 0, const unsigned int tipo = 0);
+		
 	/*
 	* Comparison methods: Equality
 	* Indicates if two neighbours are the same
