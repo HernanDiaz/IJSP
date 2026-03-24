@@ -16,7 +16,7 @@ RESULTS_BASE="${SCRIPT_DIR}/results"
 NEIGHBOURHOODS=("n1" "n2" "n3" "nh")
 COMPARATORS=("EV" "LEX1" "LEX2" "YX")
 
-MAX_PARALLEL=20
+MAX_PARALLEL=28
 
 echo "======================================================"
 echo " IJSP Makespan Experiment Runner"

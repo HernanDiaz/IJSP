@@ -4,7 +4,7 @@
 # GENERIC PARAMETERS
 algorithm = ABCPSO
 seed = 1
-runs = 10
+runs = 30
 
 # PROBLEM DESCRIPTION
 problem.hasbounds = no
@@ -44,12 +44,12 @@ replacement.allow-repeated = no
 noimprovement = 25
 
 # POPULATION
-population.size = 30
+population.size = 250
 
 # ABC specific
-maxnumtrials = 10
+maxnumtrials = 20
 elite.selection = 3
-elite.size = 5
+elite.size = 40
 
 # STATISTICS
 statistics.1.metric = best
