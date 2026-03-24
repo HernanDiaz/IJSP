@@ -618,7 +618,7 @@ namespace FuzzyFW {
 					currentFoodSources.addIndividual(currentFoodSource->clone());
 					//Cross bestfoodSource and currentFoodSource 
 					this->crossover->apply(&currentFoodSources, this->crossoverProb, this->sharedVariables);
-					//Add currentFoodSource  (por lo que veo la operación de crossover modifica los individuos)
+					//Add currentFoodSource  (por lo que veo la operaciï¿½n de crossover modifica los individuos)
 					Individual* currentFoodSourceClone = currentFoodSource->clone();
 					currentFoodSources.addIndividual(currentFoodSourceClone);
 					//Evaluo solo los individuos resultantes del cruce (cuando se utiliza clone, se mantiene si los individuos estan evaludos o no?)
@@ -776,11 +776,11 @@ namespace FuzzyFW {
 			// Conditions to apply the local search
 			
 			timePoint = clock();
-			std::ofstream outfile;
-			outfile.open("LocalSearchdebugN1.txt", std::ios_base::app); // append instead of overwrite
-			outfile << "Localsearch generation " << this->generation << std::endl;
-			currentPopulation->printCSV(outfile);
-			outfile.close();
+			//std::ofstream outfile;
+			//outfile.open("LocalSearchdebugN1.txt", std::ios_base::app); // append instead of overwrite
+			//outfile << "Localsearch generation " << this->generation << std::endl;
+			//currentPopulation->printCSV(outfile);
+			//outfile.close();
 			if (this->lsFrequency == LS_Frequency::MALS_PERIOD
 				|| this->lsFrequency == LS_Frequency::MALS_INITIAL
 				&& this->generation % this->lsPeriod == 0)

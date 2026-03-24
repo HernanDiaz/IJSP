@@ -184,7 +184,7 @@ unsigned int NB_ParallelN1_MakespanIJSP::findNewNeighbours(
 	this->numNeighbours = 0;
 	//DEBUG
 	std::ofstream outfile;
-	outfile.open("LocalSearchdebugN1.txt", std::ios_base::app); // append instead of overwrite
+	//outfile.open("LocalSearchdebugN1.txt", std::ios_base::app); // append instead of overwrite
 	// Look for critical paths in each parallell graph:
 	for (short int comp = 1; comp <= 2; comp++) {
 		outfile << "Component: " << comp<< std::endl;
@@ -2408,7 +2408,7 @@ unsigned int NB_ParallelNH_MakespanIJSP::findNewNeighbours(
 			taskId = taskQueue.front();
 			taskQueue.pop();
 			task = this->schedule->taskInfo[taskId];
-			//Si el predecesor en el camino crítico pertenece al mismo bloque (misma maquina) introducimos la tarea en la cola
+			//Si el predecesor en el camino crï¿½tico pertenece al mismo bloque (misma maquina) introducimos la tarea en la cola
 			if (task.mp != -1) {
 				mp = this->schedule->taskInfo[task.mp];
 				if ((mp.head + mp.task->p).EqualComponent(task.head, comp)) {
@@ -2422,7 +2422,7 @@ unsigned int NB_ParallelNH_MakespanIJSP::findNewNeighbours(
 				if ((jp.head + jp.task->p).EqualComponent(task.head, comp)) {
 					taskQueue.push(task.task->jp);
 					blockFirst[task.task->jp] = task.task->jp;
-					//Por que se guarda una lista de las tareas añadidas, no sobraria esto?
+					//Por que se guarda una lista de las tareas aï¿½adidas, no sobraria esto?
 					//Para que sirve numNeighbours, estadisticas??
 					if (!added[taskId] && taskId!= blockFirst[taskId]) {
 						if (this->numNeighbours < this->neighbours.size()

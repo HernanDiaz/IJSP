@@ -1,0 +1,1030 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%                                                                 %%
+%% Please do not use \input{...} to include other tex files.       %%
+%% Submit your LaTeX manuscript as one .tex document.              %%
+%%                                                                 %%
+%% All additional figures and files should be attached             %%
+%% separately and not embedded in the \TeX\ document itself.       %%
+%%                                                                 %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%\documentclass[pdflatex,sn-basic]{sn-jnl}% Basic Springer Nature Reference Style/Chemistry Reference Style
+
+%%\documentclass[sn-basic,pdflatex]{sn-jnl}% Basic Springer Nature Reference Style/Chemistry Reference Style
+\documentclass[sn-mathphys]{sn-jnl}% Math and Physical Sciences Reference Style
+%%\documentclass[sn-aps]{sn-jnl}% American Physical Society (APS) Reference Style
+%%\documentclass[sn-vancouver]{sn-jnl}% Vancouver Reference Style
+%%\documentclass[sn-apa]{sn-jnl}% APA Reference Style
+%%\documentclass[sn-chicago]{sn-jnl}% Chicago-based Humanities Reference Style
+%%\documentclass[sn-standardnature]{sn-jnl}% Standard Nature Portfolio Reference Style
+%%\documentclass[default]{sn-jnl}% Default
+%%\documentclass[default,iicol]{sn-jnl}% Default with double column layout
+
+%%%% Standard Packages
+\renewcommand{\algorithmiccomment}[1]{{\sl/*#1*/}}% change default appearance of a comment
+\usepackage{graphicx}
+\usepackage{subfigure}
+\usepackage{colortbl}
+\usepackage{amsmath}
+%%%%
+
+%%%%%=============================================================================%%%%
+%%%%  Remarks: This template is provided to aid authors with the preparation
+%%%%  of original research articles intended for submission to journals published
+%%%%  by Springer Nature. The guidance has been prepared in partnership with
+%%%%  production teams to conform to Springer Nature technical requirements.
+%%%%  Editorial and presentation requirements differ among journal portfolios and
+%%%%  research disciplines. You may find sections in this template are irrelevant
+%%%%  to your work and are empowered to omit any such section if allowed by the
+%%%%  journal you intend to submit to. The submission guidelines and policies
+%%%%  of the journal take precedence. A detailed User Manual is available in the
+%%%%  template package for technical guidance.
+%%%%%=============================================================================%%%%
+
+\jyear{2023}%
+
+%% as per the requirement new theorem styles can be included as shown below
+\theoremstyle{thmstyleone}%
+\newtheorem{theorem}{Theorem}%  meant for continuous numbers
+%%\newtheorem{theorem}{Theorem}[section]% meant for sectionwise numbers
+%% optional argument [theorem] produces theorem numbering sequence instead of independent numbers for Proposition
+\newtheorem{proposition}[theorem]{Proposition}%
+%%\newtheorem{proposition}{Proposition}% to get separate numbers for theorem and proposition etc.
+
+\theoremstyle{thmstyletwo}%
+\newtheorem{example}{Example}%
+\newtheorem{remark}{Remark}%
+
+\theoremstyle{thmstylethree}%
+\newtheorem{definition}{Definition}%
+
+\newcommand{\review}[1]{\textcolor{red}{#1}} % Highlight changes
+
+\raggedbottom
+%%\unnumbered% uncomment this for unnumbered level heads
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% DOCUMENT
+
+\begin{document}
+\title{Fast Elitist ABC for Makespan Optimisation in Interval JSP}
+
+
+%%=============================================================%%
+%% Prefix	-> \pfx{Dr}
+%% GivenName	-> \fnm{Joergen W.}
+%% Particle	-> \spfx{van der} -> surname prefix
+%% FamilyName	-> \sur{Ploeg}
+%% Suffix	-> \sfx{IV}
+%% NatureName	-> \tanm{Poet Laureate} -> Title after name
+%% Degrees	-> \dgr{MSc, PhD}
+%% \author*[1,2]{\pfx{Dr} \fnm{Joergen W.} \spfx{van der} \sur{Ploeg} \sfx{IV} \tanm{Poet Laureate}
+%%                 \dgr{MSc, PhD}}\email{iauthor@gmail.com}
+%%=============================================================%%
+
+\author[1]{\fnm{Hernán} \sur{Díaz}}\email{diazhernan@uniovi.es}
+
+\author*[1]{\fnm{Juan José} \sur{Palacios}}\email{palaciosjuan@uniovi.es}
+
+\author[2]{\fnm{Inés} \sur{Gonz\'alez-Rodr\'{\i}guez}}\email{gonzalezri@unican.es}
+
+\author[1]{\fnm{Camino} \sur{R. Vela}}\email{crvela@uniovi.es}
+
+\affil*[1]{\orgdiv{Dep. of Computing}, \orgname{University of Oviedo}, \state{Asturias}, \country{Spain}}
+
+\affil[2]{\orgdiv{Dep. Matem\'aticas, Estad\'{\i}stica y Computaci\'on}, \orgname{Universidad de Cantabria},\state{Cantabria}, \country{Spain}}
+
+
+%%==================================%%
+%% Abstract							 %%
+%%==================================%%
+
+\abstract{This paper addresses a variant of the Job Shop Scheduling Problem with makespan minimisation where uncertainty in task durations is taken into account and modelled with intervals. A novel Artificial Bee Colony algorithm is proposed where the classical layout is simplified, increasing the algorithm's speed and reducing the number of parameters to set up. We also take into account the fundamental principles of exploration around a local solution and attraction to a global solution to improve diversity in the hive. The increase on speed and diversity allows to include a Local Search phase to better exploit promising areas of the search space. A parametric analysis is conducted and the contribution of the new strategies is analysed. The results of the new approach are competitive with those obtained with previous methods in the literature, but taking less runtime. The addition of Local Search improves the results even further, outperforming the best-known ones from the literature. An additional sensitivity study is conducted to assess the advantages of considering uncertainty and how increasing it affects the solution's robustness.}
+
+\keywords{Job Shop Scheduling, Makespan, Interval Uncertainty, Artificial Bee Colony, Robustness}
+
+%%\pacs[JEL Classification]{D8, H51}
+
+%%\pacs[MSC Classification]{35A01, 65L10, 65L12, 65L20, 65L70}
+
+\maketitle
+%%------------------------------------------------------
+%%
+%% 1) INTRODUCTION
+%%
+%% Motivation and state of the art
+%%
+%%------------------------------------------------------
+\section{Introduction}\label{SecIntro}
+% Motivation for scheduling
+The job shop scheduling problem (JSP) is considered to be one of the most relevant scheduling problems. It consists in allocating a set of resources to execute a set of jobs under a set of given constraints, with the most popular objective in the literature being the minimisation of the project's execution timespan, also known as makespan. Solving this problem improves the efficiency of chain production processes, optimising the use of energy and materials~\cite{Pinedo2016} and having a positive impact on costs and environmental sustainability. However, in real-world applications, the available information is often imprecise. Interval uncertainty arises as soon as information is incomplete, and contrary to the case of stochastic and fuzzy scheduling, it does not assume any further knowledge, thus representing a first step towards solving problems in other frameworks~\cite{Allahverdi2014}. Moreover, intervals are a natural model whenever decision-makers prefer to provide only a minimal and a maximal duration, and obtain interval results that can be easily understood. Under such circumstances, interval scheduling allows to concentrate on significant scheduling decisions and to produce robust solutions.
+
+% Review of scheduling with interval uncertainty
+Contributions to interval scheduling in the literature are not abundant. In~\cite{Lei2012c}, a genetic algorithm is proposed for a JSP minimizing the total tardiness with respect to job due dates with both processing times and due dates represented by intervals. In~\cite{Diaz2022robust}, a different genetic algorithm is applied to the same problem, including a study of different interval ranking methods based on the robustness of the resulting schedules. A population-based neighbourhood search for an interval JSP with makespan minimisation is presented in~\cite{Lei2011}. In~\cite{Li2019}, a hybrid between particle swarm and a genetic algorithm is used to solve a flexible JSP with interval processing times as part of a larger integrated planning and scheduling problem. More recently, a genetic algorithm is applied in~\cite{Diaz2020genetic} to the JSP with interval uncertainty minimizing the makespan and two different algorithms based on artificial bee colonies are proposed in~\cite{Diaz2022} and~\cite{Diaz2023-ICAE} for the same problem.
+
+% motivation and review for metaheuristics with special emphasis on ABC.
+Due to the complexity of job shop scheduling problems, metaheuristic search methods are especially suitable to solve them. In particular, Artificial Bee Colony (ABC) is a swarm intelligence optimiser inspired by the intelligent foraging behaviour of honeybees that has shown very competitive performance on JSP with makespan minimisation. For instance, \review{Wong et al.} \cite{Wong2008} propose an evolutionary computation algorithm based on ABC that includes a state transition rule to construct the schedules. Taking some principles from Genetic Algorithms, \review{Yao et al.} \cite{Yao2010} present an Improved ABC (IABC) where a mutation operation is used for exploring the search space, enhancing the search performance of the algorithm. Later, \review{Banharnsakun et al.} \cite{Banharnsakun2012} propose an effective ABC approach based on updating the population using the information of the best-so-far food source. In~\cite{Diaz2022}, an elitism mechanism is introduced to increase diversity and solve an interval job shop problem with makespan minimisation. The same problem is tackled in~\cite{Diaz2023-ICAE} introducing the seasonal behaviour of honeybees as part of the onlooker bee phase.
+
+%% what we're going to do here
+In the following, we extend the work presented in~\cite{Diaz2022} to solve the interval JSP with makespan minimisation. We propose several improvements on the introduced Elite ABC method that aim at speeding up the algorithm while increasing its diversity. A Local Search is then included into the ABC to exploit the new diversity and obtain better results. The robustness study conducted in~\cite{Diaz2022} is complemented with a new sensitivity analysis to assess the quality of solutions in scenarios of increasing uncertainty. The rest of the paper is organized as follows: the interval JSP is presented in Section~\ref{secIJSP}; in Section~\ref{secABC} we describe the different components that conform the ABC algorithm that addresses this problem; in Section~\ref{secResults} we compare these strategies and the best one is \review{also} compared with the state of the art; a sensitivity analysis is also included in Section~\ref{secResults}.
+
+%%
+%%------------------------------------------------------
+%%
+%% 2) THE INTERVAL JOB SHOP SCHEDULING PROBLEM
+%%
+%% - Classical Job Shop Problem statement
+%% - Interval Durations and Interval schedules
+%% - Definition of Robustness
+%%
+%%------------------------------------------------------
+\section{The Job Shop Problem with Interval Durations}\label{secIJSP}
+The classical \emph{job shop scheduling problem} consists of a set of resources $M=\{M_1, \dots, M_m\}$ and a set of jobs $J=\{J_1,\dots,J_n\}$. Each job $J_j$ is organised in tasks \review{or operations} $(o(j,1),\dots,o(j,m_j))$ that need to be sequentially scheduled. We assume w.l.o.g. that tasks are indexed from 1 to $N=\sum_{j=1}^n m_j$, so we can refer to task $o(j,l)$ by its index $o=\sum_{i=1}^{j-1} m_i+l$ and denote the set of all tasks as $O=\{1,\dots, N\}$. Each task $o \in O$ requires the uninterrupted and exclusive use of a machine $\nu_o \in M$ for its whole processing time $p_o$.
+
+A solution to this problem is a \emph{schedule} $\boldsymbol{s}$, i.e. an allocation of starting times for each task, which, besides being \emph{feasible} (all constraints hold), is \emph{optimal} according to some criterion, in our case, minimal makespan $C_{max}$.
+
+%------------------------------------------------------
+% 2.1) UNCERTAINTY MODELLING
+%------------------------------------------------------
+\subsection{Interval Uncertainty} \label{subsecIntervalDurations}
+Following \cite{Lei2011} and \cite{Diaz2020genetic}, uncertainty in the processing time of tasks is modelled using closed intervals. Therefore, the processing time of task $o \in O$ is represented by an interval $\mathbf{p_o}=[\underline{p}_o,\overline{p}_o]$, where $\underline{p}_o$ and $\overline{p}_o$ are the available lower and upper bounds for the exact but unknown processing time $p_o$.
+
+The interval JSP (IJSP) with makespan mimisation requires two arithmetic operations: addition and maximum. Given two intervals $\mathbf{a}=[\underline{a},\overline{a}], \mathbf{b}=[\underline{b},\overline{b}]$, the addition is expressed as $[\underline{a}+\underline{b}, \overline{a}+\overline{b}]$ and the maximum as $[\max(\underline{a}, \underline{b}), \max(\overline{a}, \overline{b})]$. Also, given the lack of a natural order in the set of closed intervals, to determine the schedule with the ``minimal'' makespan, we need an interval \review{ranking} method. For the sake of fair comparisons with the literature, we shall use the midpoint method: $\mathbf{a} \leq_{MP} \mathbf{b} \Leftrightarrow m(\mathbf{a}) \leq m(\mathbf{b}) $ with $ m(\mathbf{a}) =(\underline{a}+\overline{a})/2$. \review{This is used in~\cite{Diaz2020genetic, Diaz2022, Diaz2023-ICAE} and it is equivalent to the ranking method used in~\cite{Lei2012c} and \cite{Lei2011}}. Notice that $m(\mathbf{a})$ coincides with the expected value of the uniform distribution on the interval, $E[\mathbf{a}]$.
+
+A schedule $\boldsymbol{s}$ for the IJSP establishes a relative order $\pi$ among tasks requiring the same machine. Conversely, given a task processing order $\pi$ the schedule $\boldsymbol{s}$ may be computed as follows. For every task $o \in O$, let $\mathbf{s_o(\pi)}$ and $\mathbf{c_o(\pi)}$ denote respectively the starting and completion times of $o$, let $PM_o(\pi)$ and $SM_o(\pi)$ denote the predecessor and successor tasks of $o$ in the machine $\nu_o$ according to $\pi$, and let $PJ_o$ and $SJ_o$ denote the tasks preceding and succeeding $o$ in its job. Then the starting time of $o$ is given by $\mathbf{s_o(\pi)} = \max(\mathbf{s}_{PJ_o} + \mathbf{p}_{PJ_o},\mathbf{s}_{PM_o(\pi)} + \mathbf{p}_{PM_o(\pi)})$, and the completion time by $\mathbf{c_o(\pi)} = \mathbf{s_o(\pi)} + \mathbf{p_o}$. The makespan is computed as the completion time of the last task to be processed according to $\pi$ thus, $\mathbf{C_{max}(\pi)}=\max_{o\in O}\{c_o(\pi)\}$. If there is no possible confusion regarding the processing order, we may simplify notation by writing $\mathbf{s_o}$, $\mathbf{c_o}$ and $\mathbf{C_{max}}$.
+
+\review{
+To illustrate this, we consider a problem with $n=3$ jobs and $m_j=m=2, j \in \{1,2,3\}$ machines. The following matrices show for each operation $o(j,l)$ its processing time ($p(j,l)$) and its required machine ($\nu(j,l)$):\\
+}
+
+\noindent\begin{minipage}{.5\linewidth}
+\begin{equation*}
+\label{processingTimes}
+  p =
+	\begin{pmatrix}
+	[3, 7] & [3, 7]\\
+	[4, 6] & [2, 3]\\
+	[1, 4] & [3, 6] \\
+	\end{pmatrix}
+\end{equation*}
+\\
+\end{minipage}%
+\noindent\begin{minipage}{.5\linewidth}
+\begin{equation*}
+\label{resourceAlloc}
+ \nu =
+	\begin{pmatrix}
+	M_1 & M_2\\
+	M_2 & M_1\\
+	M_2 & M_1\\
+	\end{pmatrix}
+\end{equation*}
+\\
+\end{minipage}%\\
+
+\review{
+Following the notation introduced above, the second operation of job $J_3$, $o(3,2)$, can be referred to as $o=6$, so $\mathbf{p_6}=p(2,3)=[3,6]$ and $\nu_6=\nu(2,3)=M_1$. Given the task processing order $\pi=(1, 3, 5, 4, 2, 6)$, operation $1$ ($o(1,1)$) is scheduled first. Since it has no job or machine predecessor, it is scheduled at instant $\mathbf{s_1}=[0,0]$ and $\mathbf{c_1}=\mathbf{s_1}+\mathbf{p_1}=[3,7]$. The same occurs with operation $3$ ($o(2,1)$): $\mathbf{s_3}=[0,0]$ and $\mathbf{c_3}=[4,6]$. Operation $5$ ($o(3,1)$) requires the same machine as the already scheduled operation 3 ($M_2$), so $PM_5=3$. Since $o=5$ has no job predecessor, $\mathbf{s_5}=\mathbf{s_3}+\mathbf{p_3}=[0,0]+[4,6]=[4,6]$ and $\mathbf{c_5}=[5,10]$. Operation $4$, with $PJ_4=3$, requires the same machine as operation $1$, so $PM_4=1$ and $\mathbf{s_4} = \max(\mathbf{s}_{3} + \mathbf{p}_{3},\mathbf{s}_{1} + \mathbf{p}_{1})=\max([4,6],[3,7])=[4,7]$ ($\mathbf{c_4}=[6,10]$). Scheduling the remaining operations following $\pi$, we obtain that $\mathbf{s_2}=[5,10]$, $\mathbf{c_2}=[8,17]$, $\mathbf{s_6}=[6,10]$, $\mathbf{c_6}=[9,16]$. Consequently, the makespan is $\mathbf{C_{max}}=\max_{o\in O}\{\mathbf{c_o}\} = [9, 17]$ and its midpoint, $m(\mathbf{C_{max}}) = 13$}
+
+\review{
+A Gannt chart of the schedule that results from the processing order $\pi$ can be seen in Figure~\ref{fig:ganttchart}. It adapts the chart to the interval framework, in the same manner as it is proposed to do in ~\cite{Fortemps1996} for fuzzy processing times.
+}
+\begin{figure}[tbh]
+ \centering
+ \includegraphics[width=1\textwidth]{./Figures/figIJSP-Gantt.eps}
+ \caption{\review{Gantt Chart representing a solution to an IJSP instance.}}
+  \label{fig:ganttchart}
+\end{figure}
+
+
+%%------------------------------------------------------
+%%
+%% 2.3) ROBUST SCHEDULES
+%%
+%%------------------------------------------------------
+\subsection{Robustness on Interval JSP}\label{secRobustness}
+In a solution to the IJSP, the makespan value is not an exact value, but an interval. It is only after the solution is executed on a real scenario that actual processing times for tasks $P^{ex}=\{p_o^{ex} \in [\underline{p}_o, \overline{p}_o], o \in O\}$ are known. Therefore, it is not until that moment that the actual makespan $C_{max}^{ex} \in [\underline{C}_{max}, \overline{C}_{max}]$ can be found. It is desirable that this executed makespan $C_{max}^{ex}$ does not differ much from the expected value of the makespan according to the interval $\mathbf{C_{max}}$.
+
+This is the idea behind the concept of $\epsilon$-robustness first proposed in~\cite{Bidot2009} for stochastic scheduling, and later adapted to the IJSP in~\cite{Diaz2020genetic}. For a given $\epsilon \geq 0$, a schedule with makespan $\mathbf{C_{max}}$ is considered to be \emph{$\epsilon$-robust} in a real scenario $P^{ex}$ if the relative error made by the expected makespan $E[\mathbf{C_{max}}]$ with respect to the makespan $C_{max}^{ex}$ of the executed schedule is bounded by $\epsilon$, that is:
+
+\begin{equation}\label{eqEpsilonRobustness2}
+\frac{\lvert C_{max}^{ex}-E[\mathbf{C_{max}}]\rvert }{E[\mathbf{C_{max}}]} \leq \epsilon.
+\end{equation}
+
+Clearly, the smaller the bound $\epsilon$, the more robust the interval schedule is.
+This measure of robustness is dependent on a specific configuration $P^{ex}$ of task processing times obtained upon execution of the predictive schedule $\boldsymbol{s}$. In the absence of real data, as is the case with the usual synthetic benchmark instances for job shop, we may resort to Monte-Carlo simulations. We simmulate $K$ possible configurations $P^k = \{p_o^{k} \in [\underline{p}_o, \overline{p}_o], o \in O\}$ using uniform probability distributions to sample durations for every task and compute for each configuration $k=1,\dots,K$ the exact makespan $C_{max}^k$ that results from executing tasks according to the ordering provided by $\boldsymbol{s}$. Then, the average $\epsilon$-robustness of the predictive schedule across the $K$ possible configurations, denoted $\overline{\epsilon}$, can be calculated as:
+\begin{equation}\label{eqMRE}
+\overline{\epsilon}=\frac{1}{K}\sum_{k=1}^K \frac{\lvert C_{max}^k-E[\mathbf{C_{max}}]\rvert}{E[\mathbf{C_{max}}]}.
+\end{equation}
+This value provides an estimate of how robust the solution $\boldsymbol{s}$ is across different processing times configurations.
+
+
+
+%%------------------------------------------------------
+%%
+%% 3) ABCPSO ALGORITHM
+%%
+%%------------------------------------------------------
+\section{Fast Elitist Artificial Bee Colony}\label{secABC}
+
+The Artificial Bee Colony Algorithm is a bioinspired swarm metaheuristic for optimisation based on the foraging behaviour of honey bees. Since it was introduced in~\cite{Karaboga2005} it has been successfully adapted to a variety of problems~\cite{Karaboga2014}.
+
+Typically, the ABC starts by generating and evaluating an initial hive $H_0$ of random food sources. The best food source $Best$ is assigned to the hive's queen. Then, the algorithm iterates over a number of cycles, each consisting of three phases mimicking the behaviour of three types of foraging bees: employed, onlooker and scout. In the employed bee phase, each food source is assigned to one employed bee, who explores a new candidate food source between its own food source and the queen’s one. In the onlooker bee phase, each bee chooses a food source and tries to find a better one in its neighbourhood. At the end of each phase, the newly-found food source is evaluated. If it is equivalent to the queen’s one (i.e. the best food source found so far), it is discarded for the sake of maintaining diversity in the hive. Otherwise, if it is better than the food source \review{of the bee that} generated it, it replaces it. If it cannot improve the original food source, then its $fs.numTrials$ counter is increased by one. In the scout bee phase, if the number of improvement trials of a food source $fs.numTrials$ reaches a given threshold $NT_{max}$, the scout bee \review{determines} a new food source to replace the former one in the hive of solutions. Typically, \review{this is done} by replacing the exhausted food source by a randomly generated one. The algorithm terminates when a certain stopping condition is met. In~\cite{Diaz2022}, this condition is met after a number $maxIter$ of consecutive iterations without finding a food source that improves the queen’s one.
+
+In this general schema, diversity is mainly controlled by two mechanisms: modifying a random part of a food source to obtain a trail solution in the onlooker bee phase, or replacing a whole solution by a new one during the scout bee phase. Although it can be argued that these mechanisms help to avoid premature convergence, practical experiments have determined that this might not be the case for the IJSP \cite{Diaz2022}. The employed and onlooker bee phases generate new solutions at each iteration, but they are included in the hive only if they can improve the food source from which they were generated. This may lead to a high selective pressure and facilitate getting trapped in local optima. When that happens, injecting a randomly generated solution in the scout bee phase with poor quality may not contribute enough to obtain better results. On the other hand, the current schema has up to three evaluation rounds, one at the end of each of the main phases. When diversity issues are present, most of these evaluations are useless, since new solutions won't be accepted, making the algorithm unnecessarily slow.
+
+To increase diversity, an elitist selection mechanism was introduced in~\cite{Diaz2022} so the employed bee phase does not always choose the queen's food source to explore, but a solution from a set of promising ones. In~\cite{Diaz2023-ICAE}, an $ESABC$ method is proposed where the onlooker bee phase is redefined based on the seasonal behaviour of honeybees to also increase the exploration capabilities of $ABC$. However, this seasonal behaviour is somehow similar to a Simulated Annealing method, so it increases the number of evaluations performed by the algorithm and therefore its overall complexity.
+
+In~\cite{Karaboga2009}, $ABC$ is compared with other metaheuristics such as genetic algorithms (GA), differential evolution (DE) or particle swarm (PSO). In general, the exploration idea on these methods consists in altering all individuals of the population, or creating new ones, with a certain probability. Then the new set of solutions is evaluated and some type of replacement strategy is applied. This allows to first explore, and then apply the selective pressure through replacement. We propose to adapt this strategy to the setting of the $ABC$ to increase diversity of solutions while keeping a reasonable complexity. The general layout of our proposal is inspired by the structure of Particle Swarm Optimization \cite{Kennedy1995} in the sense that food sources can be understood as the local best position of a bee, and the queen's source would be the global best. At each iteration, bees explore new food sources (solutions) influenced both by the best sources of the hive (global best) and its current food source (local best). Thus, the employed bee phase and the onlooker bee phase are fused into one exploration step. At the end of the cycle, all new solutions are evaluated. Each bee moves to its new food source only if it is different from the queen's and better than its local best. If the new food source is not accepted, the bee increases its counter of trials $fs.numTrials$ and when it exceeds the threshold $NT_{max}$, the bee moves to a random food source emulating scout bees. Allowing the bees to move more freely before evaluation can increase population's diversity and reduce the complexity of the $ABC$, going from three evaluation phases per iteration to only one. Furthermore, having only one replacement phase decreases the overall count of improvement trials and the number of random solutions introduced in the scouting section. \review{We refer to this new algorithm as Fast Elitist Artificial Bee Colony (fEABC in short).} To exploit the diversity and speed of the new structure, we propose to incorporate a new Local Search step before evaluation and do a further empirical evaluation on its advantages. The general structure of the algorithm is given in Algorithm~\ref{algfEABC}. Each step is detailed in the following subsections.
+
+
+%%--------------------------
+%% ALGORITHM: Artificial Bee Colony algorithm main steps
+%%
+\begin{algorithm}
+\small
+\caption{\label{algfEABC} Schema of the $fEABC$ Algorithm}
+\begin{center}
+\begin{algorithmic}[1]
+\Require {An IJSP instance}
+\Ensure {A schedule}
+    	\State\Comment{Initial hive, see Section~\ref{subsec:Codification}}
+	\State Generate and evaluate a hive $H_0$ of food sources
+	\State $Best \Leftarrow $ Best food source in $H_0$
+	\State $\mathit{numIter} \Leftarrow 0$
+	\State $i \Leftarrow 0$
+	\While {$\mathit{numIter} < \mathit{maxIter}$}
+	    \For {each food source $\mathit{fs}$ in $H_{i}$}
+	    	\State\Comment{Exploration, see Section \ref{subsec:Exploration}}
+	    	\State $\mathit{gBest} \Leftarrow$ Select a solution from $H_{i}$ using $Elite3$
+	    \State ${new_\mathit{fs} \Leftarrow}$ Find a neighbour of $\mathit{fs}$	
+	    	\State ${new_\mathit{fs}' \Leftarrow}$ Apply recombination to ${(new_\mathit{fs}, \mathit{gBest})}$
+		    \State Evaluate $new_\mathit{fs}'$
+			\State\Comment{Local search, see Section~\ref{subsec:LocalSearch}}	
+	    	\State ${new_\mathit{fs}'\leftarrow}$ Apply Local Search to $new_\mathit{fs}'$
+
+	    	\State\Comment{Replacement, see Section~\ref{subsec:Replacement}}
+		\If 	{$new_\mathit{fs}'$ is better than $Best$}
+			\State $\mathit{fs} \Leftarrow {new_\mathit{fs}'}$
+			\State ${Best}  \Leftarrow {new_\mathit{fs}'}$
+  			\State $numIter \Leftarrow 0$
+  		\Else
+			\State $numIter \Leftarrow numIter+1$
+    			\If {$new_\mathit{fs}'$ is better than $\mathit{fs}$ and different than $Best$}
+				\State $fs  \Leftarrow {new_\mathit{fs}'}$
+	    		\Else
+				\State $\mathit{fs.numTrials} \Leftarrow \mathit{fs.numTrials} +1$
+			\EndIf
+		\EndIf
+		\If {$\mathit{fs.numTrials} > \operatorname{NT}_{max}$}
+			\State $\mathit{fs}  \Leftarrow $ Generate random solution
+			\State Evaluate $\mathit{fs}$
+			\State $\mathit{fs.numTrials} \Leftarrow 0$
+		\EndIf
+        \EndFor
+        \State $i \leftarrow i+1$
+	\EndWhile
+	\\
+\Return {$Best$}
+\end{algorithmic}
+\end{center}
+\end{algorithm}
+%%
+%% END ALGORITHM: fEABC
+%%--------------------------
+
+
+\subsection{Codification and Initialization}\label{subsec:Codification}
+We adopt the codification strategy from~\cite{Diaz2020genetic}, where solutions are encoded using permutations with repetition~\cite{Bierwirth1995}. Each solution $\boldsymbol{s}$ is represented by its task processing order $\pi$, but each operation $o(i,j)$ in $\pi$ is replaced by its job number $i$. For example, for a problem with $n=3$ jobs and $m=2$ machines, a schedule with $\pi=(o(1,1), o(2,1), o(1,2), o(3,1), o(3,2), o(2,2))$ is encoded as $(1,2,1,3,3,2)$. To decode a solution, each value $i$ in the permutation is replaced by the $j$-th task of that job, where $j$ is the number of times the job has appeared so far in the permutation (e.g. the second time the value 1 appears, it refers to task $o(1,2)$). To build a schedule from the permutation, we consider two decoding strategies.
+The strategy described in Section~\ref{subsecIntervalDurations} can be seen as an adaptation to intervals of the concept of \textit{Semi-active Schedule Generation Scheme}, or \emph{Semi-active SGS}, introduced in~\cite{Palacios2014c} for the JSP with fuzzy durations. In this setting, the starting time $\mathbf{s}_o$ of each task $o$ corresponds to the Earliest feasible Appending Starting time ($ESA_o$), and the resulting schedule is said to be \emph{Semi-active} based on the definition from~\cite{Sprecher1995}. In an Insertion SGS, the starting time $\mathbf{s}_o$ of each task $o$ in $\pi$ is calculated as its Earliest feasible Insertion Starting time ($ESI_o$). Let $k=\nu_o$ be the machine where $o$ needs to be processed, $PJ_o$ the tasks preceding $o$ in its job and $\sigma_k = (0, \sigma(1, k), \dots, \sigma(\eta_k, k))$ the sequence of tasks already scheduled in machine $\nu_o$. A feasible insertion position $q, 0\leq q < \eta_k $ for $o$ verifies that $max\{\overline{c}_{\sigma(q,k)}, \overline{c}_{PJ_o}\}+\overline{p}_{o} \leq \overline{s}_{\sigma(q+1,k)}$ and $max\{\underline{c}_{\sigma(q,k)}, \underline{c}_{PJ_o}\}+\underline{p}_{o} \leq \underline{s}_{\sigma(q+1,k)}$. If such position exists, $ESI_o=max\{\mathbf{c}_{\sigma(q^*,k)}, \mathbf{c}_{PJ_o}\}$, where $q^*$ is the smallest feasible insertion position. If there is no feasible insertion position, then $ESI_o=ESA_o$. The schedules that can be obtained with this decoding mechanism fall into the definition of \textit{Active schedules} given in~\cite{Sprecher1995,Palacios2014c}. The set of active schedules is smaller than the set of semi-active schedules and both are guaranteed to contain the optimal solution. This can be seen as an advantage, since reducing the search space makes it faster to navigate, but it can also decrease diversity in meta-heuristics working on that space. An empirical analysis is needed to find the best option.
+
+To generate an initial hive $H_0$ for the algorithm, a set of food sources is created by randomly generating permutations with repetition that are feasible for the problem. These permutations are later decoded and evaluated using of the described \emph{SGS}. When comparing the richness of two different food sources, the fitness function is used. Given two food sources $fs$ and $fs'$ encoding two schedules $s$ and $s'$ respectively, we consider that $fs$ is better than $fs'$ if $\mathbf{C_{max}}(s) \leq_{MP} \mathbf{C_{max}}(s')$.
+
+
+\subsection{Exploration Strategy}\label{subsec:Exploration}
+At each iteration, each bee begins by exploring the neighbourhood around its currently-assigned food source $fs$. To generate new food sources in the surroundings of $fs$, a small change is performed using one of the following operators for permutations: Swap, Inversion or Insertion. Given the small magnitude of the changes, it is \review{reasonable} to expect that new solutions do not differ much from $fs$ in terms of makespan but provide enough of a difference to increase diversity while maintaining the average quality of the population.
+
+After moving to a neighbouring food source $new_{fs}$, the bee begins the exploration towards the best food sources known by the hive. In the classical $ABC$, the best food source is selected at the beginning of the iteration and is later used by all employed bees. In this work, each bee selects a food source $gBest$ to move towards to. Selecting the best food source in the hive (the queen's) can lead to a shorter execution time derived from the lack of diversity in the solution bank~\cite{Banharnsakun2012}. Two alternatives were tested in our preliminary work in~\cite{Diaz2022} to avoid this issue. \emph{Elite2} consists on selecting the best food source among the group of sources with the highest number of improvement trials \cite{Garcia-Alvarez2018}. On the other hand, \emph{Elite3} selects at random one of the best $N$ food sources existing at the time, being $N$ a configurable value. After an experimental study, the latter appears to be the most prominent strategy. Moreover, the fact of being able to configure the size of that set allows to balance exploration and exploitation. Therefore, we choose \emph{Elite3} as selection strategy for each bee in our method.
+
+Once the bee has selected its global best $gBest$, it applies a recombination operator to move from $new_{fs}$ to $gBest$, obtaining a new source $new_{fs}'$ containing information of both solutions. This focuses the exploration towards more promising areas of the search space. We test three different recombination operators especially tailored to Job Shop Scheduling Problems: \review{Job-Order Crossover (JOX) \cite{Ono1996}, Generalised Order Crossover (GOX) \cite{Bierwirth1995} and Precedence Preservative Crossover (PPX) \cite{Bierwirth1996}}. Only after the bee has explored both its neighbouring food source and a solution towards the hive's bests, the newly food source ${new_\mathit{fs}'}$ is evaluated.
+
+
+\subsection{Local Search}\label{subsec:LocalSearch}
+The diversity derived from the previous steps, and the reduction on the number of evaluations per iteration, creates an opportunity to include more exploitation-driven strategies such as Local Search. Local search techniques focus on exploitation to offer further improvements of solutions resulting from schedule generation heuristics. In our context, after the exploration phase of the bee is completed and a new solution $new_{fs}'$ is evaluated, the bee may decide to carry an intense search in the vicinity of the new food source before moving on to the next iteration.
+
+We take the neighbourhood structure defined in~\cite{VanLaarhoven1992} as reference. There, a neighbour is generated by reversing a critical arc in the solution graph $G(\boldsymbol{s})$ representing schedule $\boldsymbol{s}$. That is a graph where each task is represented as a node. There is an arc from node $x$ to node $y$, if and only if, $x=PJ_y$ or $x=PM_y$. Additionally, there are two dummy nodes, $0$ and $E$, such that there is arc from $0$ to the first task of each job, and also from the last task of each job to $E$. Each arc $(x,y)$ is labelled with the processing time $p_x$. A critical path in $G(s)$ is the longest path from $0$ to $E$ and its length determines the makespan. All arcs that belong to a critical \review{path are} called critical arcs. In~\cite{GonzalezRodriguez2008b}, this idea is adapted and extended to the Fuzzy JSP by using three parallel graphs, where arcs on each one of them are labelled with each of the components of the Triangular Fuzzy Numbers (TFN). Within this neighbourhood structure, all neighbours are feasible and the connectivity property holds. For our algorithm, we take that idea and adapt it to the framework of interval uncertainty by using two parallel graphs $G_1$, $G_2$ to represent each solution. The former labels the arcs with the lower bound of the processing times and the latter with the upper bounds. Therefore, critical paths in $G_1$ and $G_2$ determine $\underline{C}_{max}$ and $\overline{C}_{max}$ respectively. We define our neighbourhood as the set of solutions that result from reversing an arc $(x,y)$ that is critical in $G_1$ or $G_2$ (or both).
+
+Given that the aim is to maintain a good solution diversity in our solving method, we use a simple hill-climbing algorithm to guide the search. In this approach, neighbours of the current solution are explored in a random order until we find one that improves the current solution. That neighbour becomes the new current solution and the process is repeated until a solution with no improving neighbours is found. This method is among the fastest in the family of Local Search, since it does not necessarily evaluate all neighbours of each solution and it does not provide too much exploitation, thus helping us improve our solutions without losing much diversity.
+
+
+\subsection{Scouting and Replacement}\label{subsec:Replacement}
+After each bee has found and evaluated a new food source, and the Local Search has been applied to it if the option is available, it shares the new solution with the rest of the hive. If the new food source is equivalent to the queen's one (i.e. the best food source found so far), it is discarded for the sake of maintaining diversity in the pool. Otherwise, if it improves the food source currently assigned to the bee, the bee moves to the new food source for the upcoming iteration. Similarly, if it is better than the best food source found so far, it replaces it and it is assigned to the queen. On the other hand, if it cannot improve the current food source of the bee, the number of improvement trials $fs.numTrials$ of the food source is increased by one.
+
+If the food source reaches the maximum number of improvement trials $NT_{max}$, it is discarded and the bee is in charge of finding a replacement. In this case, a random solution is generated following the same criteria as in Section~\ref{subsec:Codification} and the bee is assigned to it.
+
+
+
+%%------------------------------------------------------
+%%
+%% 7) EXPERIMENTAL RESULTS
+%%
+%%------------------------------------------------------
+\section{Experimental Results}\label{secResults}
+% Main structure:
+% - Objectives and methodology
+% - Parameter tunning
+% - Comparison wrt state-of the art
+% - Sensitivity analysis
+In this section, the proposed fast Elite ABC algorithm ($fEABC$) is evaluated and compared with the state-of-the-art methods. Firstly, a parametric tuning is carried out to find the best setup for the algorithm. Once found, it is compared to best known methods from the literature for the Interval JSP. Finally, a sensitivity analysis is conducted to assess the behaviour of the algorithm on instances with different amounts of uncertainty. We evaluate our method over 12 instances from the literature~\cite{Diaz2020genetic}. Namely FT10 ($10\times10$), FT20 ($20\times5$), La21, La24, La25 ($15\times10$), La27, La29 ($20\times10$), La38, La40 ($15\times15$), ABZ7, ABZ8, and ABZ9 ($20\times15$). Values in brackets denote the instance size ($n \times m$). All experiments are done using a C++ implementation on a PC with Intel Xeon Gold 6132 processor at 2.6 Ghz and 128 Gb RAM with Linux (CentOS v6.10). For every experiment, we consider 30 runs of the method on each instance, so the resulting data are representative of the method's performance.
+
+%% - Parameter tunning
+\subsection{Parameter Setup}
+For the parameter setup, we perform two different tuning processes depending on the use or not of Local Search. To differentiate them, we refer to the variant with Local Search as $fEABC_{LS}$, while we use simply $fEABC$ for the one without the Local Search. The stopping criterion is set in both cases to $\mathit{maxIter}=25$ consecutive iterations without improving the best solution found so far and the population size is set to 250 individuals according to the results obtained in~\cite{Diaz2022} for $ABC_{E3}$. For the remaining parameters, the following values are tested:
+\begin{itemize}
+\item Decoding SGS: Semi-active, \textbf{Insertion} (see Section~\ref{subsec:Codification})
+\item Local exploration : \textbf{Insertion}, Inversion, Swap (see Section~\ref{subsec:Exploration})
+\item Global attraction : \textbf{GOX}, JOX, PPX (see Section~\ref{subsec:Exploration})
+\item Max. number of trials $fs.numTrials$: 10, 15, \textbf{20}
+\item Elite size: \textbf{40}, 50, 60
+\end{itemize}
+
+\review{We begin the parameter tuning using a default setup with the values highlighted in bold in the list. Then we follow a sequential process where we select a parameter and test all its possible values. Once the best value for that parameter is found, it is set and the process repeats until all parameters have been established.} Table~\ref{table:parameterTuning} displays the best resulting configuration for each variant.
+
+\begin{table}[tb]
+\small
+\centering
+\caption{\label{table:parameterTuning} Parameter setup for each variant of $fEABC$}
+\resizebox{.6\columnwidth}{!}{%
+\begin{tabular}{c r r r r r}
+\toprule
+\textit{Instance}  & \multicolumn{1}{c}{$fEABC$} & \multicolumn{1}{c}{$fEABC_{LS}$} \\
+\midrule
+\textit{Decoding SGS} & Insertion & Insertion     \\
+\textit{Local exploration} & Insertion & Swap     \\
+\textit{Global attraction}  & JOX & JOX   \\
+\textit{Improvement trials}  & 20 & 15    \\
+\textit{Elite size}  & 40 & 40  \\
+\bottomrule
+\end{tabular}
+}
+\end{table}
+%% END OF TABLE\\
+
+Regarding the use of Semi-active SGS or Insertion SGS, our results show that using an insertion strategy, and thus moving in the search space of active schedules, is better in general. In fact, the best setup for $fEABC$ using the Insertion SGS obtains makespan values that are 7.2\% better in average than those obtained with the best setup using the Semi-active SGS. When including Local Search, using Semi-active schedules brings more diversity, which could potentially benefit the exploitation of LS. However, this is not the case, and using the Insertion SGS still gets results that are 5.0\% better than using the Semi-active SGS.
+
+
+\subsection{Comparison with State-of-the-art Methods}
+To the best of our knowledge, the most successful algorithms in the literature for solving the Interval JSP are the genetic algorithm from~\cite{Diaz2020genetic} ($GA$), the $ABC_{E3}$ from~\cite{Diaz2022}, and the more recent $ESABC$ from~\cite{Diaz2023-ICAE}.
+
+Our first target is to assess if the new method increases the population's diversity enough to allow the algorithm to converge for more iterations and reach better areas of the search space. To do so, in Table~\ref{table:expResultsEV1} we compare the $fEABC$ without the Local Search, with $GA$ and the $ABC_{E3}$ method that defines the starting point for this work. For each instance, the best-known Lower Bound ($LB$) for the expected makespan is reported \cite{Diaz2022}. For each method, the table displays the Relative Error ($RE$) with respect to LB of the expected makespan of the best solution obtained in 30 runs, together with the average relative error (standard deviation in brackets) among those runs and the average runtime in seconds. Best average values are highlighted in bold. We can see that in average, $fEABC$ obtains the best results in 10 out of 12 instances. Not only that, but in average, the relative errors obtained by $fEABC$ are 7.2\% better than those obtained with $ABC_{E3}$, and 39.1\% better than the $GA$.
+
+\begin{table*}[tb]
+\small
+\centering
+\caption{Relative error (\%) w.r.t. LB obtained by 30 runs of $GA$, $ABC_{E3}$ and $fEABC$ and average runtime in seconds.}
+\setlength{\tabcolsep}{1.5mm}%% redefine intercolumn separation for a better look
+\label{table:expResultsEV1}
+\resizebox{1\textwidth}{!}{%
+\begin{tabular}{c | c | rrr | rrr | rrr}
+\toprule
+\multicolumn{1}{c}{} & \multicolumn{1}{c}{} & \multicolumn{3}{c}{$GA$}& \multicolumn{3}{c}{$ABC_{E3}$}& \multicolumn{3}{c}{$fEABC$} \\
+%  \cmidrule(lr){3-5}\cmidrule(lr){6-8}\cmidrule(lr){9-11}
+\textit{Instance}  & \textit{LB} & $Best$ & \multicolumn{1}{c}{$Avg.$\tiny{($SD$)}} & Time  & $Best$ & \multicolumn{1}{c}{$Avg.$\tiny{($SD$)}} & Time & $Best$ & \multicolumn{1}{c}{$Avg.$\tiny{($SD$)}} & Time \\
+\midrule
+ABZ7&656&6.3&12.5\tiny{(2.0)}&1.8&5.3&7.3\tiny{(1.1)}&4.5&3.7&\textbf{6.6}\tiny{(1.1)}&5.9\\
+ABZ8&645&11.3&18.5\tiny{(2.1)}&1.8&9.0&12.1\tiny{(1.2)}&4.2&9.1&\textbf{11.1}\tiny{(1.0)}&6.6\\
+ABZ9&661&13.0&18.0\tiny{(2.4)}&2.2&9.7&13.1\tiny{(1.6)}&6.0&9.1&\textbf{11.6}\tiny{(0.9)}&6.8\\
+FT10&930&1.8&5.2\tiny{(2.1)}&0.5&1.1&4.1\tiny{(1.3)}&1.6&1.0&\textbf{3.5}\tiny{(1.2)}&1.9\\
+FT20&1165&1.5&4.4\tiny{(1.4)}&0.7&0.7&\textbf{1.7}\tiny{(0.7)}&2.7&0.8&1.8\tiny{(0.6)}&2.7\\
+LA21&1046&3.2&5.0\tiny{(1.3)}&1.1&2.6&5.0\tiny{(1.3)}&1.8&1.7&\textbf{4.2}\tiny{(0.9)}&2.6\\
+LA24&935&4.1&6.3\tiny{(1.6)}&0.8&2.2&5.1\tiny{(1.3)}&2.7&3.4&\textbf{4.9}\tiny{(1.1)}&2.6\\
+LA25&977&1.9&5.1\tiny{(2.4)}&1.0&1.9&3.9\tiny{(0.9)}&2.4&1.1&\textbf{3.4}\tiny{(1.3)}&2.7\\
+LA27&1235&4.6&10.2\tiny{(2.0)}&1.3&2.8&4.7\tiny{(1.0)}&4.1&3.0&\textbf{4.6}\tiny{(1.2)}&5.0\\
+LA29&1152&11.1&14.2\tiny{(1.6)}&1.1&5.5&8.6\tiny{(1.3)}&4.4&4.8&\textbf{7.4}\tiny{(1.3)}&5.4\\
+LA38&1196&6.0&9.2\tiny{(2.3)}&1.4&4.5&6.9\tiny{(1.5)}&6.0&3.0&\textbf{6.1}\tiny{(1.5)}&4.0\\
+LA40&1222&5.1&8.7\tiny{(2.3)}&1.2&1.9&\textbf{4.2}\tiny{(1.1)}&3.0&3.0&4.6\tiny{(0.9)}&3.5\\
+\bottomrule
+\end{tabular}
+}
+\end{table*}
+
+Regarding runtime, despite reducing the number of evaluations in the proposed method, it takes 16\% longer in average to converge than $ABC_{E3}$. This is an expected result, since the target is to increase diversity for the algorithm not to get easily stuck in local optima and explore further into the search space. If we analyse the speed of the algorithms per iteration, we see that an iteration in $fEABC$ is actually 9\% faster than an iteration of $ABC_{E3}$. But $fEABC$ is capable of iterating for longer before meeting the stopping criterion. This is illustrated in Figure~\ref{fig:convergence}, where we can see the evolution during 200 iterations of the average expected makespan in 30 runs on instance $La29$. We can see how $ABC_{E3}$ quickly finds good quality solutions, but then gets stuck in local optima. On the other hand, $fEABC$ focuses more on exploration on the early iterations, which then allows it to \review{converge} to better solutions than $ABC_{E3}$ in the long term.
+
+\begin{figure}[tbh]
+ \centering
+ \includegraphics[height=0.5\textwidth]{./Figures/200IterChartLa29.eps}
+ \caption{Evolution of Expected makespan over 200 iterations of $GA$, $ABC_{E3}$, $fEABC$, $ESABC$ and $fEABC_{LS}$ on instance La29.}
+  \label{fig:convergence}
+\end{figure}
+
+
+In~\cite{Diaz2023-ICAE}, an $ESABC$ incorporates a Simulated Annealing-based strategy to improve population's diversity, obtaining the best-known results for the IJSP at the cost of increasing the algorithms runtime. In Table~\ref{table:expResultsEV2} we compare both $fEABC$ and $fEABC_{LS}$ with this method. First, we observe that $fEABC$ has a very similar behaviour to $ESABC$ in terms of average relative errors. We conduct a statistical examination to detect if there is a significant difference between them. If the samples on each instance meet the Shapiro-Wilk test of normality, an Analysis of Variance (ANOVA) is executed, followed by Tukey’s Honest Significant Difference to display the results of all pairwise comparisons within the tested groups. If the test of normality fails, a Kruskall-Wallis rank sum test is performed followed by a multiple comparison to identify which groups differ. The tests show that there is a significant difference between $ESABC$ and $fEABC$ in only 1 of the 12 instances. However, the runtime of $fEABC$ is 13.2\% shorter than $ESABC$. That is, $fEABC$ obtains very similar results in less time than $ESABC$, which is a significant achievement taking into account that $ESABC$ incorporates a Simulated Annealing-like technique for diversity and exploitation. In $fEABC_{LS}$ we try to invest the time reduction of $fEABC$ on exploitation. Reported results show that in average, $fEABC_{LS}$ obtains better results than $ESABC$ in 11 out of 12 instances. Moreover, $fEABC_{LS}$ improves the RE w.r.t. LB of $ESABC$ in 11.3\% while the runtime increases only in 7.7\%. When comparing to its counterpart without Local Search, $fEABC_{LS}$ obtains results that are 16.7\% better than $fEABC$ using 24\% more time. These values increase to 22.8\% and 45.1\% respectively when compared with $ABC_{E3}$.
+
+\begin{table*}[tb]
+\small
+\centering
+\caption{Relative error (\%) w.r.t. LB obtained by 30 runs of $ESABC$, $fEABC$ and $fEABC_{LS}$ and average runtime in seconds.}
+\setlength{\tabcolsep}{1.5mm}%% redefine intercolumn separation for a better look
+\label{table:expResultsEV2}
+\resizebox{1\textwidth}{!}{%
+\begin{tabular}{c | rrr | rrr | rrr}
+\toprule
+\multicolumn{1}{c}{} & \multicolumn{3}{c}{$ESABC$}& \multicolumn{3}{c}{$fEABC$}& \multicolumn{3}{c}{$fEABC_{LS}$} \\
+%  \cmidrule(lr){2-4}\cmidrule(lr){5-7}\cmidrule(lr){8-10}
+\textit{Instance} & $Best$ & \multicolumn{1}{c}{$Avg.$} & Time  & $Best$ & \multicolumn{1}{c}{$Avg.$} & Time & $Best$ & \multicolumn{1}{c}{$Avg.$} & Time \\
+\midrule
+ABZ7&4.2&6.7\tiny{(1.7)}&6.5&3.7&6.6\tiny{(1.1)}&5.9&4.1&\textbf{6.2}\tiny{(1.3)}&8.1\\
+ABZ8&8.7&10.9\tiny{(1.7)}&7.7&9.1&11.1\tiny{(1.0)}&6.6&7.9&\textbf{10.9}\tiny{(2.0)}&8.2\\
+ABZ9&8.5&\textbf{11.2}\tiny{(1.5)}&8.7&9.1&11.6\tiny{(0.9)}&6.8&9.0&11.5\tiny{(1.3)}&8.2\\
+FT10&0.6&3.0\tiny{(1.2)}&1.8&1.0&3.5\tiny{(1.2)}&1.9&0.6&\textbf{2.9}\tiny{(1.5)}&1.8\\
+FT20&0.7&1.8\tiny{(0.6)}&2.9&0.8&1.8\tiny{(0.6)}&2.7&0.7&\textbf{1.3}\tiny{(0.2)}&3.7\\
+LA21&2.1&4.0\tiny{(0.7)}&2.9&1.7&4.2\tiny{(0.9)}&2.6&2.2&\textbf{3.7}\tiny{(0.2)}&3.5\\
+LA24&3.5&5.0\tiny{(1.0)}&2.6&3.4&4.9\tiny{(1.1)}&2.6&3.6&\textbf{4.4}\tiny{(0.7)}&3.1\\
+LA25&1.3&2.7\tiny{(0.9)}&3.0&1.1&3.4\tiny{(1.3)}&2.7&1.1&\textbf{2.1}\tiny{(0.8)}&3.0\\
+LA27&2.8&4.1\tiny{(1.0)}&5.8&3.0&4.6\tiny{(1.2)}&5.0&1.9&\textbf{3.6}\tiny{(1.3)}&6.7\\
+LA29&5.0&7.0\tiny{(1.1)}&6.7&4.8&7.4\tiny{(1.3)}&5.4&3.7&\textbf{4.8}\tiny{(1.0)}&7.2\\
+LA38&3.0&5.8\tiny{(1.4)}&7.2&3.0&6.1\tiny{(1.5)}&4.0&3.0&\textbf{5.4}\tiny{(1.1)}&4.8\\
+LA40&2.7&4.1\tiny{(0.9)}&3.7&3.0&4.6\tiny{(0.9)}&3.5&2.6&\textbf{4.0}\tiny{(0.9)}&4.0\\
+\bottomrule
+\end{tabular}
+}
+\end{table*}
+
+The behaviour of all different methods can be better appreciated in Figure~\ref{fig:convergence}. We can observe how $fEABC_{LS}$ converges better than any of the other methods, including $ESABC$, due to its ability to balance the exploration and exploitation of the search space, being less likely to get trapped in local optima. Furthermore, $fEABC$ shows a very similar behaviour to $ESABC$ while being faster as shown in Table~\ref{table:expResultsEV2}.
+
+
+\subsection{Sensitivity Analysis}
+Finally, we carry out a sensitivity analysis to determine if taking into account uncertainty during the optimisation process is a beneficial effort in the face of increasing uncertainty. \review{We consider a new version of $fEABC_{LS}$, $fEABC_{LS}^C$, where the duration of each task is taken as the midpoint of the interval. That is, uncertainty is not taken into account during the optimisation process. In this setting, makespan values obtained by $fEABC_{LS}$ are intervals, but makespan values obtained by $fEABC_{LS}^C$ will be crisp, so a straightforward comparison is not fair. Instead, we evaluate the performance of the obtained solutions in terms of their $\overline{\epsilon}$ robustness in $K=1000$ different configurations (see Section~\ref{secRobustness})}. To also evaluate their robustness in more uncertain environments, we generate two new versions of each instance where the interval widths are respectively enlarged by 20\% and 40\%. The changes are applied symmetrically on both sides of the intervals to maintain the significance of the midpoint. If the increase on the width of an interval $\mathbf{p_o}$ would result on a negative bound, then the interval $[0, \overline{p}_o+\underline{p}_o]$ is taken instead.
+
+\review{Table~\ref{table:expResRobInc} shows the $\overline{\epsilon}$ values of the solutions obtained by $fEABC_{LS}$, considering interval processing times, and $fEABC_{LS}^C$, considering only the midpoint of the intervals, over the three sets of instances: the original ones (+0\% in the table), and the two new versions (+20\% and +40\% in the table).} The results show that $fEABC_{LS}$ finds the most robust solutions, even when the size of the intervals is expanded by 20 and 40\%. In fact, the solutions obtained by $fEABC_{LS}$ have better robustness values over the scenarios with an increase of 20\% than those obtained by $fEABC_{LS}^C$ on the original instances. As expected, in both cases the robustness deteriorates as uncertainty increases, but there is a clear difference between incorporating uncertainty in the optimisation or not. For instance, when the intervals are increased by 20 and 40\% the $\overline{\epsilon}$ values of solutions obtained with $fEABC_{LS}$ get 10.68\% and 29.62\% worse, whereas for $fEABC_{LS}^C$ the $\overline{\epsilon}$ values become 16.37\% and 42.50\% worse respectively.
+
+\begin{table}[htb]
+\small
+\centering
+\setlength{\tabcolsep}{1.5mm}%% redefine intercolumn separation for a better look
+\caption{Average $\overline{\epsilon}$ values ($\times 1000$) for $fEABC_{LS}^C$ and $fEABC_{LS}$ increasing processing times' interval width in +20\% and +40\% (standard deviation in brackets).}
+\label{table:expResRobInc}
+% \resizebox{1\columnwidth}{!}{%
+\begin{tabular}{crrrrrr}
+\toprule
+ & \multicolumn{3}{c}{$fEABC_{LS}^C$}& \multicolumn{3}{c}{$fEABC_{LS}$} \\
+ \cmidrule(lr){2-4}\cmidrule(lr){5-7}
+\textit{Instance}  & $+0\%$ & $+20\%$ & $+40\%$ & $+0\%$ & $+20\%$ & $+40\%$ \\
+\midrule
+ABZ7&11.72\tiny{(1.90)}&12.75\tiny{(1.60)}&15.66\tiny{(1.89)}&9.01\tiny{(1.23)}&9.30\tiny{(1.11)}&10.74\tiny{(1.04)}\\
+ABZ8&10.75\tiny{(1.84)}&11.36\tiny{(1.87)}&13.96\tiny{(2.15)}&7.81\tiny{(1.01)}&7.19\tiny{(0.90)}&8.61\tiny{(1.34)}\\
+ABZ9&10.48\tiny{(1.89)}&11.45\tiny{(1.65)}&14.16\tiny{(1.89)}&7.22\tiny{(0.82)}&7.23\tiny{(0.68)}&8.41\tiny{(1.04)}\\
+FT10&11.97\tiny{(1.31)}&13.45\tiny{(1.75)}&16.42\tiny{(2.12)}&9.62\tiny{(0.98)}&10.12\tiny{(1.24)}&11.92\tiny{(1.77)}\\
+FT20&9.65\tiny{(1.58)}&10.72\tiny{(1.64)}&12.94\tiny{(1.99)}&7.7\tiny{(0.42)}&8.69\tiny{(0.52)}&9.94\tiny{(0.55)}\\
+LA21&14.41\tiny{(1.29)}&16.70\tiny{(1.51)}&20.35\tiny{(1.72)}&9.61\tiny{(0.96)}&11.28\tiny{(1.25)}&13.15\tiny{(1.31)}\\
+LA24&15.53\tiny{(2.28)}&19.04\tiny{(2.04)}&23.19\tiny{(2.39)}&12.65\tiny{(1.85)}&14.43\tiny{(2.18)}&16.76\tiny{(2.23)}\\
+LA25&12.68\tiny{(2.00)}&15.74\tiny{(3.00)}&19.28\tiny{(3.55)}&10.9\tiny{(1.13)}&11.93\tiny{(1.39)}&14.51\tiny{(1.38)}\\
+LA27&13.04\tiny{(1.62)}&15.41\tiny{(1.80)}&18.89\tiny{(2.07)}&9.79\tiny{(1.16)}&11.38\tiny{(0.77)}&13.51\tiny{(1.48)}\\
+LA29&13.07\tiny{(1.62)}&15.18\tiny{(1.70)}&18.60\tiny{(1.96)}&9.43\tiny{(1.07)}&10.78\tiny{(1.14)}&14.01\tiny{(1.32)}\\
+LA38&13.50\tiny{(1.49)}&16.42\tiny{(1.70)}&20.14\tiny{(1.95)}&9.41\tiny{(1.34)}&10.88\tiny{(1.43)}&12.01\tiny{(1.78)}\\
+LA40&13.33\tiny{(1.96)}&16.48\tiny{(2.76)}&20.34\tiny{(3.22)}&9.95\tiny{(0.90)}&11.96\tiny{(1.38)}&13.01\tiny{(1.20)}\\
+
+\bottomrule
+\end{tabular}
+%}
+\end{table}
+
+This is better illustrated in Figure~\ref{fig:sensitivity}. Each graphic contains a histogram with the $K=1000$ realisations of the best solution obtained in $fEABC_{LS}$ and the best one from $fEABC_{LS}^C$ on the different variants of instance $La25$. Red lines depict the predictive values: $C_{max}$ when \review{using $fEABC_{LS}^C$} and $E[\mathbf{C_{max}}]$ when \review{using $fEABC_{LS}$}. In the latter case, blue dotted lines show the interval \review{makespan} bounds. If we compare the graphics with the original $La25$ instance, we can see how the red line in $fEABC_{LS}$ is quite inside the histogram, while in the case of $fEABC_{LS}^C$ it is more on the left side, showing that the solution in this case is quite optimistic and real executions tend to have a higher makespan. When uncertainty increases, the histograms in both cases tend to spread towards the right side of the plot. However, with the $fEABC_{LS}$ solution, the red line is still quite inside the histogram, showing that it is a better predictor than $fEABC_{LS}^C$ where it remains on the left. Moreover, in the case of $fEABC_{LS}^C$, real executions tend to move more to the right side of the graphic than with $fEABC_{LS}$, starting to accumulate around 1050 in $La25_{+40\%}$.
+
+\begin{figure}[tb]
+ \centering
+  	\subfigure[$La25$ ($fEABC_{LS}^C$)] {
+		 \includegraphics[width=0.3\textwidth]{./Figures/histogram_CRISP00_Robustness.eps}
+  	}
+   \subfigure[$La25$ ($fEABC_{LS}$)] {
+	 \includegraphics[width=0.3\textwidth]{./Figures/histogram_MP00_Robustness.eps}
+ 	 }
+ 	 \\
+ 	
+	\subfigure[$La25_{+20\%}$ ($fEABC_{LS}^C$)] {
+	 \includegraphics[width=0.3\textwidth]{./Figures/histogram_CRISP20_Robustness.eps}
+	 }
+	 \subfigure[$La25_{+20\%}$ ($fEABC_{LS}$)] {
+	 \includegraphics[width=0.3\textwidth]{./Figures/histogram_MP20_Robustness.eps}
+  }
+  \\
+	 \subfigure[$La25_{+40\%}$ ($fEABC_{LS}^C$)] {
+	 \includegraphics[width=0.3\textwidth]{./Figures/histogram_CRISP40_Robustness.eps}
+	 }
+    \subfigure[$La25_{+40\%}$ ($fEABC_{LS}$)] {
+	 \includegraphics[width=0.3\textwidth]{./Figures/histogram_MP40_Robustness.eps}
+	 }
+ \caption{Histograms of $C_{max}^{ex}$ obtained with the best solutions from $fEABC_{LS}^C$ and $fEABC_{LS}$ on $K=1000$ configurations of instances $La25$, $La25_{+20\%}$ and $La25_{+40\%}$}  \label{fig:sensitivity}
+\end{figure}
+
+
+
+%%------------------------------
+%% SECTION: CONCLUSIONS AND FUTURE WORK
+%%------------------------------
+\section{Conclusions}
+We have considered the IJSP, a version of the JSP that models the uncertainty on task durations appearing in real-world problems using intervals. In~\cite{Diaz2022} we proposed an ABC algorithm tailored to this problem. In that study, diversity issues where spotted and a new selection mechanism $Elite3$ was proposed to tackle them. In this work, we extend the mentioned $ABC$ by including new diversity strategies and modifying the general structure of the algorithm to reduce the number of unnecessary evaluations. Exploration is more encouraged before reaching the evaluation and replacement phases. At the same time, the number of evaluation phases is reduced from three to one. Moreover, the number of parameters \review{to set up} in the algorithm is greatly reduced, making it easier to tune for different environments.
+
+A parametric analysis showed that using semi-active schedules brings in general more diversity to the population, but it lacks enough exploitation, thus using an insertion SGS capable of generating active schedules provides better results overall. The proposed solving method was favourably compared with its previous version $ABC_{E3}$ and obtained similar results to the best method in the IJSP literature while using significantly less time. The reduction in runtime and the increase of diversity allowed us to hybridize our method with a Hill Climbing algorithm. As expected, the runtime increases, but the improvement in solution quality is larger than the time increase and leads the algorithm to the best results for the IJSP, outperforming all previously published methods.
+
+A sensitivity analysis was also performed to assess the robustness of the obtained solutions in environments with larger amounts of uncertainty. The comparison was also made to see the advantages of considering the uncertainty during the optimisation process. The results showed that in that case, the robustness of the obtained solutions is much better than solutions obtained when solving the problem without taking the uncertainty into account.
+
+
+
+
+%============================
+% SECTION*: DECLARATIONS
+%============================
+\backmatter
+
+\bmhead{Acknowledgments}
+This research has been supported by the Spanish Government under research grant PID2019-106263RB-I00 and by the Asturian Government under research grant Severo Ochoa.
+
+
+\section*{Declarations}
+
+\subsection*{Funding}
+This research has been supported by the Spanish Government under research grant PID2019-106263RB-I00 and by the Asturian Government under research grant Severo Ochoa.
+
+\subsection*{Conflict of interest}
+The authors declare that they have no financial or non-financial conflicts of interest.
+
+\subsection*{Ethics approval}
+Not applicable
+
+\subsection*{Availability of data and materials}
+All instances used in this study are taken from the literature, and therefore available to the scientific community. Detailed data on obtained results is available upon reasonable request to the corresponding author.
+
+
+\subsection*{Authors' contributions}
+Authors are listed following the signing order.
+Conceptualization: Hernán Díaz, Juan José Palacios, Inés González-Rodríguez; Methodology: Hernán Díaz, Juan José Palacios, Inés González-Rodríguez; Formal analysis and investigation: Hernán Díaz, Juan José Palacios, Inés González-Rodríguez; Writing: Hernán Díaz, Juan José Palacios, Camino R. Vela; Funding acquisition: Ines González-Rodríguez, Camino R. Vela; Resources: Ines González-Rodríguez, Camino R. Vela; Supervision: Juan José Palacios, Inés González-Rodríguez
+
+
+%%--------------------------------
+%% REFERENCES
+%%--------------------------------
+%% BioMed_Central_Bib_Style_v1.01
+
+\begin{thebibliography}{26}
+% BibTex style file: bmc-mathphys.bst (version 2.1), 2014-07-24
+\ifx \bisbn   \undefined \def \bisbn  #1{ISBN #1}\fi
+\ifx \binits  \undefined \def \binits#1{#1}\fi
+\ifx \bauthor  \undefined \def \bauthor#1{#1}\fi
+\ifx \batitle  \undefined \def \batitle#1{#1}\fi
+\ifx \bjtitle  \undefined \def \bjtitle#1{#1}\fi
+\ifx \bvolume  \undefined \def \bvolume#1{\textbf{#1}}\fi
+\ifx \byear  \undefined \def \byear#1{#1}\fi
+\ifx \bissue  \undefined \def \bissue#1{#1}\fi
+\ifx \bfpage  \undefined \def \bfpage#1{#1}\fi
+\ifx \blpage  \undefined \def \blpage #1{#1}\fi
+\ifx \burl  \undefined \def \burl#1{\textsf{#1}}\fi
+\ifx \doiurl  \undefined \def \doiurl#1{\url{https://doi.org/#1}}\fi
+\ifx \betal  \undefined \def \betal{\textit{et al.}}\fi
+\ifx \binstitute  \undefined \def \binstitute#1{#1}\fi
+\ifx \binstitutionaled  \undefined \def \binstitutionaled#1{#1}\fi
+\ifx \bctitle  \undefined \def \bctitle#1{#1}\fi
+\ifx \beditor  \undefined \def \beditor#1{#1}\fi
+\ifx \bpublisher  \undefined \def \bpublisher#1{#1}\fi
+\ifx \bbtitle  \undefined \def \bbtitle#1{#1}\fi
+\ifx \bedition  \undefined \def \bedition#1{#1}\fi
+\ifx \bseriesno  \undefined \def \bseriesno#1{#1}\fi
+\ifx \blocation  \undefined \def \blocation#1{#1}\fi
+\ifx \bsertitle  \undefined \def \bsertitle#1{#1}\fi
+\ifx \bsnm \undefined \def \bsnm#1{#1}\fi
+\ifx \bsuffix \undefined \def \bsuffix#1{#1}\fi
+\ifx \bparticle \undefined \def \bparticle#1{#1}\fi
+\ifx \barticle \undefined \def \barticle#1{#1}\fi
+\bibcommenthead
+\ifx \bconfdate \undefined \def \bconfdate #1{#1}\fi
+\ifx \botherref \undefined \def \botherref #1{#1}\fi
+\ifx \url \undefined \def \url#1{\textsf{#1}}\fi
+\ifx \bchapter \undefined \def \bchapter#1{#1}\fi
+\ifx \bbook \undefined \def \bbook#1{#1}\fi
+\ifx \bcomment \undefined \def \bcomment#1{#1}\fi
+\ifx \oauthor \undefined \def \oauthor#1{#1}\fi
+\ifx \citeauthoryear \undefined \def \citeauthoryear#1{#1}\fi
+\ifx \endbibitem  \undefined \def \endbibitem {}\fi
+\ifx \bconflocation  \undefined \def \bconflocation#1{#1}\fi
+\ifx \arxivurl  \undefined \def \arxivurl#1{\textsf{#1}}\fi
+\csname PreBibitemsHook\endcsname
+
+%%% 1
+\bibitem[\protect\citeauthoryear{Pinedo}{2016}]{Pinedo2016}
+\begin{bbook}
+\bauthor{\bsnm{Pinedo}, \binits{M.L.}}:
+\bbtitle{Scheduling. Theory, Algorithms, and Systems.},
+\bedition{5}th edn.
+\bpublisher{Springer}
+(\byear{2016})
+\end{bbook}
+\endbibitem
+
+%%% 2
+\bibitem[\protect\citeauthoryear{Allahverdi et~al.}{2014}]{Allahverdi2014}
+\begin{barticle}
+\bauthor{\bsnm{Allahverdi}, \binits{A.}},
+\bauthor{\bsnm{Aydilek}, \binits{H.}},
+\bauthor{\bsnm{Aydilek}, \binits{A.}}:
+\batitle{Single machine scheduling problem with interval processing times to
+  minimize mean weighted completion time}.
+\bjtitle{Computers \& Operations Research}
+\bvolume{51},
+\bfpage{200}--\blpage{207}
+(\byear{2014})
+\doiurl{10.1016/j.cor.2014.06.003}
+\end{barticle}
+\endbibitem
+
+%%% 3
+\bibitem[\protect\citeauthoryear{Lei}{2012}]{Lei2012c}
+\begin{barticle}
+\bauthor{\bsnm{Lei}, \binits{D.}}:
+\batitle{Interval job shop scheduling problems}.
+\bjtitle{International Journal of Advanced Manufacturing Technology}
+\bvolume{60},
+\bfpage{291}--\blpage{301}
+(\byear{2012})
+\doiurl{10.1007/s00170-011-3600-3}
+\end{barticle}
+\endbibitem
+
+%%% 4
+\bibitem[\protect\citeauthoryear{D\'{\i}az et~al.}{2022}]{Diaz2022robust}
+\begin{barticle}
+\bauthor{\bsnm{D\'{\i}az}, \binits{H.}},
+\bauthor{\bsnm{Palacios}, \binits{J.J.}},
+\bauthor{\bsnm{D\'{\i}az}, \binits{I.}},
+\bauthor{\bsnm{Vela}, \binits{C.R.}},
+\bauthor{\bsnm{Gonz\'alez-Rodr\'{\i}guez}, \binits{I.}}:
+\batitle{Robust schedules for tardiness optimization in job shop with interval
+  uncertainty}.
+\bjtitle{Logic Journal of the IGPL}
+(\byear{2022})
+\doiurl{10.1093/jigpal/jzac016}
+\end{barticle}
+\endbibitem
+
+%%% 5
+\bibitem[\protect\citeauthoryear{Lei}{2011}]{Lei2011}
+\begin{barticle}
+\bauthor{\bsnm{Lei}, \binits{D.}}:
+\batitle{Population-based neighborhood search for job shop scheduling with
+  interval processing time}.
+\bjtitle{Computers \& Industrial Engineering}
+\bvolume{61},
+\bfpage{1200}--\blpage{1208}
+(\byear{2011})
+\doiurl{10.1016/j.cie.2011.07.010}
+\end{barticle}
+\endbibitem
+
+%%% 6
+\bibitem[\protect\citeauthoryear{Li et~al.}{2019}]{Li2019}
+\begin{barticle}
+\bauthor{\bsnm{Li}, \binits{X.}},
+\bauthor{\bsnm{Gao}, \binits{L.}},
+\bauthor{\bsnm{Wang}, \binits{W.}},
+\bauthor{\bsnm{Wang}, \binits{C.}},
+\bauthor{\bsnm{Wen}, \binits{L.}}:
+\batitle{Particle swarm optimization hybridized with genetic algorithm for
+  uncertain integrated process planning and scheduling with interval processing
+  time}.
+\bjtitle{Computers \& Industrial Engineering}
+\bvolume{235},
+\bfpage{1036}--\blpage{1046}
+(\byear{2019})
+\end{barticle}
+\endbibitem
+
+%%% 7
+\bibitem[\protect\citeauthoryear{D{\'i}az et~al.}{2020}]{Diaz2020genetic}
+\begin{bchapter}
+\bauthor{\bsnm{D{\'i}az}, \binits{H.}},
+\bauthor{\bsnm{Gonz{\'a}lez-Rodr{\'i}guez}, \binits{I.}},
+\bauthor{\bsnm{Palacios}, \binits{J.J.}},
+\bauthor{\bsnm{D{\'i}az}, \binits{I.}},
+\bauthor{\bsnm{Vela}, \binits{C.R.}}:
+\bctitle{A genetic approach to the job shop scheduling problem with interval
+  uncertainty}.
+In: \beditor{\bsnm{Lesot}, \binits{M.-J.}},
+\beditor{\bsnm{Vieira}, \binits{S.}},
+\beditor{\bsnm{Reformat}, \binits{M.Z.}},
+\beditor{\bsnm{Carvalho}, \binits{J.P.}},
+\beditor{\bsnm{Wilbik}, \binits{A.}},
+\beditor{\bsnm{Bouchon-Meunier}, \binits{B.}},
+\beditor{\bsnm{Yager}, \binits{R.R.}} (eds.)
+\bbtitle{Information Processing and Management of Uncertainty in
+  Knowledge-Based Systems},
+pp. \bfpage{663}--\blpage{676}.
+\bpublisher{Springer}
+(\byear{2020}).
+\doiurl{10.1007/978-3-030-50143-3\_52}
+\end{bchapter}
+\endbibitem
+
+%%% 8
+\bibitem[\protect\citeauthoryear{D{\'i}az et~al.}{2022}]{Diaz2022}
+\begin{bchapter}
+\bauthor{\bsnm{D{\'i}az}, \binits{H.}},
+\bauthor{\bsnm{Palacios}, \binits{J.J.}},
+\bauthor{\bsnm{Gonz{\'a}lez-Rodr{\'i}guez}, \binits{I.}},
+\bauthor{\bsnm{Vela}, \binits{C.R.}}:
+\bctitle{Elite artificial bee colony for makespan optimisation in job shop with
+  interval uncertainty}.
+In: \beditor{\bsnm{Ferr{\'a}ndez~Vicente}, \binits{J.M.}},
+\beditor{\bsnm{{\'A}lvarez-S{\'a}nchez}, \binits{J.R.}},
+\beditor{\bsnm{Paz~L{\'o}pez}, \binits{F.}},
+\beditor{\bsnm{Adeli}, \binits{H.}} (eds.)
+\bbtitle{Bio-inspired Systems and Applications: from Robotics to Ambient
+  Intelligence},
+pp. \bfpage{98}--\blpage{108}.
+\bpublisher{Springer}
+(\byear{2022}).
+\doiurl{10.1007/978-3-031-06527-9\_10}
+\end{bchapter}
+\endbibitem
+
+%%% 9
+\bibitem[\protect\citeauthoryear{D{\'\i}az et~al.}{2023}]{Diaz2023-ICAE}
+\begin{botherref}
+\oauthor{\bsnm{D{\'\i}az}, \binits{H.}},
+\oauthor{\bsnm{Palacios}, \binits{J.J.}},
+\oauthor{\bsnm{Gonz{\'a}lez-Rodr{\'\i}guez}, \binits{I.}},
+\oauthor{\bsnm{Vela}, \binits{C.R.}}:
+An elitist seasonal artificial bee colony algorithm for the interval job shop.
+Integrated Computer-Aided Engineering,
+1--20
+(2023)
+\doiurl{10.3233/ICA-230705}
+\end{botherref}
+\endbibitem
+
+%%% 10
+\bibitem[\protect\citeauthoryear{Wong et~al.}{2008}]{Wong2008}
+\begin{bchapter}
+\bauthor{\bsnm{Wong}, \binits{L.-P.}},
+\bauthor{\bsnm{Puan}, \binits{C.Y.}},
+\bauthor{\bsnm{Low}, \binits{M.Y.H.}},
+\bauthor{\bsnm{Chong}, \binits{C.S.}}:
+\bctitle{Bee colony optimization algorithm with big valley landscape
+  exploitation for job shop scheduling problems}.
+In: \bbtitle{2008 Winter Simulation Conference},
+pp. \bfpage{2050}--\blpage{2058}
+(\byear{2008}).
+\doiurl{10.1109/WSC.2008.4736301}
+\end{bchapter}
+\endbibitem
+
+%%% 11
+\bibitem[\protect\citeauthoryear{Yao et~al.}{2010}]{Yao2010}
+\begin{barticle}
+\bauthor{\bsnm{Yao}, \binits{B.}},
+\bauthor{\bsnm{Yang}, \binits{C.}},
+\bauthor{\bsnm{Hu}, \binits{J.}},
+\bauthor{\bsnm{Yin}, \binits{G.}},
+\bauthor{\bsnm{Yu}, \binits{B.}}:
+\batitle{An improved artificial bee colony algorithm for job shop problem}.
+\bjtitle{Applied Mechanics and Materials}
+\bvolume{26-28},
+\bfpage{657}--\blpage{660}
+(\byear{2010})
+\doiurl{10.4028/www.scientific.net/amm.26-28.657}
+\end{barticle}
+\endbibitem
+
+%%% 12
+\bibitem[\protect\citeauthoryear{Banharnsakun et~al.}{2012}]{Banharnsakun2012}
+\begin{barticle}
+\bauthor{\bsnm{Banharnsakun}, \binits{A.}},
+\bauthor{\bsnm{Sirinaovakul}, \binits{B.}},
+\bauthor{\bsnm{Achalakul}, \binits{T.}}:
+\batitle{Job shop scheduling with the best-so-far {ABC}}.
+\bjtitle{Engineering Applications of Artificial Intelligence}
+\bvolume{25}(\bissue{3}),
+\bfpage{583}--\blpage{593}
+(\byear{2012})
+\doiurl{10.1016/j.engappai.2011.08.003}
+\end{barticle}
+\endbibitem
+
+%%% 13
+\bibitem[\protect\citeauthoryear{Fortemps and Roubens}{1996}]{Fortemps1996}
+\begin{barticle}
+\bauthor{\bsnm{Fortemps}, \binits{P.}},
+\bauthor{\bsnm{Roubens}, \binits{M.}}:
+\batitle{Ranking and defuzzification methods based on area compensation}.
+\bjtitle{Fuzzy Sets and Systems}
+\bvolume{82},
+\bfpage{319}--\blpage{330}
+(\byear{1996})
+\end{barticle}
+\endbibitem
+
+%%% 14
+\bibitem[\protect\citeauthoryear{Bidot et~al.}{2009}]{Bidot2009}
+\begin{barticle}
+\bauthor{\bsnm{Bidot}, \binits{J.}},
+\bauthor{\bsnm{Vidal}, \binits{T.}},
+\bauthor{\bsnm{Laboire}, \binits{P.}}:
+\batitle{A theoretic and practical framework for scheduling in stochastic
+  environment}.
+\bjtitle{Journal of Scheduling}
+\bvolume{12},
+\bfpage{315}--\blpage{344}
+(\byear{2009})
+\end{barticle}
+\endbibitem
+
+%%% 15
+\bibitem[\protect\citeauthoryear{Karaboga}{2005}]{Karaboga2005}
+\begin{botherref}
+\oauthor{\bsnm{Karaboga}, \binits{D.}}:
+An idea based on honey bee swarm for numerical optimization, technical report -
+  tr06.
+Technical Report, Erciyes University
+(2005)
+\end{botherref}
+\endbibitem
+
+%%% 16
+\bibitem[\protect\citeauthoryear{Karaboga et~al.}{2014}]{Karaboga2014}
+\begin{barticle}
+\bauthor{\bsnm{Karaboga}, \binits{D.}},
+\bauthor{\bsnm{Gorkemli}, \binits{B.}},
+\bauthor{\bsnm{Ozturk}, \binits{C.}},
+\bauthor{\bsnm{Karaboga}, \binits{N.}}:
+\batitle{A comprehensive survey: artificial bee colony ({ABC}) algorithm and
+  applications}.
+\bjtitle{Artificial Intelligence Review}
+\bvolume{42},
+\bfpage{21}--\blpage{57}
+(\byear{2014})
+\doiurl{10.1007/s10462-012-9328-0}
+\end{barticle}
+\endbibitem
+
+%%% 17
+\bibitem[\protect\citeauthoryear{Karaboga and Akay}{2009}]{Karaboga2009}
+\begin{barticle}
+\bauthor{\bsnm{Karaboga}, \binits{D.}},
+\bauthor{\bsnm{Akay}, \binits{B.}}:
+\batitle{A comparative study of artificial bee colony algorithm}.
+\bjtitle{Applied Mathematics and Computation}
+\bvolume{214}(\bissue{1}),
+\bfpage{108}--\blpage{132}
+(\byear{2009})
+\doiurl{10.1016/j.amc.2009.03.090}
+\end{barticle}
+\endbibitem
+
+%%% 18
+\bibitem[\protect\citeauthoryear{Kennedy and Eberhart}{1995}]{Kennedy1995}
+\begin{bchapter}
+\bauthor{\bsnm{Kennedy}, \binits{J.}},
+\bauthor{\bsnm{Eberhart}, \binits{R.}}:
+\bctitle{Particle swarm optimization}.
+In: \bbtitle{IEEE International Conference on Neural Networks},
+pp. \bfpage{1942}--\blpage{1948}.
+\bpublisher{IEEE Press}
+\blocation{New Jersey}
+(\byear{1995})
+\end{bchapter}
+\endbibitem
+
+%%% 19
+\bibitem[\protect\citeauthoryear{Bierwirth}{1995}]{Bierwirth1995}
+\begin{barticle}
+\bauthor{\bsnm{Bierwirth}, \binits{C.}}:
+\batitle{A generalized permutation approach to jobshop scheduling with genetic
+  algorithms}.
+\bjtitle{{OR} Spectrum}
+\bvolume{17},
+\bfpage{87}--\blpage{92}
+(\byear{1995})
+\end{barticle}
+\endbibitem
+
+%%% 20
+\bibitem[\protect\citeauthoryear{Palacios et~al.}{2014}]{Palacios2014c}
+\begin{bchapter}
+\bauthor{\bsnm{Palacios}, \binits{J.J.}},
+\bauthor{\bsnm{Vela}, \binits{C.R.}},
+\bauthor{\bsnm{Gonz\'alez-Rodr\'{\i}guez}, \binits{I.}},
+\bauthor{\bsnm{Puente}, \binits{J.}}:
+\bctitle{Schedule generation schemes for job shop problems with fuzziness}.
+In: \beditor{\bsnm{Schaub}, \binits{T.}},
+\beditor{\bsnm{Friedrich}, \binits{G.}},
+\beditor{\bsnm{O'Sullivan}, \binits{B.}} (eds.)
+\bbtitle{Proceedings of ECAI 2014}.
+\bsertitle{Frontiers in Artificial Intelligence and Applications},
+vol. \bseriesno{263},
+pp. \bfpage{687}--\blpage{692}.
+\bpublisher{IOS Press}
+(\byear{2014}).
+\doiurl{10.3233/978-1-61499-419-0-687}
+\end{bchapter}
+\endbibitem
+
+%%% 21
+\bibitem[\protect\citeauthoryear{Sprecher et~al.}{1995}]{Sprecher1995}
+\begin{barticle}
+\bauthor{\bsnm{Sprecher}, \binits{A.}},
+\bauthor{\bsnm{Kolisch}, \binits{R.}},
+\bauthor{\bsnm{Drexl}, \binits{A.}}:
+\batitle{Semi-active, active, and non-delay schedules for the
+  resource-constrained project scheduling problem}.
+\bjtitle{European Journal of Operational Research}
+\bvolume{80},
+\bfpage{94}--\blpage{102}
+(\byear{1995})
+\end{barticle}
+\endbibitem
+
+%%% 22
+\bibitem[\protect\citeauthoryear{Garc\'{\i}a-\'Alvarez
+  et~al.}{2018}]{Garcia-Alvarez2018}
+\begin{barticle}
+\bauthor{\bsnm{Garc\'{\i}a-\'Alvarez}, \binits{J.}},
+\bauthor{\bsnm{Gonz\'alez}, \binits{M.A.}},
+\bauthor{\bsnm{Vela}, \binits{C.R.}},
+\bauthor{\bsnm{Varela}, \binits{R.}}:
+\batitle{Electric vehicle charging scheduling by an enhanced artificial bee
+  colony algorithm}.
+\bjtitle{Energies}
+\bvolume{11}(\bissue{10}),
+\bfpage{2572}
+(\byear{2018})
+\doiurl{10.3390/en11102752}
+\end{barticle}
+\endbibitem
+
+%%% 23
+\bibitem[\protect\citeauthoryear{Ono et~al.}{1996}]{Ono1996}
+\begin{bchapter}
+\bauthor{\bsnm{Ono}, \binits{I.}},
+\bauthor{\bsnm{Yamamura}, \binits{M.}},
+\bauthor{\bsnm{Kobayashi}, \binits{S.}}:
+\bctitle{A genetic algorithm for job-shop scheduling problems using job-based
+  order crossover}.
+In: \bbtitle{Evolutionary Computation, 1996., Proceedings of IEEE International
+  Conference On},
+pp. \bfpage{547}--\blpage{552}
+(\byear{1996}).
+\bcomment{IEEE}
+\end{bchapter}
+\endbibitem
+
+%%% 24
+\bibitem[\protect\citeauthoryear{Bierwirth et~al.}{1996}]{Bierwirth1996}
+\begin{bchapter}
+\bauthor{\bsnm{Bierwirth}, \binits{C.}},
+\bauthor{\bsnm{Mattfeld}, \binits{D.C.}},
+\bauthor{\bsnm{Kopfer}, \binits{H.}}:
+\bctitle{On permutation representations for scheduling problems}.
+In: \bbtitle{PPSN IV: Proceedings of the 4th International Conference on
+  Parallel Problem Solving from Nature},
+pp. \bfpage{310}--\blpage{318}.
+\bpublisher{Springer}
+\blocation{London, UK}
+(\byear{1996})
+\end{bchapter}
+\endbibitem
+
+%%% 25
+\bibitem[\protect\citeauthoryear{{Van Laarhoven}
+  et~al.}{1992}]{VanLaarhoven1992}
+\begin{barticle}
+\bauthor{\bsnm{{Van Laarhoven}}, \binits{P.}},
+\bauthor{\bsnm{Aarts}, \binits{E.}},
+\bauthor{\bsnm{Lenstra}, \binits{K.}}:
+\batitle{Job shop scheduling by simulated annealing}.
+\bjtitle{Operations Research}
+\bvolume{40},
+\bfpage{113}--\blpage{125}
+(\byear{1992})
+\end{barticle}
+\endbibitem
+
+%%% 26
+\bibitem[\protect\citeauthoryear{Gonz\'alez~Rodr\'{\i}guez
+  et~al.}{2008}]{GonzalezRodriguez2008b}
+\begin{bchapter}
+\bauthor{\bsnm{Gonz\'alez~Rodr\'{\i}guez}, \binits{I.}},
+\bauthor{\bsnm{Vela}, \binits{C.R.}},
+\bauthor{\bsnm{Puente}, \binits{J.}},
+\bauthor{\bsnm{Varela}, \binits{R.}}:
+\bctitle{A new local search for the job shop problem with uncertain durations}.
+In: \bbtitle{Proceedings of the Eighteenth International Conference on
+  Automated Planning and Scheduling (ICAPS-2008)},
+pp. \bfpage{124}--\blpage{131}.
+\bpublisher{AAAI Press}
+\blocation{Sidney}
+(\byear{2008})
+\end{bchapter}
+\endbibitem
+
+\end{thebibliography}
+
+
+
+
+\end{document}

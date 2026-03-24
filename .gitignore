@@ -1,0 +1,21 @@
+# Compiled object files
+*.o
+*.d
+
+# Executable
+FuzzyFW
+
+# IDE files
+.idea/
+.claude/
+
+# LaTeX auxiliary files
+*.aux
+*.bbl
+*.blg
+*.log
+*.spl
+*.synctex.gz
+
+# Backup files
+*~

@@ -48,6 +48,7 @@ typedef long long off64_t;
 #define NOMINMAX
 #include <direct.h>
 #include <windows.h>
+#include <sys/stat.h>
 
 static void makeDir(const char* dirname) {
 	_mkdir(dirname);
