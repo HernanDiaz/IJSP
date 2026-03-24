@@ -182,13 +182,9 @@ unsigned int NB_ParallelN1_MakespanIJSP::findNewNeighbours(
 		return 1;
 
 	this->numNeighbours = 0;
-	//DEBUG
-	std::ofstream outfile;
-	//outfile.open("LocalSearchdebugN1.txt", std::ios_base::app); // append instead of overwrite
+
 	// Look for critical paths in each parallell graph:
 	for (short int comp = 1; comp <= 2; comp++) {
-		outfile << "Component: " << comp<< std::endl;
-		outfile << "Critical path: " << std::endl;
 		// Look for the tasks defining the makespan value
 		for (size_t i = 0; i < this->schedule->lastTaskMachine.size(); i++) {
 			if (this->schedule->getCTMachine(i).EqualComponent(currentMakespan, comp))
@@ -198,7 +194,6 @@ unsigned int NB_ParallelN1_MakespanIJSP::findNewNeighbours(
 		while (taskQueue.size() > 0) {
 			taskId = taskQueue.front();
 			taskQueue.pop();
-			outfile << taskId << " ,";
 			task = this->schedule->taskInfo[taskId];
 			if (task.mp != -1 && task.mp != task.task->jp) {
 				mp = this->schedule->taskInfo[task.mp];
@@ -223,29 +218,7 @@ unsigned int NB_ParallelN1_MakespanIJSP::findNewNeighbours(
 			}
 		}
 	}
-	//DEBUG
-	outfile << std::endl;
-	outfile << "Solution: " << std::endl;
-	outfile << this->schedule->toString() << std::endl;
-	outfile << "Makespan: " << std::endl;
-	outfile << this->currentFitness->getValue() << std::endl;
 
-	outfile << "Task info: (id, head, duration, fin , machine, mp, ms) " << std::endl;
-	for (size_t i = 0; i < this->schedule->getTaskOrder().size(); i++) {
-		int taskid = this->schedule->getTaskOrder()[i];
-		outfile << "(" << this->schedule->taskInfo[taskid].task->id << "\t" << this->schedule->taskInfo[taskid].head <<"\t" <<
-			this->schedule->taskInfo[taskid].task->p << "\t" << this->schedule->taskInfo[taskid].head + this->schedule->taskInfo[taskid].task->p << " , " <<
-			this->schedule->taskInfo[taskid].task->machine <<
-			" , " << this->schedule->taskInfo[taskid].mp << " , " << this->schedule->taskInfo[taskid].ms << " )" << std::endl;
-	}
-		
-	outfile << std::endl;
-	outfile << "Neigbours (origin, destiny): " << std::endl;
-	for (int i = 0; i < this->numNeighbours; i++) {
-		outfile << "(" << this->neighbours[i]->x << " , " << this->neighbours[i]->y <<" )"<< " \t";
-	}
-	outfile << std::endl;
-	outfile.close();
 	return this->numNeighbours;
 }
 
@@ -759,12 +732,9 @@ unsigned int NB_ParallelN2_MakespanIJSP::findNewNeighbours(
 		return 1;
 
 	this->numNeighbours = 0;
-	std::ofstream outfile;
-	outfile.open("LocalSearchdebugN2.txt", std::ios_base::app); // append instead of overwrite
+
 	// Look for critical paths in each parallell graph:
 	for (short int comp = 1; comp <= 2; comp++) {
-		outfile << "Component: " << comp << std::endl;
-		outfile << "Critical path: " << std::endl;
 		// Look for the tasks defining the makespan value
 		for (size_t i = 0; i < this->schedule->lastTaskMachine.size(); i++) {
 			if (this->schedule->getCTMachine(i).EqualComponent(currentMakespan, comp)) {
@@ -776,7 +746,6 @@ unsigned int NB_ParallelN2_MakespanIJSP::findNewNeighbours(
 		while (taskQueue.size() > 0) {
 			taskId = taskQueue.front();
 			taskQueue.pop();
-			outfile << taskId << " ,";
 			task = this->schedule->taskInfo[taskId];
 			if (task.mp != -1 && task.mp != task.task->jp) {
 				mp = this->schedule->taskInfo[task.mp];
@@ -784,18 +753,24 @@ unsigned int NB_ParallelN2_MakespanIJSP::findNewNeighbours(
 					taskQueue.push(task.mp);
 					criticalPath[task.mp] = true;
 					if (!added[task.mp]) {
-						// We swap only the tasks at the exteme of a critical block
+						// We swap only the tasks at the extreme of a critical block
 						if (mp.mp != -1) {
 							mpmp = this->schedule->taskInfo[mp.mp];
 						}
 						if (task.ms != -1) {
 							ms = this->schedule->taskInfo[task.ms];
 						}
-					
-						if (mp.mp == -1 || task.ms == -1 
+
+						// Add arc if it is at the boundary of a critical block:
+						// either mp has no machine predecessor (first in block),
+						// or task has no machine successor (last in block),
+						// or mpmp is not on the critical path,
+						// or ms is not on the critical path
+						if (mp.mp == -1 || task.ms == -1
 							|| !(mpmp.head + mpmp.task->p).EqualComponent(mp.head, comp)
-							|| (!(task.head + task.task->p).EqualComponent(ms.head, comp)|| criticalPath[task.ms] == false)) {
-							 
+							|| !criticalPath[task.ms]
+							|| !(task.head + task.task->p).EqualComponent(ms.head, comp)) {
+
 							if (this->numNeighbours < this->neighbours.size()
 								&& this->neighbours[this->numNeighbours] != NULL)
 								this->neighbours[this->numNeighbours]->setValues(task.mp, taskId);
@@ -817,29 +792,7 @@ unsigned int NB_ParallelN2_MakespanIJSP::findNewNeighbours(
 			}
 		}
 	}
-	//DEBUG
-	outfile << std::endl;
-	outfile << "Solution: " << std::endl;
-	outfile << this->schedule->toString() << std::endl;
-	outfile << "Makespan: " << std::endl;
-	outfile << this->currentFitness->getValue() << std::endl;
 
-	outfile << "Task info: (id, head, duration, fin , machine, mp, ms) " << std::endl;
-	for (size_t i = 0; i < this->schedule->getTaskOrder().size(); i++) {
-		int taskid = this->schedule->getTaskOrder()[i];
-		outfile << "(" << this->schedule->taskInfo[taskid].task->id << "\t" << this->schedule->taskInfo[taskid].head << "\t" <<
-			this->schedule->taskInfo[taskid].task->p << "\t" << this->schedule->taskInfo[taskid].head + this->schedule->taskInfo[taskid].task->p << " , " <<
-			this->schedule->taskInfo[taskid].task->machine <<
-			" , " << this->schedule->taskInfo[taskid].mp << " , " << this->schedule->taskInfo[taskid].ms << " )" << std::endl;
-	}
-
-	outfile << std::endl;
-	outfile << "Neigbours (origin, destiny): " << std::endl;
-	for (int i = 0; i < this->numNeighbours; i++) {
-		outfile << "(" << this->neighbours[i]->x << " , " << this->neighbours[i]->y << " )" << " \t";
-	}
-	outfile << std::endl;
-	outfile.close();
 	return this->numNeighbours;
 }
 
@@ -1362,7 +1315,7 @@ unsigned int NB_ParallelN3_MakespanIJSP::findNewNeighbours(
 	unsigned int taskId, nTasks;
 	FuzzyFW::Interval currentMakespan;
 	ScheduledTaskInfo task, mp, jp;
-	ScheduledTaskInfo  mpmpmp, mpmp, ms;
+	ScheduledTaskInfo  mpmpmp = {}, mpmp, ms;
 	std::queue<int> taskQueue;
 	std::vector<char> added0;
 	std::vector<char> added1;
@@ -1414,19 +1367,16 @@ unsigned int NB_ParallelN3_MakespanIJSP::findNewNeighbours(
 					}
 					//if the task is not added yet and mp is of different job
 					if (!added0[task.mp] && task.mp != task.task->jp) {
-						//if the predecessor belongs to a different job
-						if (task.mp != task.task->jp) {
-							//critical block of 1 arch
-							//if we are in the first arch, or the last one
-							// or the mp->mp does not belong to the critical path
-							// or the ms does not belong to the critical path
-							if (mp.mp == -1 || task.ms == -1
-								|| !(mpmp.head + mpmp.task->p).EqualComponent(mp.head, comp)
-								|| !(task.head + task.task->p).EqualComponent(ms.head, comp)) {
+						//critical block of 1 arch
+						//if we are in the first arch, or the last one
+						// or the mp->mp does not belong to the critical path
+						// or the ms does not belong to the critical path
+						if (mp.mp == -1 || task.ms == -1
+							|| !(mpmp.head + mpmp.task->p).EqualComponent(mp.head, comp)
+							|| !(task.head + task.task->p).EqualComponent(ms.head, comp)) {
 
-								this->addNeighbour(task.mp, taskId);
-								added0[task.mp] = true;
-							}
+							this->addNeighbour(task.mp, taskId);
+							added0[task.mp] = true;
 						}
 
 					}
@@ -2388,6 +2338,8 @@ unsigned int NB_ParallelNH_MakespanIJSP::findNewNeighbours(
 
 	nTasks = this->schedule->getScheduledTasks();
 	added.resize(nTasks, false);
+	for (unsigned int i = 0; i < nTasks; i++)
+		blockFirst[i] = i;
 
 	if (nTasks < 2)
 		return 1;
@@ -2431,7 +2383,7 @@ unsigned int NB_ParallelNH_MakespanIJSP::findNewNeighbours(
 						else
 							this->neighbours.push_back(new NeighbourIJSP_Arc(taskId,blockFirst[taskId]));
 						this->numNeighbours++;
-						added[task.mp] = true;
+						added[taskId] = true;
 
 					}
 				}
@@ -2445,7 +2397,7 @@ unsigned int NB_ParallelNH_MakespanIJSP::findNewNeighbours(
 					else
 						this->neighbours.push_back(new NeighbourIJSP_Arc(taskId, blockFirst[taskId]));
 					this->numNeighbours++;
-					added[task.mp] = true;
+					added[taskId] = true;
 
 				}
 			}			
