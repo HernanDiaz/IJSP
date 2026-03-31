@@ -175,6 +175,8 @@ public:
 			&createNeighbourhoodInstance<IJSP::NB_ParallelN3_MakespanIJSP>;
 		NeighbourhoodMap[toUpper("ijsp.makespan.nh")] =
 			&createNeighbourhoodInstance<IJSP::NB_ParallelNH_MakespanIJSP>;
+		NeighbourhoodMap[toUpper("ijsp.makespan.next")] =
+			&createNeighbourhoodInstance<IJSP::NB_ParallelNext_MakespanIJSP>;
 	}
 
 };

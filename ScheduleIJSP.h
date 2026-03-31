@@ -216,6 +216,15 @@ public:
 	
 
 	/**
+	* Recomputes all heads from scratch via topological traversal and
+	* compares them with the stored heads. Prints mismatches to stderr.
+	* Also compares the exact makespan with expectedMakespan.
+	* Activated by #define DEBUG_VERIFY in heading.h
+	*/
+	void verifyHeads(const FuzzyFW::Interval& expectedMakespan,
+		const std::string& context) const;
+
+	/**
 	* Clears the schedule
 	*/
 	void reset();

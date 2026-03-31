@@ -186,6 +186,99 @@ void ScheduleIJSP::addTask(const int taskIdx, FuzzyFW::Interval & ST,
 
 
 
+//====  verifyHeads Method  ===================================================
+void ScheduleIJSP::verifyHeads(const FuzzyFW::Interval& expectedMakespan,
+	const std::string& context) const {
+
+	int n = (int)this->taskInfo.size();
+	std::vector<FuzzyFW::Interval> computedHead(n, FuzzyFW::Interval(0, 0));
+	FuzzyFW::Interval exactMakespan(0, 0);
+
+	// Count how many predecessors each task is waiting for
+	std::vector<int> remaining(n, 0);
+	for (int t = 0; t < n; t++) {
+		if (this->taskInfo[t].task == NULL) continue;
+		if (this->taskInfo[t].task->jp != -1) remaining[t]++;
+		if (this->taskInfo[t].mp != -1) remaining[t]++;
+	}
+
+	// Seed queue with root tasks (no predecessors)
+	std::queue<int> q;
+	for (int t = 0; t < n; t++) {
+		if (this->taskInfo[t].task != NULL && remaining[t] == 0)
+			q.push(t);
+	}
+
+	int processed = 0;
+	while (!q.empty()) {
+		int t = q.front();
+		q.pop();
+		processed++;
+
+		int jp = this->taskInfo[t].task->jp;
+		int mp = this->taskInfo[t].mp;
+
+		FuzzyFW::Interval expected(0, 0);
+		if (jp != -1 && mp != -1) {
+			FuzzyFW::Interval fromJp = computedHead[jp] + this->taskInfo[jp].task->p;
+			FuzzyFW::Interval fromMp = computedHead[mp] + this->taskInfo[mp].task->p;
+			expected = FuzzyFW::Interval(
+				std::max(fromJp.a, fromMp.a),
+				std::max(fromJp.b, fromMp.b));
+		} else if (jp != -1) {
+			expected = computedHead[jp] + this->taskInfo[jp].task->p;
+		} else if (mp != -1) {
+			expected = computedHead[mp] + this->taskInfo[mp].task->p;
+		}
+
+		computedHead[t] = expected;
+
+		// Compare stored head with recomputed head
+		if (std::fabs(this->taskInfo[t].head.a - expected.a) > AccuracyError ||
+			std::fabs(this->taskInfo[t].head.b - expected.b) > AccuracyError) {
+			std::cerr << "[" << context << "] HEAD MISMATCH task " << t
+				<< " stored=[" << this->taskInfo[t].head.a << ","
+				<< this->taskInfo[t].head.b << "]"
+				<< " expected=[" << expected.a << "," << expected.b << "]"
+				<< std::endl;
+		}
+
+		// Accumulate exact makespan using recomputed heads
+		double ct_a = expected.a + this->taskInfo[t].task->p.a;
+		double ct_b = expected.b + this->taskInfo[t].task->p.b;
+		if (ct_a > exactMakespan.a) exactMakespan.a = ct_a;
+		if (ct_b > exactMakespan.b) exactMakespan.b = ct_b;
+
+		// Decrement remaining count for successors
+		int js = this->taskInfo[t].task->js;
+		int ms = this->taskInfo[t].ms;
+		if (js != -1) {
+			remaining[js]--;
+			if (remaining[js] == 0) q.push(js);
+		}
+		if (ms != -1) {
+			remaining[ms]--;
+			if (remaining[ms] == 0) q.push(ms);
+		}
+	}
+
+	if (processed != (int)this->nScheduledTasks) {
+		std::cerr << "[" << context << "] verifyHeads: possible cycle detected!"
+			<< " processed=" << processed
+			<< " nScheduledTasks=" << this->nScheduledTasks << std::endl;
+	}
+
+	// Compare exact makespan with neighbourhood-computed makespan
+	if (std::fabs(exactMakespan.a - expectedMakespan.a) > AccuracyError ||
+		std::fabs(exactMakespan.b - expectedMakespan.b) > AccuracyError) {
+		std::cerr << "[" << context << "] MAKESPAN MISMATCH"
+			<< " computed=[" << expectedMakespan.a << "," << expectedMakespan.b << "]"
+			<< " exact=[" << exactMakespan.a << "," << exactMakespan.b << "]"
+			<< std::endl;
+	}
+}
+
+
 //====  reset Method  =========================================================
 void ScheduleIJSP::reset() {
 	if (this->nScheduledTasks <= 0)

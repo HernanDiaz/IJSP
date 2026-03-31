@@ -40,6 +40,9 @@
 
 #define DEBUG_LEVEL 0
 
+// Uncomment to enable head consistency verification in evaluateNeighbour
+// #define DEBUG_VERIFY
+
 #if defined(_WIN32)
 
 static const std::string FSEP = "\\";
