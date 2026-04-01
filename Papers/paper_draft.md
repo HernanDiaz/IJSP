@@ -198,7 +198,7 @@ Neighbourhood size: ~35 candidate moves per step. Makespan quality: comparable t
 
 ### 6.1 Setup
 
-**Instances.** We use 82 benchmark instances constructed by perturbing classical JSP benchmarks (abz, ft, la, tai families) with uniform interval uncertainty at 15% width: p_ij = [p*_ij × 0.925, p*_ij × 1.075], where p*_ij is the nominal processing time.
+**Instances.** We use 82 benchmark instances constructed by perturbing classical JSP benchmarks (abz, ft, la, tai families) with uniform interval uncertainty at 15% width: p_ij = [p*_ij × 0.925, p*_ij × 1.075], where p*_ij is the nominal processing time. The Taillard instances cover sizes 15×15, 20×15, 20×20, 30×15, 30×20, 50×15, and 50×20 (10 instances each), with the largest having 1000 operations. The classical benchmarks (abz7–9, ft10, ft20, la21–40) range from 55 to 300 operations.
 
 **Algorithm.** Each configuration (neighbourhood × ranking) runs an iterated local search (ILS) with:
 - Neighbourhood evaluation as described in Section 5
@@ -342,7 +342,7 @@ NH's poor performance is more directly explained: the tight viability filter dis
 ### 7.4 Limitations and Future Work
 
 - **Statistical validation**: The empirical comparisons should be validated with non-parametric statistical tests (Wilcoxon signed-rank, Friedman test) to confirm significance across the 82 instances.
-- **tai100 instances**: The current study uses instances up to tai20×15. Results on larger instances (tai100) would validate scalability.
+- **tai100 instances**: The current study covers instances up to tai50×20 (1000 operations). Results on tai100×20 instances (2000 operations) are pending and would further validate scalability at the upper end of the benchmark suite.
 - **Convergence analysis**: Per-step convergence profiles would clarify whether the neighbourhood size differences affect convergence speed or only final solution quality.
 - **Alternative uncertainty models**: The 15% uniform interval width is a single noise level. Robustness of findings across different uncertainty levels should be examined.
 - **Hybrid approaches**: The LEX2/N2 combination (narrow intervals, small neighbourhood) and LEX2/N_ext (larger neighbourhood, tight upper bound) could form the basis for a dedicated uncertainty-aware metaheuristic.
