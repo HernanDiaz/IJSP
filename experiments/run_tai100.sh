@@ -1,10 +1,10 @@
 #!/bin/bash
 #
-# run_experiments.sh
-# Runs all 20 x 92 = 1840 IJSP experiments, always keeping MAX_PARALLEL processes running.
+# run_tai100.sh
+# Runs all 20 x 10 = 200 IJSP experiments for tai100_20 instances.
 # Skips experiments whose result file already exists (safe to restart).
 #
-# Usage: bash run_experiments.sh
+# Usage: bash run_tai100.sh
 #
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -17,10 +17,10 @@ RESULTS_BASE="${SCRIPT_DIR}/results"
 NEIGHBOURHOODS=("n1" "n2" "n3" "nh" "next")
 COMPARATORS=("EV" "LEX1" "LEX2" "YX")
 
-MAX_PARALLEL=28
+MAX_PARALLEL=14
 
 echo "======================================================"
-echo " IJSP Makespan Experiment Runner"
+echo " IJSP Makespan Experiment Runner — tai100 instances"
 echo " EXE:       $EXE"
 echo " Instances: $INSTANCES_DIR"
 echo " Results:   $RESULTS_BASE"
@@ -32,22 +32,20 @@ if [ ! -f "$EXE" ]; then
     exit 1
 fi
 
-# Build list of pending experiments (skip already completed)
 SETUP_FILES=()
 INSTANCE_FILES=()
 RESULT_DIRS=()
 SKIPPED=0
 
-
-# Pre-read instance names once (avoids 1472 basename subprocesses in the loop).
-# INSTANCE_NAMES[i] = bare name without path or .txt extension.
-# INSTANCE_PATHS[i] = full path.
-mapfile -t INSTANCE_PATHS < <(ls "${INSTANCES_DIR}"/*.txt 2>/dev/null)
+mapfile -t INSTANCE_PATHS < <(ls "${INSTANCES_DIR}"/tai100*.txt 2>/dev/null)
 INSTANCE_NAMES=()
 for _p in "${INSTANCE_PATHS[@]}"; do
-    _b="${_p##*/}"          # strip leading path (bash, no subprocess)
-    INSTANCE_NAMES+=("${_b%.txt}")  # strip .txt
+    _b="${_p##*/}"
+    INSTANCE_NAMES+=("${_b%.txt}")
 done
+
+echo "Found ${#INSTANCE_NAMES[@]} tai100 instances: ${INSTANCE_NAMES[*]}"
+echo ""
 
 for nb in "${NEIGHBOURHOODS[@]}"; do
     for comp in "${COMPARATORS[@]}"; do
@@ -55,22 +53,14 @@ for nb in "${NEIGHBOURHOODS[@]}"; do
         RESULTS_DIR="${RESULTS_BASE}/${nb}_${comp}"
         mkdir -p "$RESULTS_DIR"
 
-        # ONE ls+grep call per config to find completed main CSVs.
-        # Main CSV pattern: {name}_{14-digit-timestamp}.csv
-        # _Robustness.csv / _Sols.csv / _Scenarios.csv are excluded by the regex.
         declare -A done_set
         while IFS= read -r fname; do
-            # Strip _NNNNNNNNNNNNNN.csv suffix using bash globbing (no subprocess)
-            key="${fname%_??????????????.csv}"   # 14 ? chars
+            key="${fname%_??????????????.csv}"
             done_set["$key"]=1
-        done < <(ls "${RESULTS_DIR}/" 2>/dev/null | grep -E '_[0-9]{14}\.csv$')
+        done < <(ls "${RESULTS_DIR}/" 2>/dev/null | grep -E '^tai100.*_[0-9]{14}\.csv$')
 
         for i in "${!INSTANCE_NAMES[@]}"; do
             instance_name="${INSTANCE_NAMES[$i]}"
-            # Skip tai100_20 instances (too slow for local runs)
-            [[ "$instance_name" == tai100_20* ]] && continue
-            # Skip tai100 instances (run separately later)
-            [[ "$instance_name" == tai100* ]] && continue
             if [ "${done_set[$instance_name]+x}" ]; then
                 SKIPPED=$((SKIPPED + 1))
                 continue
@@ -90,7 +80,7 @@ echo "Experiments to run:     $TOTAL"
 echo ""
 
 if [ $TOTAL -eq 0 ]; then
-    echo "All experiments already completed."
+    echo "All tai100 experiments already completed."
     exit 0
 fi
 
@@ -99,7 +89,6 @@ NEXT=0
 COMPLETED=0
 FAILED=0
 
-# Fill initial pool
 while [ $NEXT -lt $TOTAL ] && [ ${#PIDS[@]} -lt $MAX_PARALLEL ]; do
     "${EXE}" "${SETUP_FILES[$NEXT]}" "${INSTANCE_FILES[$NEXT]}" "${RESULT_DIRS[$NEXT]}" &
     PIDS+=($!)
@@ -107,15 +96,11 @@ while [ $NEXT -lt $TOTAL ] && [ ${#PIDS[@]} -lt $MAX_PARALLEL ]; do
 done
 echo "Launched initial batch of ${#PIDS[@]} processes."
 
-# Main loop: as soon as any slot frees up, launch the next experiment
 while [ ${#PIDS[@]} -gt 0 ]; do
 
-    # Wait for ANY child process to finish; capture its exit code directly.
-    # Do NOT call wait $pid again afterwards — bash returns 127 for already-reaped pids.
     wait -n 2>/dev/null
     finished_code=$?
 
-    # Identify which PIDs have finished
     ALIVE=()
     NEWLY_DONE=0
     for p in "${PIDS[@]}"; do
@@ -126,28 +111,24 @@ while [ ${#PIDS[@]} -gt 0 ]; do
             COMPLETED=$((COMPLETED + 1))
         fi
     done
-    # Attribute the single exit code from wait -n to however many finished this round
-    # (usually 1, but guard against edge cases)
     [ $finished_code -ne 0 ] && [ $NEWLY_DONE -gt 0 ] && FAILED=$((FAILED + 1))
     PIDS=("${ALIVE[@]}")
 
-    # Immediately refill free slots
     while [ $NEXT -lt $TOTAL ] && [ ${#PIDS[@]} -lt $MAX_PARALLEL ]; do
         "${EXE}" "${SETUP_FILES[$NEXT]}" "${INSTANCE_FILES[$NEXT]}" "${RESULT_DIRS[$NEXT]}" &
         PIDS+=($!)
         NEXT=$((NEXT + 1))
     done
 
-    # Progress report every 20 completions
-    if [ $((COMPLETED % 20)) -eq 0 ] && [ $COMPLETED -gt 0 ]; then
-        echo "Progress: $COMPLETED / $TOTAL completed | $(( NEXT - ${#PIDS[@]} )) launched | running: ${#PIDS[@]} | failed: $FAILED"
+    if [ $((COMPLETED % 10)) -eq 0 ] && [ $COMPLETED -gt 0 ]; then
+        echo "Progress: $COMPLETED / $TOTAL completed | running: ${#PIDS[@]} | failed: $FAILED"
     fi
 
 done
 
 echo ""
 echo "======================================================"
-echo " All experiments finished!"
+echo " tai100 experiments finished!"
 echo " Skipped:   $SKIPPED"
 echo " Completed: $COMPLETED"
 echo " Failed:    $FAILED"

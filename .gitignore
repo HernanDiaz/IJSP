@@ -19,3 +19,13 @@ FuzzyFW
 
 # Backup files
 *~
+
+# Experiment results (large CSV files)
+experiments/results/
+experiments/run_log.txt
+experiments/run_tai100.log
+experiments/run_experiments.log
+
+# Debug and temp files
+experiments/LocalSearchdebugN1.txt
+experiments/*_backup_*.xlsx

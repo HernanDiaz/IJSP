@@ -1,5 +1,5 @@
 # flags de compilacion
-CXXFLAGS = -O3 -std=c++0x -fpermissive -I.. -I. -I /usr/local/src
+CXXFLAGS = -O3 -march=native -mtune=native -ffast-math -std=c++11 -fpermissive -I.. -I. -I /usr/local/src
 
 # flags de enlazado
 LDFLAGS = -lm
