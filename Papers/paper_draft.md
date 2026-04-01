@@ -311,6 +311,48 @@ The neighbourhood choice has negligible effect on interval width; the width effe
 
 **Interpretation.** If a decision-maker's goal is to *reduce schedule uncertainty* rather than minimise the expected makespan, LEX2 is the superior choice. Conversely, if the goal is to minimise the expected value, YX slightly outperforms EV. These findings suggest that the choice of ranking operator should depend on the risk profile of the application.
 
+### 6.5 Statistical Validation
+
+The empirical comparisons in Sections 6.2–6.4 are validated with non-parametric statistical tests. Before presenting the results, an important methodological remark is necessary.
+
+**Remark on parametric configuration.** All 20 configurations share an identical set of algorithm hyperparameters (population size, stopping criterion, perturbation strategy, etc.). No operator- or neighbourhood-specific tuning has been performed. This is a deliberate design choice that ensures *experimental control*: any observed difference in solution quality can be attributed solely to the neighbourhood structure or ranking operator, not to a configuration that was optimised in favour of one particular setting. The trade-off is that the results should not be interpreted as "operator X achieves the best possible makespan" — only as "operator X performs better than Y *under this common configuration*". A dedicated parametric study per operator, which lies outside the scope of this work, could reveal whether the ranking differences persist when each operator is allowed its own optimal hyperparameter setting.
+
+**Test design.** Since all configurations use the same random seed sequence, each of the 30 runs per instance is paired across configurations. We treat each (instance, run) pair as a block, yielding up to 82 × 30 = 2460 paired blocks. We first apply the **Friedman test** (non-parametric equivalent of repeated-measures ANOVA) to detect overall differences among treatments, followed by **pairwise Wilcoxon signed-rank tests** with **Holm-Bonferroni** correction for multiple comparisons. Effect size is reported as r = |Z| / √N (thresholds: small ≥ 0.1, medium ≥ 0.3, large ≥ 0.5). The metric used is the midpoint of the makespan interval, (C_max⁻ + C_max⁺)/2, which provides a neutral common ground for all four operators.
+
+**Operators.** The Friedman test across the four ranking operators yields χ²(3) = 694.96, p ≈ 10⁻¹⁵⁰, confirming that differences exist beyond chance. Pairwise results are shown in Table 6.
+
+**Table 6.** Pairwise Wilcoxon tests for ranking operators (n = 2460 paired blocks, Holm-Bonferroni corrected).
+
+| Comparison | Mean A | Mean B | Diff | p-adj | Effect r | Magnitude |
+|-----------|--------|--------|------|-------|---------|-----------|
+| LEX1 vs YX  | 1909.5 | 1901.5 | +8.0 | < 0.001 | 0.509 | large |
+| EV vs LEX1  | 1903.3 | 1909.5 | −6.2 | < 0.001 | 0.415 | medium |
+| LEX1 vs LEX2| 1909.5 | 1903.9 | +5.6 | < 0.001 | 0.349 | medium |
+| LEX2 vs YX  | 1903.9 | 1901.5 | +2.4 | < 0.001 | 0.159 | small |
+| EV vs YX    | 1903.3 | 1901.5 | +1.8 | < 0.001 | 0.131 | small |
+| **EV vs LEX2**  | **1903.3** | **1903.9** | **−0.6** | **0.197** | **0.026** | **negligible** |
+
+LEX1 is significantly worse than all other operators (medium-to-large effects). YX ranks first on average, but its advantage over EV (r = 0.131, small) and LEX2 (r = 0.159, small) is modest and, as noted above, may be partially explained by the common hyperparameter configuration. The comparison EV vs LEX2 is not statistically significant (p = 0.197, r = 0.026), confirming that these two operators are effectively equivalent in terms of average makespan under this setup. The operator ranking pattern — YX ≈ EV ≈ LEX2 ≻ LEX1 — is consistent across all five neighbourhoods (Friedman significant in all five, p < 10⁻²¹).
+
+**Neighbourhoods.** The Friedman test across the five neighbourhoods yields χ²(4) = 5970.15, p ≈ 0, an overwhelming result. Pairwise comparisons (Table 7) reveal a clear partition into two groups.
+
+**Table 7.** Pairwise Wilcoxon tests for neighbourhoods (n = 2460 blocks, Holm-Bonferroni corrected).
+
+| Comparison | Mean A | Mean B | Diff | p-adj | Effect r | Magnitude |
+|-----------|--------|--------|------|-------|---------|-----------|
+| N1 vs NH    | 1890.1 | 1944.8 | −54.7 | < 0.001 | — | large |
+| N2 vs NH    | 1890.1 | 1944.8 | −54.8 | < 0.001 | — | large |
+| N_ext vs NH | 1889.9 | 1944.8 | +55.0 | < 0.001 | — | large |
+| N3 vs NH    | 1908.7 | 1944.8 | −36.1 | < 0.001 | — | large |
+| N1 vs N3    | 1890.1 | 1908.7 | −18.6 | < 0.001 | 0.725 | large |
+| N2 vs N3    | 1890.1 | 1908.7 | −18.6 | < 0.001 | 0.723 | large |
+| N_ext vs N3 | 1889.9 | 1908.7 | −18.8 | < 0.001 | 0.729 | large |
+| **N1 vs N2**    | **1890.1** | **1890.1** | **+0.1** | **1.000** | **0.004** | **negligible** |
+| **N1 vs N_ext** | **1890.1** | **1889.9** | **+0.2** | **1.000** | **0.018** | **negligible** |
+| **N2 vs N_ext** | **1890.1** | **1889.9** | **+0.2** | **1.000** | **0.009** | **negligible** |
+
+The results confirm — with overwhelming statistical certainty — the partition observed empirically: {N1, N2, N_ext} are statistically indistinguishable from each other (p = 1.0, r < 0.02 for all three pairs), while N3 and NH are significantly worse. The practical implication is that N2 and N_ext achieve the same solution quality as N1 at a fraction of the computational cost (Section 6.3), without any statistical penalty.
+
 ---
 
 ## 7. Discussion
