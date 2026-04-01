@@ -1,0 +1,12 @@
+=== Friedman Test: Neighbourhoods ===
+
+
+	Friedman rank sum test
+
+data:  as.matrix(mat)
+Friedman chi-squared = 5970.1, df = 4, p-value < 2.2e-16
+
+
+Mean ranks (lower = better):
+    next       n2       n1       n3       nh 
+2.158943 2.185976 2.195732 3.515447 4.943902 

@@ -1,0 +1,12 @@
+=== Friedman Test: Operators ===
+
+
+	Friedman rank sum test
+
+data:  as.matrix(mat)
+Friedman chi-squared = 694.96, df = 3, p-value < 2.2e-16
+
+
+Mean ranks (lower = better):
+      YX       EV     LEX2     LEX1 
+2.148780 2.362398 2.421545 3.067276 
