@@ -1,0 +1,20 @@
+# irace parameter space for IJSP ABCPSO + HillClimbing (CRISP instances)
+# Identical parameter space to irace_hc (fuzzy).
+# Fixed: pop_size=250, noimprove=20, cross_prob=0.9, mut_prob=0.10, max-time=2
+# name         switch              type   range/values
+
+# --- Population ---
+elite_size     "--elite_size "     i      (30, 50)
+elite_sel      "--elite_sel "      i      (1, 10)
+maxtrials      "--maxtrials "      i      (10, 30)
+
+# --- Local Search (HillClimbing) ---
+ls_target      "--ls_target "      r      (0.3, 1.0)
+
+# --- Genetic operators (type only — probabilities fixed) ---
+crossover      "--crossover "      c      (ijsp.jox, ijsp.gox, ijsp.ppx)
+mutation       "--mutation "       c      (inversion, insertion, swap)
+
+[forbidden]
+# elite_sel must not exceed elite_size
+elite_sel > elite_size
