@@ -208,7 +208,7 @@ public:
 	/**
 	* repair times of the sheduling after the task so there is no overlapping
 	*/
-	void repairScheduledTimes(const int taskIdx);
+	void repairScheduledTimes(const int taskIdx, int _depth = 0);
 	/*
 	*verifies that the scheduling is correct
 	*/
