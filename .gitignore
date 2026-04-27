@@ -29,3 +29,7 @@ experiments/run_experiments.log
 # Debug and temp files
 experiments/LocalSearchdebugN1.txt
 experiments/*_backup_*.xlsx
+
+# Papers and reference documents (managed separately)
+Papers/
+data/
