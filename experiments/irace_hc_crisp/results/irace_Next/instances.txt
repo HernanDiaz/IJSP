@@ -1,0 +1,24 @@
+# IJSP irace training instances — CRISP versions
+# 20 instances, same selection as irace_hc (5 per size group, fast->slow)
+# Source: SelectosYTaillardCrisp (degenerate intervals: (a,a))
+
+/mnt/c/Users/diazhernan/CLionProjects/IJSP/SelectosYTaillardCrisp/F0.15.0.ft10_10.txt
+/mnt/c/Users/diazhernan/CLionProjects/IJSP/SelectosYTaillardCrisp/F0.15.0.abz7_06.txt
+/mnt/c/Users/diazhernan/CLionProjects/IJSP/SelectosYTaillardCrisp/F0.15.0.la27_09.txt
+/mnt/c/Users/diazhernan/CLionProjects/IJSP/SelectosYTaillardCrisp/tai15_15_03.F.15_01.txt
+/mnt/c/Users/diazhernan/CLionProjects/IJSP/SelectosYTaillardCrisp/tai15_15_08.F.15_01.txt
+/mnt/c/Users/diazhernan/CLionProjects/IJSP/SelectosYTaillardCrisp/tai20_15_02.F.15_01.txt
+/mnt/c/Users/diazhernan/CLionProjects/IJSP/SelectosYTaillardCrisp/tai20_15_07.F.15_01.txt
+/mnt/c/Users/diazhernan/CLionProjects/IJSP/SelectosYTaillardCrisp/tai20_20_04.F.15_01.txt
+/mnt/c/Users/diazhernan/CLionProjects/IJSP/SelectosYTaillardCrisp/tai20_20_09.F.15_01.txt
+/mnt/c/Users/diazhernan/CLionProjects/IJSP/SelectosYTaillardCrisp/tai20_20_01.F.15_01.txt
+/mnt/c/Users/diazhernan/CLionProjects/IJSP/SelectosYTaillardCrisp/tai30_15_02.F.15_01.txt
+/mnt/c/Users/diazhernan/CLionProjects/IJSP/SelectosYTaillardCrisp/tai30_15_06.F.15_01.txt
+/mnt/c/Users/diazhernan/CLionProjects/IJSP/SelectosYTaillardCrisp/tai30_20_03.F.15_01.txt
+/mnt/c/Users/diazhernan/CLionProjects/IJSP/SelectosYTaillardCrisp/tai30_20_07.F.15_01.txt
+/mnt/c/Users/diazhernan/CLionProjects/IJSP/SelectosYTaillardCrisp/tai30_20_10.F.15_01.txt
+/mnt/c/Users/diazhernan/CLionProjects/IJSP/SelectosYTaillardCrisp/tai50_15_02.F.15_01.txt
+/mnt/c/Users/diazhernan/CLionProjects/IJSP/SelectosYTaillardCrisp/tai50_15_07.F.15_01.txt
+/mnt/c/Users/diazhernan/CLionProjects/IJSP/SelectosYTaillardCrisp/tai50_20_03.F.15_01.txt
+/mnt/c/Users/diazhernan/CLionProjects/IJSP/SelectosYTaillardCrisp/tai50_20_07.F.15_01.txt
+/mnt/c/Users/diazhernan/CLionProjects/IJSP/SelectosYTaillardCrisp/tai50_20_10.F.15_01.txt

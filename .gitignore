@@ -29,6 +29,8 @@ experiments/run_experiments.log
 # Debug and temp files
 experiments/LocalSearchdebugN1.txt
 experiments/*_backup_*.xlsx
+experiments/resultados_experimentos.xlsx
+experiments/check_floats.R
 
 # Papers and reference documents (managed separately)
 Papers/
