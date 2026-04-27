@@ -520,7 +520,20 @@ namespace FuzzyFW {
 			int elite_value = this->sharedVariables->parameters->getInteger(ELITE_SELECTION);
 			int elite_size = this->sharedVariables->parameters->getInteger(ELITE_SIZE);
 
+			// Wall-clock start for timelimit enforcement within a generation
+			struct timespec _wallGenStart;
+			clock_gettime(CLOCK_MONOTONIC, &_wallGenStart);
+
 			for (int i = 0; i < currentPopulation->size(); i++) {
+				// Wall-clock timelimit check inside the generation loop
+				if (this->maxRuntime >= 0) {
+					struct timespec _wallNow;
+					clock_gettime(CLOCK_MONOTONIC, &_wallNow);
+					double _elapsed = (_wallNow.tv_sec - _wallGenStart.tv_sec)
+						+ (_wallNow.tv_nsec - _wallGenStart.tv_nsec) * 1e-9;
+					if (_elapsed >= this->maxRuntime)
+						break;
+				}
 				//Coger de forma aleatoria uno de los 20 primeros como best food source
 				timePoint = clock();
 				unsigned int foodSourceID = this->sharedVariables->rng->getInteger(0, elite_size);
@@ -570,6 +583,7 @@ namespace FuzzyFW {
 					Individual* bestlocalClone = bestLocal->clone();
 					delete currentPopulation->replaceIndividual(i, bestlocalClone);
 					bestlocalClone->setNumTrials(0);
+					currentFoodSource = bestlocalClone; // Fix: avoid dangling pointer after replace
 
 				}
 				else if (this->simulatedCooling != NULL
@@ -577,11 +591,12 @@ namespace FuzzyFW {
 					Individual* bestlocalClone = bestLocal->clone();
 					delete currentPopulation->replaceIndividual(i, bestlocalClone);
 					bestlocalClone->setNumTrials(0);
+					currentFoodSource = bestlocalClone; // Fix: avoid dangling pointer after replace
 					}
 				else {
 					currentFoodSource->setNumTrials(currentFoodSource->getNumTrials() + 1);
 				}
-				
+
 				if (currentFoodSource->getNumTrials() >= this->sharedVariables->parameters->getInteger(MAX_NUM_TRIALS)) {
 					Population* newPopulation = this->creation->createPopulation(1, this->sharedVariables);
 					this->evaluator->evaluatePopulation(this->sharedVariables, newPopulation, false);

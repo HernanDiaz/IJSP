@@ -6,6 +6,7 @@
 */
 
 #include "LocalSearch.h"
+#include <time.h>
 
 namespace FuzzyFW {
 
@@ -100,6 +101,8 @@ FullSolution LS_HillClimbing::apply(const Solution *solution,
 	this->evaluations = 0;
 	this->neighbours = 0;
 	this->iterations = 0;
+	clock_t _startClock = clock();
+	this->runtime = 0;
 
 	FullSolution current;
 	Fitness *estimation, *realValue;
@@ -114,6 +117,7 @@ FullSolution LS_HillClimbing::apply(const Solution *solution,
 	//outfile.close();
 	bool improves = true;
 	while (improves && !this->stoppingCriteria()) {
+		this->runtime = clock() - _startClock;
 		improves = false;
 		nNeighbours =
 			this->neighbourhood->findNewNeighbours(svars);
@@ -183,6 +187,8 @@ FullSolution LS_GradientDescent::apply(const Solution *solution,
 	this->evaluations = 0;
 	this->neighbours = 0;
 	this->iterations = 0;
+	clock_t _startClock = clock();
+	this->runtime = 0;
 
 	FullSolution current;
 	Fitness *estimation, *realValue, *best;
@@ -194,6 +200,7 @@ FullSolution LS_GradientDescent::apply(const Solution *solution,
 
 	bool improves = true;
 	while (improves && !this->stoppingCriteria()) {
+		this->runtime = clock() - _startClock;
 		improves = false;
 		bestNeighbor = -1;
 		best = current.second;
@@ -278,6 +285,8 @@ LS_Tabu::LS_Tabu(const LS_Tabu &source)
 //-----  Setup method  --------------------------------------------------------
 void LS_Tabu::setup(ParameterDB *parameters) {
 	LocalSearch::setup(parameters);
+	// Configure the tabu list with the parameters from the setup file
+	this->tabuList->setup(parameters);
 	// Loads the maximum number of iterations without improvement
 	this->maxBadIterations = parameters->getInteger(this->badIterationsLabel, -1);
 
@@ -319,6 +328,12 @@ FullSolution LS_Tabu::apply(const Solution *solution,
 	this->neighbours = 0;
 	this->iterations = 0;
 	this->badIterations = 0;
+	clock_t _startClock = clock();
+	this->runtime = 0;
+	// Wall-clock safety limit for LS (guards against clock() issues or infinite inner loops)
+	struct timespec _lsWallStart;
+	clock_gettime(CLOCK_MONOTONIC, &_lsWallStart);
+	double _lsWallLimit = (this->maxTime > 0) ? (this->maxTime * 4.0 + 5.0) : 15.0;
 
 	// Set the initial solution of the nieghbourhood
 	this->neighbourhood->setInitialSolution(solution->clone(),
@@ -329,7 +344,23 @@ FullSolution LS_Tabu::apply(const Solution *solution,
 
 	bool improves = true;
 	this->tabuList->clear();
+
 	while (!this->stoppingCriteria()) {
+		this->runtime = clock() - _startClock;
+		// Wall-clock safety: escape if LS has been running too long (guards against clock() issues)
+		{
+			struct timespec _lsWallNow;
+			clock_gettime(CLOCK_MONOTONIC, &_lsWallNow);
+			double _lsElapsed = (_lsWallNow.tv_sec - _lsWallStart.tv_sec)
+				+ (_lsWallNow.tv_nsec - _lsWallStart.tv_nsec) * 1e-9;
+			if (_lsElapsed >= _lsWallLimit) {
+				fprintf(stderr, "[LS_SAFETY] Wall-clock limit %.1fs hit after %d iters (cpu=%.3fs)\n",
+					_lsWallLimit, this->iterations,
+					(clock() - _startClock) / (double)CLOCKS_PER_SEC);
+				fflush(stderr);
+				break;
+			}
+		}
 		improves = false;
 		bestNeighbor = -1;
 		best = NULL;

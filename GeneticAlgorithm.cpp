@@ -319,6 +319,7 @@ void GeneticAlgorithm::prepareToRun(ParameterDB *params) {
 	else {
 		std::cout << "WARNING: Unit foe showing evolution values not found.";
 		std::cout << " Using generations by default." << std::endl;
+		showEvolutionTime = false;  // default: generations mode
 	}
 	this->evolutionSpan = params->getDouble(GA_EVOL_SPAN, 1);
 	

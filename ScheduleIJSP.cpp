@@ -313,25 +313,30 @@ void ScheduleIJSP::updateTopologicalOrder(FuzzyFW::Random *rng) {
 }
 
 //====  repair times of the sheduling so there is no overlapping ===================================
-void ScheduleIJSP::repairScheduledTimes(const int taskIdx) {
-	if (taskIdx < 0 || taskIdx >=  this->taskInfo.size()) return;
-	
+void ScheduleIJSP::repairScheduledTimes(const int taskIdx, int _depth) {
+	if (_depth > 10000) {
+		fprintf(stderr, "[DBG] repairScheduledTimes DEPTH LIMIT at task=%d depth=%d\n", taskIdx, _depth);
+		fflush(stderr);
+		return;
+	}
+	if (taskIdx < 0 || taskIdx >=  (int)this->taskInfo.size()) return;
+
 	IJSP::ScheduledTaskInfo currentTask = this->taskInfo[taskIdx];
 	IJSP::ScheduledTaskInfo* repairedTask;
 
 	//repair job successor
-	if (currentTask.task->js >= 0 && currentTask.task->js < this->taskInfo.size()) {
+	if (currentTask.task->js >= 0 && currentTask.task->js < (int)this->taskInfo.size()) {
 		repairedTask = &(this->taskInfo[currentTask.task->js]);
 		if (repairedTask->task && adjustHead(currentTask, repairedTask)) {
-			this->repairScheduledTimes(repairedTask->task->id);
+			this->repairScheduledTimes(repairedTask->task->id, _depth + 1);
 		}
 	}
 
 	//repair machine successor
-	if (currentTask.ms >=0 && currentTask.ms < this->taskInfo.size()) {
+	if (currentTask.ms >=0 && currentTask.ms < (int)this->taskInfo.size()) {
 		repairedTask = &(this->taskInfo[currentTask.ms]);
 		if (repairedTask -> task && adjustHead(currentTask, repairedTask)) {
-			this->repairScheduledTimes(repairedTask->task->id);
+			this->repairScheduledTimes(repairedTask->task->id, _depth + 1);
 		}
 	}
 
