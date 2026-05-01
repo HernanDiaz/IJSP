@@ -48,7 +48,7 @@ namespace FuzzyFW {
 		//=========================================================================
 		//		FIELDS
 		//=========================================================================
-	public:
+	private:
 		/**
 		* Path to the folder in which store the results
 		*/
@@ -60,7 +60,6 @@ namespace FuzzyFW {
 		int numRuns;
 
 
-	private:
 		/**
 		* Algorithm to use for calibration
 		*/
