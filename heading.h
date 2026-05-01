@@ -10,7 +10,6 @@
 #include <algorithm>
 #include <cmath>
 #include <ctime>
-#include <time.h>
 #include <fstream>
 #include <iostream>
 #include <limits>
@@ -158,8 +157,8 @@ static void quickSortInc(std::vector<T> &values, const unsigned int left,
 	}
 
 	std::swap(values[pos], values[right]);
-	quickSort(values, left, pos - 1, rng);
-	quickSort(values, pos + 1, right, rng);
+	quickSortInc(values, left, pos - 1, rng);
+	quickSortInc(values, pos + 1, right, rng);
 }
 
 
@@ -184,6 +183,6 @@ static void quickSortDec(std::vector<T> &values, const unsigned int left,
 	}
 
 	std::swap(values[pos], values[right]);
-	quickSort(values, left, pos - 1, rng);
-	quickSort(values, pos + 1, right, rng);
+	quickSortDec(values, left, pos - 1, rng);
+	quickSortDec(values, pos + 1, right, rng);
 }
