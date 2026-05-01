@@ -5,12 +5,7 @@
 */
 #pragma once
 
-#include "MemeticNeri.h"
-#include "ArtificialBeeColony.h"
-#include "ArtificialBeeColonyThread.h"
-#include "ArtificialBeeColonyPSO.h"
-#include "ArtificialBeeColonyCell.h"
-#include "RandomPopulation.h"
+#include "AlgorithmClassRegister.h"
 #include "PostExecutionManager.h"
 
 

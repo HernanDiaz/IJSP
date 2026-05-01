@@ -214,27 +214,9 @@ void EvoLauncher::loadConfiguration(const char* paramsFile) {
 
 //-----  setupAlgorithm method  -----------------------------------------------
 void EvoLauncher::setupAlgorithm(const std::string name) {
-	// Genetic algorithm
-	if (toUpper(name).compare("GENETIC") == 0
-		|| toUpper(name).compare("GA") == 0)
-		this->algorithm = new GeneticAlgorithm(this->setup);
-	else if (toUpper(name).compare("MEMETIC") == 0
-		|| toUpper(name).compare("MA") == 0)
-		this->algorithm = new MemeticAlgorithm(this->setup);
-	else if (toUpper(name).compare("NERI") == 0
-		|| toUpper(name).compare("NERI-MA") == 0)
-		this->algorithm = new MemeticNeri(this->setup);
-	else if (toUpper(name).compare("GA-TOOL-RANDOMPOPULATION") == 0)
-		this->algorithm = new RandomPopulation(this->setup);
-	else if (toUpper(name).compare("ABC") == 0)
-		this->algorithm = new ArtificialBeeColony(this->setup);
-	else if (toUpper(name).compare("ABCT") == 0)
-		this->algorithm = new ArtificialBeeColonyThread(this->setup);
-	else if (toUpper(name).compare("ABCPSO") == 0)
-		this->algorithm = new ArtificialBeeColonyPSO(this->setup);
-	else if (toUpper(name).compare("ABCCELL") == 0)
-		this->algorithm = new ArtificialBeeColonyCell(this->setup);
-	else {
+	AlgorithmClassRegister::registerClasses();
+	this->algorithm = AlgorithmClassRegister::getAlgorithm(name, this->setup);
+	if (this->algorithm == NULL) {
 		std::string err = "Solving algorithm \'" + name + "\' unknown";
 		throw FuzzyFWException("Loading", err);
 	}
