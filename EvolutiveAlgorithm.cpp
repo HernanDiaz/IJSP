@@ -37,6 +37,10 @@ EvolutiveAlgorithm::EvolutiveAlgorithm(ParameterDB *params) {
 //-----  ClearAll  ------------------------------------------------------------
 void EvolutiveAlgorithm::clearAll() {
 	delete this->evaluator;
+	delete this->sharedVariables->encoder;
+	this->sharedVariables->encoder = NULL;
+	delete this->sharedVariables->decoder;
+	this->sharedVariables->decoder = NULL;
 	this->finished = false;
 	this->ready = false;
 }

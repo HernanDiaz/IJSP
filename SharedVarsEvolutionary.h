@@ -53,8 +53,8 @@ public:
 	* Destructor
 	*/
 	~SharedVarsEvolutionary() {
-		// delete encoder;
-		// delete decoder;
+		delete encoder;
+		delete decoder;
 	}
 };
 
