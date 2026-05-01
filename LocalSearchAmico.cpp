@@ -2,7 +2,6 @@
 * LocalSearchAmico.cpp
 *
 *  Created on: Sep 27, 2018
-*      Author: jjpalacios
 */
 
 #include "LocalSearchAmico.h"

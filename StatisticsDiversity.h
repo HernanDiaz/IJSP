@@ -5,7 +5,6 @@
 * StatisticsDiversity.h
 *
 *  Created on: Jun 13, 2018
-*      Author: jjpalacios
 */
 
 #include "Statistics.h"
@@ -23,7 +22,6 @@ namespace FuzzyFW {
 	*
 	* It accepts only individuals that are Integer Arrays
 	*
-	* @author jjpalacios
 	*
 	*/
 class StatisticsHamming : public Statistics {
@@ -99,7 +97,6 @@ class StatisticsHamming : public Statistics {
 *
 * It accepts only individuals that are Integer Arrays
 *
-* @author jjpalacios
 *
 */
 class StatisticsKendall : public Statistics {
@@ -176,7 +173,6 @@ public:
 * F.Neri, J.Toivanen, G.L.Cascella, Y-S. Ong. IEEE/ACM TRANSACTIONS ON
 * COMPUTATIONAL BIOLOGY AND BIOINFORMATICS. Vol 4(2), 264-278. 2007
 *
-* @author jjpalacios
 *
 */
 class StatisticsNeri : public Statistics {
@@ -253,7 +249,6 @@ public:
 * F.Neri, J.Toivanen, G.L.Cascella, Y-S. Ong. IEEE/ACM TRANSACTIONS ON
 * COMPUTATIONAL BIOLOGY AND BIOINFORMATICS. Vol 4(2), 264-278. 2007
 *
-* @author jjpalacios
 *
 */
 class StatisticsNeriBest : public Statistics {

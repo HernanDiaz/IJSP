@@ -2,7 +2,6 @@
 * Fitness.h
 *
 *  Created on: June 7, 2017
-*      Author: Juan Jose Palacios
 */
 #pragma once
 
@@ -23,7 +22,6 @@ namespace FuzzyFW {
 * checking everytime the maximization/minimization conditions.
 * Also to have a wrapper that can be used for any kind of fitness type
 *
-* @author Juan Jose Palacios
 *
 */
 class Fitness {
@@ -128,7 +126,6 @@ public:
 /**
 * Class were the fitness values are of type double
 *
-* @author Juan Jose Palacios
 *
 */
 class FitnessDouble : public Fitness {
@@ -248,7 +245,6 @@ private:
 /**
 * Class were the fitness values are of type integer
 *
-* @author Juan Jose Palacios
 *
 */
 class FitnessInteger : public Fitness {
@@ -372,7 +368,6 @@ private:
 /**
 * Class were the fitness values are of type TFN
 *
-* @author Juan Jose Palacios
 *
 */
 class FitnessTFN : public Fitness {

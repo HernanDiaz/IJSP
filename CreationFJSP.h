@@ -2,7 +2,6 @@
  * Creation.h
  *
  *  Created on: Aug 4, 2017
- *      Author: jjpalacios
  */
 #pragma once
 
@@ -25,7 +24,6 @@ namespace FJSP {
  * This class generates an initial individual/population by creating a
  * random schedule and then codifying it with the respective strategy
  *
- * @author jjpalacios
  *
  */
 class CreationRandomSchedule : public FuzzyFW::Creation {

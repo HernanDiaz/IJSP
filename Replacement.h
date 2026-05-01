@@ -2,7 +2,6 @@
  * Replacement.h
  *
  *  Created on: Aug 2, 2017
- *      Author: jjpalacios
  */
 #pragma once
 
@@ -31,7 +30,6 @@ namespace FuzzyFW {
  * The newest population serves as a container for the resulting one,
  * while the oldest population will disappear
  *
- * @author jjpalacios
  *
  */
 class Replacement {
@@ -111,7 +109,6 @@ public:
  * It will require an additional parameter, which is the number of elite
  * individuals
  *
- * @author jjpalacios
  *
  */
 class ReplacementElitist : public Replacement {
@@ -197,7 +194,6 @@ public:
 * This class implements a tournament between parents and offspring. The 2
 * best ones go into the next generation
 *
-* @author jjpalacios
 *
 */
 class ReplacementParents : public Replacement {

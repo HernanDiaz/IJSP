@@ -2,7 +2,6 @@
 * ProblemFJSP.h
 *
 *  Created on: May 12, 2017
-*      Author: Juan Jose Palacios
 */
 #pragma once
 
@@ -58,7 +57,6 @@ namespace FJSP {
 * An array with the bounds in this order: E[Cmax], AImin, AImax
 *
 *
-* @author Juan Jose Palacios
 *
 */
 

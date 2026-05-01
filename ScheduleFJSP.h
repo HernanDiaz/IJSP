@@ -2,7 +2,6 @@
 * ScheduleFJSP.h
 *
 *  Created on: May 16, 2017
-*      Author: Juan Jose Palacios
 */
 #pragma once
 
@@ -23,7 +22,6 @@ namespace FJSP {
 * isn't constant. That is, all information that may vary from one
 * solution to another.
 *
-* @author Juan Jose Palacios
 */
 struct ScheduledTaskInfo {
 	const TaskFJSP *task;	// Scheduled task
@@ -54,7 +52,6 @@ struct ScheduledTaskInfo {
 * they have in the Problem class to improve the access to them. When a
 * task is added to the schedule, it's dynamic information is updated.
 *
-* @author Juan Jose Palacios
 *
 */
 class ScheduleFJSP : public FuzzyFW::Solution

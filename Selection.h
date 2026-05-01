@@ -2,7 +2,6 @@
  * Selection.h
  *
  *  Created on: Aug 2, 2017
- *      Author: jjpalacios
  */
 #pragma once
 
@@ -32,7 +31,6 @@ namespace FuzzyFW {
  * It will be able both to generate a new population by selecting individuals
  * from a given one, or just select one individual in the population.
  *
- * @author jjpalacios
  *
  */
 class Selection {
@@ -106,7 +104,6 @@ public:
  * From a given population, select K individuals at random and then takes the
  * best one.
  *
- * @author jjpalacios
  *
  */
 class SelectionTournament : public Selection {
@@ -193,7 +190,6 @@ public:
  * each individual is assigned an integer value increasingly, so the best
  * individual takes value 1, and the worst one takes value "size of the population".
  *
- * @author jjpalacios
  *
  */
 class SelectionRoulette : public Selection {
@@ -312,7 +308,6 @@ protected:
  * in Genetic Algorithms and their Applications: Proc. of the 2nd Int. Conf on
  * Genetic Algorithms, pp. 14-21, 1987]
  *
- * @author jjpalacios
  *
  */
 class SelectionSUS : public SelectionRoulette {
@@ -387,7 +382,6 @@ public:
  * individuals from the original population are selected, but changing their
  * order so they are randomly sorted in the following population
  *
- * @author jjpalacios
  *
  */
 class SelectionShuffle : public Selection {
@@ -469,7 +463,6 @@ public:
  * This class implements a random selection. It just chooses one individual
  * at random
  *
- * @author jjpalacios
  *
  */
 class SelectionRandom : public Selection {

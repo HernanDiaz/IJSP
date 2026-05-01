@@ -2,7 +2,6 @@
  * Replacement.cpp
  *
  *  Created on: Aug 2, 2017
- *      Author: jjpalacios
  */
 
 

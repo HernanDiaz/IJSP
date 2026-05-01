@@ -2,7 +2,6 @@
 * TabuList.cpp
 *
 *  Created on: Dec 21, 2017
-*      Author: jjpalacios
 */
 
 #include "TabuList.h"

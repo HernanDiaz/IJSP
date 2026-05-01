@@ -2,7 +2,6 @@
 * RandomPopulation.cpp
 *
 *  Created on: Jun 12, 2018
-*      Author: jjpalacios
 */
 
 #include "RandomPopulation.h"

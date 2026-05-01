@@ -2,7 +2,6 @@
  * DataPrinter.cpp
  *
  *  Created on: Sep 20, 2017
- *      Author: jjpalacios
  */
 
 #include "DataPrinter.h"

@@ -2,7 +2,6 @@
 * TimeWindowClassRegister.h
 *
 *  Created on: May 17, 2017
-*      Author: Juan Jose Palacios
 */
 #pragma once
 
@@ -54,7 +53,6 @@ namespace FuzzyFW {
 	* by inheriting from the respective abstract class and than come here to
 	* register the name of the new operator.
 	*
-	* @author Juan Jose Palacios
 	*
 	*/
 	struct TimeWindowClassRegister {

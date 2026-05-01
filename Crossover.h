@@ -2,7 +2,6 @@
  * Crossover.h
  *
  *  Created on: July 14, 2017
- *      Author: jjpalacios
  */
 #pragma once
 
@@ -28,7 +27,6 @@ namespace FuzzyFW {
  * The crossover operator will generate 2 offspring that will replace their
  * parents automatically
  *
- * @author jjpalacios
  *
  */
 class Crossover {
@@ -112,7 +110,6 @@ public:
 /**
 * Order-based crossover for permutations
 *
-* @author jjpalacios
 *
 */
 class Crossover_OBC : public Crossover {
@@ -187,7 +184,6 @@ public:
 /**
 * Cycle-based crossover for permutations
 *
-* @author jjpalacios
 *
 */
 class Crossover_CBC : public Crossover {
@@ -258,7 +254,6 @@ public:
 /**
 * PMX crossover for permutations
 *
-* @author jjpalacios
 *
 */
 class Crossover_PMX : public Crossover {

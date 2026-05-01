@@ -2,7 +2,6 @@
 * LocalSearch.h
 *
 *  Created on: Oct 11, 2017
-*      Author: jjpalacios
 */
 #pragma once
 
@@ -42,7 +41,6 @@ namespace FuzzyFW {
 * 	-	threshold: Minimum improvement to consider a neighbor as an improving
 * 			neighbor. Optional parameter
 *
-* @author jjpalacios
 *
 */
 class LocalSearch {
@@ -213,7 +211,6 @@ public:
 * neighbourhood and then iterates randomly over the individuals until it
 * finds the first one that improves the current solution.
 *
-* @author jjpalacios
 *
 */
 class LS_HillClimbing : public LocalSearch {
@@ -313,7 +310,6 @@ public:
 * neighbourhood and then iterates randomly over the individuals until it
 * finds the first one that improves the current solution.
 *
-* @author jjpalacios
 *
 */
 class LS_GradientDescent : public LocalSearch {
@@ -413,7 +409,6 @@ public:
 * individual. The algorithm stops after a fixed number of generations
 * without improving the best solution found so far.
 *
-* @author jjpalacios
 *
 */
 class LS_Tabu : public LocalSearch {

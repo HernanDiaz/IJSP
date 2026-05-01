@@ -2,7 +2,6 @@
 * SGS_FVRP_Split.cpp
 *
 *  Created on: October 31, 2017
-*      Author: Juan Jose Palacios
 */
 
 #include "SGS_FVRP_Split_TW.h"

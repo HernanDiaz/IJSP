@@ -2,7 +2,6 @@
 * NeighbourhoodFJSP_AI.h
 *
 *  Created on: Oct 11, 2017
-*      Author: jjpalacios
 */
 #pragma once
 
@@ -29,7 +28,6 @@ namespace FJSP {
 * considered a critical path. N1 considers the reversal of all arcs that belong
 * to at least one critical path
 *
-* @author jjpalacios
 *
 */
 class NB_ParallelN1_AIavgFJSP : public FuzzyFW::Neighbourhood {
@@ -218,7 +216,6 @@ protected:
 * considered a critical path. N1 considers the reversal of all arcs that belong
 * to at least one critical path
 *
-* @author jjpalacios
 *
 */
 class NB_ParallelN1_AIminFJSP : public NB_ParallelN1_AIavgFJSP {
@@ -325,7 +322,6 @@ public:
 * considered a critical path. N1 considers the reversal of all arcs that belong
 * to at least one critical path
 *
-* @author jjpalacios
 *
 */
 class NB_ParallelN1_AIminICAE : public NB_ParallelN1_AIminFJSP {

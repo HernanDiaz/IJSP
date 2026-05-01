@@ -23,7 +23,6 @@ namespace FuzzyFW {
 * Requires two parameters, indicating the minimum and maximum size of the list.
 * In the case of dynamic length lists, they fix the boundaries of the length.
 *
-* @author jjpalacios
 *
 */
 class TabuList {

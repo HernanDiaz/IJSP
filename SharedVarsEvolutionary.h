@@ -2,7 +2,6 @@
 * SharedVarsEvolutionary.h
 *
 *  Created on: Nov 29, 2016
-*      Author: Juan Jose Palacios
 */
 #pragma once
 
@@ -27,7 +26,6 @@ class Encoder;
 * A clear example of one of this objects that are commonly shared is
 * the random number generator.
 *
-* @author jjpalacios
 *
 */
 class SharedVarsEvolutionary : public SharedVars {

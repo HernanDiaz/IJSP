@@ -2,7 +2,6 @@
 * ScheduleFJSP.cpp
 *
 *  Created on: May 16, 2017
-*      Author: Juan Jose Palacios
 */
 
 #include "ScheduleFJSP.h"

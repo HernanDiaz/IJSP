@@ -2,7 +2,6 @@
  * EncoderFJSP.h
  *
  *  Created on: September 13, 2017
- *      Author: jjpalacios
  */
 #pragma once
 
@@ -22,7 +21,6 @@ namespace FJSP {
 * contains the topological order of the solution in it. 
 * Tasks are numbered from 0 to n-1, begin n the number of tasks or operations.
 *
-* @author jjpalacios
 *
 */
 class EncoderFJSP_Order : public FuzzyFW::Encoder {
@@ -104,7 +102,6 @@ public:
 * contains the topological order of the solution in it.
 * Each task is codified with the number of job it belongs to
 *
-* @author jjpalacios
 *
 */
 class EncoderFJSP_JobOrder : public FuzzyFW::Encoder {

@@ -2,7 +2,6 @@
  * FVRPClassRegister.h
  *
  *  Created on: Nov 23, 2017
- *      Author: Juan Jose Palacios
  */
 #pragma once
 
@@ -56,7 +55,6 @@ namespace FVRP {
  * by inheriting from the respective abstract class and than come here to
  * register the name of the new operator.
  *
- * @author Juan Jose Palacios
  *
  */
 struct FVRPClassRegister {

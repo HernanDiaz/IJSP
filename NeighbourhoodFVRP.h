@@ -2,7 +2,6 @@
 * NeighbourhoodFVRP.h
 *
 *  Created on: Nov 27, 2017
-*      Author: jjpalacios
 */
 #pragma once
 
@@ -48,7 +47,6 @@ namespace FVRP {
 * start to end is called a critical path. N1 considers the reversal of all arcs
 * that belong to at least one critical path
 *
-* @author jjpalacios
 *
 */
 class NB_Vidal_FVRP_FD : public FuzzyFW::Neighbourhood {

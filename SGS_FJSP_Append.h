@@ -2,7 +2,6 @@
 * SGS_FJSP_Append.h
 *
 *  Created on: June 1, 2017
-*      Author: Juan Jose Palacios
 */
 
 #pragma once
@@ -38,7 +37,6 @@ namespace FJSP {
 * algorithm.
 * In its simplest case, this SGS will produce semi-active schedules.
 *
-* @author Juan Jose Palacios
 *
 */
 
@@ -153,7 +151,6 @@ protected:
 * possible). This is the same as scheduling everytime the operation that can 
 * start earlier. In case of a tie, the task ordering is used.
 *
-* @author Juan Jose Palacios
 *
 */
 
@@ -267,7 +264,6 @@ public:
 * takes the conflict set as the tasks which Starting Time has at least
 * one component lesser than a component of the ECT
 *
-* @author Juan Jose Palacios
 *
 */
 
@@ -382,7 +378,6 @@ public:
 * one component lesser than the Completion times of all tasks contributing to
 * calculate the minimum C*
 *
-* @author Juan Jose Palacios
 *
 */
 

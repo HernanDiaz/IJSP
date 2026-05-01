@@ -2,7 +2,6 @@
 * NeighbourhoodFJSP.h
 *
 *  Created on: Oct 11, 2017
-*      Author: jjpalacios
 */
 #pragma once
 
@@ -29,7 +28,6 @@ namespace FJSP {
 * start to end is called a critical path. N1 considers the reversal of all arcs
 * that belong to at least one critical path
 *
-* @author jjpalacios
 *
 */
 class NB_ParallelN1_MakespanFJSP : public FuzzyFW::Neighbourhood {

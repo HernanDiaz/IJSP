@@ -2,7 +2,6 @@
 * Population.cpp
 *
 *  Created on: June 30, 2017
-*      Author: Juan Jose Palacios
 */
 
 #include "Population.h"

@@ -2,7 +2,6 @@
 * StatisticsFVRP.h
 *
 *  Created on: Nov 23, 2017
-*      Author: jjpalacios
 */
 #pragma once
 
@@ -21,7 +20,6 @@ namespace FVRP {
 /**
 * This class gives the travel cost from the population
 *
-* @author jjpalacios
 *
 */
 struct StatisticsTimeCost : public FuzzyFW::Statistics {
@@ -96,7 +94,6 @@ public:
 /**
 * This class gives the minimum necessity of meeting the demands
 *
-* @author jjpalacios
 *
 */
 struct StatisticsDemandMinNec : public FuzzyFW::Statistics {
@@ -179,7 +176,6 @@ public:
 /**
 * This class gives the minimum possibility of meeting the demands
 *
-* @author jjpalacios
 *
 */
 struct StatisticsDemandMinPos : public FuzzyFW::Statistics {
@@ -264,7 +260,6 @@ public:
 /**
 * This class gives the minimum credibility of meeting the demands
 *
-* @author jjpalacios
 *
 */
 struct StatisticsDemandMinCred : public FuzzyFW::Statistics {

@@ -2,7 +2,6 @@
 * RandomPopulation.h
 *
 *  Created on: Jun 12, 2018
-*      Author: jjpalacios
 */
 #pragma once
 
@@ -25,7 +24,6 @@ namespace FuzzyFW {
 	* This class implements a Random Search algorithm.
 	* it creates a pool of random solutions and returns the best
 	*
-	* @author jjpalacios
 	*
 	*/
 	class RandomPopulation : public EvolutiveAlgorithm {

@@ -2,7 +2,6 @@
 * Fitness.cpp
 *
 *  Created on: June 7, 2017
-*      Author: Juan Jose Palacios
 */
 
 #include "Fitness.h"

@@ -2,7 +2,6 @@
 * StatisticsDiversity.cpp
 *
 *  Created on: Oct 4, 2017
-*      Author: jjpalacios
 */
 
 #include "StatisticsDiversity.h"

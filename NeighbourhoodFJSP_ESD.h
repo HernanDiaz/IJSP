@@ -2,7 +2,6 @@
 * NeighbourhoodFJSP_ESD.h
 *
 *  Created on: Oct 11, 2017
-*      Author: jjpalacios
 */
 #pragma once
 
@@ -30,7 +29,6 @@ namespace FJSP {
 * considered a critical path. N1 considers the reversal of all arcs that belong
 * to at least one critical path
 *
-* @author jjpalacios
 *
 */
 class NB_ParallelN1_ESDavgFJSP : public FuzzyFW::Neighbourhood {
@@ -233,7 +231,6 @@ protected:
 * considered a critical path. N1 considers the reversal of all arcs that belong
 * to at least one critical path
 *
-* @author jjpalacios
 *
 */
 class NB_ParallelN1_ESDminFJSP : public NB_ParallelN1_ESDavgFJSP {

@@ -2,7 +2,6 @@
 * LocalSearchAmicoFJSP.cpp
 *
 *  Created on: Feb 15, 2019
-*      Author: jjpalacios
 */
 
 #include "LocalSearchAmicoFJSP.h"

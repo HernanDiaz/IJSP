@@ -2,7 +2,6 @@
  * Crossover.cpp
  *
  *  Created on: Jul 14, 2017
- *      Author: jjpalacios
  */
 
 #include "Crossover.h"

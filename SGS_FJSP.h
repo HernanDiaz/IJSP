@@ -2,7 +2,6 @@
 * SGS_FJSP.h
 *
 *  Created on: June 1, 2017
-*      Author: Juan Jose Palacios
 */
 
 #pragma once
@@ -25,7 +24,6 @@ namespace FJSP {
 * and many others having stochastic components. To ensure that results
 * can be replicate, that means that the class will need acces to the RNG.
 *
-* @author Juan Jose Palacios
 *
 */
 

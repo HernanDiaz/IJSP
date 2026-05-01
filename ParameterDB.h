@@ -2,7 +2,6 @@
 * ParameterDB.h
 *
 *  Created on: Jul 23, 2015
-*      Author: Juan Jose Palacios
 */
 #pragma once
 
@@ -23,7 +22,6 @@ namespace FuzzyFW {
 * The input file must be a text file, and each parameter is defined in
 * a line following the format "parameter_name = parameter_value"
 *
-* @author jjpalacios
 *
 */
 class ParameterDB {

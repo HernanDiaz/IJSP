@@ -2,7 +2,6 @@
 * Neighbour.cpp
 *
 *  Created on: Oct 11, 2017
-*      Author: jjpalacios
 */
 
 #include "Neighbour.h"

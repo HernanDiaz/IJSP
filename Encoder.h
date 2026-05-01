@@ -2,7 +2,6 @@
  * Encoder.h
  *
  *  Created on: September 13, 2017
- *      Author: jjpalacios
  */
 #pragma once
 
@@ -21,7 +20,6 @@ namespace FuzzyFW {
 	* This class is responsible for encoding a solution into the chromosome
 	* of an individual. It's the complementary of the decoder
 	*
-	* @author jjpalacios
 	*
 	*/
 class Encoder {

@@ -2,7 +2,6 @@
 * NeighbourhoodFVRP.h
 *
 *  Created on: Nov 24, 2017
-*      Author: jjpalacios
 */
 #pragma once
 
@@ -21,7 +20,6 @@ namespace FVRP {
 * It defines a neighbour as a swap of two disjoint sequences of visits that
 * can or not be in the same route.
 *
-* @author jjpalacios
 *
 */
 class NeighbourFVRP_SegSwap : public FuzzyFW::Neighbour {

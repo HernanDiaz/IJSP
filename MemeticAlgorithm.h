@@ -2,7 +2,6 @@
 * MemeticAlgorithm.h
 *
 *  Created on: Oct 13, 2017
-*      Author: jjpalacios
 */
 #pragma once
 
@@ -60,7 +59,6 @@ namespace FuzzyFW {
 	* strategy that can be applied on different points of the run and with
 	* different probability values
 	*
-	* @author jjpalacios
 	*
 	*/
 	class MemeticAlgorithm : public GeneticAlgorithm {

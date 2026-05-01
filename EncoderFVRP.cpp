@@ -2,7 +2,6 @@
  * EncoderFVRP.cpp
  *
  *  Created on: Nov 23, 2017
- *      Author: jjpalacios
  */
 
 #include "EncoderFVRP.h"

@@ -2,7 +2,6 @@
  * Crossover.h
  *
  *  Created on: July 14, 2017
- *      Author: jjpalacios
  */
 #ifndef SRC_ECOPERATORS_CROSSOVER_H_
 #define SRC_ECOPERATORS_CROSSOVER_H_
@@ -27,7 +26,6 @@ namespace FJSP {
  * of the chromosome is then filled by scheduling the remaining tasks following
  * the ordering given by the second parent.
  *
- * @author jjpalacios
  *
  */
 class Crossover_JOX : public FuzzyFW::Crossover {
@@ -137,7 +135,6 @@ protected:
 * Bierwith establishes that the length of the substring must be always in the
 * interval [1/3, 1/2] times the length of the genotype
 *
-* @author jjpalacios
 *
 */
 class Crossover_GOXBierwirth : public FuzzyFW::Crossover {
@@ -248,7 +245,6 @@ protected:
 * Bierwith establishes that the length of the substring must be always in the
 * interval [1/3, 1/2] times the length of the genotype
 *
-* @author jjpalacios
 *
 */
 class Crossover_GPMXBierwirth : public FuzzyFW::Crossover {
@@ -354,7 +350,6 @@ protected:
 *	Sequence mask: 1 1 2 2 2 2 1 1 1
 *	Offspring: C B A A B A B C C
 *
-* @author jjpalacios
 *
 */
 class Crossover_PPXBierwirth : public FuzzyFW::Crossover {

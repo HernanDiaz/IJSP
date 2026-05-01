@@ -2,7 +2,6 @@
 * EvolutionaryAlgorithm.cpp
 *
 *  Created on: Sep 15, 2017
-*      Author: jjpalacios
 */
 
 #include "EvolutiveAlgorithm.h"

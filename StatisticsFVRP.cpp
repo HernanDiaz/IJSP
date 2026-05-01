@@ -2,7 +2,6 @@
 * StatisticsFVRP.cpp
 *
 *  Created on: Nec 23, 2017
-*      Author: jjpalacios
 */
 
 #include "StatisticsFVRP.h"

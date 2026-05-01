@@ -2,7 +2,6 @@
 * ParameterDB.cpp
 *
 *  Created on: Jul 23, 2015
-*      Author: jjpalacios
 */
 
 #include "ParameterDB.h"

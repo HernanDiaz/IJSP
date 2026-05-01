@@ -2,7 +2,6 @@
  * DecoderFJSP.cpp
  *
  *  Created on: Sep 12, 2017
- *      Author: jjpalacios
  */
 
 #include "DecoderFJSP.h"

@@ -2,7 +2,6 @@
 * FJSPException.h
 *
 *  Created on: Nov 29, 2016
-*      Author: Juan Jose Palacios
 */
 #pragma once
 
@@ -16,7 +15,6 @@ namespace FJSP {
 	*
 	* Allows to customize text messages to be shown after an expcetion occurs
 	*
-	* @author jjpalacios
 	*
 	*/
 	class FJSPException : public std::exception {

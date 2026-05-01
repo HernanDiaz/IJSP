@@ -4,7 +4,6 @@
 * Statistics.h
 *
 *  Created on: Oct 4, 2017
-*      Author: jjpalacios
 */
 #pragma once
 
@@ -22,7 +21,6 @@ namespace FuzzyFW {
 /**
 * This class allows to get values for statistical purposes.
 *
-* @author jjpalacios
 *
 */
 class Statistics {

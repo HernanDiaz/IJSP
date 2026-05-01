@@ -2,7 +2,6 @@
 * FuzzyTask.cpp
 *
 *  Created on: May 12, 2017
-*      Author: Juan Jose Palacios
 */
 
 #include "CustomerFVRP.h"

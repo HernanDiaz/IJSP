@@ -2,7 +2,6 @@
 * GeneticAlgorithm.cpp
 *
 *  Created on: Sep 15, 2015
-*      Author: jjpalacios
 */
 
 #include "GeneticAlgorithm.h"

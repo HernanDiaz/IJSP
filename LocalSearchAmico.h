@@ -2,7 +2,6 @@
 * LocalSearchAmico.h
 *
 *  Created on: Sep 27, 2018
-*      Author: jjpalacios
 */
 #pragma once
 
@@ -33,7 +32,6 @@ namespace FuzzyFW {
 * - if we are not in an improving phase of the search and the length of the
 *	list is less than a given max, then increase the list length by one unit.
 *
-* @author jjpalacios
 *
 */
 

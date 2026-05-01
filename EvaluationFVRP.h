@@ -2,7 +2,6 @@
  * EvaluationFVRP.h
  *
  *  Created on: Nov 23, 2017
- *      Author: jjpalacios
  */
 #pragma once
 
@@ -28,7 +27,6 @@ namespace FVRP {
 * This evaluation function evaluates the total travel time needed to complete
 * all the routes.
 *
-* @author jjpalacios
 *
 */
 class EvaluationFVRP_TimeCost : public FuzzyFW::Evaluation {
@@ -141,7 +139,6 @@ public:
 * all the routes.
 * Time Windows are present and considered to be crisp.
 *
-* @author jjpalacios
 *
 */
 class EvaluationFVRP_CTW_TimeCost : public EvaluationFVRP_TimeCost {

@@ -2,7 +2,6 @@
 * SGS_FVRP_Split.h
 *
 *  Created on: June 1, 2017
-*      Author: Juan Jose Palacios
 */
 
 #pragma once
@@ -53,7 +52,6 @@ namespace FVRP {
 * Finally, it is worth mention that the only source of uncertainty is in the
 * demand, and therefore all the other values are assumed to be well defined.
 *
-* @author Juan Jose Palacios
 *
 */
 
@@ -207,7 +205,6 @@ protected:
 * Finally, this split version is focus on optimising the total distance,
 * indpendently of the travel times or service times
 *
-* @author Juan Jose Palacios
 *
 */
 

@@ -2,7 +2,6 @@
 * Neighbour.cpp
 *
 *  Created on: Nov 24, 2017
-*      Author: jjpalacios
 */
 
 #include "NeighbourFVRP.h"

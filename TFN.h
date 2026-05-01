@@ -2,7 +2,6 @@
 * TFN.h
 *
 *  Created on: Nov 29, 2016
-*      Author: Juan Jose Palacios
 */
 #pragma once
 
@@ -27,7 +26,6 @@ namespace FuzzyFW {
 * in a reasonable amount of time. Because of that, different maximum
 * oprations are included
 * 
-* @author Juan Jose Palacios
 *
 */
 

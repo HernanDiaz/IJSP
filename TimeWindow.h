@@ -2,7 +2,6 @@
 * TimeWindow.h
 *
 *  Created on: May 12, 2017
-*      Author: Juan Jose Palacios
 */
 #pragma once
 
@@ -27,7 +26,6 @@ namespace FuzzyFW {
 * Notice that depending on the type of the time window, the satisfaction may
 * be measured in different ways or under different terms
 *
-* @author Juan Jose Palacios
 *
 */
 class TimeWindow {
@@ -169,7 +167,6 @@ public:
 * This class inherits from TimeWindow.
 * It contains a crisp deadline, or strict deadline.
 *
-* @author Juan Jose Palacios
 *
 */
 class TimeWindowDeadline : public TimeWindow {
@@ -292,7 +289,6 @@ public:
 * This class inherits from TimeWindow.
 * It contains a crisp time window
 *
-* @author Juan Jose Palacios
 *
 */
 class TimeWindowCrisp : public TimeWindow {
@@ -419,7 +415,6 @@ public:
 * decrease linearly until a value d2, from which the satisfaction level
 * becomes 0.
 *
-* @author Juan Jose Palacios
 *
 */
 class TimeWindowLinear : public TimeWindow {

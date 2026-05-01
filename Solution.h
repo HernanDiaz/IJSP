@@ -2,7 +2,6 @@
 * Solution.h
 *
 *  Created on: September 14, 2017
-*      Author: jjpalacios
 */
 #pragma once
 
@@ -24,7 +23,6 @@ namespace FuzzyFW {
 * different algorithms can receive a solution to a problem under the name
 * of this class.
 *
-* @author jjpalacios
 *
 */
 class Solution {

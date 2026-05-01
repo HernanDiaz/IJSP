@@ -2,7 +2,6 @@
 * MemeticAlgorithm.cpp
 *
 *  Created on: Jun 14, 2018
-*      Author: jjpalacios
 */
 
 #include "MemeticNeri.h"

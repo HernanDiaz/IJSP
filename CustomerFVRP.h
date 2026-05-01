@@ -2,7 +2,6 @@
 * CustomerFVRP.h
 *
 *  Created on: Nov 23, 2017
-*      Author: Juan Jose Palacios
 */
 #pragma once
 
@@ -22,7 +21,6 @@ namespace FVRP {
 * of a fuzzy VRP instance. That is, it represents values such as demand
 * as Fuzzy Numbers (TFNs in this versions)
 *
-* @author Juan Jose Palacios
 *
 */
 

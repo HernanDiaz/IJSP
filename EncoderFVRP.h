@@ -2,7 +2,6 @@
  * EncoderFVRP.h
  *
  *  Created on: November 23, 2017
- *      Author: jjpalacios
  */
 #pragma once
 
@@ -22,7 +21,6 @@ namespace FVRP {
 * contains the paths followed by each vehicle in a sequential fashion.
 * Customers are numbered from 1 to n, being n the number of customers.
 *
-* @author jjpalacios
 *
 */
 class EncoderFVRP_Order : public FuzzyFW::Encoder {

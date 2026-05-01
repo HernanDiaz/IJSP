@@ -2,7 +2,6 @@
 * EvolutiveAlgorithm.h
 *
 *  Created on : Sep 15, 2017
-* Author : jjpalacios
 */
 #pragma once
 
@@ -35,7 +34,6 @@ namespace FuzzyFW {
 *		- Single objective
 *		- Return 1 solution
 *
-* @author jjpalacios
 *
 */
 class EvolutiveAlgorithm {

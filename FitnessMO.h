@@ -2,7 +2,6 @@
 * FitnessMO.h
 *
 *  Created on: Jun 14, 2018
-*      Author: Juan Jose Palacios
 */
 #pragma once
 
@@ -22,7 +21,6 @@ namespace FuzzyFW {
 * fitness is considered the best. In case of a tie, the second fitness
 * value is considered and so on. 
 *
-* @author Juan Jose Palacios
 *
 */
 class FitnessLexicographic : public Fitness {

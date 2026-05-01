@@ -4,7 +4,6 @@
 * Problem.h
 *
 *  Created on: Oct 27, 2017
-*      Author: jjpalacios
 */
 #pragma once
 
@@ -58,7 +57,6 @@ namespace FVRP {
 	* To be defined
 	*
 	*
-	* @author Juan Jose Palacios
 	*
 	*/
 

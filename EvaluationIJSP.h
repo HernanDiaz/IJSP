@@ -42,7 +42,6 @@ namespace IJSP {
 * This class implements the required methods to compute the makespan objective
 * function from a given individual or population
 *
-* @author jjpalacios
 *
 */
 class EvaluationIJSP_Makespan : public FuzzyFW::Evaluation {

@@ -2,7 +2,6 @@
 * RouteFVRP.h
 *
 *  Created on: Oct 27, 2017
-*      Author: Juan Jose Palacios
 */
 #pragma once
 
@@ -22,7 +21,6 @@ namespace FVRP {
 * This is an auxiliary struct containing all data of the customers that
 * is dynamic and dependent on the proposed solution to the VRP problem
 *
-* @author Juan Jose Palacios
 */
 struct CustomerInfo {
 	CustomerFVRP * cst;	// Customer
@@ -54,7 +52,6 @@ struct CustomerInfo {
 * The class stores all the info in a matrix, such that each row i
 * represents the route to follow by vehicle i.
 *
-* @author Juan Jose Palacios
 *
 */
 class RouteFVRP : public FuzzyFW::Solution

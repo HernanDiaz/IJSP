@@ -2,7 +2,6 @@
 * SGS_FVRP.h
 *
 *  Created on: October 31, 2017
-*      Author: Juan Jose Palacios
 */
 
 #pragma once
@@ -27,7 +26,6 @@ namespace FVRP {
 * and many others having stochastic components. To ensure that results
 * can be replicate, that means that the class may need acces to the RNG.
 *
-* @author Juan Jose Palacios
 *
 */
 

@@ -2,7 +2,6 @@
 * LocalSearchAmicoFJSP.h
 *
 *  Created on: Feb 15, 2019
-*      Author: jjpalacios
 */
 #pragma once
 
@@ -31,7 +30,6 @@ namespace FJSP {
 *	- A = min+6
 *	- B = A + (n+m)/3
 *
-* @author jjpalacios
 *
 */
 

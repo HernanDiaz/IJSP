@@ -2,7 +2,6 @@
 * Neighbourhood.cpp
 *
 *  Created on: Oct 12, 2017
-*      Author: jjpalacios
 */
 
 #include "NeighbourhoodFJSP_Cmax.h"

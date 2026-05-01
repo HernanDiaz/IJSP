@@ -2,7 +2,6 @@
 * Statistics.cpp
 *
 *  Created on: Oct 4, 2017
-*      Author: jjpalacios
 */
 
 #include "StatisticsFJSP.h"

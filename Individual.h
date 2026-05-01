@@ -2,7 +2,6 @@
  * Individual.h
  *
  *  Created on: June 22, 2017
- *      Author: jjpalacios
  */
 #pragma once
 
@@ -33,7 +32,6 @@ namespace FuzzyFW {
  * The classes will be based in the std::vector collection for a quick
  * access to the genes.
  *
- * @author jjpalacios
  *
  */
 class Individual {
@@ -191,7 +189,6 @@ public:
 /**
 * This class codifies individuals using an array of integer values
 *
-* @author jjpalacios
 *
 */
 class IndividualArrayInt : public Individual {

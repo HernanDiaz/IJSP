@@ -2,7 +2,6 @@
 * Neighbourhood.h
 *
 *  Created on: Oct 11, 2017
-*      Author: jjpalacios
 */
 #pragma once
 
@@ -22,7 +21,6 @@ namespace FJSP {
 * associated to a solution. The class will keep the origin of the original arc
 * as well as the destination
 *
-* @author jjpalacios
 *
 */
 class NeighbourFJSP_Arc : public FuzzyFW::Neighbour {

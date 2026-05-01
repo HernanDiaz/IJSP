@@ -2,7 +2,6 @@
 * EvaluationFVRP.cpp
 *
 *  Created on: Nov 23, 2017
-*      Author: Juan Jose Palacios
 */
 
 #include "EvaluationFVRP.h"

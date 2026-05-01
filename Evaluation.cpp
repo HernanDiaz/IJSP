@@ -2,7 +2,6 @@
 * Evaluation.cpp
 *
 *  Created on: July 10, 2017
-*      Author: Juan Jose Palacios
 */
 
 #include "Evaluation.h"

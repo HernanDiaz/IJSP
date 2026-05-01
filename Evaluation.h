@@ -2,7 +2,6 @@
  * Evaluation.h
  *
  *  Created on: July 10, 2017
- *      Author: jjpalacios
  */
 #pragma once
 
@@ -29,7 +28,6 @@ typedef Fitness Objective;
  *
  * It will be responsible of assigning a fitness value to each individual
  *
- * @author jjpalacios
  *
  */
 class Evaluation {

@@ -2,7 +2,6 @@
 * Mutation.h
 *
 *  Created on: August 1, 2017
-*      Author: jjpalacios
 */
 #pragma once
 
@@ -27,7 +26,6 @@ namespace FuzzyFW {
 * The mutation operator will modify slightly the genotype of the individuals
 * with a given probability
 *
-* @author jjpalacios
 *
 */
 class Mutation {
@@ -109,7 +107,6 @@ public:
  * It selects a random gene in the genotype and inserts it in a random
  * position
  *
- * @author jjpalacios
  *
  */
 class MutationInsertion : public Mutation {
@@ -177,7 +174,6 @@ public:
 *
 * It selects two random genes in the genotype and swaps them
 *
-* @author jjpalacios
 *
 */
 class MutationSwap : public Mutation {
@@ -246,7 +242,6 @@ public:
 * It selects two random positions and inverts the chain of genes bounded by
 * those positions
 *
-* @author jjpalacios
 *
 */
 class MutationInversion : public Mutation {

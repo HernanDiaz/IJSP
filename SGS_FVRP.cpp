@@ -2,7 +2,6 @@
 * SGS_FJSP.cpp
 *
 *  Created on: June 1, 2017
-*      Author: Juan Jose Palacios
 */
 
 #include "SGS_FVRP.h"

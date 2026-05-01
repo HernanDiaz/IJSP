@@ -2,7 +2,6 @@
  * DecoderFVRP.h
  *
  *  Created on: November 23, 2017
- *      Author: jjpalacios
  */
 #pragma once
 
@@ -24,7 +23,6 @@ namespace FVRP {
 * This class creates a method apply that receives a genotype and generates
 * a fuzzy VRP solution from it by using a SGS
 *
-* @author jjpalacios
 *
 */
 class DecoderFVRP : public FuzzyFW::Decoder {
@@ -85,7 +83,6 @@ public:
 * This class creates a method apply that receives a genotype in the form
 * of a customers order and generates a solution using a specific Split SGS
 *
-* @author jjpalacios
 *
 */
 class DecoderFRVP_Split : public DecoderFVRP {

@@ -2,7 +2,6 @@
  * EvaluationFJSP.h
  *
  *  Created on: July 10, 2017
- *      Author: jjpalacios
  */
 #pragma once
 
@@ -42,7 +41,6 @@ namespace FJSP {
 * This class implements the required methods to compute the makespan objective
 * function from a given individual or population
 *
-* @author jjpalacios
 *
 */
 class EvaluationFJSP_Makespan : public FuzzyFW::Evaluation {
@@ -163,7 +161,6 @@ public:
 * This class implements the required methods to compute the minimum Agreement
 * Index of a given individual or population
 *
-* @author jjpalacios
 *
 */
 class EvaluationFJSP_AImin : public FuzzyFW::Evaluation {
@@ -281,7 +278,6 @@ public:
 * AI is considered as an objective function and the lexicoprahical order is
 * done by sorting the jobs from lowest to highest AI value.
 *
-* @author jjpalacios
 *
 */
 class EvaluationFJSP_AImin_ICAE : public EvaluationFJSP_AImin {
@@ -359,7 +355,6 @@ public:
 * This class implements the required methods to compute the average Agreement
 * Index of a given individual or population
 *
-* @author jjpalacios
 *
 */
 class EvaluationFJSP_AIavg : public EvaluationFJSP_AImin {
@@ -457,7 +452,6 @@ public:
 * This class implements the required methods to compute the minimum
 * Expected Satisfaction Degree of a given individual or population
 *
-* @author jjpalacios
 *
 */
 class EvaluationFJSP_ESDmin : public FuzzyFW::Evaluation {
@@ -557,7 +551,6 @@ public:
 * This class implements the required methods to compute the average Expected
 * Satisfaction Degree of a given individual or population
 *
-* @author jjpalacios
 *
 */
 class EvaluationFJSP_ESDavg : public EvaluationFJSP_ESDmin {

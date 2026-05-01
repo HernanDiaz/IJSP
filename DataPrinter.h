@@ -2,7 +2,6 @@
  * Statistics.h
  *
  *  Created on: Sep 20, 2017
- *      Author: jjpalacios
  */
 #pragma once
 
@@ -23,7 +22,6 @@ namespace FuzzyFW {
  * This class allows to print additional data on files. It it mainly used
  * for debugging purposes
  *
- * @author jjpalacios
  *
  */
 struct DataPrinter {

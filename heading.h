@@ -4,7 +4,6 @@
 * This file contains all the includes that are needed by the project to work
 *
 *  Created on: Jul 23, 2015
-*      Author: jjpalacios
 */
 #pragma once
 

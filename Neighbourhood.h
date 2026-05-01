@@ -2,7 +2,6 @@
 * Neighbourhood.h
 *
 *  Created on: Oct 11, 2017
-*      Author: jjpalacios
 */
 #pragma once
 
@@ -28,7 +27,6 @@ namespace FuzzyFW {
 * It also may contain different estimation functions to approximate the
 * quality of the neighbours before fully evaluating them
 *
-* @author jjpalacios
 *
 */
 class Neighbourhood {

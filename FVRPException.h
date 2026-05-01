@@ -2,7 +2,6 @@
 * FVRPException.h
 *
 *  Created on: Oct 27, 2017
-*      Author: Juan Jose Palacios
 */
 #pragma once
 
@@ -16,7 +15,6 @@ namespace FVRP {
 	*
 	* Allows to customize text messages to be shown after an expcetion occurs
 	*
-	* @author jjpalacios
 	*
 	*/
 	class FVRPException : public std::exception {

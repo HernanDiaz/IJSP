@@ -4,7 +4,6 @@
 * StatisticsFJSP.h
 *
 *  Created on: Oct 4, 2017
-*      Author: jjpalacios
 */
 #pragma once
 
@@ -23,7 +22,6 @@ namespace FJSP {
 /**
 * This class gives the makespan from the population
 *
-* @author jjpalacios
 *
 */
 struct StatisticsMakespan : public FuzzyFW::Statistics {
@@ -96,7 +94,6 @@ public:
 /**
 * This class gives the average AI from the population
 *
-* @author jjpalacios
 *
 */
 struct StatisticsAIavg : public FuzzyFW::Statistics {
@@ -171,7 +168,6 @@ public:
 /**
 * This class gives the minimum AI from the population
 *
-* @author jjpalacios
 *
 */
 struct StatisticsAImin : public FuzzyFW::Statistics {
@@ -247,7 +243,6 @@ public:
 /**
 * This class gives the average Expected Satisfaction Degree from the population
 *
-* @author jjpalacios
 *
 */
 struct StatisticsESDavg : public FuzzyFW::Statistics {
@@ -322,7 +317,6 @@ public:
 /**
 * This class gives the minimum Expected Satisfaction Degree from the population
 *
-* @author jjpalacios
 *
 */
 struct StatisticsESDmin : public FuzzyFW::Statistics {

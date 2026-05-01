@@ -2,7 +2,6 @@
 * TaskFJSP.h
 *
 *  Created on: May 12, 2017
-*      Author: Juan Jose Palacios
 */
 #pragma once
 
@@ -21,7 +20,6 @@ namespace FJSP {
 * of a fuzzy job shop scheduling instance. That is, it represents operation
 * such that processing times are Fuzzy Numbers (TFNs in this versions)
 *
-* @author Juan Jose Palacios
 *
 */
 

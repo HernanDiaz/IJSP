@@ -2,7 +2,6 @@
 * Creation.cpp
 *
 *  Created on: Aug 2, 2017
-*      Author: jjpalacios
 */
 
 #include "Creation.h"

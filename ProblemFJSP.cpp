@@ -2,7 +2,6 @@
 * ProblemFJSP.cpp
 *
 *  Created on: May 15, 2017
-*      Author: Juan Jose Palacios
 */
 
 #include "ProblemFJSP.h"

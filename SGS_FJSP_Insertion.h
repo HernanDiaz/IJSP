@@ -2,7 +2,6 @@
 * SGS_FJSP_Insertion.h
 *
 *  Created on: June 1, 2017
-*      Author: Juan Jose Palacios
 */
 
 #pragma once
@@ -27,7 +26,6 @@ namespace FJSP {
 * that can be used to introduce the new task with no possibility of
 * delaying any other.
 *
-* @author Juan Jose Palacios
 *
 */
 

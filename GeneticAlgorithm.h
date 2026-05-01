@@ -2,7 +2,6 @@
 * GeneticAlgorithm.h
 *
 *  Created on: Sep 15, 2017
-*      Author: jjpalacios
 */
 #pragma once
 
@@ -56,7 +55,6 @@ namespace FuzzyFW {
 	*
 	* It allows both clearing and sharing strategies.
 	*
-	* @author jjpalacios
 	*
 	*/
 	class GeneticAlgorithm : public EvolutiveAlgorithm {

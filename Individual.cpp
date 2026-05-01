@@ -2,7 +2,6 @@
 * Individual.cpp
 *
 *  Created on: June 23, 2017
-*      Author: Juan Jose Palacios
 */
 
 #include "Individual.h"

@@ -2,7 +2,6 @@
  * Decoder.h
  *
  *  Created on: September 12, 2017
- *      Author: jjpalacios
  */
 #pragma once
 
@@ -21,7 +20,6 @@ namespace FuzzyFW {
  * This class creates a method apply that receives a genotype and generates
  * a solution from it
  *
- * @author jjpalacios
  *
  */
 class Decoder {

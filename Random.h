@@ -2,7 +2,6 @@
 * Random.h
 *
 *  Created on: Jul 23, 2015
-*      Author: Juan Jose Palacios
 */
 #pragma once
 
@@ -21,7 +20,6 @@ namespace FuzzyFW {
 	*
 	* It uses the Standard Random numbers generator
 	*
-	* @author jjpalacios
 	*
 	*/
 	class Random {

@@ -2,7 +2,6 @@
  * StatisticsClassRegister.h
  *
  *  Created on: Oct 4, 2017
- *      Author: Juan Jose Palacios
  */
 
 #include "StatisticsClassRegister.h"

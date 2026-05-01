@@ -2,7 +2,6 @@
  * EvaluationClassRegister.h
  *
  *  Created on: Sep 15, 2017
- *      Author: Juan Jose Palacios
  */
 #ifndef EVALUATION_CLASSREGISTER_H_
 #define EVALUATION_CLASSREGISTER_H_
@@ -58,7 +57,6 @@ namespace FuzzyFW {
  * by inheriting from the respective abstract class and than come here to
  * register the name of the new operator.
  *
- * @author Juan Jose Palacios
  *
  */
 struct EvaluationClassRegister {

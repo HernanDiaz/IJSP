@@ -2,7 +2,6 @@
  * Population.h
  *
  *  Created on: Jun 23, 2017
- *      Author: jjpalacios
  */
 #pragma once
 
@@ -21,7 +20,6 @@ namespace FuzzyFW {
  * need to get the best K individuals of the population, but keeping
  *  a specific order in the individuals array
  *
- * @author jjpalacios
  *
  */
 class Population {

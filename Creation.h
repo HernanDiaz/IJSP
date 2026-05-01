@@ -2,7 +2,6 @@
  * Creation.h
  *
  *  Created on: Aug 4, 2017
- *      Author: jjpalacios
  */
 #pragma once
 
@@ -20,7 +19,6 @@ namespace FuzzyFW {
  * This class provides the framework to implement different strategies
  * to create initial solutions to a problem, and therefore populations
  *
- * @author jjpalacios
  *
  */
 class Creation {

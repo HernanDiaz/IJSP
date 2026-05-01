@@ -2,7 +2,6 @@
  * MetaFJSP.cpp
  *
  *  Created on: Sep 22, 2017
- *      Author: jjpalacios
  */
 #include <iostream>
 using namespace std;

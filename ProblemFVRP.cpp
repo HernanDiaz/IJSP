@@ -2,7 +2,6 @@
 * ProblemFVRP.cpp
 *
 *  Created on: Oct 27, 2017
-*      Author: Juan Jose Palacios
 */
 
 #include "ProblemFVRP.h"

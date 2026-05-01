@@ -2,7 +2,6 @@
  * LocalSearchClassRegister.h
  *
  *  Created on: Oct 13, 2017
- *      Author: Juan Jose Palacios
  */
 
 #include "LocalSearchClassRegister.h"

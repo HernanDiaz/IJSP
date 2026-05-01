@@ -2,7 +2,6 @@
 * MemeticNeri.h
 *
 *  Created on: Jun 13, 2018
-*      Author: jjpalacios
 */
 #pragma once
 
@@ -51,7 +50,6 @@ namespace FuzzyFW {
 	* strategy that can be applied on different points of the run and with
 	* different probability values
 	*
-	* @author jjpalacios
 	*
 	*/
 	class MemeticNeri : public MemeticAlgorithm {

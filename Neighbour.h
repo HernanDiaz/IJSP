@@ -2,7 +2,6 @@
 * Neighbourhood.h
 *
 *  Created on: Oct 11, 2017
-*      Author: jjpalacios
 */
 #pragma once
 
@@ -23,7 +22,6 @@ typedef std::pair<FuzzyFW::Solution *, FuzzyFW::Fitness *> FullSolution;
 	* This class defines the different neighbours that can be used in a local
 	* search algorithm
 	*
-	* @author jjpalacios
 	*
 	*/
 	class Neighbour {

@@ -2,7 +2,6 @@
 * Neighbourhood_ESD.cpp
 *
 *  Created on: Oct 12, 2017
-*      Author: jjpalacios
 */
 
 #include "NeighbourhoodFJSP_ESD.h"
