@@ -47,7 +47,7 @@ void NB_ParallelN1_ESDavgFJSP::setup(FuzzyFW::ParameterDB *parameters) {
 	else {
 		std::string errorMsg = "Estimation method unknown: \'";
 		errorMsg += estimatorValue + "\'";
-		throw new FJSPException("Neighbourhood", errorMsg);
+		throw FJSPException("Neighbourhood", errorMsg);
 	}
 }
 
@@ -76,7 +76,7 @@ void NB_ParallelN1_ESDavgFJSP::setInitialSolution(FuzzyFW::Solution *solution,
 	if (this->schedule == NULL) {
 		std::string errorMsg = "Type of solution not valid for this type";
 		errorMsg += " of neighbourhood. Only Fuzzy JSP Schedules are allowed.";
-		throw new FJSPException("Neighbourhood", errorMsg);
+		throw FJSPException("Neighbourhood", errorMsg);
 	}
 
 	if (this->currentFitness != NULL)
@@ -86,14 +86,14 @@ void NB_ParallelN1_ESDavgFJSP::setInitialSolution(FuzzyFW::Solution *solution,
 	if (this->currentFitness == NULL) {
 		std::string errorMsg = "The fitness of the solution is not the ";
 		errorMsg += "ESDavg";
-		throw new FJSPException("Neighbourhood", errorMsg);
+		throw FJSPException("Neighbourhood", errorMsg);
 	}
 
 	ProblemFJSP * problem = dynamic_cast<ProblemFJSP *>(svars->problem);
 	if (problem == NULL) {
 		std::string errorMsg = "This negihbourhood can be applied only";
 		errorMsg += " to FJSP problems";
-		throw new FJSPException("Neighbourhood", errorMsg);
+		throw FJSPException("Neighbourhood", errorMsg);
 	}
 
 	// Compute the tails of the operations
@@ -197,7 +197,7 @@ unsigned int NB_ParallelN1_ESDavgFJSP::findNewNeighbours(
 	if (fuzzyProb == NULL) {
 		std::string errorMsg = "This neighbourhood works only with ";
 		errorMsg += "fuzzy job shop problems.";
-		throw new FJSPException("Neighbourhood", errorMsg);
+		throw FJSPException("Neighbourhood", errorMsg);
 	}
 
 	nTasks = this->schedule->getScheduledTasks();
@@ -266,7 +266,7 @@ FuzzyFW::Fitness * NB_ParallelN1_ESDavgFJSP::evaluateNeighbour(
 	
 	if (idx < 0 || idx > this->numNeighbours) {
 		std::string errorMsg = "Trying to access a non-existing neighbour";
-		throw new FJSPException("Neighbourhood", errorMsg);
+		throw FJSPException("Neighbourhood", errorMsg);
 	}
 
 	// Get the problem in its true form
@@ -274,7 +274,7 @@ FuzzyFW::Fitness * NB_ParallelN1_ESDavgFJSP::evaluateNeighbour(
 	if (fuzzyProb == NULL) {
 		std::string errorMsg = "This neighbourhood works only with ";
 		errorMsg += "fuzzy job shop problems.";
-		throw new FJSPException("Neighbourhood", errorMsg);
+		throw FJSPException("Neighbourhood", errorMsg);
 	}
 
 	NeighbourFJSP_Arc *arc = this->neighbours[idx];
@@ -375,14 +375,14 @@ void NB_ParallelN1_ESDavgFJSP::acceptNeighbour(const unsigned int idx,
 
 	if (idx < 0 || idx > this->numNeighbours || this->neighbours[idx] == NULL) {
 		std::string errorMsg = "Trying to access a non-existing neighbour";
-		throw new FJSPException("Neighbourhood", errorMsg);
+		throw FJSPException("Neighbourhood", errorMsg);
 	}
 
 	ProblemFJSP * problem = dynamic_cast<ProblemFJSP *>(svars->problem);
 	if (problem == NULL) {
 		std::string errorMsg = "This negihbourhood can be applied only";
 		errorMsg += " to FJSP problems";
-		throw new FJSPException("Neighbourhood", errorMsg);
+		throw FJSPException("Neighbourhood", errorMsg);
 	}
 
 	// Update the current solution
@@ -471,13 +471,13 @@ FuzzyFW::Fitness * NB_ParallelN1_ESDavgFJSP::getEstimation(
 
 	if (idx < 0 || idx >= this->numNeighbours || this->neighbours[idx] == NULL) {
 		std::string errorMsg = "Trying to acces a non-existing neighbour";
-		throw new FJSPException("Neighbourhood", errorMsg);
+		throw FJSPException("Neighbourhood", errorMsg);
 	}
 	ProblemFJSP * problem = dynamic_cast<ProblemFJSP *>(svars->problem);
 	if (problem == NULL) {
 		std::string errorMsg = "This negihbourhood can be applied only";
 		errorMsg += " to FJSP problems";
-		throw new FJSPException("Neighbourhood", errorMsg);
+		throw FJSPException("Neighbourhood", errorMsg);
 	}
 
 	if (!this->neighbours[idx]->isEstimated()) {
@@ -496,7 +496,7 @@ FuzzyFW::Fitness * NB_ParallelN1_ESDavgFJSP::getEstimation(
 void NB_ParallelN1_ESDavgFJSP::discardNeighbour(const unsigned int idx) {
 	if (idx < 0 || idx >= this->numNeighbours || this->neighbours[idx] == NULL) {
 		std::string errorMsg = "Trying to acces a non-existing neighbour";
-		throw new FJSPException("Neighbourhood", errorMsg);
+		throw FJSPException("Neighbourhood", errorMsg);
 	}
 	delete this->neighbours[idx];
 	this->neighbours[idx] = NULL;
@@ -544,7 +544,7 @@ void NB_ParallelN1_ESDavgFJSP::quickSort(const int left, const int right,
 FuzzyFW::Neighbour* NB_ParallelN1_ESDavgFJSP::getNeighbour(const unsigned int idx) {
 	if (idx < 0 || idx >= this->numNeighbours || this->neighbours[idx] == NULL) {
 		std::string errorMsg = "Trying to acces a non-existing neighbour";
-		throw new FJSPException("Neighbourhood", errorMsg);
+		throw FJSPException("Neighbourhood", errorMsg);
 	}
 	return this->neighbours[idx];
 }
@@ -556,7 +556,7 @@ void NB_ParallelN1_ESDavgFJSP::estimateHeadsTails(const ProblemFJSP *problem,
 	const unsigned int idx) {
 	if (idx < 0 || idx >= this->numNeighbours) {
 		std::string errorMsg = "Trying to acces a non-existing neighbour";
-		throw new FJSPException("Neighbourhood", errorMsg);
+		throw FJSPException("Neighbourhood", errorMsg);
 	}
 
 	NeighbourFJSP_Arc *arc = this->neighbours[idx];
@@ -696,7 +696,7 @@ unsigned int NB_ParallelN1_ESDminFJSP::findNewNeighbours(
 	if (fuzzyProb == NULL) {
 		std::string errorMsg = "This neighbourhood works only with ";
 		errorMsg += "fuzzy job shop problems.";
-		throw new FJSPException("Neighbourhood", errorMsg);
+		throw FJSPException("Neighbourhood", errorMsg);
 	}
 
 	nTasks = this->schedule->getScheduledTasks();
@@ -768,7 +768,7 @@ FuzzyFW::Fitness * NB_ParallelN1_ESDminFJSP::evaluateNeighbour(
 
 	if (idx < 0 || idx > this->numNeighbours) {
 		std::string errorMsg = "Trying to access a non-existing neighbour";
-		throw new FJSPException("Neighbourhood", errorMsg);
+		throw FJSPException("Neighbourhood", errorMsg);
 	}
 
 	// Get the problem in its true form
@@ -776,7 +776,7 @@ FuzzyFW::Fitness * NB_ParallelN1_ESDminFJSP::evaluateNeighbour(
 	if (fuzzyProb == NULL) {
 		std::string errorMsg = "This neighbourhood works only with ";
 		errorMsg += "fuzzy job shop problems.";
-		throw new FJSPException("Neighbourhood", errorMsg);
+		throw FJSPException("Neighbourhood", errorMsg);
 	}
 
 	NeighbourFJSP_Arc *arc = this->neighbours[idx];
@@ -869,7 +869,7 @@ void NB_ParallelN1_ESDminFJSP::estimateHeadsTails(const ProblemFJSP *problem,
 	const unsigned int idx) {
 	if (idx < 0 || idx >= this->numNeighbours) {
 		std::string errorMsg = "Trying to acces a non-existing neighbour";
-		throw new FJSPException("Neighbourhood", errorMsg);
+		throw FJSPException("Neighbourhood", errorMsg);
 	}
 
 	NeighbourFJSP_Arc *arc = this->neighbours[idx];
@@ -989,7 +989,7 @@ bool NB_ParallelN1_ESDavgFJSP::checkColas(const FuzzyFW::SharedVars *svars) {
 	if (problem == NULL) {
 		std::string errorMsg = "This negihbourhood can be applied only";
 		errorMsg += " to FJSP problems";
-		throw new FJSPException("Neighbourhood", errorMsg);
+		throw FJSPException("Neighbourhood", errorMsg);
 	}
 	std::vector< std::vector<FuzzyFW::TFN> > supertails;
 

@@ -287,7 +287,7 @@ namespace FuzzyFW {
 		if (this->neighbourhood == NULL) {
 			std::string errorMsg = "Invalid neighbourhood structure";
 			errorMsg += " or ommited value.";
-			throw new FuzzyFWException("Memetic Algorithm", errorMsg);
+			throw FuzzyFWException("Memetic Algorithm", errorMsg);
 		}
 
 		// Loads the frequency to apply local search
@@ -366,7 +366,7 @@ namespace FuzzyFW {
 
 		if (!correct) {
 			err += " Incorrect value or missing parameter";
-			throw new FuzzyFWException("Memetic Algorithm", err);
+			throw FuzzyFWException("Memetic Algorithm", err);
 		}
 
 		return true;
@@ -387,7 +387,7 @@ namespace FuzzyFW {
 		currentFoodSources.addIndividual(currentFoodSource->clone());
 		//Cross bestfoodSource and currentFoodSource 
 		//this->crossover->apply(&currentFoodSources, this->crossoverProb, this->sharedVariables);
-		//Add currentFoodSource  (por lo que veo la operación de crossover modifica los individuos)
+		//Add currentFoodSource  (por lo que veo la operaciï¿½n de crossover modifica los individuos)
 		Individual* currentFoodSourceClone = currentFoodSource->clone();
 		currentFoodSources.addIndividual(currentFoodSourceClone);
 		//Evaluo solo los individuos resultantes del cruce (cuando se utiliza clone, se mantiene si los individuos estan evaludos o no?)
@@ -446,7 +446,7 @@ namespace FuzzyFW {
 		currentFoodSources.addIndividual(currentFoodSource->clone());
 		//Cross bestfoodSource and currentFoodSource 
 		this->crossover->apply(&currentFoodSources, this->crossoverProb, this->sharedVariables);
-		//Add currentFoodSource  (por lo que veo la operación de crossover modifica los individuos)
+		//Add currentFoodSource  (por lo que veo la operaciï¿½n de crossover modifica los individuos)
 		Individual* currentFoodSourceClone = currentFoodSource->clone();
 		currentFoodSources.addIndividual(currentFoodSourceClone);
 		//Evaluo solo los individuos resultantes del cruce (cuando se utiliza clone, se mantiene si los individuos estan evaludos o no?)
@@ -517,7 +517,7 @@ Individual* ArtificialBeeColonyThread::processFoodSource(const Individual* curre
 	Crossover * cross = this->crossover->clone();
 	cross->apply(&currentFoodSources, this->crossoverProb, this->sharedVariables);
 	delete cross;
-	//Add currentFoodSource  (por lo que veo la operación de crossover modifica los individuos)
+	//Add currentFoodSource  (por lo que veo la operaciï¿½n de crossover modifica los individuos)
 	Individual* currentFoodSourceClone = currentFoodSource->clone();
 	currentFoodSources.addIndividual(currentFoodSourceClone);
 	//Evaluo solo los individuos resultantes del cruce (cuando se utiliza clone, se mantiene si los individuos estan evaludos o no?)

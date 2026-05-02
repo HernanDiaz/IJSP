@@ -72,7 +72,7 @@ void MutationInsertion::apply(Individual *individual,
 	else {
 		std::string errorMsg = "Type of genotype not recognised";
 		errorMsg += " by this operator";
-		throw new FuzzyFWException("Mutation", errorMsg);
+		throw FuzzyFWException("Mutation", errorMsg);
 	}
 }
 
@@ -116,7 +116,7 @@ void MutationSwap::apply(Individual *individual,
 	else {
 		std::string errorMsg = "Type of individual not recognised";
 		errorMsg += " by this operator";
-		throw new FuzzyFWException("Mutation", errorMsg);
+		throw FuzzyFWException("Mutation", errorMsg);
 	}
 }
 
@@ -168,7 +168,7 @@ void MutationInversion::apply(Individual *individual,
 	else {
 		std::string errorMsg = "Type of individual not recognised";
 		errorMsg += " by this operator";
-		throw new FuzzyFWException("Mutation", errorMsg);
+		throw FuzzyFWException("Mutation", errorMsg);
 	}
 }
 

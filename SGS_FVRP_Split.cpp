@@ -50,14 +50,14 @@ void SGS_Split_FD_Time::setup(const FuzzyFW::ParameterDB *params) {
 	else {
 		std::string errorMsg = "Unkown value for parameter \'";
 		errorMsg += this->metricDemandLabel + "\' or parameter not found.";
-		throw new FVRPException("SGS", errorMsg);
+		throw FVRPException("SGS", errorMsg);
 	}
 
 	this->demandThreshold = params->getDouble(this->thresholdDemandLabel, -1.0);
 	if(this->demandThreshold < 0 && this->metricDemand != DemandType::FD_EV) {
 		std::string errorMsg = "Parameter \'" + this->thresholdDemandLabel;
 		errorMsg += "\' not found";
-		throw new FVRPException("SGS", errorMsg);
+		throw FVRPException("SGS", errorMsg);
 	}
 }
 
@@ -81,7 +81,7 @@ RouteFVRP * SGS_Split_FD_Time::buildPlan(
 		dynamic_cast<ProblemFVRP *>(svars->problem);
 	if (fuzzyProb == NULL) {
 		std::string errorMsg = "This SGS can be only used on Fuzzy VRP.";
-		throw new FVRPException("SGS", errorMsg);
+		throw FVRPException("SGS", errorMsg);
 	}
 
 	// Minimum cost to reah each node
@@ -207,7 +207,7 @@ RouteFVRP * SGS_Split_FD_Distance::buildPlan(
 		dynamic_cast<ProblemFVRP *>(svars->problem);
 	if (fuzzyProb == NULL) {
 		std::string errorMsg = "This SGS can be only used on Fuzzy VRP.";
-		throw new FVRPException("SGS", errorMsg);
+		throw FVRPException("SGS", errorMsg);
 	}
 
 	// Minimum cost to reah each node

@@ -37,20 +37,20 @@ namespace PostExecution {
 		if (sgsType.length() == 0) {
 			std::string errorMsg = "Objective function not found. Please, specify a obkective function to use";
 			errorMsg += " during the robustness analysis";
-			throw new PostExecutionException("Robustness", errorMsg);
+			throw PostExecutionException("Robustness", errorMsg);
 		}
 		this->robustnessAnalyzer = PostExecutionClassRegister::getRobustnessObject(sgsType);
 		if (this->robustnessAnalyzer == NULL) {
 			std::string errorMsg = "The introduced objective function is not";
 			errorMsg += " recognised: \'" + sgsType + "\'";
-			throw new PostExecutionException("Robustness", errorMsg);
+			throw PostExecutionException("Robustness", errorMsg);
 		}
 		/*
 		this->IJSPTardinessAnalyzer = PostExecutionClassRegister::getMakespanMRObject(sgsType);
 		if (this->IJSPTardinessAnalyzer == NULL) {
 			std::string errorMsg = "The introduced objective function is not";
 			errorMsg += " recognised: \'" + sgsType + "\'";
-			throw new PostExecutionException("Robustness", errorMsg);
+			throw PostExecutionException("Robustness", errorMsg);
 		}*/
 	}
 

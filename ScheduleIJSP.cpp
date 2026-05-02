@@ -61,7 +61,7 @@ FuzzyFW::Interval ScheduleIJSP::getCTMachine(const unsigned int machine) const {
 	if (machine < 0 || machine >= this->problem->getNumberMachines()) {
 		std::string errorMsg = "Trying to access unexisting machine: ";
 		errorMsg += valueToString(machine);
-		throw new IJSPException("Schedule", errorMsg);
+		throw IJSPException("Schedule", errorMsg);
 	}
 
 	int lastTask = this->lastTaskMachine[machine];
@@ -76,7 +76,7 @@ FuzzyFW::Interval ScheduleIJSP::getCTJob(const unsigned int job) const {
 	if (job < 0 || job >= this->problem->getNumberJobs()) {
 		std::string errorMsg = "Trying to access unexisting job: ";
 		errorMsg += valueToString(job);
-		throw new IJSPException("Schedule", errorMsg);
+		throw IJSPException("Schedule", errorMsg);
 	}
 
 	int lastTask = this->lastTaskJob[job];
@@ -111,7 +111,7 @@ const TaskIJSP * ScheduleIJSP::operator[](const unsigned int index) const {
 	if (index < 0) {
 		std::string errorMsg = "Trying to access unexisting task: ";
 		errorMsg += valueToString(index);
-		throw new IJSPException("Schedule", errorMsg);
+		throw IJSPException("Schedule", errorMsg);
 	}
 	if (index >= this->nScheduledTasks)
 		return NULL;
@@ -370,7 +370,7 @@ void ScheduleIJSP::verifyScheduling() {
 		while (currentTask.task->jp >= 0 && currentTask.task->jp < this->taskInfo.size()) {
 			ScheduledTaskInfo jobPredeccessor = this->taskInfo[currentTask.task->jp];
 			if (currentTask.head.isLesserThan(jobPredeccessor.head + jobPredeccessor.task->p, comp)) {
-				throw new IJSPException("Schedule", "Error scheduling tasks in job number" + valueToString(jobPredeccessor.task->job) +
+				throw IJSPException("Schedule", "Error scheduling tasks in job number" + valueToString(jobPredeccessor.task->job) +
 					": id = " + valueToString(jobPredeccessor.task->id) + "; head = " + valueToString(jobPredeccessor.head) +
 					"; p = " + valueToString(jobPredeccessor.task->p) + "; total = " + valueToString(jobPredeccessor.head + jobPredeccessor.task->p) +
 					" AND id = " + valueToString(currentTask.task->id) + "; head = " + valueToString(currentTask.head));
@@ -387,7 +387,7 @@ void ScheduleIJSP::verifyScheduling() {
 		while (currentTask.mp >= 0 && currentTask.mp < this->taskInfo.size()) {
 			ScheduledTaskInfo machinePredeccessor = this->taskInfo[currentTask.mp];
 			if (currentTask.head.isLesserThan(machinePredeccessor.head + machinePredeccessor.task->p, comp)) {
-				throw new IJSPException("Schedule", "Error scheduling tasks in machine" + valueToString(machinePredeccessor.task->machine) +
+				throw IJSPException("Schedule", "Error scheduling tasks in machine" + valueToString(machinePredeccessor.task->machine) +
 					": id = " + valueToString(machinePredeccessor.task->id) + "; head = " + valueToString(machinePredeccessor.head) +
 					"; p = " + valueToString(machinePredeccessor.task->p) + "; total = " + valueToString(machinePredeccessor.head + machinePredeccessor.task->p) +
 					" AND id = " + valueToString(currentTask.task->id) + "; head = " + valueToString(currentTask.head));

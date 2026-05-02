@@ -65,7 +65,7 @@ std::vector<int> RouteFVRP::getRoute(const unsigned int vehicle) const {
 	if (vehicle < 0 || vehicle >= this->routes.size()) {
 		std::string errorMsg = "Trying to access unexisting route or vehicle: ";
 		errorMsg += valueToString(vehicle);
-		throw new FVRPException("Routing", errorMsg);
+		throw FVRPException("Routing", errorMsg);
 	}
 
 	for (size_t i = 0; i < this->routes[vehicle].size(); i++)
@@ -81,7 +81,7 @@ unsigned int RouteFVRP::getRouteSize(const unsigned int vehicle) const {
 	if (vehicle < 0) {
 		std::string errorMsg = "Trying to access an incorrect route or vehicle: ";
 		errorMsg += valueToString(vehicle);
-		throw new FVRPException("Routing", errorMsg);
+		throw FVRPException("Routing", errorMsg);
 	}
 	if (vehicle >= this->routes.size())
 		return 0;
@@ -94,7 +94,7 @@ FuzzyFW::TFN RouteFVRP::getRouteTime(const unsigned int vehicle) const {
 	if (vehicle < 0 || vehicle >= this->routes.size()) {
 		std::string errorMsg = "Trying to access unexisting route or vehicle: ";
 		errorMsg += valueToString(vehicle);
-		throw new FVRPException("Routing", errorMsg);
+		throw FVRPException("Routing", errorMsg);
 	}
 
 	unsigned int lastCustomer = this->getLastCustomer(vehicle);
@@ -109,7 +109,7 @@ double RouteFVRP::getRouteDistance(const unsigned int vehicle) const {
 	if (vehicle < 0 || vehicle >= this->routes.size()) {
 		std::string errorMsg = "Trying to access unexisting route or vehicle: ";
 		errorMsg += valueToString(vehicle);
-		throw new FVRPException("Routing", errorMsg);
+		throw FVRPException("Routing", errorMsg);
 	}
 
 	unsigned int lastCustomer = this->getLastCustomer(vehicle);
@@ -123,7 +123,7 @@ unsigned int RouteFVRP::getFirstCustomer(const unsigned int vehicle) const {
 	if (vehicle < 0) {
 		std::string errorMsg = "Trying to access incorrect route or vehicle: ";
 		errorMsg += valueToString(vehicle);
-		throw new FVRPException("Routing", errorMsg);
+		throw FVRPException("Routing", errorMsg);
 	}
 	if(vehicle >= this->routes.size() || this->routes[vehicle].size() == 0) {
 		return 0;
@@ -137,7 +137,7 @@ unsigned int RouteFVRP::getLastCustomer(const unsigned int vehicle) const {
 	if (vehicle < 0) {
 		std::string errorMsg = "Trying to access incorrect route or vehicle: ";
 		errorMsg += valueToString(vehicle);
-		throw new FVRPException("Routing", errorMsg);
+		throw FVRPException("Routing", errorMsg);
 	}
 	if (vehicle >= this->routes.size() || this->routes[vehicle].size() == 0) {
 		return 0;
@@ -151,7 +151,7 @@ FuzzyFW::TFN RouteFVRP::getStockSpent(const unsigned int vehicle) const {
 	if (vehicle < 0 || vehicle >= this->routes.size()) {
 		std::string errorMsg = "Trying to access unexisting route or vehicle: ";
 		errorMsg += valueToString(vehicle);
-		throw new FVRPException("Routing", errorMsg);
+		throw FVRPException("Routing", errorMsg);
 	}
 
 	unsigned int lastCustomer =
@@ -165,7 +165,7 @@ bool RouteFVRP::isVisited(const unsigned int customerId) const {
 	if (customerId < 0 || customerId >= this->node.size()) {
 		std::string errorMsg = "Trying to access unexisting customer: ";
 		errorMsg += valueToString(customerId);
-		throw new FVRPException("Routing", errorMsg);
+		throw FVRPException("Routing", errorMsg);
 	}
 	return this->node[customerId].vechicle >= 0;
 }
@@ -219,12 +219,12 @@ void RouteFVRP::addCustomer(const unsigned int customerId,
 	if (customerId < 0 || customerId >= this->node.size()) {
 		std::string errorMsg = "Trying to visit an unexisting customer: ";
 		errorMsg += valueToString(customerId);
-		throw new FVRPException("Routing", errorMsg);
+		throw FVRPException("Routing", errorMsg);
 	}
 	if (this->node[customerId].vechicle >= 0) {
 		std::string errorMsg = "This node has been already visited in";
 		errorMsg += " another route";
-		throw new FVRPException("Routing", errorMsg);
+		throw FVRPException("Routing", errorMsg);
 	}
 
 	// Update customer data
@@ -260,7 +260,7 @@ void RouteFVRP::addCustomer(const unsigned int customerId,
 
 	if (predecessor > 0 && position == 0) {
 		std::string errorMsg = "The specified predecessor is not in the same route";
-		throw new FVRPException("Routing", errorMsg);
+		throw FVRPException("Routing", errorMsg);
 	}
 
 	// Update predecessor
@@ -323,7 +323,7 @@ void RouteFVRP::updateRoute(unsigned int v, unsigned int firstCustomer) {
 	if (firstCustomer < 0 || firstCustomer >= this->node.size()) {
 		std::string errorMsg = "Reference customer non-existing: ";
 		errorMsg += valueToString(firstCustomer);
-		throw new FVRPException("Routing", errorMsg);
+		throw FVRPException("Routing", errorMsg);
 	}
 
 	// Re-adapt the size of the routing structure for the vehicle
@@ -335,7 +335,7 @@ void RouteFVRP::updateRoute(unsigned int v, unsigned int firstCustomer) {
 	if (this->node[firstCustomer].vechicle != v) {
 		std::string errorMsg = "Error while trying to update a route.";
 		errorMsg += valueToString(firstCustomer);
-		throw new FVRPException("Routing", errorMsg);
+		throw FVRPException("Routing", errorMsg);
 	}
 
 	unsigned int succ;

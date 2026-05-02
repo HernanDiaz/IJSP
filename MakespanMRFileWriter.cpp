@@ -30,7 +30,7 @@ namespace PostExecution {
 			std::string err = "It was impossible to generate the output ";
 			err += "files. They may be opened or the logFolder does ";
 			err += "not exist";
-			throw new FuzzyFW::FuzzyFWException("Environment", err);
+			throw FuzzyFW::FuzzyFWException("Environment", err);
 		}
 	}
 	

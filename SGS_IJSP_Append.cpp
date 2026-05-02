@@ -39,14 +39,14 @@ void SGS_IJSP_Append::setup(const FuzzyFW::ParameterDB *params) {
 	std::string maxName = params->getStringUpper(this->maximumLabel);
 	if (maxName.length() == 0) {
 		std::string errorMsg = this->maximumLabel + " parameter not found.";
-		throw new IJSPException("SGS", errorMsg);
+		throw IJSPException("SGS", errorMsg);
 	}
 	this->intervalMaximum = FuzzyFW::Interval::getMaximum(maxName);
 	if (this->intervalMaximum == FuzzyFW::Interval::M_Err) {
 		std::string errorMsg = "Invalid value for parameter";
 		errorMsg += "\'" + this->maximumLabel + "\': \'";
 		errorMsg += maxName + "\'";
-		throw new IJSPException("SGS", errorMsg);
+		throw IJSPException("SGS", errorMsg);
 	}
 }
 
@@ -63,7 +63,7 @@ ScheduleIJSP * SGS_IJSP_Append::buildSchedule(const FuzzyFW::SharedVars * svars,
 		dynamic_cast<ProblemIJSP *>(svars->problem);
 	if (fuzzyProb == NULL) {
 		std::string errorMsg = "This SGS can be only used on Interval Problems.";
-		throw new IJSPException("SGS", errorMsg);
+		throw IJSPException("SGS", errorMsg);
 	}
 
 	if (this->isCreated)
@@ -98,7 +98,7 @@ FuzzyFW::Interval SGS_IJSP_Append::scheduleTask(const TaskIJSP *task,
 		errorMsg = "Job precedence constraint is being violated. Scheduling ";
 		errorMsg += "task " + valueToString(taskIdx) + " after task ";
 		errorMsg += valueToString(jp);
-		throw new IJSPException("SGS", errorMsg);
+		throw IJSPException("SGS", errorMsg);
 	}
 
 	// Starting time

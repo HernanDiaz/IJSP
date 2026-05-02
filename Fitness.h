@@ -46,7 +46,7 @@ public:
 	virtual std::string toString() const = 0;
 
 	virtual double toDouble() const {
-		throw new FuzzyFWException("Fitness",
+		throw FuzzyFWException("Fitness",
 			"This fitness type cannot be converted to double");
 	}
 

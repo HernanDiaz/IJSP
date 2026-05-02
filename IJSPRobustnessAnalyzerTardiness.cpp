@@ -59,7 +59,7 @@ namespace PostExecution {
 		   if (dueDate == NULL) {
 			   std::string errorMsg = "This evaluation function works only with ";
 			   errorMsg += "Linear Timewidows.";
-			   throw new IJSP::IJSPException("EvaluationIJSP", errorMsg);
+			   throw IJSP::IJSPException("EvaluationIJSP", errorMsg);
 		   }
 
 		   FuzzyFW::Interval I = FuzzyFW::Interval(std::max(0.0, schedule->getCTJob(i).a - dueDate->d2), std::max(0.0, schedule->getCTJob(i).b - dueDate->d1));

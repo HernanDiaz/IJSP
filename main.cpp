@@ -36,17 +36,12 @@ int main(int argc, const char *argv[]) {
 		problem = new IJSP::ProblemIJSP(argv[2]);
 		launcher->optimise(problem);
 
-	} catch(IJSP::IJSPException *ex) {
-		std::cout << "IJSP Error: " << ex->what() << std::endl << std::endl;
-		delete ex;
-		return -2;
-	} catch(FuzzyFW::FuzzyFWException *ex) {
-		std::cout << "FuzzyFW Error: " << ex->what() << std::endl << std::endl;
-		delete ex;
-		return -3;
 	} catch(IJSP::IJSPException &ex) {
-		std::cout << "IJSP Error (ref): " << ex.what() << std::endl << std::endl;
+		std::cout << "IJSP Error: " << ex.what() << std::endl << std::endl;
 		return -2;
+	} catch(FuzzyFW::FuzzyFWException &ex) {
+		std::cout << "FuzzyFW Error: " << ex.what() << std::endl << std::endl;
+		return -3;
 	} catch(std::exception &ex) {
 		std::cout << "Error: " << ex.what() << std::endl << std::endl;
 		return -4;

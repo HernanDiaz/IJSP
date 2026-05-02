@@ -49,28 +49,28 @@ void EvaluationIJSP_Makespan::setup(FuzzyFW::ParameterDB *parameters) {
 	maxName = parameters->getString(this->maximumLabel);
 	if (maxName.length() == 0) {
 		std::string errorMsg = this->maximumLabel + " parameter not found.";
-		throw new IJSPException("Evaluation", errorMsg);
+		throw IJSPException("Evaluation", errorMsg);
 	}
 	this->intervalMaximum = FuzzyFW::Interval::getMaximum(maxName);
 	if (this->intervalMaximum == FuzzyFW::Interval::M_Err) {
 		std::string errorMsg = "Invalid value for parameter ";
 		errorMsg += "\'" + this->maximumLabel + "\': \'";
 		errorMsg += maxName + "\'";
-		throw new IJSPException("Evaluation", errorMsg);
+		throw IJSPException("Evaluation", errorMsg);
 	}
 
 	// Load comparison strategy parameter
 	compareName = parameters->getString(this->compareLabel);
 	if (compareName.length() == 0) {
 		std::string errorMsg = this->compareLabel + " parameter not found.";
-		throw new IJSPException("Evaluation", errorMsg);
+		throw IJSPException("Evaluation", errorMsg);
 	}
 	this->intervalCompare = FuzzyFW::Interval::getComparison(compareName);
 	if (this->intervalCompare == FuzzyFW::Interval::C_Err) {
 		std::string errorMsg = "Invalid value for parameter ";
 		errorMsg += "\'" + this->compareLabel + "\': \'";
 		errorMsg += compareName + "\'";
-		throw new IJSPException("Evaluation", errorMsg);
+		throw IJSPException("Evaluation", errorMsg);
 	}
 	FuzzyFW::FitnessInterval::FitnessCompareStrategy = this->intervalCompare;
 }
@@ -100,7 +100,7 @@ FuzzyFW::Objective * EvaluationIJSP_Makespan::getObjectiveFunction(
 	if (schedule == NULL) {
 		std::string errorMsg = "This evaluation function is valid only ";
 		errorMsg += "for Interval Job Shop Problems.";
-		throw new IJSPException("Evaluation", errorMsg);
+		throw IJSPException("Evaluation", errorMsg);
 	}
 
 	fuzzyProb =
@@ -108,7 +108,7 @@ FuzzyFW::Objective * EvaluationIJSP_Makespan::getObjectiveFunction(
 	if (fuzzyProb == NULL) {
 		std::string errorMsg = "This evaluation function works only with ";
 		errorMsg += "Interval problems.";
-		throw new IJSPException("Evaluation", errorMsg);
+		throw IJSPException("Evaluation", errorMsg);
 	}
 
 	// Compute the makespan
@@ -141,7 +141,7 @@ FuzzyFW::Fitness * EvaluationIJSP_Makespan::evaluate(
 	if (schedule == NULL) {
 		std::string errorMsg = "This evaluation function is valid only ";
 		errorMsg += "for Interval Job Shop Problems.";
-		throw new IJSPException("Evaluation", errorMsg);
+		throw IJSPException("Evaluation", errorMsg);
 	}
 
 	fuzzyProb =
@@ -149,7 +149,7 @@ FuzzyFW::Fitness * EvaluationIJSP_Makespan::evaluate(
 	if (fuzzyProb == NULL) {
 		std::string errorMsg = "This evaluation function works only with ";
 		errorMsg += "Interval problems.";
-		throw new IJSPException("Evaluation", errorMsg);
+		throw IJSPException("Evaluation", errorMsg);
 	}
 
 	// Compute the makespan
@@ -204,28 +204,28 @@ void EvaluationIJSP_Tardiness::setup(FuzzyFW::ParameterDB *parameters) {
 	maxName = parameters->getString(this->maximumLabel);
 	if (maxName.length() == 0) {
 		std::string errorMsg = this->maximumLabel + " parameter not found.";
-		throw new IJSPException("Evaluation", errorMsg);
+		throw IJSPException("Evaluation", errorMsg);
 	}
 	this->intervalMaximum = FuzzyFW::Interval::getMaximum(maxName);
 	if (this->intervalMaximum == FuzzyFW::Interval::M_Err) {
 		std::string errorMsg = "Invalid value for parameter ";
 		errorMsg += "\'" + this->maximumLabel + "\': \'";
 		errorMsg += maxName + "\'";
-		throw new IJSPException("Evaluation", errorMsg);
+		throw IJSPException("Evaluation", errorMsg);
 	}
 
 	// Load comparison strategy parameter
 	compareName = parameters->getString(this->compareLabel);
 	if (compareName.length() == 0) {
 		std::string errorMsg = this->compareLabel + " parameter not found.";
-		throw new IJSPException("Evaluation", errorMsg);
+		throw IJSPException("Evaluation", errorMsg);
 	}
 	this->intervalCompare = FuzzyFW::Interval::getComparison(compareName);
 	if (this->intervalCompare == FuzzyFW::Interval::C_Err) {
 		std::string errorMsg = "Invalid value for parameter ";
 		errorMsg += "\'" + this->compareLabel + "\': \'";
 		errorMsg += compareName + "\'";
-		throw new IJSPException("Evaluation", errorMsg);
+		throw IJSPException("Evaluation", errorMsg);
 	}
 	FuzzyFW::FitnessInterval::FitnessCompareStrategy = this->intervalCompare;
 }
@@ -256,7 +256,7 @@ FuzzyFW::Objective * EvaluationIJSP_Tardiness::getObjectiveFunction(
 	if (schedule == NULL) {
 		std::string errorMsg = "This evaluation function is valid only ";
 		errorMsg += "for Interval Job Shop Problems.";
-		throw new IJSPException("EvaluationIJSP", errorMsg);
+		throw IJSPException("EvaluationIJSP", errorMsg);
 	}
 
 	fuzzyProb =
@@ -264,7 +264,7 @@ FuzzyFW::Objective * EvaluationIJSP_Tardiness::getObjectiveFunction(
 	if (fuzzyProb == NULL) {
 		std::string errorMsg = "This evaluation function works only with ";
 		errorMsg += "Interval problems.";
-		throw new IJSPException("EvaluationIJSP", errorMsg);
+		throw IJSPException("EvaluationIJSP", errorMsg);
 	}
 
 	// Compute the tardiness
@@ -273,7 +273,7 @@ FuzzyFW::Objective * EvaluationIJSP_Tardiness::getObjectiveFunction(
 		if (timeWindow == NULL) {
 			std::string errorMsg = "This evaluation function works only with ";
 			errorMsg += "Linear Timewidows.";
-			throw new IJSPException("EvaluationIJSP", errorMsg);
+			throw IJSPException("EvaluationIJSP", errorMsg);
 		}
 
 		tardiness += FuzzyFW::Interval(std::max(0.0, schedule->getCTJob(i).a - timeWindow->d2), std::max(0.0, schedule->getCTJob(i).b - timeWindow->d1));
@@ -305,7 +305,7 @@ FuzzyFW::Fitness * EvaluationIJSP_Tardiness::evaluate(
 	if (schedule == NULL) {
 		std::string errorMsg = "This evaluation function is valid only ";
 		errorMsg += "for Interval Job Shop Problems.";
-		throw new IJSPException("Evaluation", errorMsg);
+		throw IJSPException("Evaluation", errorMsg);
 	}
 
 	fuzzyProb =
@@ -313,7 +313,7 @@ FuzzyFW::Fitness * EvaluationIJSP_Tardiness::evaluate(
 	if (fuzzyProb == NULL) {
 		std::string errorMsg = "This evaluation function works only with ";
 		errorMsg += "Interval problems.";
-		throw new IJSPException("Evaluation", errorMsg);
+		throw IJSPException("Evaluation", errorMsg);
 	}
 
 	// Compute the tardiness
@@ -323,7 +323,7 @@ FuzzyFW::Fitness * EvaluationIJSP_Tardiness::evaluate(
 		if (timeWindow == NULL) {
 			std::string errorMsg = "This evaluation function works only with ";
 			errorMsg += "Linear Timewidows.";
-			throw new IJSPException("EvaluationIJSP", errorMsg);
+			throw IJSPException("EvaluationIJSP", errorMsg);
 		}
 
 		tardiness += FuzzyFW::Interval(std::max(0.0, schedule->getCTJob(i).a - timeWindow->d2), std::max(0.0, schedule->getCTJob(i).b - timeWindow->d1));

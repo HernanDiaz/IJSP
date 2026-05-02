@@ -51,7 +51,7 @@ namespace FuzzyFW {
 			this->monotonic = MonSimulatedCoolingClassRegister::getMACObject(value);
 			if (this->monotonic == NULL) {
 				std::string errorMsg = "Invalid monotonic cooling strategy";
-				throw new FuzzyFWException("Monotonic Adaptative Cooling", errorMsg);
+				throw FuzzyFWException("Monotonic Adaptative Cooling", errorMsg);
 			}
 			this->monotonic->setUp(parameters);
 		}

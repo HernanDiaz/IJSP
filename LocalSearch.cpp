@@ -292,7 +292,7 @@ void LS_Tabu::setup(ParameterDB *parameters) {
 	if (this->maxBadIterations < 0) {
 		std::string errorMsg = "Number of iterations without improvement not";
 		errorMsg += " specified";
-		throw new FuzzyFWException("Tabu Search",errorMsg);
+		throw FuzzyFWException("Tabu Search",errorMsg);
 	}
 }
 

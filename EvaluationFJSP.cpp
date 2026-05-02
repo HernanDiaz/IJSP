@@ -47,28 +47,28 @@ void EvaluationFJSP_Makespan::setup(FuzzyFW::ParameterDB *parameters) {
 	maxName = parameters->getString(this->maximumLabel);
 	if (maxName.length() == 0) {
 		std::string errorMsg = this->maximumLabel + " parameter not found.";
-		throw new FJSPException("Evaluation", errorMsg);
+		throw FJSPException("Evaluation", errorMsg);
 	}
 	this->tfnMaximum = FuzzyFW::TFN::getMaximum(maxName);
 	if (this->tfnMaximum == FuzzyFW::TFN::M_Err) {
 		std::string errorMsg = "Invalid value for parameter ";
 		errorMsg += "\'" + this->maximumLabel + "\': \'";
 		errorMsg += maxName + "\'";
-		throw new FJSPException("Evaluation", errorMsg);
+		throw FJSPException("Evaluation", errorMsg);
 	}
 
 	// Load comparison strategy parameter
 	compareName = parameters->getString(this->compareLabel);
 	if (compareName.length() == 0) {
 		std::string errorMsg = this->compareLabel + " parameter not found.";
-		throw new FJSPException("Evaluation", errorMsg);
+		throw FJSPException("Evaluation", errorMsg);
 	}
 	this->tfnCompare = FuzzyFW::TFN::getComparison(compareName);
 	if (this->tfnCompare == FuzzyFW::TFN::C_Err) {
 		std::string errorMsg = "Invalid value for parameter ";
 		errorMsg += "\'" + this->compareLabel + "\': \'";
 		errorMsg += compareName + "\'";
-		throw new FJSPException("Evaluation", errorMsg);
+		throw FJSPException("Evaluation", errorMsg);
 	}
 	FuzzyFW::FitnessTFN::FitnessCompareStrategy = this->tfnCompare;
 }
@@ -98,7 +98,7 @@ FuzzyFW::Objective * EvaluationFJSP_Makespan::getObjectiveFunction(
 	if (schedule == NULL) {
 		std::string errorMsg = "This evaluation function is valid only ";
 		errorMsg += "for Fuzzy Job Shop Problems.";
-		throw new FJSPException("Evaluation", errorMsg);
+		throw FJSPException("Evaluation", errorMsg);
 	}
 
 	fuzzyProb =
@@ -106,7 +106,7 @@ FuzzyFW::Objective * EvaluationFJSP_Makespan::getObjectiveFunction(
 	if (fuzzyProb == NULL) {
 		std::string errorMsg = "This evaluation function works only with ";
 		errorMsg += "fuzzy problems.";
-		throw new FJSPException("Ealuation", errorMsg);
+		throw FJSPException("Ealuation", errorMsg);
 	}
 
 	// Compute the makespan
@@ -139,7 +139,7 @@ FuzzyFW::Fitness * EvaluationFJSP_Makespan::evaluate(
 	if (schedule == NULL) {
 		std::string errorMsg = "This evaluation function is valid only ";
 		errorMsg += "for Fuzzy Job Shop Problems.";
-		throw new FJSPException("Evaluation", errorMsg);
+		throw FJSPException("Evaluation", errorMsg);
 	}
 
 	fuzzyProb =
@@ -147,7 +147,7 @@ FuzzyFW::Fitness * EvaluationFJSP_Makespan::evaluate(
 	if (fuzzyProb == NULL) {
 		std::string errorMsg = "This evaluation function works only with ";
 		errorMsg += "fuzzy problems.";
-		throw new FJSPException("Ealuation", errorMsg);
+		throw FJSPException("Ealuation", errorMsg);
 	}
 
 	// Compute the makespan
@@ -199,7 +199,7 @@ void EvaluationFJSP_AImin::setup(FuzzyFW::ParameterDB *parameters) {
 	exactName = parameters->getStringUpper(this->exactLabel);
 	if (exactName.length() == 0) {
 		std::string errorMsg = this->exactLabel + " parameter not found.";
-		throw new FJSPException("Evaluation", errorMsg);
+		throw FJSPException("Evaluation", errorMsg);
 	}
 	if (exactName.compare(toUpper(FJSP_EVAL_AI_EXACT)) == 0)
 		this->isExact = true;
@@ -209,7 +209,7 @@ void EvaluationFJSP_AImin::setup(FuzzyFW::ParameterDB *parameters) {
 		std::string errorMsg = "Invalid value for parameter ";
 		errorMsg += "\'" + this->exactLabel + "\': \'";
 		errorMsg += exactName + "\'";
-		throw new FJSPException("Evaluation", errorMsg);
+		throw FJSPException("Evaluation", errorMsg);
 	}
 }
 
@@ -233,13 +233,13 @@ FuzzyFW::Objective * EvaluationFJSP_AImin::getObjectiveFunction(
 	if (fuzzyProb == NULL) {
 		std::string errorMsg = "This evaluation function works only with ";
 		errorMsg += "fuzzy problems.";
-		throw new FJSPException("Ealuation", errorMsg);
+		throw FJSPException("Ealuation", errorMsg);
 	}
 
 	if (!fuzzyProb->hasDueDates()) {
 		std::string errorMsg = "Agreement index cannot be computed over a ";
 		errorMsg += "problem without due-dates";
-		throw new FJSPException("Evaluation", errorMsg);
+		throw FJSPException("Evaluation", errorMsg);
 	}
 
 	// Evaluate the individual to find the phenotype
@@ -252,7 +252,7 @@ FuzzyFW::Objective * EvaluationFJSP_AImin::getObjectiveFunction(
 	if (schedule == NULL) {
 		std::string errorMsg = "This evaluation function is valid only ";
 		errorMsg += "for Fuzzy Job Shop Problems.";
-		throw new FJSPException("Evaluation", errorMsg);
+		throw FJSPException("Evaluation", errorMsg);
 	}
 
 	// Compute the minimum AI
@@ -283,13 +283,13 @@ FuzzyFW::Fitness * EvaluationFJSP_AImin::evaluate(
 	if (fuzzyProb == NULL) {
 		std::string errorMsg = "This evaluation function works only with ";
 		errorMsg += "fuzzy problems.";
-		throw new FJSPException("Ealuation", errorMsg);
+		throw FJSPException("Ealuation", errorMsg);
 	}
 
 	if (!fuzzyProb->hasDueDates()) {
 		std::string errorMsg = "Agreement index cannot be computed over a ";
 		errorMsg += "problem without due-dates";
-		throw new FJSPException("Evaluation", errorMsg);
+		throw FJSPException("Evaluation", errorMsg);
 	}
 
 	// Evaluate the individual to find the phenotype
@@ -302,7 +302,7 @@ FuzzyFW::Fitness * EvaluationFJSP_AImin::evaluate(
 	if (schedule == NULL) {
 		std::string errorMsg = "This evaluation function is valid only ";
 		errorMsg += "for Fuzzy Job Shop Problems.";
-		throw new FJSPException("Evaluation", errorMsg);
+		throw FJSPException("Evaluation", errorMsg);
 	}
 
 	// Compute the minimum AI
@@ -427,13 +427,13 @@ FuzzyFW::Fitness * EvaluationFJSP_AImin_ICAE::evaluate(
 	if (fuzzyProb == NULL) {
 		std::string errorMsg = "This evaluation function works only with ";
 		errorMsg += "fuzzy problems.";
-		throw new FJSPException("Ealuation", errorMsg);
+		throw FJSPException("Ealuation", errorMsg);
 	}
 
 	if (!fuzzyProb->hasDueDates()) {
 		std::string errorMsg = "Agreement index cannot be computed over a ";
 		errorMsg += "problem without due-dates";
-		throw new FJSPException("Evaluation", errorMsg);
+		throw FJSPException("Evaluation", errorMsg);
 	}
 
 	// Evaluate the individual to find the phenotype
@@ -446,7 +446,7 @@ FuzzyFW::Fitness * EvaluationFJSP_AImin_ICAE::evaluate(
 	if (schedule == NULL) {
 		std::string errorMsg = "This evaluation function is valid only ";
 		errorMsg += "for Fuzzy Job Shop Problems.";
-		throw new FJSPException("Evaluation", errorMsg);
+		throw FJSPException("Evaluation", errorMsg);
 	}
 
 	// Compute the list of AI values
@@ -500,13 +500,13 @@ FuzzyFW::Objective * EvaluationFJSP_AIavg::getObjectiveFunction(
 	if (fuzzyProb == NULL) {
 		std::string errorMsg = "This evaluation function works only with ";
 		errorMsg += "fuzzy problems.";
-		throw new FJSPException("Ealuation", errorMsg);
+		throw FJSPException("Ealuation", errorMsg);
 	}
 
 	if (!fuzzyProb->hasDueDates()) {
 		std::string errorMsg = "Agreement index cannot be computed over a ";
 		errorMsg += "problem without due-dates";
-		throw new FJSPException("Evaluation", errorMsg);
+		throw FJSPException("Evaluation", errorMsg);
 	}
 
 	// Evaluate the individual to find the phenotype
@@ -520,7 +520,7 @@ FuzzyFW::Objective * EvaluationFJSP_AIavg::getObjectiveFunction(
 	if (schedule == NULL) {
 		std::string errorMsg = "This evaluation function is valid only ";
 		errorMsg += "for Fuzzy Job Shop Problems.";
-		throw new FJSPException("Evaluation", errorMsg);
+		throw FJSPException("Evaluation", errorMsg);
 	}
 
 	// Compute the average AI
@@ -551,13 +551,13 @@ FuzzyFW::Fitness * EvaluationFJSP_AIavg::evaluate(
 	if (fuzzyProb == NULL) {
 		std::string errorMsg = "This evaluation function works only with ";
 		errorMsg += "fuzzy problems.";
-		throw new FJSPException("Ealuation", errorMsg);
+		throw FJSPException("Ealuation", errorMsg);
 	}
 
 	if (!fuzzyProb->hasDueDates()) {
 		std::string errorMsg = "Agreement index cannot be computed over a ";
 		errorMsg += "problem without due-dates";
-		throw new FJSPException("Evaluation", errorMsg);
+		throw FJSPException("Evaluation", errorMsg);
 	}
 
 	// Evaluate the individual to find the phenotype
@@ -571,7 +571,7 @@ FuzzyFW::Fitness * EvaluationFJSP_AIavg::evaluate(
 	if (schedule == NULL) {
 		std::string errorMsg = "This evaluation function is valid only ";
 		errorMsg += "for Fuzzy Job Shop Problems.";
-		throw new FJSPException("Evaluation", errorMsg);
+		throw FJSPException("Evaluation", errorMsg);
 	}
 
 	// Compute the average AI
@@ -625,13 +625,13 @@ FuzzyFW::Objective * EvaluationFJSP_ESDmin::getObjectiveFunction(
 	if (fuzzyProb == NULL) {
 		std::string errorMsg = "This evaluation function works only with ";
 		errorMsg += "fuzzy problems.";
-		throw new FJSPException("Ealuation", errorMsg);
+		throw FJSPException("Ealuation", errorMsg);
 	}
 
 	if (!fuzzyProb->hasDueDates()) {
 		std::string errorMsg = "Agreement index cannot be computed over a ";
 		errorMsg += "problem without due-dates";
-		throw new FJSPException("Evaluation", errorMsg);
+		throw FJSPException("Evaluation", errorMsg);
 	}
 
 	// Evaluate the individual to find the phenotype
@@ -644,7 +644,7 @@ FuzzyFW::Objective * EvaluationFJSP_ESDmin::getObjectiveFunction(
 	if (schedule == NULL) {
 		std::string errorMsg = "This evaluation function is valid only ";
 		errorMsg += "for Fuzzy Job Shop Problems.";
-		throw new FJSPException("Evaluation", errorMsg);
+		throw FJSPException("Evaluation", errorMsg);
 	}
 
 	// Compute the minimum AI
@@ -675,13 +675,13 @@ FuzzyFW::Fitness * EvaluationFJSP_ESDmin::evaluate(
 	if (fuzzyProb == NULL) {
 		std::string errorMsg = "This evaluation function works only with ";
 		errorMsg += "fuzzy problems.";
-		throw new FJSPException("Ealuation", errorMsg);
+		throw FJSPException("Ealuation", errorMsg);
 	}
 
 	if (!fuzzyProb->hasDueDates()) {
 		std::string errorMsg = "Agreement index cannot be computed over a ";
 		errorMsg += "problem without due-dates";
-		throw new FJSPException("Evaluation", errorMsg);
+		throw FJSPException("Evaluation", errorMsg);
 	}
 
 	// Evaluate the individual to find the phenotype
@@ -694,7 +694,7 @@ FuzzyFW::Fitness * EvaluationFJSP_ESDmin::evaluate(
 	if (schedule == NULL) {
 		std::string errorMsg = "This evaluation function is valid only ";
 		errorMsg += "for Fuzzy Job Shop Problems.";
-		throw new FJSPException("Evaluation", errorMsg);
+		throw FJSPException("Evaluation", errorMsg);
 	}
 
 	// Compute the minimum AI
@@ -740,13 +740,13 @@ FuzzyFW::Objective * EvaluationFJSP_ESDavg::getObjectiveFunction(
 	if (fuzzyProb == NULL) {
 		std::string errorMsg = "This evaluation function works only with ";
 		errorMsg += "fuzzy problems.";
-		throw new FJSPException("Ealuation", errorMsg);
+		throw FJSPException("Ealuation", errorMsg);
 	}
 
 	if (!fuzzyProb->hasDueDates()) {
 		std::string errorMsg = "Agreement index cannot be computed over a ";
 		errorMsg += "problem without due-dates";
-		throw new FJSPException("Evaluation", errorMsg);
+		throw FJSPException("Evaluation", errorMsg);
 	}
 
 	// Evaluate the individual to find the phenotype
@@ -760,7 +760,7 @@ FuzzyFW::Objective * EvaluationFJSP_ESDavg::getObjectiveFunction(
 	if (schedule == NULL) {
 		std::string errorMsg = "This evaluation function is valid only ";
 		errorMsg += "for Fuzzy Job Shop Problems.";
-		throw new FJSPException("Evaluation", errorMsg);
+		throw FJSPException("Evaluation", errorMsg);
 	}
 
 	// Compute the minimum AI
@@ -790,13 +790,13 @@ FuzzyFW::Fitness * EvaluationFJSP_ESDavg::evaluate(
 	if (fuzzyProb == NULL) {
 		std::string errorMsg = "This evaluation function works only with ";
 		errorMsg += "fuzzy problems.";
-		throw new FJSPException("Ealuation", errorMsg);
+		throw FJSPException("Ealuation", errorMsg);
 	}
 
 	if (!fuzzyProb->hasDueDates()) {
 		std::string errorMsg = "Agreement index cannot be computed over a ";
 		errorMsg += "problem without due-dates";
-		throw new FJSPException("Evaluation", errorMsg);
+		throw FJSPException("Evaluation", errorMsg);
 	}
 
 	// Evaluate the individual to find the phenotype
@@ -810,7 +810,7 @@ FuzzyFW::Fitness * EvaluationFJSP_ESDavg::evaluate(
 	if (schedule == NULL) {
 		std::string errorMsg = "This evaluation function is valid only ";
 		errorMsg += "for Fuzzy Job Shop Problems.";
-		throw new FJSPException("Evaluation", errorMsg);
+		throw FJSPException("Evaluation", errorMsg);
 	}
 
 	// Compute the minimum AI

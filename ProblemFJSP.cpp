@@ -88,7 +88,7 @@ void ProblemFJSP::setup(const FuzzyFW::ParameterDB *params) {
 		std::string errorMsg = "Invalid value for parameter";
 		errorMsg += "\'" + std::string(PROBLEM_LOWERBOUNDS) + "\': \'";
 		errorMsg += paramValue + "\'";
-		throw new FJSPException("Loading problem", errorMsg);
+		throw FJSPException("Loading problem", errorMsg);
 	}
 
 	// Load due-date type
@@ -145,7 +145,7 @@ unsigned int ProblemFJSP::getNumberTasks(const unsigned int job) const {
 		return (int)(this->taskSequence[job].size());
 	std::string errorMsg = "Trying to access unexisting job: ";
 	errorMsg += valueToString(job);
-	throw new FJSPException("Problem", errorMsg);
+	throw FJSPException("Problem", errorMsg);
 }
 
 
@@ -180,7 +180,7 @@ const {
 	else {
 		std::string errorMsg = "Trying to access unexisting job: ";
 		errorMsg += valueToString(job);
-		throw new FJSPException("Problem", errorMsg);
+		throw FJSPException("Problem", errorMsg);
 	}
 }
 
@@ -191,12 +191,12 @@ int ProblemFJSP::getTaskId(const unsigned int job, const int position)
 	if (job >= this->nJobs || job < 0) {
 		std::string errorMsg = "Trying to access unexisting job: ";
 		errorMsg += valueToString(job);
-		throw new FJSPException("Problem", errorMsg);
+		throw FJSPException("Problem", errorMsg);
 	}
 	if (position < 0) {
 		std::string errorMsg = "Trying to access unexisting task";
 		errorMsg += " of a job: " + valueToString(position);
-		throw new FJSPException("Problem", errorMsg);
+		throw FJSPException("Problem", errorMsg);
 	}
 
 	if (position >= (int)this->taskSequence[job].size())
@@ -211,7 +211,7 @@ const TaskFJSP * ProblemFJSP::getTask(const unsigned int taskId) const {
 	if (taskId < 0 || taskId >= (int)this->task.size()) {
 		std::string errorMsg = "Trying to access unexisting task: ";
 		errorMsg += valueToString(taskId);
-		throw new FJSPException("Problem", errorMsg);
+		throw FJSPException("Problem", errorMsg);
 	}
 	return this->task[taskId];
 }
@@ -235,7 +235,7 @@ void ProblemFJSP::loadFile(const char *inputFile) {
 		std::string errorMsg;
 		errorMsg = "The problem file cannot be read before the reading";
 		errorMsg += " parameters are loaded.";
-		throw new FJSPException("Problem", errorMsg);
+		throw FJSPException("Problem", errorMsg);
 	}
 
 	if (inputFile != NULL)
@@ -247,7 +247,7 @@ void ProblemFJSP::loadFile(const char *inputFile) {
 		std::string errorMsg;
 		errorMsg = "The problem file \'" + std::string(this->problemPath);
 		errorMsg += +"\' has not been found.";
-		throw new FJSPException("Problem", errorMsg);
+		throw FJSPException("Problem", errorMsg);
 	}
 
 	// Reset the data structures
@@ -330,7 +330,7 @@ void ProblemFJSP::loadDueDates(std::ifstream &input) {
 		if (tw == NULL) {
 			std::string errorMsg = "The introduced due-date type is not";
 			errorMsg += " valid: \'" + this->duedateType + "\'";
-			throw new FJSPException("Loading problem", errorMsg);
+			throw FJSPException("Loading problem", errorMsg);
 		}
 
 		getline(input, reader); // Heading

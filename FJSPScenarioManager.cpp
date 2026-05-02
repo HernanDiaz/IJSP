@@ -40,7 +40,7 @@ namespace PostExecution {
 			std::string err = "It was impossible to generate the output ";
 			err += "files. They may be opened or the logFolder does ";
 			err += "not exist";
-			throw new FuzzyFW::FuzzyFWException("Environment", err);
+			throw FuzzyFW::FuzzyFWException("Environment", err);
 		}
 
 		for (int rep = 0; rep < numScenarios; rep++) {
@@ -72,7 +72,7 @@ namespace PostExecution {
 			std::string err = "It was impossible to open the file ";
 			err += "files. They are not accesible or the logFolder does ";
 			err += "not exist";
-			throw new FuzzyFW::FuzzyFWException("Environment", err);
+			throw FuzzyFW::FuzzyFWException("Environment", err);
 		}
 
 		for (int rep = 0; rep < numScenarios; rep++) {

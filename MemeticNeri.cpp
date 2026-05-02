@@ -368,7 +368,7 @@ bool MemeticNeri::checkSetup() {
 
 	if (!correct) {
 		err += " Incorrect value or missing parameter";
-		throw new FuzzyFWException("Neri Algorithm", err);
+		throw FuzzyFWException("Neri Algorithm", err);
 	}
 
 	return true;

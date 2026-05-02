@@ -26,13 +26,13 @@ namespace IJSP {
 		const FuzzyFW::SharedVars * svars, std::vector<int> &order) {
 
 		if (svars->problem == NULL)
-			throw new IJSPException("SGS", "Problem instance not created");
+			throw IJSPException("SGS", "Problem instance not created");
 
 		ProblemIJSP * fjspProb =
 			dynamic_cast<ProblemIJSP *>(svars->problem);
 		if (fjspProb == NULL) {
 			std::string errorMsg = "This SGS can be only used on Interval Problems.";
-			throw new IJSPException("SGS", errorMsg);
+			throw IJSPException("SGS", errorMsg);
 		}
 
 		if (this->isCreated)
@@ -71,7 +71,7 @@ namespace IJSP {
 			errorMsg = "Job precedence constraint is being violated. Scheduling ";
 			errorMsg += "task " + valueToString(taskIdx) + " after task ";
 			errorMsg += valueToString(this->schedule->lastTaskJob[job]);
-			throw new IJSPException("SGS", errorMsg);
+			throw IJSPException("SGS", errorMsg);
 		}
 
 		// If I could schedule the task just after its job predecessor, who

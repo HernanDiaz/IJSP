@@ -23,7 +23,7 @@ void Crossover_JOX::apply(FuzzyFW::Individual *ind1, FuzzyFW::Individual *ind2,
 	FuzzyFW::IndividualArrayInt *idv1, *idv2;
 
 	if (ind1->size() != ind2->size()) {
-		throw new FJSPException("Crossover", "Individual sizes must match.");
+		throw FJSPException("Crossover", "Individual sizes must match.");
 	}
 
 	// Too small for crossover
@@ -42,7 +42,7 @@ void Crossover_JOX::apply(FuzzyFW::Individual *ind1, FuzzyFW::Individual *ind2,
 	}
 	std::string errorMsg = "Individuals must be coded as permutation";
 	errorMsg += " to use this crossover operator";
-	throw new FJSPException("Crossover", errorMsg);
+	throw FJSPException("Crossover", errorMsg);
 }
 
 
@@ -64,7 +64,7 @@ void Crossover_JOX::applyPermutation(FuzzyFW::IndividualArrayInt *ind1,
 	if (fuzzyProb == NULL) {
 		std::string errorMsg = "This enconding function works only with ";
 		errorMsg += "fuzzy problems.";
-		throw new FJSPException("Creation", errorMsg);
+		throw FJSPException("Creation", errorMsg);
 	}
 
 	// Choose the jobs to keep in position
@@ -158,7 +158,7 @@ void Crossover_JOX::applyJobPermutation(FuzzyFW::IndividualArrayInt *ind1,
 	if (fuzzyProb == NULL) {
 		std::string errorMsg = "This enconding function works only with ";
 		errorMsg += "fuzzy problems.";
-		throw new FJSPException("Creation", errorMsg);
+		throw FJSPException("Creation", errorMsg);
 	}
 
 	// Choose the jobs to keep in position
@@ -246,7 +246,7 @@ void Crossover_GOXBierwirth::apply(FuzzyFW::Individual *ind1,
 	FuzzyFW::IndividualArrayInt *idv1, *idv2;
 
 	if (ind1->size() != ind2->size()) {
-		throw new FJSPException("Crossover", "Individual sizes must match.");
+		throw FJSPException("Crossover", "Individual sizes must match.");
 	}
 
 	// Too small for crossover
@@ -265,7 +265,7 @@ void Crossover_GOXBierwirth::apply(FuzzyFW::Individual *ind1,
 	}
 	std::string errorMsg = "Individuals must be coded as permutation in";
 	errorMsg += " to use this crossover operator";
-	throw new FJSPException("Crossover", errorMsg);
+	throw FJSPException("Crossover", errorMsg);
 }
 
 
@@ -368,7 +368,7 @@ void Crossover_GOXBierwirth::applyJobPermutation(FuzzyFW::IndividualArrayInt *in
 	if (fuzzyProb == NULL) {
 		std::string errorMsg = "This enconding function works only with ";
 		errorMsg += "fuzzy problems.";
-		throw new FJSPException("Creation", errorMsg);
+		throw FJSPException("Creation", errorMsg);
 	}
 
 	// Generate genotypes without repetition
@@ -477,7 +477,7 @@ void Crossover_GPMXBierwirth::apply(FuzzyFW::Individual *ind1,
 	FuzzyFW::IndividualArrayInt *idv1, *idv2;
 
 	if (ind1->size() != ind2->size()) {
-		throw new FJSPException("Crossover", "Individual sizes must match.");
+		throw FJSPException("Crossover", "Individual sizes must match.");
 	}
 
 	// Too small for crossover
@@ -496,7 +496,7 @@ void Crossover_GPMXBierwirth::apply(FuzzyFW::Individual *ind1,
 	}
 	std::string errorMsg = "Individuals must be coded as permutation in";
 	errorMsg += " to use this crossover operator";
-	throw new FJSPException("Crossover", errorMsg);
+	throw FJSPException("Crossover", errorMsg);
 }
 
 
@@ -603,7 +603,7 @@ void Crossover_GPMXBierwirth::applyJobPermutation(FuzzyFW::IndividualArrayInt *i
 	if (fuzzyProb == NULL) {
 		std::string errorMsg = "This enconding function works only with ";
 		errorMsg += "fuzzy problems.";
-		throw new FJSPException("Creation", errorMsg);
+		throw FJSPException("Creation", errorMsg);
 	}
 
 	// Generate genotypes without repetition
@@ -718,7 +718,7 @@ void Crossover_PPXBierwirth::apply(FuzzyFW::Individual *ind1,
 	FuzzyFW::IndividualArrayInt *idv1, *idv2;
 
 	if (ind1->size() != ind2->size()) {
-		throw new FJSPException("Crossover", "Individual sizes must match.");
+		throw FJSPException("Crossover", "Individual sizes must match.");
 	}
 
 	// Too small for crossover
@@ -737,7 +737,7 @@ void Crossover_PPXBierwirth::apply(FuzzyFW::Individual *ind1,
 	}
 	std::string errorMsg = "Individuals must be coded as permutation in";
 	errorMsg += " to use this crossover operator";
-	throw new FJSPException("Crossover", errorMsg);
+	throw FJSPException("Crossover", errorMsg);
 }
 
 
@@ -829,7 +829,7 @@ void Crossover_PPXBierwirth::applyJobPermutation(FuzzyFW::IndividualArrayInt *in
 	if (fuzzyProb == NULL) {
 		std::string errorMsg = "This enconding function works only with ";
 		errorMsg += "fuzzy problems.";
-		throw new FJSPException("Creation", errorMsg);
+		throw FJSPException("Creation", errorMsg);
 	}
 
 	// Generate genotypes without repetition

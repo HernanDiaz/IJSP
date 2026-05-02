@@ -29,14 +29,14 @@ void EncoderFVRP_Order::encode(FuzzyFW::Solution *solution,
 	if (route == NULL) {
 		std::string errorMsg = "This enconding function works only with ";
 		errorMsg += "fuzzy VRP problems.";
-		throw new FVRPException("Encoding", errorMsg);
+		throw FVRPException("Encoding", errorMsg);
 	}
 
 	intIndiv = dynamic_cast<FuzzyFW::IndividualArrayInt *>(indiv);
 	if (intIndiv == NULL) {
 		std::string errorMsg = "This enconding function works only with ";
 		errorMsg += "integer array individuals.";
-		throw new FVRPException("Encoding", errorMsg);
+		throw FVRPException("Encoding", errorMsg);
 	}
 	
 	for (unsigned int v = 0; v < route->getNumberVehicles(); v++) {
@@ -61,7 +61,7 @@ FuzzyFW::Individual * EncoderFVRP_Order::encode(FuzzyFW::Solution *solution,
 	if (route == NULL) {
 		std::string errorMsg = "This enconding function works only with ";
 		errorMsg += "fuzzy VRP problems.";
-		throw new FVRPException("Encoding", errorMsg);
+		throw FVRPException("Encoding", errorMsg);
 	}
 
 	for (unsigned int v = 0; v < route->getNumberVehicles(); v++) {

@@ -28,14 +28,14 @@ void EncoderFJSP_Order::encode(FuzzyFW::Solution *solution,
 	if (schedule == NULL) {
 		std::string errorMsg = "This enconding function works only with ";
 		errorMsg += "fuzzy job shop problems.";
-		throw new FJSPException("Encoding", errorMsg);
+		throw FJSPException("Encoding", errorMsg);
 	}
 
 	intIndiv = dynamic_cast<FuzzyFW::IndividualArrayInt *>(indiv);
 	if (intIndiv == NULL) {
 		std::string errorMsg = "This enconding function works only with ";
 		errorMsg += "integer array individuals.";
-		throw new FJSPException("Encoding", errorMsg);
+		throw FJSPException("Encoding", errorMsg);
 	}
 
 	intIndiv->updateGenotype(schedule->getTaskOrder(svars->rng));
@@ -55,7 +55,7 @@ FuzzyFW::Individual * EncoderFJSP_Order::encode(FuzzyFW::Solution *solution,
 	if (schedule == NULL) {
 		std::string errorMsg = "This enconding function works only with ";
 		errorMsg += "fuzzy job shop problems.";
-		throw new FJSPException("Encoding", errorMsg);
+		throw FJSPException("Encoding", errorMsg);
 	}
 
 	return new FuzzyFW::IndividualArrayInt(schedule->getTaskOrder(svars->rng));
@@ -86,14 +86,14 @@ void EncoderFJSP_JobOrder::encode(FuzzyFW::Solution *solution,
 	if (schedule == NULL) {
 		std::string errorMsg = "This enconding function works only with ";
 		errorMsg += "fuzzy job shop problems.";
-		throw new FJSPException("Encoding", errorMsg);
+		throw FJSPException("Encoding", errorMsg);
 	}
 
 	intIndiv = dynamic_cast<FuzzyFW::IndividualArrayInt *>(indiv);
 	if (intIndiv == NULL) {
 		std::string errorMsg = "This enconding function works only with ";
 		errorMsg += "integer array individuals.";
-		throw new FJSPException("Encoding", errorMsg);
+		throw FJSPException("Encoding", errorMsg);
 	}
 
 	fuzzyProb =
@@ -101,7 +101,7 @@ void EncoderFJSP_JobOrder::encode(FuzzyFW::Solution *solution,
 	if (fuzzyProb == NULL) {
 		std::string errorMsg = "This enconding function works only with ";
 		errorMsg += "fuzzy problems.";
-		throw new FJSPException("Encoding", errorMsg);
+		throw FJSPException("Encoding", errorMsg);
 	}
 
 	genotype = schedule->getTaskOrder(svars->rng);
@@ -127,7 +127,7 @@ FuzzyFW::Individual * EncoderFJSP_JobOrder::encode(
 	if (schedule == NULL) {
 		std::string errorMsg = "This enconding function works only with ";
 		errorMsg += "fuzzy job shop problems.";
-		throw new FJSPException("Encoding", errorMsg);
+		throw FJSPException("Encoding", errorMsg);
 	}
 
 	ProblemFJSP * fuzzyProb =
@@ -135,7 +135,7 @@ FuzzyFW::Individual * EncoderFJSP_JobOrder::encode(
 	if (fuzzyProb == NULL) {
 		std::string errorMsg = "This enconding function works only with ";
 		errorMsg += "fuzzy problems.";
-		throw new FJSPException("Encoding", errorMsg);
+		throw FJSPException("Encoding", errorMsg);
 	}
 
 	taskOrder = schedule->getTaskOrder(svars->rng);

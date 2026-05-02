@@ -92,14 +92,14 @@ public:
 		
 		if (compareName.length() == 0) {
 			std::string errorMsg = this->compareLabel + " parameter not found.";
-			throw new IJSPException("SGS_IJSP", errorMsg);
+			throw IJSPException("SGS_IJSP", errorMsg);
 		}
 		this->cpComp = FuzzyFW::Interval::getComparison(compareName);
 		if (this->cpComp == FuzzyFW::Interval::C_Err) {
 			std::string errorMsg = "Invalid value for parameter ";
 			errorMsg += "\'" + this->compareLabel + "\': \'";
 			errorMsg += compareName + "\'";
-			throw new IJSPException("SGS", errorMsg);
+			throw IJSPException("SGS", errorMsg);
 		}
 	
 	}

@@ -104,7 +104,7 @@ void ProblemFVRP::setup(const FuzzyFW::ParameterDB *params) {
 	if (this->demandType.length() == 0) {
 		std::string errorMsg = "Parameter \'";
 		std::cout << FVRP_PROBLEM_DEMAND << "\' not found. ";
-		throw new FVRPException("Problem loading", errorMsg);
+		throw FVRPException("Problem loading", errorMsg);
 	}
 
 
@@ -113,7 +113,7 @@ void ProblemFVRP::setup(const FuzzyFW::ParameterDB *params) {
 	if (this->demandType.length() == 0) {
 		std::string errorMsg = "Parameter \'";
 		std::cout << FVRP_PROBLEM_SERVICETIME << "\' not found. ";
-		throw new FVRPException("Problem loading", errorMsg);
+		throw FVRPException("Problem loading", errorMsg);
 	}
 }
 
@@ -160,12 +160,12 @@ FuzzyFW::TFN ProblemFVRP::getTravelTime(const unsigned int origin,
 	if (origin > this->nCustomers || origin < 0) {
 		std::string errorMsg = "Trying to access unexisting customer: ";
 		errorMsg += valueToString(origin);
-		throw new FVRPException("Problem", errorMsg);
+		throw FVRPException("Problem", errorMsg);
 	}
 	if (destination > this->nCustomers || destination < 0) {
 		std::string errorMsg = "Trying to access unexisting customer: ";
 		errorMsg += valueToString(destination);
-		throw new FVRPException("Problem", errorMsg);
+		throw FVRPException("Problem", errorMsg);
 	}
 
 	return this->travelTime[origin][destination];
@@ -179,12 +179,12 @@ double ProblemFVRP::getDistance(const unsigned int origin,
 	if (origin > this->nCustomers || origin < 0) {
 		std::string errorMsg = "Trying to access unexisting customer: ";
 		errorMsg += valueToString(origin);
-		throw new FVRPException("Problem", errorMsg);
+		throw FVRPException("Problem", errorMsg);
 	}
 	if (destination > this->nCustomers || destination < 0) {
 		std::string errorMsg = "Trying to access unexisting customer: ";
 		errorMsg += valueToString(destination);
-		throw new FVRPException("Problem", errorMsg);
+		throw FVRPException("Problem", errorMsg);
 	}
 
 	return this->distance[origin][destination];
@@ -201,7 +201,7 @@ const {
 	else {
 		std::string errorMsg = "Trying to access unexisting customer: ";
 		errorMsg += valueToString(customerId);
-		throw new FVRPException("Problem", errorMsg);
+		throw FVRPException("Problem", errorMsg);
 	}
 }
 
@@ -217,7 +217,7 @@ const FuzzyFW::TimeWindow * ProblemFVRP::getTimeWindow(
 	else {
 		std::string errorMsg = "Trying to access unexisting customer: ";
 		errorMsg += valueToString(customerId);
-		throw new FVRPException("Problem", errorMsg);
+		throw FVRPException("Problem", errorMsg);
 	}
 }
 
@@ -231,7 +231,7 @@ FuzzyFW::TFN ProblemFVRP::getDemand(const unsigned int customerId) const {
 	else {
 		std::string errorMsg = "Trying to access unexisting customer: ";
 		errorMsg += valueToString(customerId);
-		throw new FVRPException("Problem", errorMsg);
+		throw FVRPException("Problem", errorMsg);
 	}
 }
 
@@ -245,7 +245,7 @@ CustomerFVRP * ProblemFVRP::getCustomer(const unsigned int customerId) const {
 	else {
 		std::string errorMsg = "Trying to access unexisting customer: ";
 		errorMsg += valueToString(customerId);
-		throw new FVRPException("Problem", errorMsg);
+		throw FVRPException("Problem", errorMsg);
 	}
 }
 
@@ -270,7 +270,7 @@ void ProblemFVRP::loadFile(const char *inputFile) {
 		std::string errorMsg;
 		errorMsg = "The problem file cannot be read before the reading";
 		errorMsg += " parameters are loaded.";
-		throw new FVRPException("Problem", errorMsg);
+		throw FVRPException("Problem", errorMsg);
 	}
 
 	if (inputFile != NULL)
@@ -282,7 +282,7 @@ void ProblemFVRP::loadFile(const char *inputFile) {
 		std::string errorMsg;
 		errorMsg = "The problem file \'" + std::string(this->problemPath);
 		errorMsg += +"\' has not been found.";
-		throw new FVRPException("Problem", errorMsg);
+		throw FVRPException("Problem", errorMsg);
 	}
 
 	// Reset the data structures
@@ -399,7 +399,7 @@ FuzzyFW::TimeWindow * ProblemFVRP::loadTimeWindow(std::ifstream &input) {
 		if (tw == NULL) {
 			std::string errorMsg = "The introduced type of Time Window is not";
 			errorMsg += " valid: \'" + this->timeWindowType + "\'";
-			throw new FVRPException("Loading problem", errorMsg);
+			throw FVRPException("Loading problem", errorMsg);
 		}
 
 		if (tw->getType() == FuzzyFW::TimeWindow::CRISP) {

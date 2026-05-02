@@ -48,7 +48,7 @@ void LS_Tabu_Amico_FJSP::updateTabuListBounds(const FuzzyFW::SharedVars *svars) 
 		if (fuzzyProb == NULL) {
 			std::string errorMsg = "This local search algorithm works only with ";
 			errorMsg += "fuzzy problems.";
-			throw new FJSPException("Tabu Search (dellAmico)", errorMsg);
+			throw FJSPException("Tabu Search (dellAmico)", errorMsg);
 		}
 		addend = (fuzzyProb->getNumberJobs() + fuzzyProb->getNumberMachines()) / 3.0;
 	}

@@ -71,7 +71,7 @@ void EvolutiveAlgorithm::prepareToRun(ParameterDB *params) {
 
 	if (paramName.length() < 1) {
 		std::string errorMsg = "Objective function not found";
-		throw new FuzzyFWException("Loading", errorMsg);
+		throw FuzzyFWException("Loading", errorMsg);
 	}
 
 	this->evaluator = EvaluationClassRegister::getEvaluationObject(evalName);
@@ -79,7 +79,7 @@ void EvolutiveAlgorithm::prepareToRun(ParameterDB *params) {
 	if (this->evaluator == NULL) {
 		std::string errorMsg = "Invalid evaluation function. Incorrect name ";
 		errorMsg += "or missing parameter";
-		throw new FuzzyFWException("Loading", errorMsg);
+		throw FuzzyFWException("Loading", errorMsg);
 	}
 	this->evaluator->setup(this->sharedVariables->parameters);
 

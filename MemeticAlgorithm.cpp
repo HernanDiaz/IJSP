@@ -271,7 +271,7 @@ void MemeticAlgorithm::prepareToRun(ParameterDB *params) {
 	if (this->neighbourhood == NULL) {
 		std::string errorMsg = "Invalid neighbourhood structure";
 		errorMsg += " or ommited value.";
-		throw new FuzzyFWException("Memetic Algorithm", errorMsg);
+		throw FuzzyFWException("Memetic Algorithm", errorMsg);
 	}
 
 	// Loads the frequency to apply local search
@@ -350,7 +350,7 @@ bool MemeticAlgorithm::checkSetup() {
 
 	if (!correct) {
 		err += " Incorrect value or missing parameter";
-		throw new FuzzyFWException("Memetic Algorithm", err);
+		throw FuzzyFWException("Memetic Algorithm", err);
 	}
 
 	return true;

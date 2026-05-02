@@ -38,14 +38,14 @@ void SGS_FJSP_Append::setup(const FuzzyFW::ParameterDB *params) {
 	std::string maxName = params->getStringUpper(this->maximumLabel);
 	if (maxName.length() == 0) {
 		std::string errorMsg = this->maximumLabel + " parameter not found.";
-		throw new FJSPException("SGS", errorMsg);
+		throw FJSPException("SGS", errorMsg);
 	}
 	this->tfnMaximum = FuzzyFW::TFN::getMaximum(maxName);
 	if (this->tfnMaximum == FuzzyFW::TFN::M_Err) {
 		std::string errorMsg = "Invalid value for parameter";
 		errorMsg += "\'" + this->maximumLabel + "\': \'";
 		errorMsg += maxName + "\'";
-		throw new FJSPException("SGS", errorMsg);
+		throw FJSPException("SGS", errorMsg);
 	}
 }
 
@@ -62,7 +62,7 @@ ScheduleFJSP * SGS_FJSP_Append::buildSchedule(const FuzzyFW::SharedVars * svars,
 		dynamic_cast<ProblemFJSP *>(svars->problem);
 	if (fuzzyProb == NULL) {
 		std::string errorMsg = "This SGS can be only used on Fuzzy Problems.";
-		throw new FJSPException("SGS", errorMsg);
+		throw FJSPException("SGS", errorMsg);
 	}
 
 	if (this->isCreated)
@@ -97,7 +97,7 @@ FuzzyFW::TFN SGS_FJSP_Append::scheduleTask(const TaskFJSP *task,
 		errorMsg = "Job precedence constraint is being violated. Scheduling ";
 		errorMsg += "task " + valueToString(taskIdx) + " after task ";
 		errorMsg += valueToString(jp);
-		throw new FJSPException("SGS", errorMsg);
+		throw FJSPException("SGS", errorMsg);
 	}
 
 	// Starting time
@@ -150,14 +150,14 @@ void SGS_FJSP_Dense::setup(const FuzzyFW::ParameterDB *params) {
 	std::string cmpName = params->getStringUpper(this->compareLabel);
 	if (cmpName.length() == 0) {
 		std::string errorMsg = this->compareLabel + " parameter not found.";
-		throw new FJSPException("SGS", errorMsg);
+		throw FJSPException("SGS", errorMsg);
 	}
 	this->tfnCompare = FuzzyFW::TFN::getComparison(cmpName);
 	if (this->tfnCompare == FuzzyFW::TFN::C_Err) {
 		std::string errorMsg = "Invalid value for parameter";
 		errorMsg += "\'" + this->compareLabel + "\': \'";
 		errorMsg += cmpName + "\'";
-		throw new FJSPException("SGS", errorMsg);
+		throw FJSPException("SGS", errorMsg);
 	}
 }
 
@@ -182,7 +182,7 @@ ScheduleFJSP * SGS_FJSP_Dense::buildSchedule(const FuzzyFW::SharedVars * svars,
 		dynamic_cast<ProblemFJSP *>(svars->problem);
 	if (fuzzyProb == NULL) {
 		std::string errorMsg = "This SGS can be only used on Fuzzy Problems.";
-		throw new FJSPException("SGS", errorMsg);
+		throw FJSPException("SGS", errorMsg);
 	}
 
 	nJobs = fuzzyProb->getNumberJobs();
@@ -287,7 +287,7 @@ void SGS_FJSP_fGYT1::setup(const FuzzyFW::ParameterDB *params) {
 		std::string errorMsg = "Invalid value for parameter";
 		errorMsg += "\'" + this->deltaLabel + "\': \'";
 		errorMsg += valueToString(this->delta) + "\'";
-		throw new FJSPException("SGS", errorMsg);
+		throw FJSPException("SGS", errorMsg);
 	}
 
 	this->tfnMaximum = FuzzyFW::TFN::M_COMPONENT;
@@ -317,7 +317,7 @@ ScheduleFJSP * SGS_FJSP_fGYT1::buildSchedule(const FuzzyFW::SharedVars * svars,
 		dynamic_cast<ProblemFJSP *>(svars->problem);
 	if (fuzzyProb == NULL) {
 		std::string errorMsg = "This SGS can be only used on Fuzzy Problems.";
-		throw new FJSPException("SGS", errorMsg);
+		throw FJSPException("SGS", errorMsg);
 	}
 
 	if (this->isCreated)
@@ -450,7 +450,7 @@ ScheduleFJSP * SGS_FJSP_fGYT2::buildSchedule(const FuzzyFW::SharedVars * svars,
 		dynamic_cast<ProblemFJSP *>(svars->problem);
 	if (fuzzyProb == NULL) {
 		std::string errorMsg = "This SGS can be only used on Fuzzy Problems.";
-		throw new FJSPException("SGS", errorMsg);
+		throw FJSPException("SGS", errorMsg);
 	}
 
 	if (this->isCreated)

@@ -261,7 +261,7 @@ bool RandomPopulation::checkSetup() {
 
 	if (!correct) {
 		err += " Incorrect value or missing parameter";
-		throw new FuzzyFWException("Random Search", err);
+		throw FuzzyFWException("Random Search", err);
 	}
 
 	return true;

@@ -36,14 +36,14 @@ void DecoderFJSP::setup(FuzzyFW::ParameterDB *parameters) {
 	if (sgsType.length() == 0) {
 		std::string errorMsg = "SGS not found. Please, specify a SGS to use";
 		errorMsg += " during the evaluation of individuals";
-		throw new FJSPException("Evaluation", errorMsg);
+		throw FJSPException("Evaluation", errorMsg);
 	}
 
 	this->sgs = FJSPClassRegister::getSGSObject(sgsType);
 	if (this->sgs == NULL) {
 		std::string errorMsg = "The introduced SGS is not";
 		errorMsg += " recognised: \'" + sgsType + "\'";
-		throw new FJSPException("Evaluation", errorMsg);
+		throw FJSPException("Evaluation", errorMsg);
 	}
 	this->sgs->setup(parameters);
 }
@@ -70,14 +70,14 @@ FuzzyFW::Solution * DecoderFJSP_Order::decode(FuzzyFW::Individual * indiv,
 	if (dynamic_cast<EncoderFJSP_Order *>(svars->encoder) == NULL) {
 		std::string errorMsg = "The individual is encoded with a ";
 		errorMsg += "incompatible method";
-		throw new FJSPException("Decoding", errorMsg);
+		throw FJSPException("Decoding", errorMsg);
 	}
 
 	// Check for the type of individual
 	ind = dynamic_cast<FuzzyFW::IndividualArrayInt *>(indiv);
 	if (ind == NULL) {
 		std::string errorMsg = "Genotype type not valid";
-		throw new FJSPException("Decoding", errorMsg);
+		throw FJSPException("Decoding", errorMsg);
 	}
 	
 	this->sgs->reset();
@@ -108,14 +108,14 @@ FuzzyFW::Solution * DecoderFJSP_JobOrder::decode(FuzzyFW::Individual * indiv,
 	if (dynamic_cast<EncoderFJSP_JobOrder *>(svars->encoder) == NULL) {
 		std::string errorMsg = "The individual is encoded with an ";
 		errorMsg += "incompatible method";
-		throw new FJSPException("Decoding", errorMsg);
+		throw FJSPException("Decoding", errorMsg);
 	}
 
 	// Check for the type of individual
 	ind = dynamic_cast<FuzzyFW::IndividualArrayInt *>(indiv);
 	if (ind == NULL) {
 		std::string errorMsg = "Genotype type not valid";
-		throw new FJSPException("Decoding", errorMsg);
+		throw FJSPException("Decoding", errorMsg);
 	}
 
 	ProblemFJSP * fuzzyProb =
@@ -123,7 +123,7 @@ FuzzyFW::Solution * DecoderFJSP_JobOrder::decode(FuzzyFW::Individual * indiv,
 	if (fuzzyProb == NULL) {
 		std::string errorMsg = "This enconding function works only with ";
 		errorMsg += "fuzzy problems.";
-		throw new FJSPException("Encoding", errorMsg);
+		throw FJSPException("Encoding", errorMsg);
 	}
 
 	solution = ind->getGenotype();

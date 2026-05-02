@@ -296,7 +296,7 @@ FuzzyFW::Fitness * NB_ParallelN8_MakespanIJSP::getEstimation(
 {
     if (idx >= this->numNeighbours || this->neighbours[idx] == NULL) {
         std::string errorMsg = "Trying to access a non-existing neighbour";
-        throw new IJSPException("Neighbourhood", errorMsg);
+        throw IJSPException("Neighbourhood", errorMsg);
     }
 
     NeighbourIJSP_Arc *arc = this->neighbours[idx];
@@ -326,7 +326,7 @@ FuzzyFW::Fitness * NB_ParallelN8_MakespanIJSP::evaluateNeighbour(
 {
     if (idx >= this->numNeighbours || this->neighbours[idx] == NULL) {
         std::string errorMsg = "Trying to access a non-existing neighbour";
-        throw new IJSPException("Neighbourhood", errorMsg);
+        throw IJSPException("Neighbourhood", errorMsg);
     }
 
     NeighbourIJSP_Arc *arc = this->neighbours[idx];
@@ -449,7 +449,7 @@ void NB_ParallelN8_MakespanIJSP::acceptNeighbour(const unsigned int idx,
 {
     if (idx >= this->numNeighbours || this->neighbours[idx] == NULL) {
         std::string errorMsg = "Trying to access a non-existing neighbour";
-        throw new IJSPException("Neighbourhood", errorMsg);
+        throw IJSPException("Neighbourhood", errorMsg);
     }
 
     NeighbourIJSP_Arc *arc = this->neighbours[idx];

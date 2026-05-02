@@ -46,7 +46,7 @@ void NB_ParallelN1_AIavgFJSP::setup(FuzzyFW::ParameterDB *parameters) {
 	else {
 		std::string errorMsg = "Estimation method unknown: \'";
 		errorMsg += estimatorValue + "\'";
-		throw new FJSPException("Neighbourhood", errorMsg);
+		throw FJSPException("Neighbourhood", errorMsg);
 	}
 }
 
@@ -75,7 +75,7 @@ void NB_ParallelN1_AIavgFJSP::setInitialSolution(FuzzyFW::Solution *solution,
 	if (this->schedule == NULL) {
 		std::string errorMsg = "Type of solution not valid for this type";
 		errorMsg += " of neighbourhood. Only Fuzzy JSP Schedules are allowed.";
-		throw new FJSPException("Neighbourhood", errorMsg);
+		throw FJSPException("Neighbourhood", errorMsg);
 	}
 
 	if (this->currentFitness != NULL)
@@ -100,7 +100,7 @@ unsigned int NB_ParallelN1_AIavgFJSP::findNewNeighbours(
 	if (fuzzyProb == NULL) {
 		std::string errorMsg = "This neighbourhood works only with ";
 		errorMsg += "fuzzy job shop problems.";
-		throw new FJSPException("Neighbourhood", errorMsg);
+		throw FJSPException("Neighbourhood", errorMsg);
 	}
 
 	nTasks = this->schedule->getScheduledTasks();
@@ -170,7 +170,7 @@ FuzzyFW::Fitness * NB_ParallelN1_AIavgFJSP::evaluateNeighbour(
 	
 	if (idx < 0 || idx > this->numNeighbours) {
 		std::string errorMsg = "Trying to access a non-existing neighbour";
-		throw new FJSPException("Neighbourhood", errorMsg);
+		throw FJSPException("Neighbourhood", errorMsg);
 	}
 
 	// Get the problem in its true form
@@ -178,7 +178,7 @@ FuzzyFW::Fitness * NB_ParallelN1_AIavgFJSP::evaluateNeighbour(
 	if (fuzzyProb == NULL) {
 		std::string errorMsg = "This neighbourhood works only with ";
 		errorMsg += "fuzzy job shop problems.";
-		throw new FJSPException("Neighbourhood", errorMsg);
+		throw FJSPException("Neighbourhood", errorMsg);
 	}
 
 	NeighbourFJSP_Arc *arc = this->neighbours[idx];
@@ -273,7 +273,7 @@ void NB_ParallelN1_AIavgFJSP::acceptNeighbour(const unsigned int idx,
 
 	if (idx < 0 || idx > this->numNeighbours || this->neighbours[idx] == NULL) {
 		std::string errorMsg = "Trying to access a non-existing neighbour";
-		throw new FJSPException("Neighbourhood", errorMsg);
+		throw FJSPException("Neighbourhood", errorMsg);
 	}
 
 	// Update the current solution
@@ -297,7 +297,7 @@ FuzzyFW::Fitness * NB_ParallelN1_AIavgFJSP::getEstimation(
 
 	if (idx < 0 || idx >= this->numNeighbours || this->neighbours[idx] == NULL) {
 		std::string errorMsg = "Trying to acces a non-existing neighbour";
-		throw new FJSPException("Neighbourhood", errorMsg);
+		throw FJSPException("Neighbourhood", errorMsg);
 	}
 	if (!this->neighbours[idx]->isEstimated()) {
 		this->neighbours[idx]->setEstimatedQuality(
@@ -312,7 +312,7 @@ FuzzyFW::Fitness * NB_ParallelN1_AIavgFJSP::getEstimation(
 void NB_ParallelN1_AIavgFJSP::discardNeighbour(const unsigned int idx) {
 	if (idx < 0 || idx >= this->numNeighbours || this->neighbours[idx] == NULL) {
 		std::string errorMsg = "Trying to acces a non-existing neighbour";
-		throw new FJSPException("Neighbourhood", errorMsg);
+		throw FJSPException("Neighbourhood", errorMsg);
 	}
 	delete this->neighbours[idx];
 	this->neighbours[idx] = NULL;
@@ -362,7 +362,7 @@ void NB_ParallelN1_AIavgFJSP::quickSort(const int left, const int right,
 FuzzyFW::Neighbour* NB_ParallelN1_AIavgFJSP::getNeighbour(const unsigned int idx) {
 	if (idx < 0 || idx >= this->numNeighbours || this->neighbours[idx] == NULL) {
 		std::string errorMsg = "Trying to acces a non-existing neighbour";
-		throw new FJSPException("Neighbourhood", errorMsg);
+		throw FJSPException("Neighbourhood", errorMsg);
 	}
 	return this->neighbours[idx];
 }
@@ -395,7 +395,7 @@ unsigned int NB_ParallelN1_AIminFJSP::findNewNeighbours(
 	if (fuzzyProb == NULL) {
 		std::string errorMsg = "This neighbourhood works only with ";
 		errorMsg += "fuzzy job shop problems.";
-		throw new FJSPException("Neighbourhood", errorMsg);
+		throw FJSPException("Neighbourhood", errorMsg);
 	}
 
 	nTasks = this->schedule->getScheduledTasks();
@@ -467,7 +467,7 @@ FuzzyFW::Fitness * NB_ParallelN1_AIminFJSP::evaluateNeighbour(
 
 	if (idx < 0 || idx > this->numNeighbours) {
 		std::string errorMsg = "Trying to access a non-existing neighbour";
-		throw new FJSPException("Neighbourhood", errorMsg);
+		throw FJSPException("Neighbourhood", errorMsg);
 	}
 
 	// Get the problem in its true form
@@ -475,7 +475,7 @@ FuzzyFW::Fitness * NB_ParallelN1_AIminFJSP::evaluateNeighbour(
 	if (fuzzyProb == NULL) {
 		std::string errorMsg = "This neighbourhood works only with ";
 		errorMsg += "fuzzy job shop problems.";
-		throw new FJSPException("Neighbourhood", errorMsg);
+		throw FJSPException("Neighbourhood", errorMsg);
 	}
 
 	NeighbourFJSP_Arc *arc = this->neighbours[idx];
@@ -569,7 +569,7 @@ FuzzyFW::Fitness * NB_ParallelN1_AIminFJSP::getEstimation(
 
 	if (idx < 0 || idx >= this->numNeighbours || this->neighbours[idx] == NULL) {
 		std::string errorMsg = "Trying to acces a non-existing neighbour";
-		throw new FJSPException("Neighbourhood", errorMsg);
+		throw FJSPException("Neighbourhood", errorMsg);
 	}
 	if (!this->neighbours[idx]->isEstimated()) {
 		this->neighbours[idx]->setEstimatedQuality(
@@ -597,7 +597,7 @@ FuzzyFW::Fitness * NB_ParallelN1_AIminICAE::getEstimation(
 
 	if (idx < 0 || idx >= this->numNeighbours || this->neighbours[idx] == NULL) {
 		std::string errorMsg = "Trying to acces a non-existing neighbour";
-		throw new FJSPException("Neighbourhood", errorMsg);
+		throw FJSPException("Neighbourhood", errorMsg);
 	}
 
 	FuzzyFW::FitnessLexicographic *fitness, *fl;
@@ -605,7 +605,7 @@ FuzzyFW::Fitness * NB_ParallelN1_AIminICAE::getEstimation(
 	if (fl == NULL) {
 		std::string errorMsg = "This neighbourhood works only with ";
 		errorMsg += "lexicographic fitness types.";
-		throw new FJSPException("Neighbourhood", errorMsg);
+		throw FJSPException("Neighbourhood", errorMsg);
 	}
 	
 	if (!this->neighbours[idx]->isEstimated()) {
@@ -636,7 +636,7 @@ unsigned int NB_ParallelN1_AIminICAE::findNewNeighbours(
 	if (fuzzyProb == NULL) {
 		std::string errorMsg = "This neighbourhood works only with ";
 		errorMsg += "fuzzy job shop problems.";
-		throw new FJSPException("Neighbourhood", errorMsg);
+		throw FJSPException("Neighbourhood", errorMsg);
 	}
 
 	nTasks = this->schedule->getScheduledTasks();
@@ -648,7 +648,7 @@ unsigned int NB_ParallelN1_AIminICAE::findNewNeighbours(
 	if (fl == NULL) {
 		std::string errorMsg = "This neighbourhood works only with ";
 		errorMsg += "lexicographic fitness types.";
-		throw new FJSPException("Neighbourhood", errorMsg);
+		throw FJSPException("Neighbourhood", errorMsg);
 	}
 	currentAImin = fl->getFitness(0)->toDouble();
 	this->numNeighbours = 0;
@@ -717,7 +717,7 @@ FuzzyFW::Fitness * NB_ParallelN1_AIminICAE::evaluateNeighbour(
 
 	if (idx < 0 || idx > this->numNeighbours) {
 		std::string errorMsg = "Trying to access a non-existing neighbour";
-		throw new FJSPException("Neighbourhood", errorMsg);
+		throw FJSPException("Neighbourhood", errorMsg);
 	}
 
 	// Get the problem in its true form
@@ -725,7 +725,7 @@ FuzzyFW::Fitness * NB_ParallelN1_AIminICAE::evaluateNeighbour(
 	if (fuzzyProb == NULL) {
 		std::string errorMsg = "This neighbourhood works only with ";
 		errorMsg += "fuzzy job shop problems.";
-		throw new FJSPException("Neighbourhood", errorMsg);
+		throw FJSPException("Neighbourhood", errorMsg);
 	}
 
 	NeighbourFJSP_Arc *arc = this->neighbours[idx];

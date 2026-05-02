@@ -63,7 +63,7 @@ void NB_Vidal_FVRP_FD::setup(FuzzyFW::ParameterDB *parameters) {
 	else {
 		std::string errorMsg = "Estimation method unknown: \'";
 		errorMsg += estimatorValue + "\'";
-		throw new FVRPException("Neighbourhood", errorMsg);
+		throw FVRPException("Neighbourhood", errorMsg);
 	}
 
 	this->minSeqSize = parameters->getInteger(this->minSeqSizeLabel, -1);
@@ -94,14 +94,14 @@ void NB_Vidal_FVRP_FD::setup(FuzzyFW::ParameterDB *parameters) {
 	else {
 		std::string errorMsg = "Unkown value for parameter \'";
 		errorMsg += this->metricDemandLabel + "\' or parameter not found.";
-		throw new FVRPException("SGS", errorMsg);
+		throw FVRPException("SGS", errorMsg);
 	}
 
 	this->demandThreshold = parameters->getDouble(this->thresholdDemandLabel, -1.0);
 	if (this->demandThreshold < 0 && this->metricDemand != DemandType::FD_EV) {
 		std::string errorMsg = "Parameter \'" + this->thresholdDemandLabel;
 		errorMsg += "\' not found";
-		throw new FVRPException("SGS", errorMsg);
+		throw FVRPException("SGS", errorMsg);
 	}
 }
 
@@ -143,7 +143,7 @@ void NB_Vidal_FVRP_FD::setInitialSolution(FuzzyFW::Solution *solution,
 	if (this->route == NULL) {
 		std::string errorMsg = "Type of solution not valid for this type";
 		errorMsg += " of neighbourhood. Only Fuzzy VRP solutions are allowed.";
-		throw new FVRPException("Neighbourhood", errorMsg);
+		throw FVRPException("Neighbourhood", errorMsg);
 	}
 
 	if (this->currentFitness != NULL)
@@ -153,14 +153,14 @@ void NB_Vidal_FVRP_FD::setInitialSolution(FuzzyFW::Solution *solution,
 	if (this->currentFitness == NULL) {
 		std::string errorMsg = "The fitness of the solution is not the ";
 		errorMsg += "total cost";
-		throw new FVRPException("Neighbourhood", errorMsg);
+		throw FVRPException("Neighbourhood", errorMsg);
 	}
 
 	problem = dynamic_cast<ProblemFVRP *>(svars->problem);
 	if (problem == NULL) {
 		std::string errorMsg = "This negihbourhood can be applied only";
 		errorMsg += " to fuzzy VRP problems";
-		throw new FVRPException("Neighbourhood", errorMsg);
+		throw FVRPException("Neighbourhood", errorMsg);
 	}
 
 	// CREATE THE SEGMENT MATRICES
@@ -315,14 +315,14 @@ FuzzyFW::Fitness * NB_Vidal_FVRP_FD::evaluateNeighbour(const unsigned int idx,
 
 	if (idx < 0 || idx > this->numNeighbours || this->neighbours[idx] == NULL) {
 		std::string errorMsg = "Trying to access a non-existing neighbour";
-		throw new FVRPException("Neighbourhood", errorMsg);
+		throw FVRPException("Neighbourhood", errorMsg);
 	}
 
 	ProblemFVRP *problem = dynamic_cast<ProblemFVRP *>(svars->problem);
 	if (problem == NULL) {
 		std::string errorMsg = "This negihbourhood can be applied only";
 		errorMsg += " to fuzzy VRP problems";
-		throw new FVRPException("Neighbourhood", errorMsg);
+		throw FVRPException("Neighbourhood", errorMsg);
 	}
 
 	NeighbourFVRP_SegSwap *neigh = this->neighbours[idx];
@@ -432,7 +432,7 @@ void NB_Vidal_FVRP_FD::acceptNeighbour(const unsigned int idx,
 	if (problem == NULL) {
 		std::string errorMsg = "This negihbourhood can be applied only";
 		errorMsg += " to fuzzy VRP problems";
-		throw new FVRPException("Neighbourhood", errorMsg);
+		throw FVRPException("Neighbourhood", errorMsg);
 	}
 
 	NeighbourFVRP_SegSwap *neigh = this->neighbours[idx];
@@ -501,14 +501,14 @@ FuzzyFW::Fitness * NB_Vidal_FVRP_FD::getEstimation(const unsigned int idx,
 
 	if (idx < 0 || idx >= this->numNeighbours) {
 		std::string errorMsg = "Trying to acces a non-existing neighbour";
-		throw new FVRPException("Neighbourhood", errorMsg);
+		throw FVRPException("Neighbourhood", errorMsg);
 	}
 
 	ProblemFVRP *problem = dynamic_cast<ProblemFVRP *>(svars->problem);
 	if (problem == NULL) {
 		std::string errorMsg = "This negihbourhood can be applied only";
 		errorMsg += " to fuzzy VRP problems";
-		throw new FVRPException("Neighbourhood", errorMsg);
+		throw FVRPException("Neighbourhood", errorMsg);
 	}
 
 	NeighbourFVRP_SegSwap *neigh = this->neighbours[idx];
@@ -598,7 +598,7 @@ FuzzyFW::Fitness * NB_Vidal_FVRP_FD::getEstimation(const unsigned int idx,
 void NB_Vidal_FVRP_FD::discardNeighbour(const unsigned int idx) {
 	if (idx < 0 || idx >= this->numNeighbours || this->neighbours[idx] == NULL) {
 		std::string errorMsg = "Trying to acces a non-existing neighbour";
-		throw new FVRPException("Neighbourhood", errorMsg);
+		throw FVRPException("Neighbourhood", errorMsg);
 	}
 	delete this->neighbours[idx];
 	this->neighbours[idx] = NULL;
@@ -611,7 +611,7 @@ void NB_Vidal_FVRP_FD::discardNeighbour(const unsigned int idx) {
 FuzzyFW::Neighbour* NB_Vidal_FVRP_FD::getNeighbour(const unsigned int idx) {
 	if (idx < 0 || idx >= this->numNeighbours || this->neighbours[idx] == NULL) {
 		std::string errorMsg = "Trying to acces a non-existing neighbour";
-		throw new FVRPException("Neighbourhood", errorMsg);
+		throw FVRPException("Neighbourhood", errorMsg);
 	}
 	return this->neighbours[idx];
 }

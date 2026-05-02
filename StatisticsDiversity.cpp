@@ -44,7 +44,7 @@ double StatisticsHamming::getValue(const FuzzyFW::SharedVarsEvolutionary * svars
 		if (indiv1 == NULL) {
 			std::string errorMsg = "Hamming distance can be computed only on ";
 			errorMsg += "arrays of integer values";
-			throw new FuzzyFWException("Statistics Hamming", errorMsg);
+			throw FuzzyFWException("Statistics Hamming", errorMsg);
 		}
 
 		for (unsigned int j = i + 1; j < population->size(); j++) {
@@ -52,7 +52,7 @@ double StatisticsHamming::getValue(const FuzzyFW::SharedVarsEvolutionary * svars
 			if (indiv2 == NULL) {
 				std::string errorMsg = "Hamming distance can be computed only on ";
 				errorMsg += "arrays of integer values";
-				throw new FuzzyFWException("Statistics Hamming", errorMsg);
+				throw FuzzyFWException("Statistics Hamming", errorMsg);
 			}
 
 			distance = indiv1->hammingDistance(indiv2);
@@ -120,7 +120,7 @@ double StatisticsKendall::getValue(const FuzzyFW::SharedVarsEvolutionary * svars
 		if (indiv1 == NULL) {
 			std::string errorMsg = "Hamming distance can be computed only on ";
 			errorMsg += "arrays of integer values";
-			throw new FuzzyFWException("Statistics Hamming", errorMsg);
+			throw FuzzyFWException("Statistics Hamming", errorMsg);
 		}
 
 		for (unsigned int j = i + 1; j < population->size(); j++) {
@@ -128,7 +128,7 @@ double StatisticsKendall::getValue(const FuzzyFW::SharedVarsEvolutionary * svars
 			if (indiv2 == NULL) {
 				std::string errorMsg = "Hamming distance can be computed only on ";
 				errorMsg += "arrays of integer values";
-				throw new FuzzyFWException("Statistics Hamming", errorMsg);
+				throw FuzzyFWException("Statistics Hamming", errorMsg);
 			}
 
 			distance = indiv1->kendallTauDistance(indiv2);

@@ -48,7 +48,7 @@ void NB_ParallelN1_MakespanFJSP::setup(FuzzyFW::ParameterDB *parameters) {
 	else {
 		std::string errorMsg = "Estimation method unknown: \'";
 		errorMsg += estimatorValue + "\'";
-		throw new FJSPException("Neighbourhood", errorMsg);
+		throw FJSPException("Neighbourhood", errorMsg);
 	}
 }
 
@@ -78,7 +78,7 @@ void NB_ParallelN1_MakespanFJSP::setInitialSolution(FuzzyFW::Solution *solution,
 	if (this->schedule == NULL) {
 		std::string errorMsg = "Type of solution not valid for this type";
 		errorMsg += " of neighbourhood. Only Fuzzy JSP Schedules are allowed.";
-		throw new FJSPException("Neighbourhood", errorMsg);
+		throw FJSPException("Neighbourhood", errorMsg);
 	}
 
 	if (this->currentFitness != NULL)
@@ -87,14 +87,14 @@ void NB_ParallelN1_MakespanFJSP::setInitialSolution(FuzzyFW::Solution *solution,
 	if (this->currentFitness == NULL) {
 		std::string errorMsg = "The fitness of the solution is not the ";
 		errorMsg += "makespan";
-		throw new FJSPException("Neighbourhood", errorMsg);
+		throw FJSPException("Neighbourhood", errorMsg);
 	}
 
 	ProblemFJSP * problem = dynamic_cast<ProblemFJSP *>(svars->problem);
 	if (problem == NULL) {
 		std::string errorMsg = "This negihbourhood can be applied only";
 		errorMsg += " to FJSP problems";
-		throw new FJSPException("Neighbourhood", errorMsg);
+		throw FJSPException("Neighbourhood", errorMsg);
 	}
 
 	// Compute the tails of the operations
@@ -232,7 +232,7 @@ FuzzyFW::Fitness * NB_ParallelN1_MakespanFJSP::evaluateNeighbour(
 
 	if (idx < 0 || idx > this->numNeighbours || this->neighbours[idx] == NULL) {
 		std::string errorMsg = "Trying to access a non-existing neighbour";
-		throw new FJSPException("Neighbourhood", errorMsg);
+		throw FJSPException("Neighbourhood", errorMsg);
 	}
 
 	NeighbourFJSP_Arc *arc = this->neighbours[idx];
@@ -343,7 +343,7 @@ void NB_ParallelN1_MakespanFJSP::acceptNeighbour(const unsigned int idx,
 
 	if (idx < 0 || idx > this->numNeighbours || this->neighbours[idx] == NULL) {
 		std::string errorMsg = "Trying to access a non-existing neighbour";
-		throw new FJSPException("Neighbourhood", errorMsg);
+		throw FJSPException("Neighbourhood", errorMsg);
 	}
 
 	// Update the current solution
@@ -401,7 +401,7 @@ FuzzyFW::Fitness * NB_ParallelN1_MakespanFJSP::getEstimation(
 
 	if (idx < 0 || idx >= this->numNeighbours) {
 		std::string errorMsg = "Trying to acces a non-existing neighbour";
-		throw new FJSPException("Neighbourhood", errorMsg);
+		throw FJSPException("Neighbourhood", errorMsg);
 	}
 	if (!this->neighbours[idx]->isEstimated()) {
 		if (this->estimator == NB_ParallelN1_MakespanFJSP::ESTIM_HEADTAILS)
@@ -419,7 +419,7 @@ FuzzyFW::Fitness * NB_ParallelN1_MakespanFJSP::getEstimation(
 void NB_ParallelN1_MakespanFJSP::discardNeighbour(const unsigned int idx) {
 	if (idx < 0 || idx >= this->numNeighbours || this->neighbours[idx] == NULL) {
 		std::string errorMsg = "Trying to acces a non-existing neighbour";
-		throw new FJSPException("Neighbourhood", errorMsg);
+		throw FJSPException("Neighbourhood", errorMsg);
 	}
 	delete this->neighbours[idx];
 	this->neighbours[idx] = NULL;
@@ -433,7 +433,7 @@ void NB_ParallelN1_MakespanFJSP::discardNeighbour(const unsigned int idx) {
 void NB_ParallelN1_MakespanFJSP::estimateHeadsTails(const unsigned int idx) {
 	if (idx < 0 || idx >= this->numNeighbours) {
 		std::string errorMsg = "Trying to acces a non-existing neighbour";
-		throw new FJSPException("Neighbourhood", errorMsg);
+		throw FJSPException("Neighbourhood", errorMsg);
 	}
 
 	FuzzyFW::TFN tailX, tailY, headX, headY;
@@ -549,7 +549,7 @@ void NB_ParallelN1_MakespanFJSP::quickSort(const int left, const int right,
 FuzzyFW::Neighbour* NB_ParallelN1_MakespanFJSP::getNeighbour(const unsigned int idx) {
 	if (idx < 0 || idx >= this->numNeighbours || this->neighbours[idx] == NULL) {
 		std::string errorMsg = "Trying to acces a non-existing neighbour";
-		throw new FJSPException("Neighbourhood", errorMsg);
+		throw FJSPException("Neighbourhood", errorMsg);
 	}
 	return this->neighbours[idx];
 }

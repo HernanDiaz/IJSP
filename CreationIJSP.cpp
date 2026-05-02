@@ -28,13 +28,13 @@ void CreationRandomSchedule::setup(FuzzyFW::ParameterDB *parameters) {
 	if (sgsType.length() == 0) {
 		std::string errorMsg = "SGS not found. Please, specify a SGS to use";
 		errorMsg += " during the evaluation of individuals";
-		throw new IJSPException("Evaluation", errorMsg);
+		throw IJSPException("Evaluation", errorMsg);
 	}
 	this->sgs = IJSPClassRegister::getSGSObject(sgsType);
 	if (this->sgs == NULL) {
 		std::string errorMsg = "The introduced SGS is not";
 		errorMsg += " recognised: \'" + sgsType + "\'";
-		throw new IJSPException("Evaluation", errorMsg);
+		throw IJSPException("Evaluation", errorMsg);
 	}
 	this->sgs->setup(parameters);
 }
@@ -58,7 +58,7 @@ FuzzyFW::Individual * CreationRandomSchedule::createIndividual(
 	if (fuzzyProb == NULL) {
 		std::string errorMsg = "This enconding function works only with ";
 		errorMsg += "interval problems.";
-		throw new IJSPException("Creation", errorMsg);
+		throw IJSPException("Creation", errorMsg);
 	}
 
 	// Find the first task of each job
@@ -107,13 +107,13 @@ void CreationSRTIntervalMkSchedule::setup(FuzzyFW::ParameterDB *parameters) {
 	if (sgsType.length() == 0) {
 		std::string errorMsg = "SGS not found. Please, specify a SGS to use";
 		errorMsg += " during the evaluation of individuals";
-		throw new IJSPException("Evaluation", errorMsg);
+		throw IJSPException("Evaluation", errorMsg);
 	}
 	this->sgs = IJSPClassRegister::getSGSObject(sgsType);
 	if (this->sgs == NULL) {
 		std::string errorMsg = "The introduced SGS is not";
 		errorMsg += " recognised: \'" + sgsType + "\'";
-		throw new IJSPException("Evaluation", errorMsg);
+		throw IJSPException("Evaluation", errorMsg);
 	}
 	this->sgs->setup(parameters);
 	this->randomSchedule.setup(parameters);
@@ -152,7 +152,7 @@ FuzzyFW::Individual * CreationSRTIntervalMkSchedule::createIndividual(
 	if (fuzzyProb == NULL) {
 		std::string errorMsg = "This enconding function works only with ";
 		errorMsg += "interval problems.";
-		throw new IJSPException("Creation", errorMsg);
+		throw IJSPException("Creation", errorMsg);
 	}
 		
 	// Find the first task of each job and count remaining time for each job
@@ -241,13 +241,13 @@ void CreationLRTFIntervalMkSchedule::setup(FuzzyFW::ParameterDB *parameters) {
 	if (sgsType.length() == 0) {
 		std::string errorMsg = "SGS not found. Please, specify a SGS to use";
 		errorMsg += " during the evaluation of individuals";
-		throw new IJSPException("Evaluation", errorMsg);
+		throw IJSPException("Evaluation", errorMsg);
 	}
 	this->sgs = IJSPClassRegister::getSGSObject(sgsType);
 	if (this->sgs == NULL) {
 		std::string errorMsg = "The introduced SGS is not";
 		errorMsg += " recognised: \'" + sgsType + "\'";
-		throw new IJSPException("Evaluation", errorMsg);
+		throw IJSPException("Evaluation", errorMsg);
 	}
 	this->sgs->setup(parameters);
 	this->randomSchedule.setup(parameters);
@@ -281,7 +281,7 @@ FuzzyFW::Individual * CreationLRTFIntervalMkSchedule::createIndividual(
 	if (fuzzyProb == NULL) {
 		std::string errorMsg = "This enconding function works only with ";
 		errorMsg += "interval problems.";
-		throw new IJSPException("Creation", errorMsg);
+		throw IJSPException("Creation", errorMsg);
 	}
 
 	// Find the first task of each job and count remaining time for each job
@@ -431,13 +431,13 @@ void CreationLRTFInverseIntervalMkSchedule::setup(FuzzyFW::ParameterDB *paramete
 	if (sgsType.length() == 0) {
 		std::string errorMsg = "SGS not found. Please, specify a SGS to use";
 		errorMsg += " during the evaluation of individuals";
-		throw new IJSPException("Evaluation", errorMsg);
+		throw IJSPException("Evaluation", errorMsg);
 	}
 	this->sgs = IJSPClassRegister::getSGSObject(sgsType);
 	if (this->sgs == NULL) {
 		std::string errorMsg = "The introduced SGS is not";
 		errorMsg += " recognised: \'" + sgsType + "\'";
-		throw new IJSPException("Evaluation", errorMsg);
+		throw IJSPException("Evaluation", errorMsg);
 	}
 	this->sgs->setup(parameters);
 	this->randomSchedule.setup(parameters);
@@ -468,7 +468,7 @@ FuzzyFW::Individual * CreationLRTFInverseIntervalMkSchedule::createIndividual(
 	if (fuzzyProb == NULL) {
 		std::string errorMsg = "This enconding function works only with ";
 		errorMsg += "interval problems.";
-		throw new IJSPException("Creation", errorMsg);
+		throw IJSPException("Creation", errorMsg);
 	}
 
 	// Find the first task of each job and count remaining time for each job
@@ -558,13 +558,13 @@ void CreationSNTFIntervalMkSchedule::setup(FuzzyFW::ParameterDB *parameters) {
 	if (sgsType.length() == 0) {
 		std::string errorMsg = "SGS not found. Please, specify a SGS to use";
 		errorMsg += " during the evaluation of individuals";
-		throw new IJSPException("Evaluation", errorMsg);
+		throw IJSPException("Evaluation", errorMsg);
 	}
 	this->sgs = IJSPClassRegister::getSGSObject(sgsType);
 	if (this->sgs == NULL) {
 		std::string errorMsg = "The introduced SGS is not";
 		errorMsg += " recognised: \'" + sgsType + "\'";
-		throw new IJSPException("Evaluation", errorMsg);
+		throw IJSPException("Evaluation", errorMsg);
 	}
 	this->sgs->setup(parameters);
 	this->randomSchedule.setup(parameters);
@@ -595,7 +595,7 @@ FuzzyFW::Individual * CreationSNTFIntervalMkSchedule::createIndividual(
 	if (fuzzyProb == NULL) {
 		std::string errorMsg = "This enconding function works only with ";
 		errorMsg += "interval problems.";
-		throw new IJSPException("Creation", errorMsg);
+		throw IJSPException("Creation", errorMsg);
 	}
 
 	// Find the first task of each job and count remaining time for each job
@@ -716,13 +716,13 @@ void CreationSCTFIntervalMkSchedule::setup(FuzzyFW::ParameterDB *parameters) {
 	if (sgsType.length() == 0) {
 		std::string errorMsg = "SGS not found. Please, specify a SGS to use";
 		errorMsg += " during the evaluation of individuals";
-		throw new IJSPException("Evaluation", errorMsg);
+		throw IJSPException("Evaluation", errorMsg);
 	}
 	this->sgs = IJSPClassRegister::getSGSObject(sgsType);
 	if (this->sgs == NULL) {
 		std::string errorMsg = "The introduced SGS is not";
 		errorMsg += " recognised: \'" + sgsType + "\'";
-		throw new IJSPException("Evaluation", errorMsg);
+		throw IJSPException("Evaluation", errorMsg);
 	}
 	this->sgs->setup(parameters);
 	this->randomSchedule.setup(parameters);
@@ -753,7 +753,7 @@ FuzzyFW::Individual * CreationSCTFIntervalMkSchedule::createIndividual(
 	if (fuzzyProb == NULL) {
 		std::string errorMsg = "This enconding function works only with ";
 		errorMsg += "interval problems.";
-		throw new IJSPException("Creation", errorMsg);
+		throw IJSPException("Creation", errorMsg);
 	}
 	std::vector<FuzzyFW::Interval> mMkspan(fuzzyProb->getNumberMachines());
 	std::vector<FuzzyFW::Interval> jMkspan(fuzzyProb->getNumberJobs());
@@ -857,13 +857,13 @@ void CreationLCTFIntervalMkSchedule::setup(FuzzyFW::ParameterDB *parameters) {
 	if (sgsType.length() == 0) {
 		std::string errorMsg = "SGS not found. Please, specify a SGS to use";
 		errorMsg += " during the evaluation of individuals";
-		throw new IJSPException("Evaluation", errorMsg);
+		throw IJSPException("Evaluation", errorMsg);
 	}
 	this->sgs = IJSPClassRegister::getSGSObject(sgsType);
 	if (this->sgs == NULL) {
 		std::string errorMsg = "The introduced SGS is not";
 		errorMsg += " recognised: \'" + sgsType + "\'";
-		throw new IJSPException("Evaluation", errorMsg);
+		throw IJSPException("Evaluation", errorMsg);
 	}
 	this->sgs->setup(parameters);
 	this->randomSchedule.setup(parameters);
@@ -894,7 +894,7 @@ FuzzyFW::Individual * CreationLCTFIntervalMkSchedule::createIndividual(
 	if (fuzzyProb == NULL) {
 		std::string errorMsg = "This enconding function works only with ";
 		errorMsg += "interval problems.";
-		throw new IJSPException("Creation", errorMsg);
+		throw IJSPException("Creation", errorMsg);
 	}
 	std::vector<FuzzyFW::Interval> mMkspan(fuzzyProb->getNumberMachines());
 	std::vector<FuzzyFW::Interval> jMkspan(fuzzyProb->getNumberJobs());
@@ -996,13 +996,13 @@ void CreationSPJFIntervalMkSchedule::setup(FuzzyFW::ParameterDB *parameters) {
 	if (sgsType.length() == 0) {
 		std::string errorMsg = "SGS not found. Please, specify a SGS to use";
 		errorMsg += " during the evaluation of individuals";
-		throw new IJSPException("Evaluation", errorMsg);
+		throw IJSPException("Evaluation", errorMsg);
 	}
 	this->sgs = IJSPClassRegister::getSGSObject(sgsType);
 	if (this->sgs == NULL) {
 		std::string errorMsg = "The introduced SGS is not";
 		errorMsg += " recognised: \'" + sgsType + "\'";
-		throw new IJSPException("Evaluation", errorMsg);
+		throw IJSPException("Evaluation", errorMsg);
 	}
 	this->sgs->setup(parameters);
 	this->randomSchedule.setup(parameters);
@@ -1034,7 +1034,7 @@ FuzzyFW::Individual * CreationSPJFIntervalMkSchedule::createIndividual(
 	if (fuzzyProb == NULL) {
 		std::string errorMsg = "This enconding function works only with ";
 		errorMsg += "interval problems.";
-		throw new IJSPException("Creation", errorMsg);
+		throw IJSPException("Creation", errorMsg);
 	}
 	std::vector<FuzzyFW::Interval> mMkspan(fuzzyProb->getNumberMachines());
 	std::vector<FuzzyFW::Interval> jMkspan(fuzzyProb->getNumberJobs());
@@ -1151,13 +1151,13 @@ void CreationSPJFInverseIntervalMkSchedule::setup(FuzzyFW::ParameterDB *paramete
 	if (sgsType.length() == 0) {
 		std::string errorMsg = "SGS not found. Please, specify a SGS to use";
 		errorMsg += " during the evaluation of individuals";
-		throw new IJSPException("Evaluation", errorMsg);
+		throw IJSPException("Evaluation", errorMsg);
 	}
 	this->sgs = IJSPClassRegister::getSGSObject(sgsType);
 	if (this->sgs == NULL) {
 		std::string errorMsg = "The introduced SGS is not";
 		errorMsg += " recognised: \'" + sgsType + "\'";
-		throw new IJSPException("Evaluation", errorMsg);
+		throw IJSPException("Evaluation", errorMsg);
 	}
 	this->sgs->setup(parameters);
 	this->randomSchedule.setup(parameters);
@@ -1189,7 +1189,7 @@ FuzzyFW::Individual * CreationSPJFInverseIntervalMkSchedule::createIndividual(
 	if (fuzzyProb == NULL) {
 		std::string errorMsg = "This enconding function works only with ";
 		errorMsg += "interval problems.";
-		throw new IJSPException("Creation", errorMsg);
+		throw IJSPException("Creation", errorMsg);
 	}
 	std::vector<FuzzyFW::Interval> mMkspan(fuzzyProb->getNumberMachines());
 	std::vector<FuzzyFW::Interval> jMkspan(fuzzyProb->getNumberJobs());
@@ -1279,13 +1279,13 @@ void CreationManagerIntervalMkSchedule::setup(FuzzyFW::ParameterDB *parameters) 
 	if (sgsType.length() == 0) {
 		std::string errorMsg = "SGS not found. Please, specify a SGS to use";
 		errorMsg += " during the evaluation of individuals";
-		throw new IJSPException("Evaluation", errorMsg);
+		throw IJSPException("Evaluation", errorMsg);
 	}
 	this->sgs = IJSPClassRegister::getSGSObject(sgsType);
 	if (this->sgs == NULL) {
 		std::string errorMsg = "The introduced SGS is not";
 		errorMsg += " recognised: \'" + sgsType + "\'";
-		throw new IJSPException("Evaluation", errorMsg);
+		throw IJSPException("Evaluation", errorMsg);
 	}
 	this->sgs->setup(parameters);
 	this->randomSchedule.setup(parameters);

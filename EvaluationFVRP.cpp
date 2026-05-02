@@ -44,14 +44,14 @@ void EvaluationFVRP_TimeCost::setup(FuzzyFW::ParameterDB *parameters) {
 	compareName = parameters->getString(this->compareLabel);
 	if (compareName.length() == 0) {
 		std::string errorMsg = this->compareLabel + " parameter not found.";
-		throw new FVRPException("Evaluation", errorMsg);
+		throw FVRPException("Evaluation", errorMsg);
 	}
 	this->tfnCompare = FuzzyFW::TFN::getComparison(compareName);
 	if (this->tfnCompare == FuzzyFW::TFN::C_Err) {
 		std::string errorMsg = "Invalid value for parameter ";
 		errorMsg += "\'" + this->compareLabel + "\': \'";
 		errorMsg += compareName + "\'";
-		throw new FVRPException("Evaluation", errorMsg);
+		throw FVRPException("Evaluation", errorMsg);
 	}
 	FuzzyFW::FitnessTFN::FitnessCompareStrategy = this->tfnCompare;
 }
@@ -81,7 +81,7 @@ FuzzyFW::Objective * EvaluationFVRP_TimeCost::getObjectiveFunction(
 	if (route == NULL) {
 		std::string errorMsg = "This evaluation function is valid only ";
 		errorMsg += "for Fuzzy VRP Problems.";
-		throw new FVRPException("Evaluation", errorMsg);
+		throw FVRPException("Evaluation", errorMsg);
 	}
 
 	fuzzyProb =
@@ -89,7 +89,7 @@ FuzzyFW::Objective * EvaluationFVRP_TimeCost::getObjectiveFunction(
 	if (fuzzyProb == NULL) {
 		std::string errorMsg = "This evaluation function works only with ";
 		errorMsg += "fuzzy problems.";
-		throw new FVRPException("Ealuation", errorMsg);
+		throw FVRPException("Ealuation", errorMsg);
 	}
 
 	// Compute the travel cost
@@ -120,7 +120,7 @@ FuzzyFW::Fitness * EvaluationFVRP_TimeCost::evaluate(
 	if (route == NULL) {
 		std::string errorMsg = "This evaluation function is valid only ";
 		errorMsg += "for Fuzzy VRP Problems.";
-		throw new FVRPException("Evaluation", errorMsg);
+		throw FVRPException("Evaluation", errorMsg);
 	}
 
 	fuzzyProb =
@@ -128,7 +128,7 @@ FuzzyFW::Fitness * EvaluationFVRP_TimeCost::evaluate(
 	if (fuzzyProb == NULL) {
 		std::string errorMsg = "This evaluation function works only with ";
 		errorMsg += "fuzzy problems.";
-		throw new FVRPException("Ealuation", errorMsg);
+		throw FVRPException("Ealuation", errorMsg);
 	}
 
 	// Compute the travel cost
@@ -162,7 +162,7 @@ void EvaluationFVRP_CTW_TimeCost::setup(FuzzyFW::ParameterDB *parameters) {
 	penalty = parameters->getDouble(this->penaltyLabel, -1.0);
 	if (penalty < 0) {
 		std::string errorMsg = this->penaltyLabel + " parameter not found.";
-		throw new FVRPException("Evaluation", errorMsg);
+		throw FVRPException("Evaluation", errorMsg);
 	}
 }
 
@@ -194,7 +194,7 @@ FuzzyFW::Fitness * EvaluationFVRP_CTW_TimeCost::evaluate(
 	if (route == NULL) {
 		std::string errorMsg = "This evaluation function is valid only ";
 		errorMsg += "for Fuzzy VRP Problems.";
-		throw new FVRPException("Evaluation", errorMsg);
+		throw FVRPException("Evaluation", errorMsg);
 	}
 
 	fuzzyProb =
@@ -202,7 +202,7 @@ FuzzyFW::Fitness * EvaluationFVRP_CTW_TimeCost::evaluate(
 	if (fuzzyProb == NULL) {
 		std::string errorMsg = "This evaluation function works only with ";
 		errorMsg += "fuzzy problems.";
-		throw new FVRPException("Ealuation", errorMsg);
+		throw FVRPException("Ealuation", errorMsg);
 	}
 
 	// Compute the travel cost

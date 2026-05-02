@@ -89,7 +89,7 @@ namespace IJSP {
 			std::string errorMsg = "Invalid value for parameter";
 			errorMsg += "\'" + std::string(PROBLEM_LOWERBOUNDS) + "\': \'";
 			errorMsg += paramValue + "\'";
-			throw new IJSPException("Loading problem", errorMsg);
+			throw IJSPException("Loading problem", errorMsg);
 		}
 
 		// Load due-date type
@@ -146,7 +146,7 @@ namespace IJSP {
 			return (int)(this->taskSequence[job].size());
 		std::string errorMsg = "Trying to access unexisting job: ";
 		errorMsg += valueToString(job);
-		throw new IJSPException("Problem", errorMsg);
+		throw IJSPException("Problem", errorMsg);
 	}
 
 
@@ -181,7 +181,7 @@ namespace IJSP {
 		else {
 			std::string errorMsg = "Trying to access unexisting job: ";
 			errorMsg += valueToString(job);
-			throw new IJSPException("Problem", errorMsg);
+			throw IJSPException("Problem", errorMsg);
 		}
 	}
 
@@ -192,12 +192,12 @@ namespace IJSP {
 		if (job >= this->nJobs || job < 0) {
 			std::string errorMsg = "Trying to access unexisting job: ";
 			errorMsg += valueToString(job);
-			throw new IJSPException("Problem", errorMsg);
+			throw IJSPException("Problem", errorMsg);
 		}
 		if (position < 0) {
 			std::string errorMsg = "Trying to access unexisting task";
 			errorMsg += " of a job: " + valueToString(position);
-			throw new IJSPException("Problem", errorMsg);
+			throw IJSPException("Problem", errorMsg);
 		}
 
 		if (position >= (int)this->taskSequence[job].size())
@@ -212,7 +212,7 @@ namespace IJSP {
 		if (taskId < 0 || taskId >= (int)this->task.size()) {
 			std::string errorMsg = "Trying to access unexisting task: ";
 			errorMsg += valueToString(taskId);
-			throw new IJSPException("Problem", errorMsg);
+			throw IJSPException("Problem", errorMsg);
 		}
 		return this->task[taskId];
 	}
@@ -236,7 +236,7 @@ namespace IJSP {
 			std::string errorMsg;
 			errorMsg = "The problem file cannot be read before the reading";
 			errorMsg += " parameters are loaded.";
-			throw new IJSPException("Problem", errorMsg);
+			throw IJSPException("Problem", errorMsg);
 		}
 
 		if (inputFile != NULL)
@@ -248,7 +248,7 @@ namespace IJSP {
 			std::string errorMsg;
 			errorMsg = "The problem file \'" + std::string(this->problemPath);
 			errorMsg += +"\' has not been found.";
-			throw new IJSPException("Problem", errorMsg);
+			throw IJSPException("Problem", errorMsg);
 		}
 
 		// Reset the data structures
@@ -333,7 +333,7 @@ namespace IJSP {
 		if (!this->isSetup) {
 			std::string errorMsg;
 			errorMsg = "The problem file cannot be written before the reading";
-		   throw new IJSPException("Problem", errorMsg);
+		   throw IJSPException("Problem", errorMsg);
 		}
 
 		// Open the problem file
@@ -343,7 +343,7 @@ namespace IJSP {
 			std::string errorMsg;
 			errorMsg = "The problem file \'" + std::string(outputFile);
 			errorMsg += +"\' has not been found.";
-			throw new IJSPException("Problem", errorMsg);
+			throw IJSPException("Problem", errorMsg);
 		}
 
 	   // Write the number of jobs and machines
@@ -394,7 +394,7 @@ namespace IJSP {
 			if (tw == NULL) {
 				std::string errorMsg = "The introduced due-date type is not";
 				errorMsg += " valid: \'" + this->duedateType + "\'";
-				throw new IJSPException("Loading problem", errorMsg);
+				throw IJSPException("Loading problem", errorMsg);
 			}
 
 			getline(input, reader); // Heading

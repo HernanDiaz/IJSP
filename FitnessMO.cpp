@@ -46,7 +46,7 @@ void FitnessLexicographic::addFitness(Fitness *fitness) {
 void FitnessLexicographic::setFitness(const unsigned int idx, Fitness *fitness) {
 	if (idx < 0 || idx > this->fitnessValues.size()) {
 		std::string errorMsg = "Accessing invalid fitness value";
-		throw new FuzzyFWException("FitnessMO", errorMsg);
+		throw FuzzyFWException("FitnessMO", errorMsg);
 	}
 	delete this->fitnessValues[idx];
 	this->fitnessValues[idx] = fitness;
@@ -56,7 +56,7 @@ void FitnessLexicographic::setFitness(const unsigned int idx, Fitness *fitness) 
 Fitness * FitnessLexicographic::getFitness(const unsigned int idx) const {
 	if (idx < 0 || idx > this->fitnessValues.size()) {
 		std::string errorMsg = "Accessing invalid fitness value";
-		throw new FuzzyFWException("FitnessMO", errorMsg);
+		throw FuzzyFWException("FitnessMO", errorMsg);
 	}
 	return this->fitnessValues[idx];
 }
@@ -71,11 +71,11 @@ bool FitnessLexicographic::isBetterOrEqualTo(const Fitness * f) const {
 	const FitnessLexicographic *fl =
 		dynamic_cast<const FitnessLexicographic *>(f);
 	if(fl == NULL)
-		throw new FuzzyFWException("FitnessMO",
+		throw FuzzyFWException("FitnessMO",
 			"Comparison of incompatible fitness values");
 
 	if(this->getNumberFunctions() != fl->getNumberFunctions())
-		throw new FuzzyFWException("FitnessMO",
+		throw FuzzyFWException("FitnessMO",
 			"The number of objective functions does not match");
 
 	for (size_t i = 0; i < this->fitnessValues.size(); i++) {
@@ -93,11 +93,11 @@ bool FitnessLexicographic::isBetterThan(const Fitness * f) const {
 	const FitnessLexicographic *fl =
 		dynamic_cast<const FitnessLexicographic *>(f);
 	if (fl == NULL)
-		throw new FuzzyFWException("FitnessMO",
+		throw FuzzyFWException("FitnessMO",
 			"Comparison of incompatible fitness values");
 
 	if (this->getNumberFunctions() != fl->getNumberFunctions())
-		throw new FuzzyFWException("FitnessMO",
+		throw FuzzyFWException("FitnessMO",
 			"The number of objective functions does not match");
 
 	for (size_t i = 0; i < this->fitnessValues.size(); i++) {
@@ -115,11 +115,11 @@ bool FitnessLexicographic::isEqualTo(const Fitness * f) const {
 	const FitnessLexicographic *fl =
 		dynamic_cast<const FitnessLexicographic *>(f);
 	if (fl == NULL)
-		throw new FuzzyFWException("FitnessMO",
+		throw FuzzyFWException("FitnessMO",
 			"Comparison of incompatible fitness values");
 
 	if (this->getNumberFunctions() != fl->getNumberFunctions())
-		throw new FuzzyFWException("FitnessMO",
+		throw FuzzyFWException("FitnessMO",
 			"The number of objective functions does not match");
 
 	for (size_t i = 0; i < this->fitnessValues.size(); i++) {
@@ -135,11 +135,11 @@ bool FitnessLexicographic::isWorseThan(const Fitness * f) const {
 	const FitnessLexicographic *fl =
 		dynamic_cast<const FitnessLexicographic *>(f);
 	if (fl == NULL)
-		throw new FuzzyFWException("FitnessMO",
+		throw FuzzyFWException("FitnessMO",
 			"Comparison of incompatible fitness values");
 
 	if (this->getNumberFunctions() != fl->getNumberFunctions())
-		throw new FuzzyFWException("FitnessMO",
+		throw FuzzyFWException("FitnessMO",
 			"The number of objective functions does not match");
 
 	for (size_t i = 0; i < this->fitnessValues.size(); i++) {
@@ -157,11 +157,11 @@ bool FitnessLexicographic::isWorseOrEqualTo(const Fitness * f) const {
 	const FitnessLexicographic *fl =
 		dynamic_cast<const FitnessLexicographic *>(f);
 	if (fl == NULL)
-		throw new FuzzyFWException("FitnessMO",
+		throw FuzzyFWException("FitnessMO",
 			"Comparison of incompatible fitness values");
 
 	if (this->getNumberFunctions() != fl->getNumberFunctions())
-		throw new FuzzyFWException("FitnessMO",
+		throw FuzzyFWException("FitnessMO",
 			"The number of objective functions does not match");
 
 	for (size_t i = 0; i < this->fitnessValues.size(); i++) {

@@ -69,7 +69,7 @@ Fitness * Individual::getFitness() const {
 		return this->fitness;
 	std::string errorMsg = "Acceso al fitness de un individuo que no ha ";
 	errorMsg += "evaluado.";
-	throw new FuzzyFWException("Fitness", errorMsg);
+	throw FuzzyFWException("Fitness", errorMsg);
 }
 
 
@@ -129,7 +129,7 @@ void IndividualArrayInt::updateGenotype(std::vector<int> & genes) {
 //-----  Set Gene  ------------------------------------------------------------
 void IndividualArrayInt::setGene(const unsigned int index, int value) {
 	if (index < 0 || index > this->size())
-		throw new FuzzyFWException("Individual", "Access to a non-existing gene");
+		throw FuzzyFWException("Individual", "Access to a non-existing gene");
 	this->genotype[index] = value;
 	this->evaluated = false;
 	this->phenotypeUpdated = false;
@@ -139,7 +139,7 @@ void IndividualArrayInt::setGene(const unsigned int index, int value) {
 //-----  Get Gene  ------------------------------------------------------------
 int IndividualArrayInt::getGene(const unsigned int index) const {
 	if (index < 0 || index > this->size())
-		throw new FuzzyFWException("Individual", "Access to a non-existing gene");
+		throw FuzzyFWException("Individual", "Access to a non-existing gene");
 	return this->genotype[index];
 }
 
@@ -171,7 +171,7 @@ double IndividualArrayInt::euclideanDistance(const Individual *ind) const {
 	if (ind->getType() != Individual::ARRAY_INTEGER) {
 		std::string errorMsg = "Cannot measure the distance between ";
 		errorMsg += "individuals of different types";
-		throw new FuzzyFWException("Individual", errorMsg);
+		throw FuzzyFWException("Individual", errorMsg);
 	}
 
 	const IndividualArrayInt * ind2 =
@@ -180,7 +180,7 @@ double IndividualArrayInt::euclideanDistance(const Individual *ind) const {
 	if (this->genotype.size() != ind2->size()) {
 		std::string errorMsg = "Cannot measure the distance between ";
 		errorMsg += "individuals of different size";
-		throw new FuzzyFWException("Individual", errorMsg);
+		throw FuzzyFWException("Individual", errorMsg);
 	}
 
 	for (size_t i = 0; i < this->genotype.size(); i++) {
@@ -197,7 +197,7 @@ double IndividualArrayInt::hammingDistance(const Individual *ind) const {
 	if (ind->getType() != Individual::ARRAY_INTEGER) {
 		std::string errorMsg = "Cannot measure the distance between ";
 		errorMsg += "individuals of different types";
-		throw new FuzzyFWException("Individual", errorMsg);
+		throw FuzzyFWException("Individual", errorMsg);
 	}
 
 	const IndividualArrayInt * ind2 =
@@ -220,7 +220,7 @@ double IndividualArrayInt::kendallTauDistance(const Individual *ind) const {
 	if (ind->getType() != Individual::ARRAY_INTEGER) {
 		std::string errorMsg = "Cannot measure the distance between ";
 		errorMsg += "individuals of different types";
-		throw new FuzzyFWException("Individual", errorMsg);
+		throw FuzzyFWException("Individual", errorMsg);
 	}
 
 	unsigned int count = 0, length, N;

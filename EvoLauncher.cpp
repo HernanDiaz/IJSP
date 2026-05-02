@@ -84,7 +84,7 @@ std::string EvoLauncher::optimise(Problem *problem) {
 				std::string err = "It was impossible to generate the output ";
 				err += "files. They may be opened or the logFolder does ";
 				err += "not exist";
-				throw new FuzzyFWException("Environment", err);
+				throw FuzzyFWException("Environment", err);
 			}
 			outputFile << "Run;Solution;Objective Value" << std::endl;
 
@@ -138,7 +138,7 @@ std::string EvoLauncher::optimise(Problem *problem) {
 				std::string err = "It was impossible to generate the output ";
 				err += "files. They may be opened or the logFolder does ";
 				err += "not exist";
-				throw new FuzzyFWException("Environment", err);
+				throw FuzzyFWException("Environment", err);
 			}
 
 			algorithm->printSetupTree(outputFile);
@@ -172,7 +172,7 @@ void EvoLauncher::setLogFolder(const char *path) {
 	this->logFolder = std::string(path);
 	if (this->logFolder.length() == 0) {
 		std::string err = "The path to the log folder has not been found";
-		throw new FuzzyFWException("Loading", err);
+		throw FuzzyFWException("Loading", err);
 	}
 	makeDir(path);
 }
@@ -186,7 +186,7 @@ void EvoLauncher::loadConfiguration(const char* paramsFile) {
 	// Read the seed
 	this->seed = this->setup->getInteger(EVO_SEED, time(NULL));
 	if (this->seed < 0) {
-		throw new FuzzyFWException("Loading", "The seed must be a positive value");
+		throw FuzzyFWException("Loading", "The seed must be a positive value");
 	}
 
 	// Read the number of runs for the algorithm
@@ -194,14 +194,14 @@ void EvoLauncher::loadConfiguration(const char* paramsFile) {
 	if (this->numRuns <= 0) {
 		std::string err = "The number of runs is not valid. It must be a ";
 		err += "positive value";
-		throw new FuzzyFWException("Loading", err);
+		throw FuzzyFWException("Loading", err);
 	}
 
 	// Read the name of the algorithm to use
 	std::string algorithmName = this->setup->getString(EVO_ALGORITHM);
 	if (algorithmName.length() == 0) {
 		std::string err = "The name of the algorithm to use has not been found";
-		throw new FuzzyFWException("Loading", err);
+		throw FuzzyFWException("Loading", err);
 	}
 
 	this->setupAlgorithm(algorithmName);

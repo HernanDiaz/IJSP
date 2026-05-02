@@ -21,13 +21,13 @@ ScheduleFJSP * SGS_FJSP_Insertion::buildSchedule(
 	const FuzzyFW::SharedVars * svars, std::vector<int> &order) {
 
 	if (svars->problem == NULL)
-		throw new FJSPException("SGS", "Problem instance not created");
+		throw FJSPException("SGS", "Problem instance not created");
 
 	ProblemFJSP * fjspProb =
 		dynamic_cast<ProblemFJSP *>(svars->problem);
 	if (fjspProb == NULL) {
 		std::string errorMsg = "This SGS can be only used on Fuzzy Problems.";
-		throw new FJSPException("SGS", errorMsg);
+		throw FJSPException("SGS", errorMsg);
 	}
 
 	if (this->isCreated)
@@ -66,7 +66,7 @@ FuzzyFW::TFN SGS_FJSP_Insertion::scheduleTask(const TaskFJSP *task,
 		errorMsg = "Job precedence constraint is being violated. Scheduling ";
 		errorMsg += "task " + valueToString(taskIdx) + " after task ";
 		errorMsg += valueToString(this->schedule->lastTaskJob[job]);
-		throw new FJSPException("SGS", errorMsg);
+		throw FJSPException("SGS", errorMsg);
 	}
 
 	// If I could schedule the task just after its job predecessor, who

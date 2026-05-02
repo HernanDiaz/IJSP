@@ -60,7 +60,7 @@ FuzzyFW::TFN ScheduleFJSP::getCTMachine(const unsigned int machine) const {
 	if (machine < 0 || machine >= this->problem->getNumberMachines()) {
 		std::string errorMsg = "Trying to access unexisting machine: ";
 		errorMsg += valueToString(machine);
-		throw new FJSPException("Schedule", errorMsg);
+		throw FJSPException("Schedule", errorMsg);
 	}
 
 	int lastTask = this->lastTaskMachine[machine];
@@ -75,7 +75,7 @@ FuzzyFW::TFN ScheduleFJSP::getCTJob(const unsigned int job) const {
 	if (job < 0 || job >= this->problem->getNumberJobs()) {
 		std::string errorMsg = "Trying to access unexisting job: ";
 		errorMsg += valueToString(job);
-		throw new FJSPException("Schedule", errorMsg);
+		throw FJSPException("Schedule", errorMsg);
 	}
 
 	int lastTask = this->lastTaskJob[job];
@@ -110,7 +110,7 @@ const TaskFJSP * ScheduleFJSP::operator[](const unsigned int index) const {
 	if (index < 0) {
 		std::string errorMsg = "Trying to access unexisting task: ";
 		errorMsg += valueToString(index);
-		throw new FJSPException("Schedule", errorMsg);
+		throw FJSPException("Schedule", errorMsg);
 	}
 	if (index >= this->nScheduledTasks)
 		return NULL;

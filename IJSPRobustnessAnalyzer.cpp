@@ -45,7 +45,7 @@ namespace PostExecution {
 			dynamic_cast<IJSP::ProblemIJSP *>(problem);
 		if (problemIJSP == NULL) {
 			std::string errorMsg = "The Robustness analyzer can be only used on Interval Problems.";
-			throw new IJSP::IJSPException("PostExecutionAnalyzer", errorMsg);
+			throw IJSP::IJSPException("PostExecutionAnalyzer", errorMsg);
 		}
 
 		this->scenarioManager.init(problemIJSP, outputPrefix, ROBUSTNESS_NUM_ITERATIONS);
@@ -58,7 +58,7 @@ namespace PostExecution {
 			dynamic_cast<IJSP::ScheduleIJSP *>(solution);
 		if (schedule == NULL) {
 			std::string errorMsg = "The Robustness analyzer can be only used on Interval Problems.";
-			throw new PostExecutionException("PostExecutionAnalyzer", errorMsg);
+			throw PostExecutionException("PostExecutionAnalyzer", errorMsg);
 		}
 		return schedule;
 	}
@@ -68,7 +68,7 @@ namespace PostExecution {
 			dynamic_cast<IJSP::ProblemIJSP *>(problem);
 		if (problemIJSP == NULL) {
 			std::string errorMsg = "The Robustness analyzer can be only used on Interval Problems.";
-			throw new PostExecutionException("PostExecutionAnalyzer", errorMsg);
+			throw PostExecutionException("PostExecutionAnalyzer", errorMsg);
 		}
 		return problemIJSP;
 	}
@@ -78,7 +78,7 @@ namespace PostExecution {
 			dynamic_cast<FuzzyFW::FitnessInterval *>(objective);
 		if (fitness == NULL) {
 			std::string errorMsg = "The Robustness analyzer can only use a IJSP tardiness evaluator to analyze IJSP tardiness.";
-			throw new PostExecutionException("PostExecutionAnalyzer", errorMsg);
+			throw PostExecutionException("PostExecutionAnalyzer", errorMsg);
 		}
 		return fitness;
 	}

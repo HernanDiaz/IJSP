@@ -396,7 +396,7 @@ bool GeneticAlgorithm::checkSetup() {
 
 	if (!correct) {
 		err += " Incorrect value or missing parameter";
-		throw new FuzzyFWException("Genetic Algorithm", err);
+		throw FuzzyFWException("Genetic Algorithm", err);
 	}
 
 	return true;

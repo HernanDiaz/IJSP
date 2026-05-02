@@ -111,7 +111,7 @@ double StatisticsDemandMinNec::getValue(
 		if (this->threshold < 0) {
 			std::string errorMsg = "A threshold must be defined in the SGS";
 			errorMsg += " to use this statistic value.";
-			throw new FVRPException("Statistics", errorMsg);
+			throw FVRPException("Statistics", errorMsg);
 		}
 	}
 
@@ -119,7 +119,7 @@ double StatisticsDemandMinNec::getValue(
 		dynamic_cast<ProblemFVRP *>(svars->problem);
 	if (fuzzyProb == NULL) {
 		std::string errorMsg = "This SGS can be only used on Fuzzy VRP.";
-		throw new FVRPException("SGS", errorMsg);
+		throw FVRPException("SGS", errorMsg);
 	}
 	capacity = fuzzyProb->getMaxCapacity();
 
@@ -129,7 +129,7 @@ double StatisticsDemandMinNec::getValue(
 		if (!population->getIndividual(ind)->isPhenotypeUpdated()) {
 			std::string errorMsg = "Statistics cannot be applied";
 			errorMsg += " if there are non evaluated individuals.";
-			throw new FVRPException("Statistics",errorMsg);
+			throw FVRPException("Statistics",errorMsg);
 		}
 
 		plan = dynamic_cast<RouteFVRP *>
@@ -137,7 +137,7 @@ double StatisticsDemandMinNec::getValue(
 		if (plan == NULL) {
 			std::string errorMsg = "This statistic can be only computed for.";
 			errorMsg += " Fuzzy VRP problems.";
-			throw new FVRPException("Statistics", errorMsg);
+			throw FVRPException("Statistics", errorMsg);
 		}
 
 		// The minimum neccessity is always in the last customer of the route
@@ -213,7 +213,7 @@ double StatisticsDemandMinPos::getValue(
 		if (this->threshold < 0) {
 			std::string errorMsg = "A threshold must be defined in the SGS";
 			errorMsg += " to use this statistic value.";
-			throw new FVRPException("Statistics", errorMsg);
+			throw FVRPException("Statistics", errorMsg);
 		}
 	}
 
@@ -221,7 +221,7 @@ double StatisticsDemandMinPos::getValue(
 		dynamic_cast<ProblemFVRP *>(svars->problem);
 	if (fuzzyProb == NULL) {
 		std::string errorMsg = "This SGS can be only used on Fuzzy VRP.";
-		throw new FVRPException("SGS", errorMsg);
+		throw FVRPException("SGS", errorMsg);
 	}
 	capacity = fuzzyProb->getMaxCapacity();
 
@@ -231,7 +231,7 @@ double StatisticsDemandMinPos::getValue(
 		if (!population->getIndividual(ind)->isPhenotypeUpdated()) {
 			std::string errorMsg = "Statistics cannot be applied";
 			errorMsg += " if there are non evaluated individuals.";
-			throw new FVRPException("Statistics", errorMsg);
+			throw FVRPException("Statistics", errorMsg);
 		}
 
 		plan = dynamic_cast<RouteFVRP *>
@@ -239,7 +239,7 @@ double StatisticsDemandMinPos::getValue(
 		if (plan == NULL) {
 			std::string errorMsg = "This statistic can be only computed for.";
 			errorMsg += " Fuzzy VRP problems.";
-			throw new FVRPException("Statistics", errorMsg);
+			throw FVRPException("Statistics", errorMsg);
 		}
 
 		// The minimum neccessity is always in the last customer of the route
@@ -315,7 +315,7 @@ double StatisticsDemandMinCred::getValue(
 		if (this->threshold < 0) {
 			std::string errorMsg = "A threshold must be defined in the SGS";
 			errorMsg += " to use this statistic value.";
-			throw new FVRPException("Statistics", errorMsg);
+			throw FVRPException("Statistics", errorMsg);
 		}
 	}
 
@@ -323,7 +323,7 @@ double StatisticsDemandMinCred::getValue(
 		dynamic_cast<ProblemFVRP *>(svars->problem);
 	if (fuzzyProb == NULL) {
 		std::string errorMsg = "This SGS can be only used on Fuzzy VRP.";
-		throw new FVRPException("SGS", errorMsg);
+		throw FVRPException("SGS", errorMsg);
 	}
 	capacity = fuzzyProb->getMaxCapacity();
 
@@ -333,7 +333,7 @@ double StatisticsDemandMinCred::getValue(
 		if (!population->getIndividual(ind)->isPhenotypeUpdated()) {
 			std::string errorMsg = "Statistics cannot be applied";
 			errorMsg += " if there are non evaluated individuals.";
-			throw new FVRPException("Statistics", errorMsg);
+			throw FVRPException("Statistics", errorMsg);
 		}
 
 		plan = dynamic_cast<RouteFVRP *>
@@ -341,7 +341,7 @@ double StatisticsDemandMinCred::getValue(
 		if (plan == NULL) {
 			std::string errorMsg = "This statistic can be only computed for.";
 			errorMsg += " Fuzzy VRP problems.";
-			throw new FVRPException("Statistics", errorMsg);
+			throw FVRPException("Statistics", errorMsg);
 		}
 
 		// The minimum neccessity is always in the last customer of the route

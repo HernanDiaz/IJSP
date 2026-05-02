@@ -179,7 +179,7 @@ namespace FuzzyFW {
 				&& (compareDouble(this->b - this->a, t.b - t.a) == 0);
 
 		}
-		throw new FuzzyFWException("Interval", "Comparison method unknown");
+		throw FuzzyFWException("Interval", "Comparison method unknown");
 	}
 
 
@@ -212,7 +212,7 @@ namespace FuzzyFW {
 			|| ((compareDouble(this->a + this->b, t.a + t.b) == 0) && (compareDouble(this->b - this->a, t.b - t.a) <= 0)));
 
 		}
-		throw new FuzzyFWException("Interval", "Comparison method unknown");
+		throw FuzzyFWException("Interval", "Comparison method unknown");
 	}
 
 
@@ -247,7 +247,7 @@ namespace FuzzyFW {
 			|| ((compareDouble(this->a + this->b, t.a + t.b) == 0) && (compareDouble(this->b-this->a, t.b-t.a) < 0)));
 
 		}
-		throw new FuzzyFWException("Interval", "Comparison method unknown");
+		throw FuzzyFWException("Interval", "Comparison method unknown");
 	}
 
 

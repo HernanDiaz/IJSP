@@ -25,14 +25,14 @@ void CreationRandomSchedule::setup(FuzzyFW::ParameterDB *parameters) {
 	if (sgsType.length() == 0) {
 		std::string errorMsg = "SGS not found. Please, specify a SGS to use";
 		errorMsg += " during the evaluation of individuals";
-		throw new FJSPException("Evaluation", errorMsg);
+		throw FJSPException("Evaluation", errorMsg);
 	}
 
 	this->sgs = FJSPClassRegister::getSGSObject(sgsType);
 	if (this->sgs == NULL) {
 		std::string errorMsg = "The introduced SGS is not";
 		errorMsg += " recognised: \'" + sgsType + "\'";
-		throw new FJSPException("Evaluation", errorMsg);
+		throw FJSPException("Evaluation", errorMsg);
 	}
 	this->sgs->setup(parameters);
 }
@@ -56,7 +56,7 @@ FuzzyFW::Individual * CreationRandomSchedule::createIndividual(
 	if (fuzzyProb == NULL) {
 		std::string errorMsg = "This enconding function works only with ";
 		errorMsg += "fuzzy problems.";
-		throw new FJSPException("Creation", errorMsg);
+		throw FJSPException("Creation", errorMsg);
 	}
 
 	// Find the first task of each job

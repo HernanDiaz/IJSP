@@ -36,14 +36,14 @@ void DecoderFVRP::setup(FuzzyFW::ParameterDB *parameters) {
 	if (sgsType.length() == 0) {
 		std::string errorMsg = "SGS not found. Please, specify a SGS to use";
 		errorMsg += " during the evaluation of individuals";
-		throw new FVRPException("Evaluation", errorMsg);
+		throw FVRPException("Evaluation", errorMsg);
 	}
 
 	this->sgs = FVRPClassRegister::getSGSObject(sgsType);
 	if (this->sgs == NULL) {
 		std::string errorMsg = "The introduced SGS is not";
 		errorMsg += " recognised: \'" + sgsType + "\'";
-		throw new FVRPException("Evaluation", errorMsg);
+		throw FVRPException("Evaluation", errorMsg);
 	}
 	this->sgs->setup(parameters);
 }
@@ -70,14 +70,14 @@ FuzzyFW::Solution * DecoderFRVP_Split::decode(FuzzyFW::Individual * indiv,
 	if (dynamic_cast<EncoderFVRP_Order *>(svars->encoder) == NULL) {
 		std::string errorMsg = "The individual is encoded with a ";
 		errorMsg += "incompatible method";
-		throw new FVRPException("Decoding", errorMsg);
+		throw FVRPException("Decoding", errorMsg);
 	}
 
 	// Check for the type of individual
 	ind = dynamic_cast<FuzzyFW::IndividualArrayInt *>(indiv);
 	if (ind == NULL) {
 		std::string errorMsg = "Genotype type not valid";
-		throw new FVRPException("Decoding", errorMsg);
+		throw FVRPException("Decoding", errorMsg);
 	}
 	
 	this->sgs->reset();

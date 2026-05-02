@@ -68,7 +68,7 @@ void Crossover_OBC::apply(Individual *ind1, Individual *ind2,
 	char found;
 
 	if (ind1->size() != ind2->size()) {
-		throw new FuzzyFWException("Crossover", "Individual sizes must match.");
+		throw FuzzyFWException("Crossover", "Individual sizes must match.");
 	}
 
 	// Too small for crossover
@@ -80,7 +80,7 @@ void Crossover_OBC::apply(Individual *ind1, Individual *ind2,
 	if (idv1 == NULL || idv2 == NULL) {
 		std::string errorMsg = "This crossover operator can be applied only";
 		errorMsg += " to permutations";
-		throw new FuzzyFWException("Crossover", errorMsg);
+		throw FuzzyFWException("Crossover", errorMsg);
 	}
 
 
@@ -168,7 +168,7 @@ void Crossover_CBC::apply(Individual *ind1, Individual *ind2,
 	int initialValue, currentValue;
 
 	if (ind1->size() != ind2->size()) {
-		throw new FuzzyFWException("Crossover", "Individual sizes must match.");
+		throw FuzzyFWException("Crossover", "Individual sizes must match.");
 	}
 
 	// Too small for crossover
@@ -180,7 +180,7 @@ void Crossover_CBC::apply(Individual *ind1, Individual *ind2,
 	if (idv1 == NULL || idv2 == NULL) {
 		std::string errorMsg = "This crossover operator can be applied only";
 		errorMsg += " to permutations";
-		throw new FuzzyFWException("Crossover", errorMsg);
+		throw FuzzyFWException("Crossover", errorMsg);
 	}
 
 	nGenes = ind1->size();
@@ -249,7 +249,7 @@ void Crossover_PMX::apply(Individual *ind1, Individual *ind2,
 	unsigned int nGenes, pos, pos1, pos2, cont;
 
 	if (ind1->size() != ind2->size()) {
-		throw new FuzzyFWException("Crossover", "Individual sizes must match.");
+		throw FuzzyFWException("Crossover", "Individual sizes must match.");
 	}
 
 	// Too small for crossover
@@ -261,7 +261,7 @@ void Crossover_PMX::apply(Individual *ind1, Individual *ind2,
 	if (idv1 == NULL || idv2 == NULL) {
 		std::string errorMsg = "This crossover operator can be applied only";
 		errorMsg += " to permutations";
-		throw new FuzzyFWException("Crossover", errorMsg);
+		throw FuzzyFWException("Crossover", errorMsg);
 	}
 
 	nGenes = ind1->size();

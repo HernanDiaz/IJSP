@@ -62,7 +62,7 @@ const FitnessDouble * FitnessDouble::convertType(const Fitness *f) const {
 	if (f->getType() == Fitness::Type::DOUBLE)
 		return dynamic_cast<const FitnessDouble *>(f);
 	return new FuzzyFW::FitnessDouble(f->toDouble(), true);  
-	throw new FuzzyFWException("Fitness",
+	throw FuzzyFWException("Fitness",
 		"Comparison of incompatible fitness values");
 }
 
@@ -122,7 +122,7 @@ bool FitnessInteger::isWorseOrEqualTo(const Fitness * f) const {
 const FitnessInteger * FitnessInteger::convertType(const Fitness *f) const {
 	if (f->getType() == Fitness::Type::INTEGER)
 		return dynamic_cast<const FitnessInteger *>(f);
-	throw new FuzzyFWException("Fitness",
+	throw FuzzyFWException("Fitness",
 		"Comparison of incompatible fitness values");
 }
 
@@ -193,7 +193,7 @@ bool FitnessTFN::isWorseOrEqualTo(const Fitness * f) const {
 const FitnessTFN * FitnessTFN::convertType(const Fitness *f) const {
 	if (f->getType() == Fitness::Type::FUZZY)
 		return dynamic_cast<const FitnessTFN *>(f);
-	throw new FuzzyFWException("Fitness",
+	throw FuzzyFWException("Fitness",
 		"Comparison of incompatible fitness values");
 }
 
@@ -260,7 +260,7 @@ bool FitnessInterval::isWorseOrEqualTo(const Fitness * f) const {
 const FitnessInterval * FitnessInterval::convertType(const Fitness *f) const {
 	if (f->getType() == Fitness::Type::INTERVAL)
 		return dynamic_cast<const FitnessInterval *>(f);
-	throw new FuzzyFWException("Fitness",
+	throw FuzzyFWException("Fitness",
 		"Comparison of incompatible fitness values");
 }
 
