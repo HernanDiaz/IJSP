@@ -80,13 +80,7 @@ public:
 	* the operator
 	*/
 	virtual std::vector<std::string> getName() const {
-		std::vector<std::string> name;
-		std::vector<std::string> sgsName = this->sgs->getName();
-		name.push_back("Task Permutation");
-		name.push_back(";SGS:;" + sgsName[0]);
-		for (size_t i = 1; i < sgsName.size(); i++)
-			name.push_back(";" + sgsName[i]);
-		return name;
+		return buildDecoderName("Task Permutation");
 	}
 };
 

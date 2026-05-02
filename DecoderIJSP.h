@@ -69,6 +69,9 @@ public:
 	* Destructor
 	*/
 	virtual ~DecoderIJSP() = default;
+
+protected:
+	std::vector<std::string> buildDecoderName(const std::string &name) const;
 };
 
 }

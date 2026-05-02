@@ -78,6 +78,8 @@ namespace IJSP {
 	protected:
 		bool shouldUseRandom(const FuzzyFW::SharedVarsEvolutionary *svars) const;
 
+		std::vector<std::string> buildStrategyName(const std::string &name) const;
+
 	public:
 		/**
 		* Creates an individual

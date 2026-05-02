@@ -38,16 +38,7 @@ public:
 	}
 
 	virtual std::vector<std::string> getName() {
-		std::vector<std::string> setup;
-		std::string value;
-		setup.push_back("Makespan-N2Minus");
-		value = "Estimator:;";
-		if (this->estimator == Estimator::NONE)
-			value += NB_ESTIMATOR_NONE;
-		else if (this->estimator == Estimator::ESTIM_HEADTAILS)
-			value += NB_ESTIMATOR_HEADSTAILS;
-		setup.push_back(value);
-		return setup;
+		return buildNBName("Makespan-N2Minus", this->estimator == Estimator::ESTIM_HEADTAILS);
 	}
 
 	virtual unsigned int findNewNeighbours(const FuzzyFW::SharedVars *svars);

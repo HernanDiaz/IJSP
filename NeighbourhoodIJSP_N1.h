@@ -8,11 +8,7 @@
 
 #include "NeighbourIJSP.h"
 #include "Neighbourhood.h"
-
-#ifndef NB_ESTIMATOR_NONE
-#define NB_ESTIMATOR_NONE "none"
-#define NB_ESTIMATOR_HEADSTAILS "heads&tails"
-#endif
+#include "NeighbourhoodIJSP_helpers.h"
 
 namespace IJSP {
 
@@ -63,16 +59,7 @@ public:
 	virtual FuzzyFW::Neighbour* getNeighbour(const unsigned int idx);
 
 	virtual std::vector<std::string> getName() {
-		std::vector<std::string> setup;
-		std::string value;
-		setup.push_back("Makespan-N1");
-		value = "Estimator:;";
-		if (this->estimator == Estimator::NONE)
-			value += NB_ESTIMATOR_NONE;
-		else if (this->estimator == Estimator::ESTIM_HEADTAILS)
-			value += NB_ESTIMATOR_HEADSTAILS;
-		setup.push_back(value);
-		return setup;
+		return buildNBName("Makespan-N1", this->estimator == Estimator::ESTIM_HEADTAILS);
 	}
 
 	virtual void setInitialSolution(FuzzyFW::Solution *solution,

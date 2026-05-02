@@ -61,14 +61,7 @@ public:
 	* the operator
 	*/
 	virtual std::vector<std::string> getName() const {
-		std::vector<std::string> setup;
-		std::vector<std::string> sgsName = this->sgs->getName();
-		setup.push_back("LCTF");
-		setup.push_back(";RandomRatio:;" + valueToString(this->randomRatio));
-		setup.push_back(";SGS:;" + sgsName[0]);
-		for (size_t i = 1; i < sgsName.size(); i++)
-			setup.push_back(";" + sgsName[i]);
-		return setup;
+		return buildStrategyName("LCTF");
 	}
 
 };

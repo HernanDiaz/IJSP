@@ -27,6 +27,16 @@ DecoderIJSP::DecoderIJSP(const DecoderIJSP & source)
 
 
 //-----  Setup method  --------------------------------------------------------
+std::vector<std::string> DecoderIJSP::buildDecoderName(const std::string &name) const {
+	std::vector<std::string> result;
+	std::vector<std::string> sgsName = this->sgs->getName();
+	result.push_back(name);
+	result.push_back(";SGS:;" + sgsName[0]);
+	for (size_t i = 1; i < sgsName.size(); i++)
+		result.push_back(";" + sgsName[i]);
+	return result;
+}
+
 void DecoderIJSP::setup(FuzzyFW::ParameterDB *parameters) {
 	Decoder::setup(parameters);
 
