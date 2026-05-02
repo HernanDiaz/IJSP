@@ -40,33 +40,20 @@ namespace IJSP {
 		//=============================================================================
 		//		COMMON FIELDS
 		//=============================================================================
-		/*
-		* Label to identify the SGS type
-		*/
 		const std::string sgsLabel;
-
-		/*
-		* SGS to create schedules from task orderings
-		*/
 		std::unique_ptr<SGS_IJSP> sgs;
-
+		double randomRatio;
 
 
 		//=========================================================================
 		//		CONSTRUCTORS / INITIALIZERS
 		//=========================================================================
 	public:
-		/**
-		 * Default constructor
-		 */
 		explicit CreationRandomSchedule(FuzzyFW::ParameterDB *parameters = NULL)
-			: sgsLabel(CREATION_SGS), Creation(parameters) { }
+			: sgsLabel(CREATION_SGS), Creation(parameters), randomRatio(0) { }
 
-		/**
-		* Copy constructor
-		*/
 		CreationRandomSchedule(const CreationRandomSchedule &source)
-			: Creation(source), sgsLabel(CREATION_SGS) { }
+			: Creation(source), sgsLabel(CREATION_SGS), randomRatio(source.randomRatio) { }
 
 		/**
 		* Loads the needed parameters: Read the minimum/maximum
@@ -82,15 +69,15 @@ namespace IJSP {
 			return new CreationRandomSchedule(*this);
 		}
 
-		/**
-		 * Destructor
-		 */
-		virtual ~CreationRandomSchedule() { } 	// Nothing to destroy here
+		virtual ~CreationRandomSchedule() { }
 
 
 		//=========================================================================
 		//		METHODS
 		//=========================================================================
+	protected:
+		bool shouldUseRandom(const FuzzyFW::SharedVarsEvolutionary *svars) const;
+
 	public:
 		/**
 		* Creates an individual

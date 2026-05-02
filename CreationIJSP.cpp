@@ -31,8 +31,8 @@ static bool fiWorse(const FuzzyFW::Interval& a, const FuzzyFW::Interval& b) {
 //-----  Setup method  --------------------------------------------------------
 void CreationRandomSchedule::setup(FuzzyFW::ParameterDB *parameters) {
 	Creation::setup(parameters);
+	this->randomRatio = parameters->getDouble(CREATION_RANDOM_RATIO, 0);
 
-	// Loads the SGS type to create
 	std::string sgsType = parameters->getStringLower(this->sgsLabel);
 	if (sgsType.length() == 0) {
 		std::string errorMsg = "SGS not found. Please, specify a SGS to use";
@@ -46,6 +46,12 @@ void CreationRandomSchedule::setup(FuzzyFW::ParameterDB *parameters) {
 		throw IJSPException("Evaluation", errorMsg);
 	}
 	this->sgs->setup(parameters);
+}
+
+bool CreationRandomSchedule::shouldUseRandom(
+	const FuzzyFW::SharedVarsEvolutionary *svars) const {
+	if (this->randomRatio <= 0) return false;
+	return svars->rng->getInteger(0, 100) < static_cast<int>(this->randomRatio * 100);
 }
 
 
@@ -99,59 +105,16 @@ FuzzyFW::Individual * CreationRandomSchedule::createIndividual(
 
 //=============================================================================
 //
-//	Class CreationSRTIntervalMkSchedule
-//
-//=============================================================================
-//=============================================================================
-//		CONSTRUCTORS / INITIALIZERS
-//=============================================================================
-//-----  Setup method  --------------------------------------------------------
-void CreationSRTIntervalMkSchedule::setup(FuzzyFW::ParameterDB *parameters) {
-	Creation::setup(parameters);
-	//Load the randomRatio
-	this->randomRatio = parameters->getDouble(CREATION_RANDOM_RATIO,0);
-
-	// Loads the SGS type to create
-	std::string sgsType = parameters->getStringLower(this->sgsLabel);
-	if (sgsType.length() == 0) {
-		std::string errorMsg = "SGS not found. Please, specify a SGS to use";
-		errorMsg += " during the evaluation of individuals";
-		throw IJSPException("Evaluation", errorMsg);
-	}
-	this->sgs.reset(IJSPClassRegister::getSGSObject(sgsType));
-	if (this->sgs == NULL) {
-		std::string errorMsg = "The introduced SGS is not";
-		errorMsg += " recognised: \'" + sgsType + "\'";
-		throw IJSPException("Evaluation", errorMsg);
-	}
-	this->sgs->setup(parameters);
-	this->randomSchedule.setup(parameters);
-}
-
-
-
 //=============================================================================
 //		METHODS
 //=============================================================================
 //-----  create Individual  --------------------------------------------------- //IJSP INTERVAL MAKESPAN
 FuzzyFW::Individual * CreationSRTIntervalMkSchedule::createIndividual(
 	const FuzzyFW::SharedVarsEvolutionary *svars) const {
+	if (shouldUseRandom(svars))
+		return CreationRandomSchedule::createIndividual(svars);
 	int rand;
-	/*rand = svars->rng->getInteger(0, 100) +1;
-	rand = svars->rng->getInteger(0, 100);
-	if (rand < this->randomRatio * 100) {
-		return this->randomSchedule.createIndividual(svars);
-	}
-	else {
-		return this->randomSchedule.createIndividual(svars);
-	}*/
-	if (this->randomRatio > 0 ) {
-		rand = svars->rng->getInteger(0, 100);
-		if (rand < this->randomRatio * 100) {
-			return this->randomSchedule.createIndividual(svars);
-		}
-	}
-  	std::vector<int> permutation, count;
+	std::vector<int> permutation, count;
 	
 	FuzzyFW::Individual * indiv;
 
@@ -233,50 +196,15 @@ FuzzyFW::Individual * CreationSRTIntervalMkSchedule::createIndividual(
 
 //=============================================================================
 //
-//	Class CreationLRTFIntervalMkSchedule
-//
-//=============================================================================
-//=============================================================================
-//		CONSTRUCTORS / INITIALIZERS
-//=============================================================================
-//-----  Setup method  --------------------------------------------------------
-void CreationLRTFIntervalMkSchedule::setup(FuzzyFW::ParameterDB *parameters) {
-	Creation::setup(parameters);
-	//Load the randomRatio
-	this->randomRatio = parameters->getDouble(CREATION_RANDOM_RATIO, 0);
-
-	// Loads the SGS type to create
-	std::string sgsType = parameters->getStringLower(this->sgsLabel);
-	if (sgsType.length() == 0) {
-		std::string errorMsg = "SGS not found. Please, specify a SGS to use";
-		errorMsg += " during the evaluation of individuals";
-		throw IJSPException("Evaluation", errorMsg);
-	}
-	this->sgs.reset(IJSPClassRegister::getSGSObject(sgsType));
-	if (this->sgs == NULL) {
-		std::string errorMsg = "The introduced SGS is not";
-		errorMsg += " recognised: \'" + sgsType + "\'";
-		throw IJSPException("Evaluation", errorMsg);
-	}
-	this->sgs->setup(parameters);
-	this->randomSchedule.setup(parameters);
-}
-
-
-
 //=============================================================================
 //		METHODS
 //=============================================================================
 //-----  create Individual  --------------------------------------------------- //IJSP INTERVAL MAKESPAN
 FuzzyFW::Individual * CreationLRTFIntervalMkSchedule::createIndividual(
 	const FuzzyFW::SharedVarsEvolutionary *svars) const {
+	if (shouldUseRandom(svars))
+		return CreationRandomSchedule::createIndividual(svars);
 	int rand;
-	if (this->randomRatio > 0) {
-		rand = svars->rng->getInteger(0, 100);
-		if (rand <= this->randomRatio * 100) {
-			return this->randomSchedule.createIndividual(svars);
-		}
-	}
 	//debug file
 	std::vector<int> permutation, count;
 	//std::string finalOutputName = "LRTFdebug.txt";
@@ -423,50 +351,15 @@ FuzzyFW::Individual * CreationLRTFIntervalMkSchedule::createIndividual(
 
 //=============================================================================
 //
-//	Class CreationLRTFInverseIntervalMkSchedule
-//
-//=============================================================================
-//=============================================================================
-//		CONSTRUCTORS / INITIALIZERS
-//=============================================================================
-//-----  Setup method  --------------------------------------------------------
-void CreationLRTFInverseIntervalMkSchedule::setup(FuzzyFW::ParameterDB *parameters) {
-	Creation::setup(parameters);
-	//Load the randomRatio
-	this->randomRatio = parameters->getDouble(CREATION_RANDOM_RATIO, 0);
-
-	// Loads the SGS type to create
-	std::string sgsType = parameters->getStringLower(this->sgsLabel);
-	if (sgsType.length() == 0) {
-		std::string errorMsg = "SGS not found. Please, specify a SGS to use";
-		errorMsg += " during the evaluation of individuals";
-		throw IJSPException("Evaluation", errorMsg);
-	}
-	this->sgs.reset(IJSPClassRegister::getSGSObject(sgsType));
-	if (this->sgs == NULL) {
-		std::string errorMsg = "The introduced SGS is not";
-		errorMsg += " recognised: \'" + sgsType + "\'";
-		throw IJSPException("Evaluation", errorMsg);
-	}
-	this->sgs->setup(parameters);
-	this->randomSchedule.setup(parameters);
-}
-
-
-
 //=============================================================================
 //		METHODS
 //=============================================================================
 //-----  create Individual  --------------------------------------------------- //IJSP INTERVAL MAKESPAN
 FuzzyFW::Individual * CreationLRTFInverseIntervalMkSchedule::createIndividual(
 	const FuzzyFW::SharedVarsEvolutionary *svars) const {
+	if (shouldUseRandom(svars))
+		return CreationRandomSchedule::createIndividual(svars);
 	int rand;
-	if (this->randomRatio > 0) {
-		rand = svars->rng->getInteger(0, 100);
-		if (rand <= this->randomRatio * 100) {
-			return this->randomSchedule.createIndividual(svars);
-		}
-	}
 	std::vector<int> permutation, count;
 
 	FuzzyFW::Individual * indiv;
@@ -549,51 +442,14 @@ FuzzyFW::Individual * CreationLRTFInverseIntervalMkSchedule::createIndividual(
 
 
 //=============================================================================
-//
-//	Class CreationSRTIntervalMkSchedule
-//
-//=============================================================================
-//=============================================================================
-//		CONSTRUCTORS / INITIALIZERS
-//=============================================================================
-//-----  Setup method  --------------------------------------------------------
-void CreationSNTFIntervalMkSchedule::setup(FuzzyFW::ParameterDB *parameters) {
-	Creation::setup(parameters);
-	//Load the randomRatio
-	this->randomRatio = parameters->getDouble(CREATION_RANDOM_RATIO, 0);
-
-	// Loads the SGS type to create
-	std::string sgsType = parameters->getStringLower(this->sgsLabel);
-	if (sgsType.length() == 0) {
-		std::string errorMsg = "SGS not found. Please, specify a SGS to use";
-		errorMsg += " during the evaluation of individuals";
-		throw IJSPException("Evaluation", errorMsg);
-	}
-	this->sgs.reset(IJSPClassRegister::getSGSObject(sgsType));
-	if (this->sgs == NULL) {
-		std::string errorMsg = "The introduced SGS is not";
-		errorMsg += " recognised: \'" + sgsType + "\'";
-		throw IJSPException("Evaluation", errorMsg);
-	}
-	this->sgs->setup(parameters);
-	this->randomSchedule.setup(parameters);
-}
-
-
-
-//=============================================================================
 //		METHODS
 //=============================================================================
 //-----  create Individual  --------------------------------------------------- //IJSP INTERVAL MAKESPAN
 FuzzyFW::Individual * CreationSNTFIntervalMkSchedule::createIndividual(
 	const FuzzyFW::SharedVarsEvolutionary *svars) const {
+	if (shouldUseRandom(svars))
+		return CreationRandomSchedule::createIndividual(svars);
 	int rand;
-    if (this->randomRatio > 0) {
-		rand = svars->rng->getInteger(0, 100);
-		if (rand <= this->randomRatio * 100) {
-			return this->randomSchedule.createIndividual(svars);
-		}
-	}
 	std::vector<int> permutation, count;
 
 	FuzzyFW::Individual * indiv;
@@ -707,51 +563,14 @@ FuzzyFW::Individual * CreationSNTFIntervalMkSchedule::createIndividual(
 }
 
 //=============================================================================
-//
-//	Class CreationSPJFIntervalMkSchedule
-//
-//=============================================================================
-//=============================================================================
-//		CONSTRUCTORS / INITIALIZERS
-//=============================================================================
-//-----  Setup method  --------------------------------------------------------
-void CreationSCTFIntervalMkSchedule::setup(FuzzyFW::ParameterDB *parameters) {
-	Creation::setup(parameters);
-	//Load the randomRatio
-	this->randomRatio = parameters->getDouble(CREATION_RANDOM_RATIO, 0);
-
-	// Loads the SGS type to create
-	std::string sgsType = parameters->getStringLower(this->sgsLabel);
-	if (sgsType.length() == 0) {
-		std::string errorMsg = "SGS not found. Please, specify a SGS to use";
-		errorMsg += " during the evaluation of individuals";
-		throw IJSPException("Evaluation", errorMsg);
-	}
-	this->sgs.reset(IJSPClassRegister::getSGSObject(sgsType));
-	if (this->sgs == NULL) {
-		std::string errorMsg = "The introduced SGS is not";
-		errorMsg += " recognised: \'" + sgsType + "\'";
-		throw IJSPException("Evaluation", errorMsg);
-	}
-	this->sgs->setup(parameters);
-	this->randomSchedule.setup(parameters);
-}
-
-
-
-//=============================================================================
 //		METHODS
 //=============================================================================
 //-----  create Individual  ---------------------------------------------------
 FuzzyFW::Individual * CreationSCTFIntervalMkSchedule::createIndividual(
 	const FuzzyFW::SharedVarsEvolutionary *svars) const {
+	if (shouldUseRandom(svars))
+		return CreationRandomSchedule::createIndividual(svars);
 	int rand;
-	if (this->randomRatio > 0) {
-		rand = svars->rng->getInteger(0, 100);
-		if (rand <= this->randomRatio * 100) {
-			return this->randomSchedule.createIndividual(svars);
-		}
-	}
 	std::vector<int> permutation, count;
 
 	FuzzyFW::Individual * indiv;
@@ -774,11 +593,9 @@ FuzzyFW::Individual * CreationSCTFIntervalMkSchedule::createIndividual(
 		unsigned int numberOfTasks = fuzzyProb->getNumberTasks(i);
 		if (numberOfTasks > 0) {
 			count.push_back(fuzzyProb->getTaskId(i, 0));
-			//count remaining time for each job
 			for (unsigned int j = 0; j < numberOfTasks; j++) {
 				jobRemainingTime[i] += fuzzyProb->getTask(fuzzyProb->getTaskId(i, j))->p;
 			}
-			//Order the jobs from higher to lower remaining time
 			int k = 0;
 			while (k < jobOrderByRemainingTime.size() &&
 				fiBetter(jobRemainingTime[i], jobRemainingTime[jobOrderByRemainingTime[k]])) {
@@ -787,29 +604,21 @@ FuzzyFW::Individual * CreationSCTFIntervalMkSchedule::createIndividual(
 			jobOrderByRemainingTime.insert(jobOrderByRemainingTime.begin() + k, i);
 		}
 	}
-	// Build an array with repetitions
 	while (count.size() > 0) {
 		int max = 3 < count.size() ? 3 : count.size();
 		rand = svars->rng->getInteger(0, max*max - 1);
 		int k = int(sqrt(rand));
-
-		//rand = svars->rng->getInteger(0, count.size()*count.size() - 1);
-		//int k = int(sqrt(rand)); 
 		rand = jobOrderByRemainingTime[k];
 		int taskid = count[rand];
 		permutation.push_back(taskid);
 
-		// Update remaining time for the job
 		jobRemainingTime[rand] -= fuzzyProb->getTask(taskid)->p;
 
-		// Update machine and job makespan.
 		const IJSP::TaskIJSP * task = fuzzyProb->getTask(taskid);
 		FuzzyFW::Interval localMaxMkspan = maximum(mMkspan[task->machine], jMkspan[task->job], FuzzyFW::Interval::M_COMPONENT) + task->p;
 		mMkspan[task->machine] = localMaxMkspan;
 		jMkspan[task->job] = localMaxMkspan;
 
-
-		// Update order of the jobs from higher to lower remaining time
 		while (k < jobOrderByRemainingTime.size() - 1 &&
 			fiBetter(jobRemainingTime[jobOrderByRemainingTime[k]] + jMkspan[jobOrderByRemainingTime[k]], jobRemainingTime[jobOrderByRemainingTime[k + 1]] + jMkspan[jobOrderByRemainingTime[k + 1]])) {
 			int aux = jobOrderByRemainingTime[k];
@@ -818,7 +627,6 @@ FuzzyFW::Individual * CreationSCTFIntervalMkSchedule::createIndividual(
 			k++;
 		}
 
-		// Pass to the next task of the job
 		count[rand] = (*fuzzyProb)[count[rand]]->js;
 		if (count[rand] < 0) {
 			for (size_t i = rand + 1; i < count.size(); i++) {
@@ -831,13 +639,11 @@ FuzzyFW::Individual * CreationSCTFIntervalMkSchedule::createIndividual(
 				}
 			}
 			jobRemainingTime.pop_back();
-			//jobOrderByRemainingTime.pop_back();
 			jobOrderByRemainingTime.erase(jobOrderByRemainingTime.begin() + k);
 			jMkspan.erase(jMkspan.begin() + k);
 			mMkspan.erase(mMkspan.begin() + k);
 			count.pop_back();
 		}
-
 	}
 	sgs->buildSchedule(svars, permutation);
 	indiv = svars->encoder->encode(sgs->getSchedule(), svars);
@@ -845,39 +651,6 @@ FuzzyFW::Individual * CreationSCTFIntervalMkSchedule::createIndividual(
 
 	return indiv;
 }
-
-//=============================================================================
-//
-//	Class CreationLCTFIntervalMkSchedule
-//
-//=============================================================================
-//=============================================================================
-//		CONSTRUCTORS / INITIALIZERS
-//=============================================================================
-//-----  Setup method  --------------------------------------------------------
-void CreationLCTFIntervalMkSchedule::setup(FuzzyFW::ParameterDB *parameters) {
-	Creation::setup(parameters);
-	//Load the randomRatio
-	this->randomRatio = parameters->getDouble(CREATION_RANDOM_RATIO, 0);
-
-	// Loads the SGS type to create
-	std::string sgsType = parameters->getStringLower(this->sgsLabel);
-	if (sgsType.length() == 0) {
-		std::string errorMsg = "SGS not found. Please, specify a SGS to use";
-		errorMsg += " during the evaluation of individuals";
-		throw IJSPException("Evaluation", errorMsg);
-	}
-	this->sgs.reset(IJSPClassRegister::getSGSObject(sgsType));
-	if (this->sgs == NULL) {
-		std::string errorMsg = "The introduced SGS is not";
-		errorMsg += " recognised: \'" + sgsType + "\'";
-		throw IJSPException("Evaluation", errorMsg);
-	}
-	this->sgs->setup(parameters);
-	this->randomSchedule.setup(parameters);
-}
-
-
 
 //=============================================================================
 //		METHODS
@@ -885,13 +658,9 @@ void CreationLCTFIntervalMkSchedule::setup(FuzzyFW::ParameterDB *parameters) {
 //-----  create Individual  ---------------------------------------------------
 FuzzyFW::Individual * CreationLCTFIntervalMkSchedule::createIndividual(
 	const FuzzyFW::SharedVarsEvolutionary *svars) const {
+	if (shouldUseRandom(svars))
+		return CreationRandomSchedule::createIndividual(svars);
 	int rand;
-	if (this->randomRatio > 0) {
-		rand = svars->rng->getInteger(0, 100);
-		if (rand <= this->randomRatio * 100) {
-			return this->randomSchedule.createIndividual(svars);
-		}
-	}
 	std::vector<int> permutation, count;
 
 	FuzzyFW::Individual * indiv;
@@ -914,11 +683,9 @@ FuzzyFW::Individual * CreationLCTFIntervalMkSchedule::createIndividual(
 		unsigned int numberOfTasks = fuzzyProb->getNumberTasks(i);
 		if (numberOfTasks > 0) {
 			count.push_back(fuzzyProb->getTaskId(i, 0));
-			//count remaining time for each job
 			for (unsigned int j = 0; j < numberOfTasks; j++) {
 				jobRemainingTime[i] += fuzzyProb->getTask(fuzzyProb->getTaskId(i, j))->p;
 			}
-			//Order the jobs from higher to lower remaining time
 			int k = 0;
 			while (k < jobOrderByRemainingTime.size() &&
 				fiBetter(jobRemainingTime[i], jobRemainingTime[jobOrderByRemainingTime[k]])) {
@@ -927,28 +694,21 @@ FuzzyFW::Individual * CreationLCTFIntervalMkSchedule::createIndividual(
 			jobOrderByRemainingTime.insert(jobOrderByRemainingTime.begin() + k, i);
 		}
 	}
-	// Build an array with repetitions
 	while (count.size() > 0) {
 		int max = 3 < count.size() ? 3 : count.size();
-		//rand = svars->rng->getInteger(0, count.size()*count.size() - 1);
-		//int k = count.size() - int(sqrt(rand)) - 1;
 		rand = svars->rng->getInteger(0, max*max - 1);
 		int k = max - int(sqrt(rand)) - 1;
 		rand = jobOrderByRemainingTime[k];
 		int taskid = count[rand];
 		permutation.push_back(taskid);
 
-		// Update remaining time for the job
 		jobRemainingTime[rand] -= fuzzyProb->getTask(taskid)->p;
 
-		// Update machine and job makespan.
 		const IJSP::TaskIJSP * task = fuzzyProb->getTask(taskid);
 		FuzzyFW::Interval localMaxMkspan = maximum(mMkspan[task->machine], jMkspan[task->job], FuzzyFW::Interval::M_COMPONENT) + task->p;
 		mMkspan[task->machine] = localMaxMkspan;
 		jMkspan[task->job] = localMaxMkspan;
 
-
-		// Update order of the jobs from higher to lower remaining time
 		while (k < jobOrderByRemainingTime.size() - 1 &&
 			fiBetter(jobRemainingTime[jobOrderByRemainingTime[k]] + jMkspan[jobOrderByRemainingTime[k]], jobRemainingTime[jobOrderByRemainingTime[k + 1]] + jMkspan[jobOrderByRemainingTime[k + 1]])) {
 			int aux = jobOrderByRemainingTime[k];
@@ -957,7 +717,6 @@ FuzzyFW::Individual * CreationLCTFIntervalMkSchedule::createIndividual(
 			k++;
 		}
 
-		// Pass to the next task of the job
 		count[rand] = (*fuzzyProb)[count[rand]]->js;
 		if (count[rand] < 0) {
 			for (size_t i = rand + 1; i < count.size(); i++) {
@@ -970,13 +729,11 @@ FuzzyFW::Individual * CreationLCTFIntervalMkSchedule::createIndividual(
 				}
 			}
 			jobRemainingTime.pop_back();
-			//jobOrderByRemainingTime.pop_back();
 			jobOrderByRemainingTime.erase(jobOrderByRemainingTime.begin() + k);
 			jMkspan.erase(jMkspan.begin() + k);
 			mMkspan.erase(mMkspan.begin() + k);
 			count.pop_back();
 		}
-
 	}
 	sgs->buildSchedule(svars, permutation);
 	indiv = svars->encoder->encode(sgs->getSchedule(), svars);
@@ -985,52 +742,15 @@ FuzzyFW::Individual * CreationLCTFIntervalMkSchedule::createIndividual(
 	return indiv;
 }
 
-
-//=============================================================================
-//
-//	Class CreationSPJFIntervalMkSchedule
-//
-//=============================================================================
-//=============================================================================
-//		CONSTRUCTORS / INITIALIZERS
-//=============================================================================
-//-----  Setup method  --------------------------------------------------------
-void CreationSPJFIntervalMkSchedule::setup(FuzzyFW::ParameterDB *parameters) {
-	Creation::setup(parameters);
-	this->randomRatio = parameters->getDouble(CREATION_RANDOM_RATIO, 0);
-	// Loads the SGS type to create
-	std::string sgsType = parameters->getStringLower(this->sgsLabel);
-	if (sgsType.length() == 0) {
-		std::string errorMsg = "SGS not found. Please, specify a SGS to use";
-		errorMsg += " during the evaluation of individuals";
-		throw IJSPException("Evaluation", errorMsg);
-	}
-	this->sgs.reset(IJSPClassRegister::getSGSObject(sgsType));
-	if (this->sgs == NULL) {
-		std::string errorMsg = "The introduced SGS is not";
-		errorMsg += " recognised: \'" + sgsType + "\'";
-		throw IJSPException("Evaluation", errorMsg);
-	}
-	this->sgs->setup(parameters);
-	this->randomSchedule.setup(parameters);
-	
-}
-
-
-
 //=============================================================================
 //		METHODS
 //=============================================================================
 //-----  create Individual  ---------------------------------------------------
 FuzzyFW::Individual * CreationSPJFIntervalMkSchedule::createIndividual(
 	const FuzzyFW::SharedVarsEvolutionary *svars) const {
+	if (shouldUseRandom(svars))
+		return CreationRandomSchedule::createIndividual(svars);
 	int rand;
-	if (this->randomRatio > 0) {
-		rand = svars->rng->getInteger(0, 100);
-		if (rand <= this->randomRatio * 100) {
-			return this->randomSchedule.createIndividual(svars);
-		}
-	}
 	std::vector<int> permutation, count;
 
 	FuzzyFW::Individual * indiv;
@@ -1142,49 +862,15 @@ FuzzyFW::Individual * CreationSPJFIntervalMkSchedule::createIndividual(
 
 //=============================================================================
 //
-//	Class CreationSPJFInverseIntervalMkSchedule
-//
-//=============================================================================
-//=============================================================================
-//		CONSTRUCTORS / INITIALIZERS
-//=============================================================================
-//-----  Setup method  --------------------------------------------------------
-void CreationSPJFInverseIntervalMkSchedule::setup(FuzzyFW::ParameterDB *parameters) {
-	Creation::setup(parameters);
-	this->randomRatio = parameters->getDouble(CREATION_RANDOM_RATIO, 0);
-	// Loads the SGS type to create
-	std::string sgsType = parameters->getStringLower(this->sgsLabel);
-	if (sgsType.length() == 0) {
-		std::string errorMsg = "SGS not found. Please, specify a SGS to use";
-		errorMsg += " during the evaluation of individuals";
-		throw IJSPException("Evaluation", errorMsg);
-	}
-	this->sgs.reset(IJSPClassRegister::getSGSObject(sgsType));
-	if (this->sgs == NULL) {
-		std::string errorMsg = "The introduced SGS is not";
-		errorMsg += " recognised: \'" + sgsType + "\'";
-		throw IJSPException("Evaluation", errorMsg);
-	}
-	this->sgs->setup(parameters);
-	this->randomSchedule.setup(parameters);
-
-}
-
-
-
 //=============================================================================
 //		METHODS
 //=============================================================================
 //-----  create Individual  ---------------------------------------------------
 FuzzyFW::Individual * CreationSPJFInverseIntervalMkSchedule::createIndividual(
 	const FuzzyFW::SharedVarsEvolutionary *svars) const {
+	if (shouldUseRandom(svars))
+		return CreationRandomSchedule::createIndividual(svars);
 	int rand;
-	if (this->randomRatio > 0) {
-		rand = svars->rng->getInteger(0, 100);
-		if (rand <= this->randomRatio * 100) {
-			return this->randomSchedule.createIndividual(svars);
-		}
-	}
 	std::vector<int> permutation, count;
 
 	FuzzyFW::Individual * indiv;
@@ -1277,23 +963,7 @@ FuzzyFW::Individual * CreationSPJFInverseIntervalMkSchedule::createIndividual(
 //=============================================================================
 //-----  Setup method  --------------------------------------------------------
 void CreationManagerIntervalMkSchedule::setup(FuzzyFW::ParameterDB *parameters) {
-	Creation::setup(parameters);
-	this->randomRatio = parameters->getDouble(CREATION_RANDOM_RATIO, 0);
-	// Loads the SGS type to create
-	std::string sgsType = parameters->getStringLower(this->sgsLabel);
-	if (sgsType.length() == 0) {
-		std::string errorMsg = "SGS not found. Please, specify a SGS to use";
-		errorMsg += " during the evaluation of individuals";
-		throw IJSPException("Evaluation", errorMsg);
-	}
-	this->sgs.reset(IJSPClassRegister::getSGSObject(sgsType));
-	if (this->sgs == NULL) {
-		std::string errorMsg = "The introduced SGS is not";
-		errorMsg += " recognised: \'" + sgsType + "\'";
-		throw IJSPException("Evaluation", errorMsg);
-	}
-	this->sgs->setup(parameters);
-	this->randomSchedule.setup(parameters);
+	CreationRandomSchedule::setup(parameters);
 	this->SPJFSchedule.setup(parameters);
 	this->LRTFSchedule.setup(parameters);
 }
@@ -1306,14 +976,11 @@ void CreationManagerIntervalMkSchedule::setup(FuzzyFW::ParameterDB *parameters) 
 //-----  create Individual  ---------------------------------------------------
 FuzzyFW::Individual * CreationManagerIntervalMkSchedule::createIndividual(
 	const FuzzyFW::SharedVarsEvolutionary *svars) const {
-	int rand;
-	rand = svars->rng->getInteger(0, 100);
-		if (rand <= 50) {
-			return this->randomSchedule.createIndividual(svars);
-		}
-		if (rand % 2) {
-			return this->LRTFSchedule.createIndividual(svars);
-		}
-		return this->SPJFSchedule.createIndividual(svars);
+	int rand = svars->rng->getInteger(0, 100);
+	if (rand <= 50)
+		return CreationRandomSchedule::createIndividual(svars);
+	if (rand % 2)
+		return this->LRTFSchedule.createIndividual(svars);
+	return this->SPJFSchedule.createIndividual(svars);
 }
 }

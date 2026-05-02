@@ -23,57 +23,22 @@ namespace IJSP {
  * @author hdiaz
  *
  */
-class CreationSPJFInverseIntervalMkSchedule : public FuzzyFW::Creation {
-	//=============================================================================
-	//		COMMON FIELDS
-	//=============================================================================
-	const std::string sgsLabel;
-
-	double randomRatio;
-
-	/*
-	* SGS to create schedules from task orderings
-	*/
-	std::unique_ptr<SGS_IJSP> sgs;
-
-
-	CreationRandomSchedule randomSchedule;
-
-
+class CreationSPJFInverseIntervalMkSchedule : public CreationRandomSchedule {
 	//=========================================================================
 	//		CONSTRUCTORS / INITIALIZERS
 	//=========================================================================
 public:
-	/**
-	 * Default constructor
-	 */
 	explicit CreationSPJFInverseIntervalMkSchedule(FuzzyFW::ParameterDB *parameters = NULL)
-		: sgsLabel(CREATION_SGS), Creation(parameters), randomRatio(0) { }
+		: CreationRandomSchedule(parameters) { }
 
-	/**
-	* Copy constructor
-	*/
 	CreationSPJFInverseIntervalMkSchedule(const CreationSPJFInverseIntervalMkSchedule &source)
-		: Creation(source), sgsLabel(CREATION_SGS), randomRatio(source.randomRatio) { }
+		: CreationRandomSchedule(source) { }
 
-	/**
-	* Loads the needed parameters: Read the minimum/maximum
-	 * values that each gene may take
-	*/
-	virtual void setup(FuzzyFW::ParameterDB *parameters);
-
-	/**
-	* Loads the needed parameters: Read the minimum/maximum
-	* values that each gene may take
-	*/
 	virtual Creation * clone() const {
 		return new CreationSPJFInverseIntervalMkSchedule(*this);
 	}
 
-	/**
-	 * Destructor
-	 */
-	virtual ~CreationSPJFInverseIntervalMkSchedule() { } 	// Nothing to destroy here
+	virtual ~CreationSPJFInverseIntervalMkSchedule() = default;
 
 	//=========================================================================
 	//		METHODS

@@ -6,28 +6,24 @@
  */
 
 #include "CrossoverIJSP.h"
+#include "CrossoverIJSP_Base.h"
 
 namespace IJSP {
 
 //=============================================================================
 //
-//	Class Crossover_JOX
+//	Class CrossoverIJSP_Base
 //
 //=============================================================================
-//=============================================================================
-//		METHODS
-//=============================================================================
-//=====  Apply (Individual)  ==================================================
-void Crossover_JOX::apply(FuzzyFW::Individual *ind1, FuzzyFW::Individual *ind2,
+void CrossoverIJSP_Base::apply(FuzzyFW::Individual *ind1,
+	FuzzyFW::Individual *ind2,
 	const FuzzyFW::SharedVarsEvolutionary *svars) const {
 
 	FuzzyFW::IndividualArrayInt *idv1, *idv2;
 
-	if (ind1->size() != ind2->size()) {
+	if (ind1->size() != ind2->size())
 		throw IJSPException("Crossover", "Individual sizes must match.");
-	}
 
-	// Too small for crossover
 	if (ind1->size() < 2 || ind2->size() < 2)
 		return;
 
@@ -41,13 +37,20 @@ void Crossover_JOX::apply(FuzzyFW::Individual *ind1, FuzzyFW::Individual *ind2,
 		idv2 = dynamic_cast<FuzzyFW::IndividualArrayInt *>(ind2);
 		return this->applyJobPermutation(idv1, idv2, svars);
 	}
-	std::string errorMsg = "Individuals must be coded as permutation";
-	errorMsg += " to use this crossover operator";
-	throw IJSPException("Crossover", errorMsg);
+	throw IJSPException("Crossover",
+		"Individuals must be coded as permutation to use this crossover operator");
 }
 
 
-
+//=============================================================================
+//
+//	Class Crossover_JOX
+//
+//=============================================================================
+//=============================================================================
+//		METHODS
+//=============================================================================
+//=====  Apply (Individual)  ==================================================
 //=====  Apply (Permutation)  =================================================
 void Crossover_JOX::applyPermutation(FuzzyFW::IndividualArrayInt *ind1,
 	FuzzyFW::IndividualArrayInt *ind2,
@@ -239,38 +242,6 @@ void Crossover_JOX::applyJobPermutation(FuzzyFW::IndividualArrayInt *ind1,
 //=============================================================================
 //		METHODS
 //=============================================================================
-//=====  Apply (Individual)  ==================================================
-void Crossover_GOXBierwirth::apply(FuzzyFW::Individual *ind1,
-	FuzzyFW::Individual *ind2, 
-	const FuzzyFW::SharedVarsEvolutionary *svars) const {
-
-	FuzzyFW::IndividualArrayInt *idv1, *idv2;
-
-	if (ind1->size() != ind2->size()) {
-		throw IJSPException("Crossover", "Individual sizes must match.");
-	}
-
-	// Too small for crossover
-	if (ind1->size() < 2 || ind2->size() < 2)
-		return;
-
-	if (dynamic_cast<EncoderIJSP_Order *>(svars->encoder) != NULL) {
-		idv1 = dynamic_cast<FuzzyFW::IndividualArrayInt *>(ind1);
-		idv2 = dynamic_cast<FuzzyFW::IndividualArrayInt *>(ind2);
-		return this->applyPermutation(idv1, idv2, svars);
-	}
-	if (dynamic_cast<EncoderIJSP_JobOrder *>(svars->encoder) != NULL) {
-		idv1 = dynamic_cast<FuzzyFW::IndividualArrayInt *>(ind1);
-		idv2 = dynamic_cast<FuzzyFW::IndividualArrayInt *>(ind2);
-		return this->applyJobPermutation(idv1, idv2, svars);
-	}
-	std::string errorMsg = "Individuals must be coded as permutation in";
-	errorMsg += " to use this crossover operator";
-	throw IJSPException("Crossover", errorMsg);
-}
-
-
-
 //=====  Apply (Permutation)  =================================================
 void Crossover_GOXBierwirth::applyPermutation(FuzzyFW::IndividualArrayInt *ind1,
 	FuzzyFW::IndividualArrayInt *ind2,
@@ -470,38 +441,6 @@ void Crossover_GOXBierwirth::applyJobPermutation(FuzzyFW::IndividualArrayInt *in
 //=============================================================================
 //		METHODS
 //=============================================================================
-//=====  Apply (Individual)  ==================================================
-void Crossover_GPMXBierwirth::apply(FuzzyFW::Individual *ind1,
-	FuzzyFW::Individual *ind2, 
-	const FuzzyFW::SharedVarsEvolutionary *svars) const {
-
-	FuzzyFW::IndividualArrayInt *idv1, *idv2;
-
-	if (ind1->size() != ind2->size()) {
-		throw IJSPException("Crossover", "Individual sizes must match.");
-	}
-
-	// Too small for crossover
-	if (ind1->size() < 2 || ind2->size() < 2)
-		return;
-
-	if (dynamic_cast<EncoderIJSP_Order *>(svars->encoder) != NULL) {
-		idv1 = dynamic_cast<FuzzyFW::IndividualArrayInt *>(ind1);
-		idv2 = dynamic_cast<FuzzyFW::IndividualArrayInt *>(ind2);
-		return this->applyPermutation(idv1, idv2, svars);
-	}
-	if (dynamic_cast<EncoderIJSP_JobOrder *>(svars->encoder) != NULL) {
-		idv1 = dynamic_cast<FuzzyFW::IndividualArrayInt *>(ind1);
-		idv2 = dynamic_cast<FuzzyFW::IndividualArrayInt *>(ind2);
-		return this->applyJobPermutation(idv1, idv2, svars);
-	}
-	std::string errorMsg = "Individuals must be coded as permutation in";
-	errorMsg += " to use this crossover operator";
-	throw IJSPException("Crossover", errorMsg);
-}
-
-
-
 //=====  Apply (Permutation)  =================================================
 void Crossover_GPMXBierwirth::applyPermutation(FuzzyFW::IndividualArrayInt *ind1,
 	FuzzyFW::IndividualArrayInt *ind2,
@@ -711,38 +650,6 @@ void Crossover_GPMXBierwirth::applyJobPermutation(FuzzyFW::IndividualArrayInt *i
 //=============================================================================
 //		METHODS
 //=============================================================================
-//=====  Apply (Individual)  ==================================================
-void Crossover_PPXBierwirth::apply(FuzzyFW::Individual *ind1,
-	FuzzyFW::Individual *ind2,
-	const FuzzyFW::SharedVarsEvolutionary *svars) const {
-
-	FuzzyFW::IndividualArrayInt *idv1, *idv2;
-
-	if (ind1->size() != ind2->size()) {
-		throw IJSPException("Crossover", "Individual sizes must match.");
-	}
-
-	// Too small for crossover
-	if (ind1->size() < 2 || ind2->size() < 2)
-		return;
-
-	if (dynamic_cast<EncoderIJSP_Order *>(svars->encoder) != NULL) {
-		idv1 = dynamic_cast<FuzzyFW::IndividualArrayInt *>(ind1);
-		idv2 = dynamic_cast<FuzzyFW::IndividualArrayInt *>(ind2);
-		return this->applyPermutation(idv1, idv2, svars);
-	}
-	if (dynamic_cast<EncoderIJSP_JobOrder *>(svars->encoder) != NULL) {
-		idv1 = dynamic_cast<FuzzyFW::IndividualArrayInt *>(ind1);
-		idv2 = dynamic_cast<FuzzyFW::IndividualArrayInt *>(ind2);
-		return this->applyJobPermutation(idv1, idv2, svars);
-	}
-	std::string errorMsg = "Individuals must be coded as permutation in";
-	errorMsg += " to use this crossover operator";
-	throw IJSPException("Crossover", errorMsg);
-}
-
-
-
 //=====  Apply (Permutation)  =================================================
 void Crossover_PPXBierwirth::applyPermutation(FuzzyFW::IndividualArrayInt *ind1,
 	FuzzyFW::IndividualArrayInt *ind2,

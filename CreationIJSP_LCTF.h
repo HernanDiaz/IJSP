@@ -23,57 +23,22 @@ namespace IJSP {
  * @author hdiaz
  *
  */
-class CreationLCTFIntervalMkSchedule : public FuzzyFW::Creation {
-	//=============================================================================
-	//		COMMON FIELDS
-	//=============================================================================
-	const std::string sgsLabel;
-
-	double randomRatio;
-
-	/*
-	* SGS to create schedules from task orderings
-	*/
-	std::unique_ptr<SGS_IJSP> sgs;
-
-
-	CreationRandomSchedule randomSchedule;
-
-
+class CreationLCTFIntervalMkSchedule : public CreationRandomSchedule {
 	//=========================================================================
 	//		CONSTRUCTORS / INITIALIZERS
 	//=========================================================================
 public:
-	/**
-	 * Default constructor
-	 */
 	explicit CreationLCTFIntervalMkSchedule(FuzzyFW::ParameterDB *parameters = NULL)
-		: sgsLabel(CREATION_SGS), Creation(parameters), randomRatio(0) { }
+		: CreationRandomSchedule(parameters) { }
 
-	/**
-	* Copy constructor
-	*/
 	CreationLCTFIntervalMkSchedule(const CreationLCTFIntervalMkSchedule &source)
-		: Creation(source), sgsLabel(CREATION_SGS), randomRatio(source.randomRatio) { }
+		: CreationRandomSchedule(source) { }
 
-	/**
-	* Loads the needed parameters: Read the minimum/maximum
-	 * values that each gene may take
-	*/
-	virtual void setup(FuzzyFW::ParameterDB *parameters);
-
-	/**
-	* Loads the needed parameters: Read the minimum/maximum
-	* values that each gene may take
-	*/
 	virtual Creation * clone() const {
 		return new CreationLCTFIntervalMkSchedule(*this);
 	}
 
-	/**
-	 * Destructor
-	 */
-	virtual ~CreationLCTFIntervalMkSchedule() { } 	// Nothing to destroy here
+	virtual ~CreationLCTFIntervalMkSchedule() = default;
 
 	//=========================================================================
 	//		METHODS

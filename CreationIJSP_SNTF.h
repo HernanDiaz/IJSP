@@ -23,61 +23,22 @@ namespace IJSP {
  * @author hdiaz
  *
  */
-class CreationSNTFIntervalMkSchedule : public FuzzyFW::Creation {
-protected:
-	//=============================================================================
-	//		COMMON FIELDS
-	//=============================================================================
-	/*
-	* Label to identify the SGS type
-	*/
-	const std::string sgsLabel;
-
-	double randomRatio;
-
-	/*
-	* SGS to create schedules from task orderings
-	*/
-	std::unique_ptr<SGS_IJSP> sgs;
-
-
-	CreationRandomSchedule randomSchedule;
-
-
+class CreationSNTFIntervalMkSchedule : public CreationRandomSchedule {
 	//=========================================================================
 	//		CONSTRUCTORS / INITIALIZERS
 	//=========================================================================
 public:
-	/**
-	 * Default constructor
-	 */
 	explicit CreationSNTFIntervalMkSchedule(FuzzyFW::ParameterDB *parameters = NULL)
-		: sgsLabel(CREATION_SGS), Creation(parameters), randomRatio(0) { }
+		: CreationRandomSchedule(parameters) { }
 
-	/**
-	* Copy constructor
-	*/
 	CreationSNTFIntervalMkSchedule(const CreationSNTFIntervalMkSchedule &source)
-		: Creation(source), sgsLabel(CREATION_SGS), randomRatio(source.randomRatio) { }
+		: CreationRandomSchedule(source) { }
 
-	/**
-	* Loads the needed parameters: Read the minimum/maximum
-	 * values that each gene may take
-	*/
-	virtual void setup(FuzzyFW::ParameterDB *parameters);
-
-	/**
-	* Loads the needed parameters: Read the minimum/maximum
-	* values that each gene may take
-	*/
 	virtual Creation * clone() const {
 		return new CreationSNTFIntervalMkSchedule(*this);
 	}
 
-	/**
-	 * Destructor
-	 */
-	virtual ~CreationSNTFIntervalMkSchedule() { } 	// Nothing to destroy here
+	virtual ~CreationSNTFIntervalMkSchedule() = default;
 
 
 	//=========================================================================

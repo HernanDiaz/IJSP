@@ -6,8 +6,7 @@
  */
 #pragma once
 
-#include "EncoderIJSP.h"
-#include "Crossover.h"
+#include "CrossoverIJSP_Base.h"
 
 
 namespace IJSP {
@@ -34,48 +33,17 @@ namespace IJSP {
 *
 *
 */
-class Crossover_PPXBierwirth : public FuzzyFW::Crossover {
-	//=========================================================================
-	//		CONSTRUCTORS / INITIALIZERS
-	//=========================================================================
+class Crossover_PPXBierwirth : public CrossoverIJSP_Base {
 public:
-	/**
-	* Constructor using the parameters file
-	*/
 	Crossover_PPXBierwirth(FuzzyFW::ParameterDB *parameters = NULL)
-		: Crossover(parameters) { }
+		: CrossoverIJSP_Base(parameters) {}
 
-	/**
-	* Loads extra parameters.
-	*/
-	virtual void setup(FuzzyFW::ParameterDB *parameters) {
-		Crossover::setup(parameters);
-	}
-
-	/**
-	* Destructor
-	*/
-	virtual ~Crossover_PPXBierwirth() { }; 	// Nothing to destroy here
-
-
+	virtual ~Crossover_PPXBierwirth() {}
 
 	//=========================================================================
 	//		METHODS
 	//=========================================================================
 public:
-	/**
-	* Apply the crossover operator to a pair of individuals and produces two
-	* offspring. The offspring will automatically replace their parents
-	*
-	* @param ind1 First parent for the mating
-	* @param ind2 Second parent for the mating
-	* @param svars Shared elements of the algorithm
-	* @return The two offspring produced
-	*/
-	virtual void apply(FuzzyFW::Individual *ind1,
-		FuzzyFW::Individual *ind2,
-		const FuzzyFW::SharedVarsEvolutionary *svars) const;
-
 	/**
 	* Get the name and setup of the operator
 	*

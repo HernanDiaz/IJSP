@@ -6,6 +6,7 @@
  */
 #pragma once
 
+#include "CrossoverIJSP_Base.h"
 #include "CrossoverIJSP_JOX.h"
 #include "CrossoverIJSP_GOX.h"
 #include "CrossoverIJSP_GPMX.h"
