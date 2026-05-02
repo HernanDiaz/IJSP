@@ -7,6 +7,7 @@
 
 #include "FVRPClassRegister.h"
 #include "Decoder.h"
+#include <memory>
 #include "EncoderFVRP.h"
 
 
@@ -38,7 +39,7 @@ protected:
 	/*
 	* SGS to create schedules from task orderings
 	*/
-	SGS_FVRP * sgs;
+	std::unique_ptr<SGS_FVRP> sgs;
 
 
 
@@ -65,9 +66,7 @@ public:
 	/**
 	* Destructor
 	*/
-	virtual ~DecoderFVRP() {
-		delete this->sgs;
-	}
+	virtual ~DecoderFVRP() = default;
 };
 
 

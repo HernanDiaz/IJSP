@@ -39,7 +39,7 @@ void CreationRandomSchedule::setup(FuzzyFW::ParameterDB *parameters) {
 		errorMsg += " during the evaluation of individuals";
 		throw IJSPException("Evaluation", errorMsg);
 	}
-	this->sgs = IJSPClassRegister::getSGSObject(sgsType);
+	this->sgs.reset(IJSPClassRegister::getSGSObject(sgsType));
 	if (this->sgs == NULL) {
 		std::string errorMsg = "The introduced SGS is not";
 		errorMsg += " recognised: \'" + sgsType + "\'";
@@ -118,7 +118,7 @@ void CreationSRTIntervalMkSchedule::setup(FuzzyFW::ParameterDB *parameters) {
 		errorMsg += " during the evaluation of individuals";
 		throw IJSPException("Evaluation", errorMsg);
 	}
-	this->sgs = IJSPClassRegister::getSGSObject(sgsType);
+	this->sgs.reset(IJSPClassRegister::getSGSObject(sgsType));
 	if (this->sgs == NULL) {
 		std::string errorMsg = "The introduced SGS is not";
 		errorMsg += " recognised: \'" + sgsType + "\'";
@@ -252,7 +252,7 @@ void CreationLRTFIntervalMkSchedule::setup(FuzzyFW::ParameterDB *parameters) {
 		errorMsg += " during the evaluation of individuals";
 		throw IJSPException("Evaluation", errorMsg);
 	}
-	this->sgs = IJSPClassRegister::getSGSObject(sgsType);
+	this->sgs.reset(IJSPClassRegister::getSGSObject(sgsType));
 	if (this->sgs == NULL) {
 		std::string errorMsg = "The introduced SGS is not";
 		errorMsg += " recognised: \'" + sgsType + "\'";
@@ -442,7 +442,7 @@ void CreationLRTFInverseIntervalMkSchedule::setup(FuzzyFW::ParameterDB *paramete
 		errorMsg += " during the evaluation of individuals";
 		throw IJSPException("Evaluation", errorMsg);
 	}
-	this->sgs = IJSPClassRegister::getSGSObject(sgsType);
+	this->sgs.reset(IJSPClassRegister::getSGSObject(sgsType));
 	if (this->sgs == NULL) {
 		std::string errorMsg = "The introduced SGS is not";
 		errorMsg += " recognised: \'" + sgsType + "\'";
@@ -569,7 +569,7 @@ void CreationSNTFIntervalMkSchedule::setup(FuzzyFW::ParameterDB *parameters) {
 		errorMsg += " during the evaluation of individuals";
 		throw IJSPException("Evaluation", errorMsg);
 	}
-	this->sgs = IJSPClassRegister::getSGSObject(sgsType);
+	this->sgs.reset(IJSPClassRegister::getSGSObject(sgsType));
 	if (this->sgs == NULL) {
 		std::string errorMsg = "The introduced SGS is not";
 		errorMsg += " recognised: \'" + sgsType + "\'";
@@ -727,7 +727,7 @@ void CreationSCTFIntervalMkSchedule::setup(FuzzyFW::ParameterDB *parameters) {
 		errorMsg += " during the evaluation of individuals";
 		throw IJSPException("Evaluation", errorMsg);
 	}
-	this->sgs = IJSPClassRegister::getSGSObject(sgsType);
+	this->sgs.reset(IJSPClassRegister::getSGSObject(sgsType));
 	if (this->sgs == NULL) {
 		std::string errorMsg = "The introduced SGS is not";
 		errorMsg += " recognised: \'" + sgsType + "\'";
@@ -867,7 +867,7 @@ void CreationLCTFIntervalMkSchedule::setup(FuzzyFW::ParameterDB *parameters) {
 		errorMsg += " during the evaluation of individuals";
 		throw IJSPException("Evaluation", errorMsg);
 	}
-	this->sgs = IJSPClassRegister::getSGSObject(sgsType);
+	this->sgs.reset(IJSPClassRegister::getSGSObject(sgsType));
 	if (this->sgs == NULL) {
 		std::string errorMsg = "The introduced SGS is not";
 		errorMsg += " recognised: \'" + sgsType + "\'";
@@ -1005,7 +1005,7 @@ void CreationSPJFIntervalMkSchedule::setup(FuzzyFW::ParameterDB *parameters) {
 		errorMsg += " during the evaluation of individuals";
 		throw IJSPException("Evaluation", errorMsg);
 	}
-	this->sgs = IJSPClassRegister::getSGSObject(sgsType);
+	this->sgs.reset(IJSPClassRegister::getSGSObject(sgsType));
 	if (this->sgs == NULL) {
 		std::string errorMsg = "The introduced SGS is not";
 		errorMsg += " recognised: \'" + sgsType + "\'";
@@ -1159,7 +1159,7 @@ void CreationSPJFInverseIntervalMkSchedule::setup(FuzzyFW::ParameterDB *paramete
 		errorMsg += " during the evaluation of individuals";
 		throw IJSPException("Evaluation", errorMsg);
 	}
-	this->sgs = IJSPClassRegister::getSGSObject(sgsType);
+	this->sgs.reset(IJSPClassRegister::getSGSObject(sgsType));
 	if (this->sgs == NULL) {
 		std::string errorMsg = "The introduced SGS is not";
 		errorMsg += " recognised: \'" + sgsType + "\'";
@@ -1286,7 +1286,7 @@ void CreationManagerIntervalMkSchedule::setup(FuzzyFW::ParameterDB *parameters) 
 		errorMsg += " during the evaluation of individuals";
 		throw IJSPException("Evaluation", errorMsg);
 	}
-	this->sgs = IJSPClassRegister::getSGSObject(sgsType);
+	this->sgs.reset(IJSPClassRegister::getSGSObject(sgsType));
 	if (this->sgs == NULL) {
 		std::string errorMsg = "The introduced SGS is not";
 		errorMsg += " recognised: \'" + sgsType + "\'";

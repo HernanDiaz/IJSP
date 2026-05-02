@@ -13,6 +13,7 @@
 #include "Fitness.h"
 #include "ProblemIJSP.h"
 #include "IJSPException.h"
+#include <memory>
 #include "SGS_IJSP.h"
 
 namespace IJSP {
@@ -47,7 +48,7 @@ namespace IJSP {
 		/*
 		* SGS to create schedules from task orderings
 		*/
-		SGS_IJSP * sgs;
+		std::unique_ptr<SGS_IJSP> sgs;
 
 
 
@@ -59,13 +60,13 @@ namespace IJSP {
 		 * Default constructor
 		 */
 		explicit CreationRandomSchedule(FuzzyFW::ParameterDB *parameters = NULL)
-			: sgsLabel(CREATION_SGS), sgs(NULL), Creation(parameters) { }
+			: sgsLabel(CREATION_SGS), Creation(parameters) { }
 
 		/**
 		* Copy constructor
 		*/
 		CreationRandomSchedule(const CreationRandomSchedule &source)
-			: Creation(source), sgsLabel(CREATION_SGS), sgs(NULL) { }
+			: Creation(source), sgsLabel(CREATION_SGS) { }
 
 		/**
 		* Loads the needed parameters: Read the minimum/maximum

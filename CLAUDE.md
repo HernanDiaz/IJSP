@@ -94,9 +94,10 @@ Runs 6 instances × 5 configs (30 parallel jobs) against baseline in
 
 | Issue | Location | Risk |
 |-------|----------|------|
-| `-fpermissive` flag | `Makefile` | Suppresses real C++ errors |
-| `throw new FuzzyFWException(...)` | Throughout | Memory leak if `catch` forgets `delete ex` |
-| Raw owning pointers | SGS, encoder, decoder fields | Manual delete; candidate for `unique_ptr` |
+| ~~`-fpermissive` flag~~ | ~~`Makefile`~~ | **Fixed** — 14 rvalue errors patched in `CreationIJSP.cpp` |
+| ~~`throw new FuzzyFWException(...)`~~ | ~~Throughout~~ | **Fixed** — all 470 throw-by-pointer converted to throw-by-value |
+| ~~Raw owning pointers (SGS)~~ | ~~Decoder/Creation `sgs` fields~~ | **Fixed** — converted to `std::unique_ptr<SGS_*>`; fixes memory leaks in all Creation classes |
+| Raw owning pointers (encoder/decoder) | `SharedVarsEvolutionary` fields | Cannot use `unique_ptr`: `Encoder.h` includes `SharedVarsEvolutionary.h` (circular). Needs a new `SharedVarsEvolutionary.cpp` to define the destructor out-of-line. Currently safe: `clearAll()` nulls before destructor fires. |
 | `EncoderIJSP_JobOrder` copy ctor takes `const EncoderIJSP_Order&` | `EncoderIJSP_JobOrder.h` | Cross-type ctor, intent unclear |
 
 ---

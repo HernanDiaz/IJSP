@@ -7,6 +7,7 @@
 
 #include "FJSPClassRegister.h"
 #include "Decoder.h"
+#include <memory>
 #include "EncoderFJSP.h"
 
 
@@ -38,7 +39,7 @@ protected:
 	/*
 	* SGS to create schedules from task orderings
 	*/
-	SGS_FJSP * sgs;
+	std::unique_ptr<SGS_FJSP> sgs;
 
 
 
@@ -65,9 +66,7 @@ public:
 	/**
 	* Destructor
 	*/
-	virtual ~DecoderFJSP() {
-		delete this->sgs;
-	}
+	virtual ~DecoderFJSP() = default;
 };
 
 

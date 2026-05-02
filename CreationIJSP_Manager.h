@@ -34,7 +34,7 @@ class CreationManagerIntervalMkSchedule : public FuzzyFW::Creation {
 	/*
 	* SGS to create schedules from task orderings
 	*/
-	SGS_IJSP * sgs;
+	std::unique_ptr<SGS_IJSP> sgs;
 
 
 	CreationRandomSchedule randomSchedule;
@@ -49,13 +49,13 @@ public:
 	 * Default constructor
 	 */
 	explicit CreationManagerIntervalMkSchedule(FuzzyFW::ParameterDB *parameters = NULL)
-		: sgsLabel(CREATION_SGS), sgs(NULL), Creation(parameters), randomRatio(0) { }
+		: sgsLabel(CREATION_SGS), Creation(parameters), randomRatio(0) { }
 
 	/**
 	* Copy constructor
 	*/
 	CreationManagerIntervalMkSchedule(const CreationManagerIntervalMkSchedule &source)
-		: Creation(source), sgsLabel(CREATION_SGS), sgs(NULL), randomRatio(source.randomRatio) { }
+		: Creation(source), sgsLabel(CREATION_SGS), randomRatio(source.randomRatio) { }
 
 	/**
 	* Loads the needed parameters: Read the minimum/maximum

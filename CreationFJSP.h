@@ -5,6 +5,7 @@
  */
 #pragma once
 
+#include <memory>
 #include "Creation.h"
 #include "FJSPClassRegister.h"
 #include "EncoderFJSP.h"
@@ -39,7 +40,7 @@ protected:
 	/*
 	* SGS to create schedules from task orderings
 	*/
-	SGS_FJSP * sgs;
+	std::unique_ptr<SGS_FJSP> sgs;
 
 
 
@@ -51,13 +52,13 @@ public:
 	 * Default constructor
 	 */
 	explicit CreationRandomSchedule(FuzzyFW::ParameterDB *parameters = NULL)
-		: sgsLabel(CREATION_SGS),sgs(NULL), Creation(parameters) { }
+		: sgsLabel(CREATION_SGS), Creation(parameters) { }
 
 	/**
 	* Copy constructor
 	*/
 	CreationRandomSchedule(const CreationRandomSchedule &source)
-		: Creation(source), sgsLabel(CREATION_SGS), sgs(NULL) { }
+		: Creation(source), sgsLabel(CREATION_SGS) { }
 
 	/**
 	* Loads the needed parameters: Read the minimum/maximum

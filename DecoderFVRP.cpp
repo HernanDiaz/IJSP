@@ -19,10 +19,8 @@ namespace FVRP {
 //-----  Copy constructor  ----------------------------------------------------
 DecoderFVRP::DecoderFVRP(const DecoderFVRP & source)
 	: sgsLabel(source.sgsLabel), Decoder(source) {
-	if (source.sgs != NULL)
-		this->sgs = source.sgs->clone();
-	else
-		this->sgs = NULL;
+	if (source.sgs)
+		this->sgs.reset(source.sgs->clone());
 }
 
 
@@ -39,7 +37,7 @@ void DecoderFVRP::setup(FuzzyFW::ParameterDB *parameters) {
 		throw FVRPException("Evaluation", errorMsg);
 	}
 
-	this->sgs = FVRPClassRegister::getSGSObject(sgsType);
+	this->sgs.reset(FVRPClassRegister::getSGSObject(sgsType));
 	if (this->sgs == NULL) {
 		std::string errorMsg = "The introduced SGS is not";
 		errorMsg += " recognised: \'" + sgsType + "\'";

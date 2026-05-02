@@ -8,6 +8,7 @@
 
 #include "IJSPClassRegister.h"
 #include "Decoder.h"
+#include <memory>
 #include "EncoderIJSP.h"
 
 
@@ -40,7 +41,7 @@ protected:
 	/*
 	* SGS to create schedules from task orderings
 	*/
-	SGS_IJSP * sgs;
+	std::unique_ptr<SGS_IJSP> sgs;
 
 
 
@@ -67,9 +68,7 @@ public:
 	/**
 	* Destructor
 	*/
-	virtual ~DecoderIJSP() {
-		delete this->sgs;
-	}
+	virtual ~DecoderIJSP() = default;
 };
 
 }

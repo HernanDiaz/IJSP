@@ -20,10 +20,8 @@ namespace IJSP {
 //-----  Copy constructor  ----------------------------------------------------
 DecoderIJSP::DecoderIJSP(const DecoderIJSP & source)
 	: sgsLabel(source.sgsLabel), Decoder(source) {
-	if (source.sgs != NULL)
-		this->sgs = source.sgs->clone();
-	else
-		this->sgs = NULL;
+	if (source.sgs)
+		this->sgs.reset(source.sgs->clone());
 }
 
 
@@ -39,7 +37,7 @@ void DecoderIJSP::setup(FuzzyFW::ParameterDB *parameters) {
 		errorMsg += " during the evaluation of individuals";
 		throw IJSPException("Evaluation", errorMsg);
 	}
-	this->sgs = IJSPClassRegister::getSGSObject(sgsType);
+	this->sgs.reset(IJSPClassRegister::getSGSObject(sgsType));
 	if (this->sgs == NULL) {
 		std::string errorMsg = "The introduced SGS is not";
 		errorMsg += " recognised: \'" + sgsType + "\'";
