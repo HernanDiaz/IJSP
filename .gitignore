@@ -35,3 +35,19 @@ experiments/check_floats.R
 # Papers and reference documents (managed separately)
 Papers/
 data/
+
+# Generated experiment results (baselines in statistical_results_exp7/ are tracked)
+experiments/statistical_results/
+experiments/statistical_results_hc_vs_ts/
+experiments/irace/
+experiments/irace_hc/
+experiments/n8_analysis/
+
+# Generated figures and plots
+figures/
+experiments/**/*.pdf
+experiments/**/*.png
+
+# Word / Office documents
+*.docx
+*.xlsx
