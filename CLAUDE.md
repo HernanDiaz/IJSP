@@ -61,6 +61,23 @@ Converts a task-ordering genotype (integer permutation) into a concrete
 `ScheduleIJSP`. Each Decoder and Creation object owns one
 `std::unique_ptr<SGS_IJSP> sgs`. Created via `IJSPClassRegister`.
 
+### Creation class hierarchy (IJSP)
+`CreationRandomSchedule` is the base for all IJSP creation classes. It owns
+`sgsLabel`, `sgs` (the SGS), `randomRatio`, and implements `shouldUseRandom()`.
+Its `setup()` loads SGS and `randomRatio`. All 9 concrete classes (SRT, LRTF,
+LRTFInverse, SNTF, SCTF, LCTF, SPJF, SPJFInverse, Manager) inherit from it
+and only override `createIndividual()` (and `setup()` for Manager which also
+sets up its embedded SPJFSchedule and LRTFSchedule). Calling
+`CreationRandomSchedule::createIndividual(svars)` from a concrete class
+produces a pure-random individual using the shared SGS.
+
+### Crossover dispatch (IJSP)
+`CrossoverIJSP_Base` (inherits `FuzzyFW::Crossover`) provides a single
+`apply()` that dispatches to `applyPermutation()` or `applyJobPermutation()`
+based on whether `svars->encoder` is an `EncoderIJSP_Order` or
+`EncoderIJSP_JobOrder`. All 4 crossover classes (JOX, GOX, GPMX, PPX) inherit
+`CrossoverIJSP_Base` and implement only the two typed variants.
+
 ---
 
 ## File Map (key files)
@@ -101,8 +118,10 @@ Runs 6 instances × 5 configs (30 parallel jobs) against baseline in
 | Delete-on-incomplete-type (UB) | `SharedVarsEvolutionary.h:56-57` | GCC warns: `delete encoder/decoder` on forward-declared types skips the real destructor. Same root cause as above; resolved by the `.cpp` split. |
 | Raw owning pointers (operators) | `EvolutiveAlgorithm` `evaluator`; `GeneticAlgorithm` `creation`, `selection`, `crossover`, `mutation`, `replacement`, `bestSoFar`; `SharedVarsEvolutionary` `rng` | All managed via manual `delete` in `clearAll()`/destructors. Longer-term `unique_ptr` candidates; not urgent since patterns are correct. |
 | `clone()` returns raw `T*` | All operators and problem classes | 20+ `clone()` methods return a raw pointer the caller must `delete`. Inconsistent with `unique_ptr<SGS_*>` introduced for `sgs`. Consider returning `unique_ptr<T>` or `shared_ptr<T>`. |
-| `#include "EncoderFJSP.h"` in `CreationIJSP.h` | `CreationIJSP.h:11` | FJSP encoder header pulled into an IJSP creation header. Likely a copy-paste leftover; needs verification that no IJSP creation class actually uses FJSP encoder types. |
-| `EncoderIJSP_JobOrder` copy ctor takes `const EncoderIJSP_Order&` | `EncoderIJSP_JobOrder.h` | Cross-type ctor, intent unclear |
+| ~~Dead `#include "EncoderFJSP.h"` in IJSP creation~~ | ~~`CreationIJSP.h`~~ | **Fixed** — replaced with `#include "Encoder.h"` (the real dependency) |
+| ~~`EncoderIJSP_JobOrder` copy ctor cross-type typo~~ | ~~`EncoderIJSP_JobOrder.h`~~ | **Fixed** — ctor now takes `const EncoderIJSP_JobOrder&` |
+| ~~Duplicated `setup()` / `randomRatio` check in 8 Creation classes~~ | ~~`CreationIJSP_*.h/.cpp`~~ | **Fixed** — pulled into `CreationRandomSchedule` base; `shouldUseRandom()` added |
+| ~~Duplicated encoding dispatch in 4 Crossover `apply()` methods~~ | ~~`CrossoverIJSP.cpp`~~ | **Fixed** — extracted to `CrossoverIJSP_Base::apply()` |
 | `NULL` vs `nullptr` | Throughout | C++11 codebase mixes both. `nullptr` is type-safe; `NULL` is a macro that can silently convert to `int`. Low risk, cosmetic. |
 
 ---
