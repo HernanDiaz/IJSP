@@ -6,7 +6,7 @@
  */
 #pragma once
 
-#include "CreationIJSP.h"
+#include "CreationIJSP_Base.h"
 
 
 namespace IJSP {
