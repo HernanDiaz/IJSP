@@ -39,16 +39,20 @@ once at startup, then `getXxxObject("name")` to instantiate. Files:
 **Adding a new class:** include its `.h` in the register file, add one line in
 `registerClasses()`. No other file needs changing.
 
-### Umbrella headers (one class per file)
-Multi-class `.h` files have been split into per-class files; the original `.h`
-becomes a thin aggregator with only `#include` directives. `#pragma once` in
-every file prevents circular-include issues.
+### Umbrella headers and per-class `.cpp` files (one class per file)
+Multi-class `.h` and `.cpp` files have been split into per-class files; the
+original `.h` becomes a thin aggregator with only `#include` directives. The
+original `.cpp` is deleted and replaced by one `.cpp` per class. `#pragma once`
+in every header prevents circular-include issues.
 
-Already split: `LocalSearch.h`, `Fitness.h`, `NeighbourhoodIJSP_Cmax.h`,
-`EvaluationIJSP.h`, `CrossoverIJSP.h`, `EncoderIJSP.h`, `DecoderIJSP.h`,
-`CreationIJSP.h`.
+Already split (`.h` + `.cpp`): `LocalSearch.h`, `Fitness.h`,
+`NeighbourhoodIJSP_Cmax.h` / `NeighbourhoodIJSP_Cmax.cpp` (→ 8 files),
+`EvaluationIJSP.h`, `CrossoverIJSP.h` / `CrossoverIJSP.cpp` (→ 5 files),
+`EncoderIJSP.h`, `DecoderIJSP.h`, `CreationIJSP.h` / `CreationIJSP.cpp`
+(→ 10 files, incl. new `CreationIJSP_Base.h` and `CreationIJSP_helpers.h`),
+`Selection.h` / `Selection.cpp` (→ 13 files each, incl. new `Selection_Base.h`).
 
-Rule: if a `.h` contains more than one class, split it.
+Rule: if a `.h` or `.cpp` contains more than one class, split it.
 
 ### SharedVarsEvolutionary
 Struct threaded through all algorithm components carrying shared state:
