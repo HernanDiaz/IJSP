@@ -10,6 +10,15 @@
 #include <iostream>
 #include <fstream>
 namespace IJSP {
+static bool fiBetter(const FuzzyFW::Interval& a, const FuzzyFW::Interval& b) {
+	FuzzyFW::FitnessInterval fa(a, false), fb(b, false);
+	return fa.isBetterThan(&fb);
+}
+static bool fiWorse(const FuzzyFW::Interval& a, const FuzzyFW::Interval& b) {
+	FuzzyFW::FitnessInterval fa(a, false), fb(b, false);
+	return fa.isWorseThan(&fb);
+}
+
 
 //=============================================================================
 //
@@ -169,7 +178,7 @@ FuzzyFW::Individual * CreationSRTIntervalMkSchedule::createIndividual(
 			//Order the jobs from higher to lower remaining time
 			int k = 0;
 		    while (k < jobOrderByRemainingTime.size() && 
-				FuzzyFW::FitnessInterval(jobRemainingTime[i], false).isBetterThan(&(FuzzyFW::FitnessInterval(jobRemainingTime[jobOrderByRemainingTime[k]], false)))) {
+				fiBetter(jobRemainingTime[i], jobRemainingTime[jobOrderByRemainingTime[k]])) {
 				k++;
 			}
 			jobOrderByRemainingTime.insert(jobOrderByRemainingTime.begin()+k,i);
@@ -191,7 +200,7 @@ FuzzyFW::Individual * CreationSRTIntervalMkSchedule::createIndividual(
 		jobRemainingTime[rand] -= fuzzyProb->getTask(count[rand])->p;
 		// Update order of the jobs from higher to lower remaining time
 		while (k < jobOrderByRemainingTime.size()-1 &&
-			FuzzyFW::FitnessInterval(jobRemainingTime[jobOrderByRemainingTime[k]], false).isBetterThan(&(FuzzyFW::FitnessInterval(jobRemainingTime[jobOrderByRemainingTime[k+1]], false)))) {
+			fiBetter(jobRemainingTime[jobOrderByRemainingTime[k]], jobRemainingTime[jobOrderByRemainingTime[k+1]])) {
 			int aux = jobOrderByRemainingTime[k];
 			jobOrderByRemainingTime[k] = jobOrderByRemainingTime[k + 1];
 			jobOrderByRemainingTime[k + 1] = aux;
@@ -298,7 +307,7 @@ FuzzyFW::Individual * CreationLRTFIntervalMkSchedule::createIndividual(
 			//Order the jobs from higher to lower remaining time
 			int k = 0;
 			while (k < jobOrderByRemainingTime.size() &&
-				FuzzyFW::FitnessInterval(jobRemainingTime[i], false).isBetterThan(&(FuzzyFW::FitnessInterval(jobRemainingTime[jobOrderByRemainingTime[k]], false)))) {
+				fiBetter(jobRemainingTime[i], jobRemainingTime[jobOrderByRemainingTime[k]])) {
 				k++;
 			}
 			jobOrderByRemainingTime.insert(jobOrderByRemainingTime.begin() + k, i);
@@ -353,7 +362,7 @@ FuzzyFW::Individual * CreationLRTFIntervalMkSchedule::createIndividual(
 
 		// Update order of the jobs from higher to lower remaining time
 		while (k < jobOrderByRemainingTime.size() - 1 &&
-			FuzzyFW::FitnessInterval(jobRemainingTime[jobOrderByRemainingTime[k]], false).isBetterThan(&(FuzzyFW::FitnessInterval(jobRemainingTime[jobOrderByRemainingTime[k + 1]], false)))) {
+			fiBetter(jobRemainingTime[jobOrderByRemainingTime[k]], jobRemainingTime[jobOrderByRemainingTime[k + 1]])) {
 			int aux = jobOrderByRemainingTime[k];
 			jobOrderByRemainingTime[k] = jobOrderByRemainingTime[k + 1];
 			jobOrderByRemainingTime[k + 1] = aux;
@@ -485,7 +494,7 @@ FuzzyFW::Individual * CreationLRTFInverseIntervalMkSchedule::createIndividual(
 			//Order the jobs from higher to lower remaining time
 			int k = 0;
 			while (k < jobOrderByRemainingTime.size() &&
-				FuzzyFW::FitnessInterval(jobRemainingTime[i], false).isBetterThan(&(FuzzyFW::FitnessInterval(jobRemainingTime[jobOrderByRemainingTime[k]], false)))) {
+				fiBetter(jobRemainingTime[i], jobRemainingTime[jobOrderByRemainingTime[k]])) {
 				k++;
 			}
 			jobOrderByRemainingTime.insert(jobOrderByRemainingTime.begin() + k, i);
@@ -506,7 +515,7 @@ FuzzyFW::Individual * CreationLRTFInverseIntervalMkSchedule::createIndividual(
 		jobRemainingTime[rand] -= fuzzyProb->getTask(count[rand])->p;
 		// Update order of the jobs from higher to lower remaining time
 		while (k < jobOrderByRemainingTime.size() - 1 &&
-			FuzzyFW::FitnessInterval(jobRemainingTime[jobOrderByRemainingTime[k]], false).isBetterThan(&(FuzzyFW::FitnessInterval(jobRemainingTime[jobOrderByRemainingTime[k + 1]], false)))) {
+			fiBetter(jobRemainingTime[jobOrderByRemainingTime[k]], jobRemainingTime[jobOrderByRemainingTime[k + 1]])) {
 			int aux = jobOrderByRemainingTime[k];
 			jobOrderByRemainingTime[k] = jobOrderByRemainingTime[k + 1];
 			jobOrderByRemainingTime[k + 1] = aux;
@@ -611,7 +620,7 @@ FuzzyFW::Individual * CreationSNTFIntervalMkSchedule::createIndividual(
 			//Order the jobs from higher to lower first task time
 			int k = 0;
 			while (k < jobOrderByRemainingTime.size() &&
-				FuzzyFW::FitnessInterval(nextTaskTime[i], false).isBetterThan(&(FuzzyFW::FitnessInterval(nextTaskTime[jobOrderByRemainingTime[k]], false)))) {
+				fiBetter(nextTaskTime[i], nextTaskTime[jobOrderByRemainingTime[k]])) {
 				k++;
 			}
 			jobOrderByRemainingTime.insert(jobOrderByRemainingTime.begin() + k, i);
@@ -678,7 +687,7 @@ FuzzyFW::Individual * CreationSNTFIntervalMkSchedule::createIndividual(
 			//Order the jobs from higher to lower first task time
 			int l = 0;
 			while (l < jobOrderByRemainingTime.size() &&
-				FuzzyFW::FitnessInterval(nextTaskTime[job], false).isBetterThan(&(FuzzyFW::FitnessInterval(nextTaskTime[jobOrderByRemainingTime[l]], false)))) {
+				fiBetter(nextTaskTime[job], nextTaskTime[jobOrderByRemainingTime[l]])) {
 				l++;
 			}
 			jobOrderByRemainingTime.insert(jobOrderByRemainingTime.begin() + l, job);
@@ -772,7 +781,7 @@ FuzzyFW::Individual * CreationSCTFIntervalMkSchedule::createIndividual(
 			//Order the jobs from higher to lower remaining time
 			int k = 0;
 			while (k < jobOrderByRemainingTime.size() &&
-				FuzzyFW::FitnessInterval(jobRemainingTime[i], false).isBetterThan(&(FuzzyFW::FitnessInterval(jobRemainingTime[jobOrderByRemainingTime[k]], false)))) {
+				fiBetter(jobRemainingTime[i], jobRemainingTime[jobOrderByRemainingTime[k]])) {
 				k++;
 			}
 			jobOrderByRemainingTime.insert(jobOrderByRemainingTime.begin() + k, i);
@@ -802,8 +811,7 @@ FuzzyFW::Individual * CreationSCTFIntervalMkSchedule::createIndividual(
 
 		// Update order of the jobs from higher to lower remaining time
 		while (k < jobOrderByRemainingTime.size() - 1 &&
-			FuzzyFW::FitnessInterval(jobRemainingTime[jobOrderByRemainingTime[k]] + jMkspan[jobOrderByRemainingTime[k]], false)
-			.isBetterThan(&(FuzzyFW::FitnessInterval(jobRemainingTime[jobOrderByRemainingTime[k + 1]] + jMkspan[jobOrderByRemainingTime[k + 1]], false)))) {
+			fiBetter(jobRemainingTime[jobOrderByRemainingTime[k]] + jMkspan[jobOrderByRemainingTime[k]], jobRemainingTime[jobOrderByRemainingTime[k + 1]] + jMkspan[jobOrderByRemainingTime[k + 1]])) {
 			int aux = jobOrderByRemainingTime[k];
 			jobOrderByRemainingTime[k] = jobOrderByRemainingTime[k + 1];
 			jobOrderByRemainingTime[k + 1] = aux;
@@ -913,7 +921,7 @@ FuzzyFW::Individual * CreationLCTFIntervalMkSchedule::createIndividual(
 			//Order the jobs from higher to lower remaining time
 			int k = 0;
 			while (k < jobOrderByRemainingTime.size() &&
-				FuzzyFW::FitnessInterval(jobRemainingTime[i], false).isBetterThan(&(FuzzyFW::FitnessInterval(jobRemainingTime[jobOrderByRemainingTime[k]], false)))) {
+				fiBetter(jobRemainingTime[i], jobRemainingTime[jobOrderByRemainingTime[k]])) {
 				k++;
 			}
 			jobOrderByRemainingTime.insert(jobOrderByRemainingTime.begin() + k, i);
@@ -942,8 +950,7 @@ FuzzyFW::Individual * CreationLCTFIntervalMkSchedule::createIndividual(
 
 		// Update order of the jobs from higher to lower remaining time
 		while (k < jobOrderByRemainingTime.size() - 1 &&
-			FuzzyFW::FitnessInterval(jobRemainingTime[jobOrderByRemainingTime[k]] + jMkspan[jobOrderByRemainingTime[k]], false)
-			.isBetterThan(&(FuzzyFW::FitnessInterval(jobRemainingTime[jobOrderByRemainingTime[k + 1]] + jMkspan[jobOrderByRemainingTime[k + 1]], false)))) {
+			fiBetter(jobRemainingTime[jobOrderByRemainingTime[k]] + jMkspan[jobOrderByRemainingTime[k]], jobRemainingTime[jobOrderByRemainingTime[k + 1]] + jMkspan[jobOrderByRemainingTime[k + 1]])) {
 			int aux = jobOrderByRemainingTime[k];
 			jobOrderByRemainingTime[k] = jobOrderByRemainingTime[k + 1];
 			jobOrderByRemainingTime[k + 1] = aux;
@@ -1082,8 +1089,7 @@ FuzzyFW::Individual * CreationSPJFIntervalMkSchedule::createIndividual(
 
 		//Order from better to worst
 		while (k < jobOrderByRemainingTime.size() - 1 &&
-			FuzzyFW::FitnessInterval(jMkspan[jobOrderByRemainingTime[k]], false)
-			.isWorseThan(&(FuzzyFW::FitnessInterval(jMkspan[jobOrderByRemainingTime[k + 1]], false)))) {
+			fiWorse(jMkspan[jobOrderByRemainingTime[k]], jMkspan[jobOrderByRemainingTime[k + 1]])) {
 			int aux = jobOrderByRemainingTime[k];
 			jobOrderByRemainingTime[k] = jobOrderByRemainingTime[k + 1];
 			jobOrderByRemainingTime[k + 1] = aux;
@@ -1226,8 +1232,7 @@ FuzzyFW::Individual * CreationSPJFInverseIntervalMkSchedule::createIndividual(
 
 		//Order from better to worst
 		while (k < jobOrderByRemainingTime.size() - 1 &&
-			FuzzyFW::FitnessInterval(jMkspan[jobOrderByRemainingTime[k]], false)
-			.isWorseThan(&(FuzzyFW::FitnessInterval(jMkspan[jobOrderByRemainingTime[k + 1]], false)))) {
+			fiWorse(jMkspan[jobOrderByRemainingTime[k]], jMkspan[jobOrderByRemainingTime[k + 1]])) {
 			int aux = jobOrderByRemainingTime[k];
 			jobOrderByRemainingTime[k] = jobOrderByRemainingTime[k + 1];
 			jobOrderByRemainingTime[k + 1] = aux;
