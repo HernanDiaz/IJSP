@@ -7,8 +7,8 @@
 #pragma once
 
 #include "Creation.h"
+#include "Encoder.h"
 #include "IJSPClassRegister.h"
-#include "EncoderFJSP.h"
 #include "Interval.h"
 #include "Fitness.h"
 #include "ProblemIJSP.h"

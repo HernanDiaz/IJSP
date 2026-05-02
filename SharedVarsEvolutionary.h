@@ -50,12 +50,10 @@ public:
 	}
 
 	/**
-	* Destructor
+	* Destructor — defined in SharedVarsEvolutionary.cpp where Encoder/Decoder
+	* are complete types (forward declarations here prevent an in-header delete).
 	*/
-	~SharedVarsEvolutionary() {
-		delete encoder;
-		delete decoder;
-	}
+	~SharedVarsEvolutionary();
 };
 
 }

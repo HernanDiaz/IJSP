@@ -58,8 +58,8 @@ before re-initialisation to prevent double-delete on a second `prepareToRun()`.
 
 ### SGS (Schedule Generation Scheme)
 Converts a task-ordering genotype (integer permutation) into a concrete
-`ScheduleIJSP`. Each Decoder, Creation, and Evaluation object owns one
-`SGS_IJSP *sgs` and deletes it in its destructor. Created via `IJSPClassRegister`.
+`ScheduleIJSP`. Each Decoder and Creation object owns one
+`std::unique_ptr<SGS_IJSP> sgs`. Created via `IJSPClassRegister`.
 
 ---
 
@@ -97,8 +97,13 @@ Runs 6 instances × 5 configs (30 parallel jobs) against baseline in
 | ~~`-fpermissive` flag~~ | ~~`Makefile`~~ | **Fixed** — 14 rvalue errors patched in `CreationIJSP.cpp` |
 | ~~`throw new FuzzyFWException(...)`~~ | ~~Throughout~~ | **Fixed** — all 470 throw-by-pointer converted to throw-by-value |
 | ~~Raw owning pointers (SGS)~~ | ~~Decoder/Creation `sgs` fields~~ | **Fixed** — converted to `std::unique_ptr<SGS_*>`; fixes memory leaks in all Creation classes |
-| Raw owning pointers (encoder/decoder) | `SharedVarsEvolutionary` fields | Cannot use `unique_ptr`: `Encoder.h` includes `SharedVarsEvolutionary.h` (circular). Needs a new `SharedVarsEvolutionary.cpp` to define the destructor out-of-line. Currently safe: `clearAll()` nulls before destructor fires. |
+| Raw owning pointers (encoder/decoder) | `SharedVarsEvolutionary` fields | Cannot use `unique_ptr` in header: `Encoder.h` → `SharedVarsEvolutionary.h` (circular). Fix: add `SharedVarsEvolutionary.cpp` to define destructor where types are complete. Currently safe: `clearAll()` nulls before destructor fires. |
+| Delete-on-incomplete-type (UB) | `SharedVarsEvolutionary.h:56-57` | GCC warns: `delete encoder/decoder` on forward-declared types skips the real destructor. Same root cause as above; resolved by the `.cpp` split. |
+| Raw owning pointers (operators) | `EvolutiveAlgorithm` `evaluator`; `GeneticAlgorithm` `creation`, `selection`, `crossover`, `mutation`, `replacement`, `bestSoFar`; `SharedVarsEvolutionary` `rng` | All managed via manual `delete` in `clearAll()`/destructors. Longer-term `unique_ptr` candidates; not urgent since patterns are correct. |
+| `clone()` returns raw `T*` | All operators and problem classes | 20+ `clone()` methods return a raw pointer the caller must `delete`. Inconsistent with `unique_ptr<SGS_*>` introduced for `sgs`. Consider returning `unique_ptr<T>` or `shared_ptr<T>`. |
+| `#include "EncoderFJSP.h"` in `CreationIJSP.h` | `CreationIJSP.h:11` | FJSP encoder header pulled into an IJSP creation header. Likely a copy-paste leftover; needs verification that no IJSP creation class actually uses FJSP encoder types. |
 | `EncoderIJSP_JobOrder` copy ctor takes `const EncoderIJSP_Order&` | `EncoderIJSP_JobOrder.h` | Cross-type ctor, intent unclear |
+| `NULL` vs `nullptr` | Throughout | C++11 codebase mixes both. `nullptr` is type-safe; `NULL` is a macro that can silently convert to `int`. Low risk, cosmetic. |
 
 ---
 

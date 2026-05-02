@@ -38,7 +38,7 @@ public:
 	/**
 	* Copy constructor
 	*/
-	EncoderIJSP_JobOrder(const EncoderIJSP_Order &source)
+	EncoderIJSP_JobOrder(const EncoderIJSP_JobOrder &source)
 		: Encoder(source) { }
 
 	/**
