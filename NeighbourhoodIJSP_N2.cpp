@@ -61,10 +61,10 @@ unsigned int NB_ParallelN2_MakespanIJSP::findNewNeighbours(
 							|| (!(task.head + task.task->p).EqualComponent(ms.head, comp) || criticalPath[task.ms] == false)) {
 
 							if (this->numNeighbours < this->neighbours.size()
-								&& this->neighbours[this->numNeighbours] != NULL)
+								&& this->neighbours[this->numNeighbours] != nullptr)
 								this->neighbours[this->numNeighbours]->setValues(task.mp, taskId);
 							else
-								this->neighbours.push_back(new NeighbourIJSP_Arc(task.mp, taskId));
+								this->neighbours.push_back(std::make_unique<NeighbourIJSP_Arc>(task.mp, taskId));
 							this->numNeighbours++;
 							added[task.mp] = true;
 						}
@@ -101,12 +101,12 @@ FuzzyFW::Fitness *NB_ParallelN2_MakespanIJSP::evaluateNeighbour(
 	FuzzyFW::Interval newHead, lower;
 	std::queue<int> taskQueue;
 
-	if (idx < 0 || idx > this->numNeighbours || this->neighbours[idx] == NULL) {
+	if (idx < 0 || idx > this->numNeighbours || this->neighbours[idx] == nullptr) {
 		std::string errorMsg = "Trying to access a non-existing neighbour";
 		throw IJSPException("Neighbourhood", errorMsg);
 	}
 
-	NeighbourIJSP_Arc *arc = this->neighbours[idx];
+	NeighbourIJSP_Arc *arc = this->neighbours[idx].get();
 	if (arc->x < 0 || arc->y < 0)
 		return NULL;
 
@@ -220,23 +220,23 @@ void NB_ParallelN2_MakespanIJSP::acceptNeighbour(const unsigned int idx,
 	int z, msz, jsz;
 	FuzzyFW::Interval newTail;
 	std::queue<int> taskQueue;
-	if (idx < 0 || idx > this->numNeighbours || this->neighbours[idx] == NULL) {
+	if (idx < 0 || idx > this->numNeighbours || this->neighbours[idx] == nullptr) {
 		std::string errorMsg = "Trying to access a non-existing neighbour";
 		throw IJSPException("Neighbourhood", errorMsg);
 	}
 
 	if (!this->neighbours[idx]->isEvaluated())
 		this->evaluateNeighbour(idx, svars, false);
-	if (this->schedule != NULL)
+	if (this->schedule != nullptr)
 		delete this->schedule;
 	this->schedule = dynamic_cast<ScheduleIJSP *>
 		(this->neighbours[idx]->getEvaluation()->clone());
-	if (this->currentFitness != NULL)
+	if (this->currentFitness != nullptr)
 		delete this->currentFitness;
 	this->currentFitness = dynamic_cast<FuzzyFW::FitnessInterval *>
 		(this->neighbours[idx]->getEvaluatedFitness()->clone());
 
-	NeighbourIJSP_Arc *arc = this->neighbours[idx];
+	NeighbourIJSP_Arc *arc = this->neighbours[idx].get();
 	std::vector<int> tailsUpdated;
 	tailsUpdated.resize(this->schedule->getScheduledTasks(), 0);
 

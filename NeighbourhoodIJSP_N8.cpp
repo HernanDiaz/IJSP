@@ -126,11 +126,11 @@ unsigned int NB_ParallelN8_MakespanIJSP::findNewNeighbours(
                 FuzzyFW::Interval estMs = estimateReinsertion(blockStart, newMp, newMs);
                 if (estMs.isLesserThan(currentMakespan, FuzzyFW::Interval::C_COMPONENT)) {
                     if (this->numNeighbours < this->neighbours.size()
-                        && this->neighbours[this->numNeighbours] != NULL)
+                        && this->neighbours[this->numNeighbours] != nullptr)
                         this->neighbours[this->numNeighbours]->setValues(
                             (unsigned int)blockStart, (unsigned int)newMp, (unsigned int)newMs, 1);
                     else
-                        this->neighbours.push_back(new NeighbourIJSP_Arc(
+                        this->neighbours.push_back(std::make_unique<NeighbourIJSP_Arc>(
                             (unsigned int)blockStart, (unsigned int)newMp, (unsigned int)newMs, 1));
                     this->numNeighbours++;
                 }
@@ -146,11 +146,11 @@ unsigned int NB_ParallelN8_MakespanIJSP::findNewNeighbours(
                 FuzzyFW::Interval estMs = estimateReinsertion(blockEnd, newMp, newMs);
                 if (estMs.isLesserThan(currentMakespan, FuzzyFW::Interval::C_COMPONENT)) {
                     if (this->numNeighbours < this->neighbours.size()
-                        && this->neighbours[this->numNeighbours] != NULL)
+                        && this->neighbours[this->numNeighbours] != nullptr)
                         this->neighbours[this->numNeighbours]->setValues(
                             (unsigned int)blockEnd, (unsigned int)newMp, (unsigned int)newMs, 1);
                     else
-                        this->neighbours.push_back(new NeighbourIJSP_Arc(
+                        this->neighbours.push_back(std::make_unique<NeighbourIJSP_Arc>(
                             (unsigned int)blockEnd, (unsigned int)newMp, (unsigned int)newMs, 1));
                     this->numNeighbours++;
                 }
@@ -171,11 +171,11 @@ unsigned int NB_ParallelN8_MakespanIJSP::findNewNeighbours(
                 FuzzyFW::Interval estMs = estimateReinsertion(blockStart, newMp_int, machineHead);
                 if (estMs.isLesserThan(currentMakespan, FuzzyFW::Interval::C_COMPONENT)) {
                     if (this->numNeighbours < this->neighbours.size()
-                        && this->neighbours[this->numNeighbours] != NULL)
+                        && this->neighbours[this->numNeighbours] != nullptr)
                         this->neighbours[this->numNeighbours]->setValues(
                             (unsigned int)blockStart, (unsigned int)(-1), (unsigned int)machineHead, 1);
                     else
-                        this->neighbours.push_back(new NeighbourIJSP_Arc(
+                        this->neighbours.push_back(std::make_unique<NeighbourIJSP_Arc>(
                             (unsigned int)blockStart, (unsigned int)(-1), (unsigned int)machineHead, 1));
                     this->numNeighbours++;
                 }
@@ -191,11 +191,11 @@ unsigned int NB_ParallelN8_MakespanIJSP::findNewNeighbours(
                 FuzzyFW::Interval estMs = estimateReinsertion(blockEnd, machineTail, -1);
                 if (estMs.isLesserThan(currentMakespan, FuzzyFW::Interval::C_COMPONENT)) {
                     if (this->numNeighbours < this->neighbours.size()
-                        && this->neighbours[this->numNeighbours] != NULL)
+                        && this->neighbours[this->numNeighbours] != nullptr)
                         this->neighbours[this->numNeighbours]->setValues(
                             (unsigned int)blockEnd, (unsigned int)machineTail, (unsigned int)(-1), 1);
                     else
-                        this->neighbours.push_back(new NeighbourIJSP_Arc(
+                        this->neighbours.push_back(std::make_unique<NeighbourIJSP_Arc>(
                             (unsigned int)blockEnd, (unsigned int)machineTail, (unsigned int)(-1), 1));
                     this->numNeighbours++;
                 }
@@ -294,12 +294,12 @@ FuzzyFW::Interval NB_ParallelN8_MakespanIJSP::estimateReinsertion(
 FuzzyFW::Fitness * NB_ParallelN8_MakespanIJSP::getEstimation(
     const unsigned int idx, const FuzzyFW::SharedVars *svars)
 {
-    if (idx >= this->numNeighbours || this->neighbours[idx] == NULL) {
+    if (idx >= this->numNeighbours || this->neighbours[idx] == nullptr) {
         std::string errorMsg = "Trying to access a non-existing neighbour";
         throw IJSPException("Neighbourhood", errorMsg);
     }
 
-    NeighbourIJSP_Arc *arc = this->neighbours[idx];
+    NeighbourIJSP_Arc *arc = this->neighbours[idx].get();
 
     // For tipo=0 (N2 boundary swap), delegate to the N2 implementation
     if (arc->tipo == 0)
@@ -324,12 +324,12 @@ FuzzyFW::Fitness * NB_ParallelN8_MakespanIJSP::evaluateNeighbour(
     const unsigned int idx, const FuzzyFW::SharedVars *svars,
     const bool improvement)
 {
-    if (idx >= this->numNeighbours || this->neighbours[idx] == NULL) {
+    if (idx >= this->numNeighbours || this->neighbours[idx] == nullptr) {
         std::string errorMsg = "Trying to access a non-existing neighbour";
         throw IJSPException("Neighbourhood", errorMsg);
     }
 
-    NeighbourIJSP_Arc *arc = this->neighbours[idx];
+    NeighbourIJSP_Arc *arc = this->neighbours[idx].get();
 
     // tipo=0: standard N2 boundary swap
     if (arc->tipo == 0)
@@ -447,12 +447,12 @@ FuzzyFW::Fitness * NB_ParallelN8_MakespanIJSP::evaluateNeighbour(
 void NB_ParallelN8_MakespanIJSP::acceptNeighbour(const unsigned int idx,
     const FuzzyFW::SharedVars *svars)
 {
-    if (idx >= this->numNeighbours || this->neighbours[idx] == NULL) {
+    if (idx >= this->numNeighbours || this->neighbours[idx] == nullptr) {
         std::string errorMsg = "Trying to access a non-existing neighbour";
         throw IJSPException("Neighbourhood", errorMsg);
     }
 
-    NeighbourIJSP_Arc *arc = this->neighbours[idx];
+    NeighbourIJSP_Arc *arc = this->neighbours[idx].get();
 
     if (arc->tipo == 0) {
         NB_ParallelN2_MakespanIJSP::acceptNeighbour(idx, svars);
@@ -469,10 +469,10 @@ void NB_ParallelN8_MakespanIJSP::acceptNeighbour(const unsigned int idx,
     int oldMp = this->schedule->taskInfo[T].mp;
     int newMp_signed = (arc->y == (unsigned int)(-1)) ? -1 : (int)arc->y;
 
-    if (this->schedule != NULL) delete this->schedule;
+    if (this->schedule != nullptr) delete this->schedule;
     this->schedule = dynamic_cast<ScheduleIJSP *>(
         this->neighbours[idx]->getEvaluation()->clone());
-    if (this->currentFitness != NULL) delete this->currentFitness;
+    if (this->currentFitness != nullptr) delete this->currentFitness;
     this->currentFitness = dynamic_cast<FuzzyFW::FitnessInterval *>(
         this->neighbours[idx]->getEvaluatedFitness()->clone());
 

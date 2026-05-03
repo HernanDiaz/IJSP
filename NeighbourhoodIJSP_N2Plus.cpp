@@ -68,10 +68,10 @@ unsigned int NB_ParallelN2Plus_MakespanIJSP::findNewNeighbours(
 							|| criticalPath[task.ms] == false)) {
 
 						if (this->numNeighbours < this->neighbours.size()
-							&& this->neighbours[this->numNeighbours] != NULL)
+							&& this->neighbours[this->numNeighbours] != nullptr)
 							this->neighbours[this->numNeighbours]->setValues(task.mp, taskId);
 						else
-							this->neighbours.push_back(new NeighbourIJSP_Arc(task.mp, taskId));
+							this->neighbours.push_back(std::make_unique<NeighbourIJSP_Arc>(task.mp, taskId));
 						this->numNeighbours++;
 						added[task.mp] = true;
 					}

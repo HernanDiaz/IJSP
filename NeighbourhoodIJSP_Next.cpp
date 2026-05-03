@@ -148,10 +148,10 @@ unsigned int NB_ParallelNext_MakespanIJSP::findNewNeighbours(
 
 						if (isBoundary || viable) {
 							if (this->numNeighbours < this->neighbours.size()
-								&& this->neighbours[this->numNeighbours] != NULL)
+								&& this->neighbours[this->numNeighbours] != nullptr)
 								this->neighbours[this->numNeighbours]->setValues(task.mp, taskId);
 							else
-								this->neighbours.push_back(new NeighbourIJSP_Arc(task.mp, taskId));
+								this->neighbours.push_back(std::make_unique<NeighbourIJSP_Arc>(task.mp, taskId));
 							this->numNeighbours++;
 							added[task.mp] = true;
 						}

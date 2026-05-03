@@ -6,6 +6,7 @@
  */
 #pragma once
 
+#include <memory>
 #include "NeighbourIJSP.h"
 #include "Neighbourhood.h"
 #include "NeighbourhoodIJSP_helpers.h"
@@ -38,7 +39,7 @@ protected:
 	Estimator estimator;
 	ScheduleIJSP *schedule;
 	FuzzyFW::FitnessInterval *currentFitness;
-	std::vector<NeighbourIJSP_Arc *> neighbours;
+	std::vector<std::unique_ptr<NeighbourIJSP_Arc>> neighbours;
 	std::vector<FuzzyFW::Interval> tails;
 
 	//=========================================================================

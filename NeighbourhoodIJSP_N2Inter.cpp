@@ -116,10 +116,10 @@ unsigned int NB_ParallelN2Inter_MakespanIJSP::findNewNeighbours(
 		if (boundary_m[x] >= 0 && boundary_p[x] >= 0 && !added[x]) {
 			int y = boundary_m[x];   // == boundary_p[x] (same machine order)
 			if (this->numNeighbours < this->neighbours.size()
-				&& this->neighbours[this->numNeighbours] != NULL)
+				&& this->neighbours[this->numNeighbours] != nullptr)
 				this->neighbours[this->numNeighbours]->setValues(x, y);
 			else
-				this->neighbours.push_back(new NeighbourIJSP_Arc(x, y));
+				this->neighbours.push_back(std::make_unique<NeighbourIJSP_Arc>(x, y));
 			this->numNeighbours++;
 			added[x] = true;
 			anyAdded = true;
@@ -133,10 +133,10 @@ unsigned int NB_ParallelN2Inter_MakespanIJSP::findNewNeighbours(
 			      : (boundary_p[x] >= 0) ? boundary_p[x] : -1;
 			if (y >= 0 && !added[x]) {
 				if (this->numNeighbours < this->neighbours.size()
-					&& this->neighbours[this->numNeighbours] != NULL)
+					&& this->neighbours[this->numNeighbours] != nullptr)
 					this->neighbours[this->numNeighbours]->setValues(x, y);
 				else
-					this->neighbours.push_back(new NeighbourIJSP_Arc(x, y));
+					this->neighbours.push_back(std::make_unique<NeighbourIJSP_Arc>(x, y));
 				this->numNeighbours++;
 				added[x] = true;
 			}

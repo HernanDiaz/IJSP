@@ -20,10 +20,10 @@ NB_ParallelBase_MakespanIJSP::NB_ParallelBase_MakespanIJSP(
 	currentFitness(NULL)
 {
 	for (size_t i = 0; i < source.neighbours.size(); i++) {
-		if (source.neighbours[i] != NULL)
-			neighbours.push_back(new NeighbourIJSP_Arc(*source.neighbours[i]));
+		if (source.neighbours[i] != nullptr)
+			neighbours.push_back(std::make_unique<NeighbourIJSP_Arc>(*source.neighbours[i]));
 		else
-			neighbours.push_back(NULL);
+			neighbours.push_back(nullptr);
 	}
 }
 
@@ -50,10 +50,6 @@ void NB_ParallelBase_MakespanIJSP::setup(FuzzyFW::ParameterDB *parameters) {
 
 //-----  Destructor  ----------------------------------------------------------
 NB_ParallelBase_MakespanIJSP::~NB_ParallelBase_MakespanIJSP() {
-	for (size_t i = 0; i < neighbours.size(); i++) {
-		if (neighbours[i] != NULL)
-			delete neighbours[i];
-	}
 	neighbours.clear();
 }
 
@@ -159,12 +155,11 @@ FuzzyFW::Fitness *NB_ParallelBase_MakespanIJSP::getEstimation(
 
 //-----  Discard a neighbour  -------------------------------------------------
 void NB_ParallelBase_MakespanIJSP::discardNeighbour(const unsigned int idx) {
-	if (idx < 0 || idx >= this->numNeighbours || this->neighbours[idx] == NULL) {
+	if (idx < 0 || idx >= this->numNeighbours || this->neighbours[idx] == nullptr) {
 		std::string errorMsg = "Trying to acces a non-existing neighbour";
 		throw IJSPException("Neighbourhood", errorMsg);
 	}
-	delete this->neighbours[idx];
-	this->neighbours[idx] = NULL;
+	this->neighbours[idx].reset();
 }
 
 
@@ -181,7 +176,7 @@ void NB_ParallelBase_MakespanIJSP::estimateHeadsTails(const unsigned int idx) {
 	int mac;
 	FuzzyFW::Interval makespan;
 
-	NeighbourIJSP_Arc *arc = this->neighbours[idx];
+	NeighbourIJSP_Arc *arc = this->neighbours[idx].get();
 	unsigned int x = arc->x;
 	unsigned int y = arc->y;
 
@@ -288,11 +283,11 @@ void NB_ParallelBase_MakespanIJSP::quickSort(const int left, const int right,
 FuzzyFW::Neighbour *NB_ParallelBase_MakespanIJSP::getNeighbour(
 	const unsigned int idx) {
 
-	if (idx < 0 || idx >= this->numNeighbours || this->neighbours[idx] == NULL) {
+	if (idx < 0 || idx >= this->numNeighbours || this->neighbours[idx] == nullptr) {
 		std::string errorMsg = "Trying to acces a non-existing neighbour";
 		throw IJSPException("Neighbourhood", errorMsg);
 	}
-	return this->neighbours[idx];
+	return this->neighbours[idx].get();
 }
 
 } // namespace IJSP

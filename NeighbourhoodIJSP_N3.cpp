@@ -80,7 +80,7 @@ unsigned int NB_ParallelN3_MakespanIJSP::findNewNeighbours(
 						|| (task.ms == -1 || !(task.head + task.task->p).EqualComponent(ms.head, comp))))  {
 						if (!added3[task.mp]) {
 							this->addNeighbour(mp.mp, task.mp, taskId, 3);
-							if (this->evaluateNeighbour(this->numNeighbours - 1, svars) == NULL) {
+							if (this->evaluateNeighbour(this->numNeighbours - 1, svars) == nullptr) {
 								this->discardNeighbour(this->numNeighbours - 1);
 							}
 							else added3[task.mp] = true;
@@ -88,14 +88,14 @@ unsigned int NB_ParallelN3_MakespanIJSP::findNewNeighbours(
 
 						if (!added1[task.mp] && (mpmp.mp == -1 || !(mpmpmp.head + mpmpmp.task->p).EqualComponent(mpmp.head, comp))) {
 							this->addNeighbour(mp.mp, task.mp, taskId, 1);
-							if (this->evaluateNeighbour(this->numNeighbours - 1, svars) == NULL) {
+							if (this->evaluateNeighbour(this->numNeighbours - 1, svars) == nullptr) {
 								this->discardNeighbour(this->numNeighbours - 1);
 							}
 							else added1[task.mp] = true;
 						}
 						if (!added2[task.mp] && (task.ms == -1 || !(task.head + task.task->p).EqualComponent(ms.head, comp))) {
 							this->addNeighbour(mp.mp, task.mp, taskId, 2);
-							if (this->evaluateNeighbour(this->numNeighbours - 1, svars) == NULL) {
+							if (this->evaluateNeighbour(this->numNeighbours - 1, svars) == nullptr) {
 								this->discardNeighbour(this->numNeighbours - 1);
 							}
 							else added2[task.mp] = true;
@@ -131,12 +131,12 @@ FuzzyFW::Fitness * NB_ParallelN3_MakespanIJSP::evaluateNeighbour(
 	FuzzyFW::Interval newHead, lower;
 	std::queue<int> taskQueue;
 
-	if (idx < 0 || idx > this->numNeighbours || this->neighbours[idx] == NULL) {
+	if (idx < 0 || idx > this->numNeighbours || this->neighbours[idx] == nullptr) {
 		std::string errorMsg = "Trying to access a non-existing neighbour";
 		throw IJSPException("Neighbourhood", errorMsg);
 	}
 
-	NeighbourIJSP_Arc *arc = this->neighbours[idx];
+	NeighbourIJSP_Arc *arc = this->neighbours[idx].get();
 	if (arc->x < 0 || arc->y < 0 || arc->z < 0)
 		return NULL;
 
@@ -299,23 +299,23 @@ void NB_ParallelN3_MakespanIJSP::acceptNeighbour(const unsigned int idx,
 	int z, msz, jsz;
 	FuzzyFW::Interval newTail;
 	std::queue<int> taskQueue;
-	if (idx < 0 || idx > this->numNeighbours || this->neighbours[idx] == NULL) {
+	if (idx < 0 || idx > this->numNeighbours || this->neighbours[idx] == nullptr) {
 		std::string errorMsg = "Trying to access a non-existing neighbour";
 		throw IJSPException("Neighbourhood", errorMsg);
 	}
 
 	if (!this->neighbours[idx]->isEvaluated())
 		this->evaluateNeighbour(idx, svars, false);
-	if (this->schedule != NULL)
+	if (this->schedule != nullptr)
 		delete this->schedule;
 	this->schedule = dynamic_cast<ScheduleIJSP *>
 		(this->neighbours[idx]->getEvaluation()->clone());
-	if (this->currentFitness != NULL)
+	if (this->currentFitness != nullptr)
 		delete this->currentFitness;
 	this->currentFitness = dynamic_cast<FuzzyFW::FitnessInterval *>
 		(this->neighbours[idx]->getEvaluatedFitness()->clone());
 
-	NeighbourIJSP_Arc *arc = this->neighbours[idx];
+	NeighbourIJSP_Arc *arc = this->neighbours[idx].get();
 	std::vector<char> inQueue(this->schedule->getScheduledTasks(), false);
 	switch (arc->tipo) {
 		case 0: {
@@ -377,15 +377,15 @@ void NB_ParallelN3_MakespanIJSP::acceptNeighbour(const unsigned int idx,
 void NB_ParallelN3_MakespanIJSP::addNeighbour(const unsigned int x,
 	const unsigned int y, const unsigned int z, const unsigned int tipo) {
 	if (this->numNeighbours < this->neighbours.size()
-		&& this->neighbours[this->numNeighbours] != NULL) {
+		&& this->neighbours[this->numNeighbours] != nullptr) {
 		this->neighbours[this->numNeighbours]->setValues(x, y, z, tipo);
 	}
 	else if (this->numNeighbours < this->neighbours.size()
-		&& this->neighbours[this->numNeighbours] == NULL) {
-		this->neighbours[this->numNeighbours] = new NeighbourIJSP_Arc(x, y, z, tipo);
+		&& this->neighbours[this->numNeighbours] == nullptr) {
+		this->neighbours[this->numNeighbours] = std::make_unique<NeighbourIJSP_Arc>(x, y, z, tipo);
 	}
 	else {
-		this->neighbours.push_back(new NeighbourIJSP_Arc(x, y, z, tipo));
+		this->neighbours.push_back(std::make_unique<NeighbourIJSP_Arc>(x, y, z, tipo));
 	}
 	this->numNeighbours++;
 }
@@ -393,12 +393,11 @@ void NB_ParallelN3_MakespanIJSP::addNeighbour(const unsigned int x,
 
 //-----  Discard a neighbour  -------------------------------------------------
 void NB_ParallelN3_MakespanIJSP::discardNeighbour(const unsigned int idx) {
-	if (idx < 0 || idx >= this->numNeighbours || this->neighbours[idx] == NULL) {
+	if (idx < 0 || idx >= this->numNeighbours || this->neighbours[idx] == nullptr) {
 		std::string errorMsg = "Trying to acces a non-existing neighbour";
 		throw IJSPException("Neighbourhood", errorMsg);
 	}
-	delete this->neighbours[idx];
-	this->neighbours[idx] = NULL;
+	this->neighbours[idx].reset();
 	if (idx != this->numNeighbours - 1) {
 		std::swap(this->neighbours[idx], this->neighbours[this->numNeighbours - 1]);
 	}
@@ -416,7 +415,7 @@ void NB_ParallelN3_MakespanIJSP::estimateHeadsTails(const unsigned int idx) {
 	FuzzyFW::Interval tailX, tailY, tailZ, headX, headY, headZ;
     FuzzyFW::Interval makespan;
 
-	NeighbourIJSP_Arc *arc = this->neighbours[idx];
+	NeighbourIJSP_Arc *arc = this->neighbours[idx].get();
 	if (arc->tipo == 0) {
 		unsigned int x = arc->x;
 		unsigned int y = arc->y;
