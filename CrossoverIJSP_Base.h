@@ -48,6 +48,9 @@ protected:
 	virtual void applyJobPermutation(FuzzyFW::IndividualArrayInt *ind1,
 		FuzzyFW::IndividualArrayInt *ind2,
 		const FuzzyFW::SharedVarsEvolutionary *svars) const = 0;
+
+	static std::vector<int> buildTaskGenotype(
+		FuzzyFW::IndividualArrayInt *ind, ProblemIJSP *prob);
 };
 
 } // namespace IJSP

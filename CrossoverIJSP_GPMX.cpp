@@ -107,39 +107,16 @@ void Crossover_GPMXBierwirth::applyJobPermutation(FuzzyFW::IndividualArrayInt *i
 	const FuzzyFW::SharedVarsEvolutionary *svars) const {
 
 	std::vector<int> offs1, offs2;
-	unsigned int nGenes, pos1, pos2, length, job;
+	unsigned int nGenes, pos1, pos2, length;
 	std::vector<char> content1, content2;
-	std::vector<int> counter, genotype1, genotype2;
 
 	nGenes = ind1->size();
 
-	// Convert the problem type
-	ProblemIJSP * fuzzyProb =
-		dynamic_cast<ProblemIJSP *>(svars->problem);
-	if (fuzzyProb == NULL) {
-		std::string errorMsg = "This enconding function works only with ";
-		errorMsg += "fuzzy problems.";
-		throw IJSPException("Creation", errorMsg);
-	}
-
-	// Generate genotypes without repetition
-	counter.resize(fuzzyProb->getNumberJobs(), 0);
-	genotype1.resize(nGenes);
-	for (unsigned int i = 0; i < nGenes; i++) {
-		job = ind1->getGene(i);
-		genotype1[i] = fuzzyProb->getTaskId(job, counter[job]);
-		counter[job]++;
-	}
-
-	counter.clear();
-	counter.resize(fuzzyProb->getNumberJobs(), 0);
-	genotype2.resize(nGenes);
-	for (unsigned int i = 0; i < nGenes; i++) {
-		job = ind2->getGene(i);
-		genotype2[i] = fuzzyProb->getTaskId(job, counter[job]);
-		counter[job]++;
-	}
-
+	ProblemIJSP *fuzzyProb = dynamic_cast<ProblemIJSP *>(svars->problem);
+	if (fuzzyProb == nullptr)
+		throw IJSPException("Creation", "This encoding function works only with Interval problems.");
+	std::vector<int> genotype1 = buildTaskGenotype(ind1, fuzzyProb);
+	std::vector<int> genotype2 = buildTaskGenotype(ind2, fuzzyProb);
 
 	// Find crossover point and string length
 	pos1 = svars->rng->getInteger(0, nGenes - 1);
@@ -208,8 +185,6 @@ void Crossover_GPMXBierwirth::applyJobPermutation(FuzzyFW::IndividualArrayInt *i
 
 
 	}
-	if (offs1.size() > nGenes || offs2.size() > nGenes)
-		std::cout << "Stop";
 	ind1->setGenotype(offs1);
 	ind2->setGenotype(offs2);
 }

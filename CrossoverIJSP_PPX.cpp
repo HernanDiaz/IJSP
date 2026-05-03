@@ -91,39 +91,16 @@ void Crossover_PPXBierwirth::applyJobPermutation(FuzzyFW::IndividualArrayInt *in
 	const FuzzyFW::SharedVarsEvolutionary *svars) const {
 
 	std::vector<int> offs1, offs2;
-	unsigned int nGenes, pos1, pos2, job, offsSize;
-	std::vector<char> content1, content2;
-	std::vector<int> counter, genotype1, genotype2;
+	unsigned int nGenes, pos1, pos2, offsSize;
 	std::vector<char> passed, mask;
 
 	nGenes = ind1->size();
 
-	// Convert the problem type
-	ProblemIJSP * fuzzyProb =
-		dynamic_cast<ProblemIJSP *>(svars->problem);
-	if (fuzzyProb == NULL) {
-		std::string errorMsg = "This enconding function works only with ";
-		errorMsg += "fuzzy problems.";
-		throw IJSPException("Creation", errorMsg);
-	}
-
-	// Generate genotypes without repetition
-	counter.resize(fuzzyProb->getNumberJobs(), 0);
-	genotype1.resize(nGenes);
-	for (unsigned int i = 0; i < nGenes; i++) {
-		job = ind1->getGene(i);
-		genotype1[i] = fuzzyProb->getTaskId(job, counter[job]);
-		counter[job]++;
-	}
-
-	counter.clear();
-	counter.resize(fuzzyProb->getNumberJobs(), 0);
-	genotype2.resize(nGenes);
-	for (unsigned int i = 0; i < nGenes; i++) {
-		job = ind2->getGene(i);
-		genotype2[i] = fuzzyProb->getTaskId(job, counter[job]);
-		counter[job]++;
-	}
+	ProblemIJSP *fuzzyProb = dynamic_cast<ProblemIJSP *>(svars->problem);
+	if (fuzzyProb == nullptr)
+		throw IJSPException("Creation", "This encoding function works only with Interval problems.");
+	std::vector<int> genotype1 = buildTaskGenotype(ind1, fuzzyProb);
+	std::vector<int> genotype2 = buildTaskGenotype(ind2, fuzzyProb);
 
 	mask.resize(nGenes);
 

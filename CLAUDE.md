@@ -88,6 +88,12 @@ based on whether `svars->encoder` is an `EncoderIJSP_Order` or
 `EncoderIJSP_JobOrder`. All 4 crossover classes (JOX, GOX, GPMX, PPX) inherit
 `CrossoverIJSP_Base` and implement only the two typed variants.
 
+`CrossoverIJSP_Base` also provides a protected static helper
+`buildTaskGenotype(ind, prob)` that converts a job-order individual (with
+repetitions) into a task-order vector using `prob->getTaskId()`. GOX, GPMX,
+and PPX call it at the start of `applyJobPermutation()` to avoid the repeated
+15-line preamble.
+
 ---
 
 ## File Map (key files)
@@ -134,7 +140,12 @@ Runs 6 instances × 5 configs (30 parallel jobs) against baseline in
 | ~~`EncoderIJSP_JobOrder` copy ctor cross-type typo~~ | ~~`EncoderIJSP_JobOrder.h`~~ | **Fixed** — ctor now takes `const EncoderIJSP_JobOrder&` |
 | ~~Duplicated `setup()` / `randomRatio` check in 8 Creation classes~~ | ~~`CreationIJSP_*.h/.cpp`~~ | **Fixed** — pulled into `CreationRandomSchedule` base; `shouldUseRandom()` added |
 | ~~Duplicated encoding dispatch in 4 Crossover `apply()` methods~~ | ~~`CrossoverIJSP.cpp`~~ | **Fixed** — extracted to `CrossoverIJSP_Base::apply()` |
+| ~~Duplicated job→task preamble in `applyJobPermutation` of GOX/GPMX/PPX~~ | ~~`CrossoverIJSP_*.cpp`~~ | **Fixed** — extracted to `CrossoverIJSP_Base::buildTaskGenotype()`; also removed dead `std::cout << "Stop"` from GPMX |
 | `NULL` vs `nullptr` | Throughout | C++11 codebase mixes both. `nullptr` is type-safe; `NULL` is a macro that can silently convert to `int`. Low risk, cosmetic. |
+| Near-identical `tipo` blocks in `estimateHeadsTails` | `NeighbourhoodIJSP_N3.cpp` | 4 blocks differ only by arc direction constant. Could extract to a private helper taking `tipo`. Low priority. |
+| Repeated init block in 3 constructors | `ProblemIJSP.cpp` | All 3 ctors call the same 5-line member init. Extract to a private `initMembers()`. Low priority. |
+| Duplicated print loops in `EvoLauncher` | `EvoLauncher.cpp` | `printRuntimes()` and `printStatistics()` share the same CSV-writing loop structure. Could merge with a lambda or template. Low priority. |
+| `evaluateNeighbour` returns `nullptr` as infeasibility signal | `NeighbourhoodIJSP_*.cpp` | Using `nullptr` return to mean "infeasible" conflates error and domain state. Would be cleaner with `std::optional<ScheduleIJSP*>` or a bool out-param. Medium priority. |
 
 ---
 

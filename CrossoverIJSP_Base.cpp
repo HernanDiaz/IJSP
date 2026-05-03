@@ -40,4 +40,17 @@ void CrossoverIJSP_Base::apply(FuzzyFW::Individual *ind1,
 		"Individuals must be coded as permutation to use this crossover operator");
 }
 
+std::vector<int> CrossoverIJSP_Base::buildTaskGenotype(
+	FuzzyFW::IndividualArrayInt *ind, ProblemIJSP *prob) {
+
+	std::vector<int> counter(prob->getNumberJobs(), 0);
+	std::vector<int> genotype(ind->size());
+	for (unsigned int i = 0; i < ind->size(); i++) {
+		unsigned int job = ind->getGene(i);
+		genotype[i] = prob->getTaskId(job, counter[job]);
+		counter[job]++;
+	}
+	return genotype;
+}
+
 } // namespace IJSP
