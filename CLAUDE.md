@@ -65,6 +65,12 @@ Converts a task-ordering genotype (integer permutation) into a concrete
 `ScheduleIJSP`. Each Decoder and Creation object owns one
 `std::unique_ptr<SGS_IJSP> sgs`. Created via `IJSPClassRegister`.
 
+`SGS_IJSP` provides a concrete `buildSchedule()` (template method): cast
+problem → reset/create schedule → loop calling `scheduleTask()` → call
+`postBuild()` → return. Subclasses only override `scheduleTask()` (required)
+and optionally `postBuild()`. `SGS_IJSP_Insertion` overrides `postBuild()` to
+call `schedule->verifyScheduling()`; `SGS_IJSP_Append` needs no overrides.
+
 ### Creation class hierarchy (IJSP)
 `CreationRandomSchedule` is the base for all IJSP creation classes. It owns
 `sgsLabel`, `sgs` (the SGS), `randomRatio`, and implements `shouldUseRandom()`.
@@ -120,6 +126,8 @@ Runs 6 instances × 5 configs (30 parallel jobs) against baseline in
 | ~~Raw owning pointers (SGS)~~ | ~~Decoder/Creation `sgs` fields~~ | **Fixed** — converted to `std::unique_ptr<SGS_*>`; fixes memory leaks in all Creation classes |
 | Raw owning pointers (encoder/decoder) | `SharedVarsEvolutionary` fields | Cannot use `unique_ptr` in header: `Encoder.h` → `SharedVarsEvolutionary.h` (circular). Fix: add `SharedVarsEvolutionary.cpp` to define destructor where types are complete. Currently safe: `clearAll()` nulls before destructor fires. |
 | Delete-on-incomplete-type (UB) | `SharedVarsEvolutionary.h:56-57` | GCC warns: `delete encoder/decoder` on forward-declared types skips the real destructor. Same root cause as above; resolved by the `.cpp` split. |
+| ~~Raw `NeighbourIJSP_Arc*` vector~~ | ~~`NB_ParallelBase_MakespanIJSP::neighbours`~~ | **Fixed** — `std::vector<std::unique_ptr<NeighbourIJSP_Arc>>`; bumped Makefile to C++14 |
+| ~~Duplicated `buildSchedule()` in SGS_IJSP_Append and Insertion~~ | ~~`SGS_IJSP_*.cpp`~~ | **Fixed** — moved to `SGS_IJSP` base as template method; `postBuild()` hook for Insertion's `verifyScheduling()` |
 | Raw owning pointers (operators) | `EvolutiveAlgorithm` `evaluator`; `GeneticAlgorithm` `creation`, `selection`, `crossover`, `mutation`, `replacement`, `bestSoFar`; `SharedVarsEvolutionary` `rng` | All managed via manual `delete` in `clearAll()`/destructors. Longer-term `unique_ptr` candidates; not urgent since patterns are correct. |
 | `clone()` returns raw `T*` | All operators and problem classes | 20+ `clone()` methods return a raw pointer the caller must `delete`. Inconsistent with `unique_ptr<SGS_*>` introduced for `sgs`. Consider returning `unique_ptr<T>` or `shared_ptr<T>`. |
 | ~~Dead `#include "EncoderFJSP.h"` in IJSP creation~~ | ~~`CreationIJSP.h`~~ | **Fixed** — replaced with `#include "Encoder.h"` (the real dependency) |

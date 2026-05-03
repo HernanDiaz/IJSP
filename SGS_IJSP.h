@@ -141,8 +141,7 @@ public:
 	* This method requires shared variables, as for instance, the problem
 	*/
 	virtual ScheduleIJSP * buildSchedule(
-		const FuzzyFW::SharedVars * const svars, std::vector<int> &order) = 0;
-
+		const FuzzyFW::SharedVars * const svars, std::vector<int> &order);
 
 	/*
 	* Clear all data structures to reuse the class
@@ -158,6 +157,12 @@ protected:
 	*/
 	virtual FuzzyFW::Interval scheduleTask(const TaskIJSP *task,
 		const int taskIdx) = 0;
+
+	/*
+	* Hook called at the end of buildSchedule(). Override to add
+	* post-construction validation or repair (e.g. verifyScheduling).
+	*/
+	virtual void postBuild() { }
 };
 
 

@@ -19,7 +19,7 @@ namespace IJSP {
 /**
 * The insertion SGS is introduced and detailed in the following paper:
 * "Schedule generation schemes for job shop problems with fuzziness.
-* JJ Palacios, CR Vela, I González-Rodríguez, J Puente - Proceedings of the
+* JJ Palacios, CR Vela, I Gonzï¿½lez-Rodrï¿½guez, J Puente - Proceedings of the
 * Twenty-first European Conference on Artificial Intelligence, 687-692,
 * 2014"
 *
@@ -89,15 +89,10 @@ public:
 	//		METHODS
 	//=========================================================================
 public:
-	/*
-	* The tasks are scheduled following the exact same order given by
-	* the array.
-	*/
-	virtual ScheduleIJSP * buildSchedule(
-		const FuzzyFW::SharedVars * const svars, std::vector<int> &order);
-
-
 protected:
+	virtual void postBuild() override;
+
+
 	/*
 	* Looks for a space in the current schedule where the task can be
 	* scheduled without delaying any other in any scenario. If there is no

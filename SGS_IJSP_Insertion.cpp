@@ -8,8 +8,6 @@
 */
 
 #include "SGS_IJSP_Insertion.h"
-#include <iostream>
-using namespace std;
 
 namespace IJSP {
 
@@ -21,33 +19,9 @@ namespace IJSP {
 	//=============================================================================
 	//		METHODS
 	//=============================================================================
-	//=====  Build schedule  ======================================================
-	ScheduleIJSP * SGS_IJSP_Insertion::buildSchedule(
-		const FuzzyFW::SharedVars * svars, std::vector<int> &order) {
-
-		if (svars->problem == NULL)
-			throw IJSPException("SGS", "Problem instance not created");
-
-		ProblemIJSP * fjspProb =
-			dynamic_cast<ProblemIJSP *>(svars->problem);
-		if (fjspProb == NULL) {
-			std::string errorMsg = "This SGS can be only used on Interval Problems.";
-			throw IJSPException("SGS", errorMsg);
-		}
-
-		if (this->isCreated)
-			this->schedule->reset();
-		else {
-			this->schedule = new ScheduleIJSP(fjspProb);
-			this->isCreated = true;
-		}
-
-		for (size_t i = 0; i < order.size(); i++) {
-			this->scheduleTask((*fjspProb)[order[i]], order[i]);
-		}
+	//=====  Post-build hook  =====================================================
+	void SGS_IJSP_Insertion::postBuild() {
 		this->schedule->verifyScheduling();
-
-		return this->schedule;
 	}
 
 

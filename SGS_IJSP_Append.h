@@ -118,16 +118,6 @@ public:
 	//		METHODS
 	//=========================================================================
 public:
-	/*
-	* Takes an order of operations and creates a schedule from them by
-	* appending them at "the end" of the schedule. The method requires the
-	* shared variables to have access to the problem to solve
-	*/
-	virtual ScheduleIJSP * buildSchedule(
-		const FuzzyFW::SharedVars * const svars, std::vector<int> &order);
-
-
-
 protected:
 	/*
 	* Schedules a specific task just after the last task scheduled in its

@@ -55,33 +55,6 @@ void SGS_IJSP_Append::setup(const FuzzyFW::ParameterDB *params) {
 //=============================================================================
 //		METHODS
 //=============================================================================
-//=====  Build schedule  ======================================================
-ScheduleIJSP * SGS_IJSP_Append::buildSchedule(const FuzzyFW::SharedVars * svars,
-	std::vector<int> &order) {
-
-	ProblemIJSP * fuzzyProb =
-		dynamic_cast<ProblemIJSP *>(svars->problem);
-	if (fuzzyProb == NULL) {
-		std::string errorMsg = "This SGS can be only used on Interval Problems.";
-		throw IJSPException("SGS", errorMsg);
-	}
-
-	if (this->isCreated)
-		this->schedule->reset();
-	else {
-		this->schedule = new ScheduleIJSP(fuzzyProb);
-		this->isCreated = true;
-	}
-
-	for (size_t i = 0; i < order.size(); i++) {
-		this->scheduleTask((*fuzzyProb)[order[i]], order[i]);
-	}
-
-	return this->schedule;
-}
-
-
-
 //=====  Schedule a task  =====================================================
 FuzzyFW::Interval SGS_IJSP_Append::scheduleTask(const TaskIJSP *task,
 	const int taskIdx) {
