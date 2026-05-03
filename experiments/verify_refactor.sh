@@ -70,7 +70,8 @@ for inst in "${VERIFY_INSTANCES[@]}"; do
     fi
 done
 
-# Create output directories
+# Clean previous results and create output directories
+rm -rf "${VERIFY_DIR}"
 for cfg in "${CONFIGS[@]}"; do
     mkdir -p "${VERIFY_DIR}/${cfg}"
 done
