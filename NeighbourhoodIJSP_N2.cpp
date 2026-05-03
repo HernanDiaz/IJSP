@@ -6,161 +6,17 @@
  */
 
 #include "NeighbourhoodIJSP_N2.h"
-#include <iostream>
+
 namespace IJSP {
 
-//=============================================================================
-//
-//	Class NB_ParallelN2_MakespanIJSP
-//
-//=============================================================================
-//=============================================================================
-//		CONSTRUCTORS / INITIALIZERS
-//=============================================================================
-//-----  Copy constructor  ----------------------------------------------------
-NB_ParallelN2_MakespanIJSP::NB_ParallelN2_MakespanIJSP(
-	const NB_ParallelN2_MakespanIJSP & source)
-	: Neighbourhood(source), estimator(source.estimator),
-	estimatorLabel(source.estimatorLabel), schedule(NULL),
-	currentFitness(NULL)
-{
-	for (size_t i = 0; i < source.neighbours.size(); i++) {
-		if (source.neighbours[i] != NULL)
-			neighbours.push_back(new NeighbourIJSP_Arc(*source.neighbours[i]));
-		else
-			neighbours.push_back(NULL);
-	}
-}
-
-
-
-//-----  Setup method  --------------------------------------------------------
-void NB_ParallelN2_MakespanIJSP::setup(FuzzyFW::ParameterDB *parameters) {
-	Neighbourhood::setup(parameters);
-
-	std::string estimatorValue =
-		parameters->getStringLower(this->estimatorLabel);
-
-	if (estimatorValue.length() < 1 ||
-		estimatorValue.compare(NB_ESTIMATOR_NONE) == 0)
-		this->estimator = Estimator::NONE;
-	else if (estimatorValue.compare(NB_ESTIMATOR_HEADSTAILS) == 0)
-		this->estimator = Estimator::ESTIM_HEADTAILS;
-	else {
-		std::string errorMsg = "Estimation method unknown: \'";
-		errorMsg += estimatorValue + "\'";
-		throw IJSPException("Neighbourhood", errorMsg);
-	}
-}
-
-
-//-----  Destructor  ----------------------------------------------------------
-NB_ParallelN2_MakespanIJSP::~NB_ParallelN2_MakespanIJSP() {
-	for (size_t i = 0; i < neighbours.size(); i++) {
-		if (neighbours[i] != NULL)
-			delete neighbours[i];
-	}
-	neighbours.clear();
-}
-
-
-
-//=============================================================================
-//		METHODS
-//=============================================================================
-//-----  Set the Initial Solution  --------------------------------------------
-void NB_ParallelN2_MakespanIJSP::setInitialSolution(FuzzyFW::Solution *solution,
-	FuzzyFW::Fitness *fitness, const FuzzyFW::SharedVars *svars) {
-
-	FuzzyFW::Interval::Maximum maxType = FuzzyFW::Interval::M_COMPONENT;
-	if (this->schedule != NULL)
-		delete this->schedule;
-	this->schedule = dynamic_cast<ScheduleIJSP *>(solution);
-	if (this->schedule == NULL) {
-		std::string errorMsg = "Type of solution not valid for this type";
-		errorMsg += " of neighbourhood. Only Fuzzy IJSP Schedules are allowed.";
-		throw IJSPException("Neighbourhood", errorMsg);
-	}
-
-	if (this->currentFitness != NULL)
-		delete this->currentFitness;
-	this->currentFitness = dynamic_cast<FuzzyFW::FitnessInterval *>(fitness);
-	if (this->currentFitness == NULL) {
-		std::string errorMsg = "The fitness of the solution is not the ";
-		errorMsg += "makespan";
-		throw IJSPException("Neighbourhood", errorMsg);
-	}
-
-	ProblemIJSP * problem = dynamic_cast<ProblemIJSP *>(svars->problem);
-	if (problem == NULL) {
-		std::string errorMsg = "This negihbourhood can be applied only";
-		errorMsg += " to IJSP problems";
-		throw IJSPException("Neighbourhood", errorMsg);
-	}
-
-	// Compute the tails of the operations
-	int mp, jp, ms, js, taskIdx, mac;
-	std::queue<int> taskQueue;
-
-	std::vector<char> visited(problem->getNumberTasks(), false);
-	this->tails.resize(problem->getNumberTasks());
-
-	// Look for tasks with no successors
-	for (size_t i = 0; i < schedule->lastTaskJob.size(); i++) {
-		taskIdx = schedule->lastTaskJob[i];
-		mac = schedule->taskInfo[taskIdx].task->machine;
-		if (taskIdx == schedule->lastTaskMachine[mac])
-			taskQueue.push(taskIdx);
-	}
-
-	// Backwards propagation
-	while (taskQueue.size() > 0) {
-		taskIdx = taskQueue.front();
-		taskQueue.pop();
-
-		// Update tail
-		ms = schedule->taskInfo[taskIdx].ms;
-		js = schedule->taskInfo[taskIdx].task->js;
-
-		if (ms != -1 && js != -1)
-			this->tails[taskIdx] =
-			maximum(this->tails[ms] + schedule->taskInfo[ms].task->p,
-				this->tails[js] + schedule->taskInfo[js].task->p, maxType);
-		else if (ms != -1)
-			this->tails[taskIdx] =
-			this->tails[ms] + schedule->taskInfo[ms].task->p;
-		else if (js != -1)
-			this->tails[taskIdx] = this->tails[js] + schedule->taskInfo[js].task->p;
-		else this->tails[taskIdx] = FuzzyFW::Interval(0, 0);
-
-		// Propagate
-		mp = schedule->taskInfo[taskIdx].mp;
-		jp = schedule->taskInfo[taskIdx].task->jp;
-
-		if (mp != -1) {
-			if (visited[mp] || schedule->taskInfo[mp].task->js == -1)
-				taskQueue.push(mp);
-			else visited[mp] = true;
-		}
-
-		if (jp != -1) {
-			if (visited[jp] || schedule->taskInfo[jp].ms == -1)
-				taskQueue.push(jp);
-			else visited[jp] = true;
-		}
-	}
-}
-
-
-
-//-----  Find enighbours  -----------------------------------------------------
+//-----  Find neighbours  -----------------------------------------------------
 unsigned int NB_ParallelN2_MakespanIJSP::findNewNeighbours(
 	const FuzzyFW::SharedVars *svars) {
 
 	unsigned int taskId, nTasks;
 	FuzzyFW::Interval currentMakespan;
 	ScheduledTaskInfo task, mp, jp;
-	ScheduledTaskInfo  mpmp, ms;
+	ScheduledTaskInfo mpmp, ms;
 	std::queue<int> taskQueue;
 	std::vector<char> added;
 	std::vector<char> criticalPath;
@@ -175,9 +31,7 @@ unsigned int NB_ParallelN2_MakespanIJSP::findNewNeighbours(
 		return 1;
 
 	this->numNeighbours = 0;
-	// Look for critical paths in each parallell graph:
 	for (short int comp = 1; comp <= 2; comp++) {
-		// Look for the tasks defining the makespan value
 		for (size_t i = 0; i < this->schedule->lastTaskMachine.size(); i++) {
 			if (this->schedule->getCTMachine(i).EqualComponent(currentMakespan, comp)) {
 				criticalPath[this->schedule->lastTaskMachine[i]] = true;
@@ -197,17 +51,14 @@ unsigned int NB_ParallelN2_MakespanIJSP::findNewNeighbours(
 						criticalPath[task.mp] = true;
 					}
 					if (!added[task.mp]) {
-						// We swap only the tasks at the exteme of a critical block
-						if (mp.mp != -1) {
+						if (mp.mp != -1)
 							mpmp = this->schedule->taskInfo[mp.mp];
-						}
-						if (task.ms != -1) {
+						if (task.ms != -1)
 							ms = this->schedule->taskInfo[task.ms];
-						}
 
 						if (mp.mp == -1 || task.ms == -1
 							|| !(mpmp.head + mpmp.task->p).EqualComponent(mp.head, comp)
-							|| (!(task.head + task.task->p).EqualComponent(ms.head, comp)|| criticalPath[task.ms] == false)) {
+							|| (!(task.head + task.task->p).EqualComponent(ms.head, comp) || criticalPath[task.ms] == false)) {
 
 							if (this->numNeighbours < this->neighbours.size()
 								&& this->neighbours[this->numNeighbours] != NULL)
@@ -236,11 +87,8 @@ unsigned int NB_ParallelN2_MakespanIJSP::findNewNeighbours(
 }
 
 
-
-
-
 //-----  Fully evaluate the neighbour  ----------------------------------------
-FuzzyFW::Fitness * NB_ParallelN2_MakespanIJSP::evaluateNeighbour(
+FuzzyFW::Fitness *NB_ParallelN2_MakespanIJSP::evaluateNeighbour(
 	const unsigned int idx, const FuzzyFW::SharedVars *svars,
 	const bool improvement) {
 
@@ -267,7 +115,6 @@ FuzzyFW::Fitness * NB_ParallelN2_MakespanIJSP::evaluateNeighbour(
 	newMakespan = FuzzyFW::Interval(0, 0);
 	lowerBound = dynamic_cast<FuzzyFW::FitnessInterval *>(this->currentFitness->clone());
 
-	// Initialize variables
 	mac = newSolution->taskInfo[arc->x].task->machine;
 	msy = newSolution->taskInfo[arc->y].ms;
 	mpx = newSolution->taskInfo[arc->x].mp;
@@ -284,7 +131,6 @@ FuzzyFW::Fitness * NB_ParallelN2_MakespanIJSP::evaluateNeighbour(
 	else
 		jsy = newSolution->taskInfo[arc->y].task->js;
 
-	// Update predecessors and successors
 	if (mpx != -1)
 		newSolution->taskInfo[mpx].ms = arc->y;
 	newSolution->taskInfo[arc->y].mp = mpx;
@@ -296,22 +142,18 @@ FuzzyFW::Fitness * NB_ParallelN2_MakespanIJSP::evaluateNeighbour(
 	else
 		newSolution->lastTaskMachine[mac] = arc->x;
 
-	// Update heads (BFS with inQueue guard to prevent exponential re-queuing)
-	// Uses SPFA-style: inQueue[z]=false when popped allows re-queuing when predecessor updates.
-	// Infeasible swaps create cycles; abort if iterations exceed threshold and return NULL.
+	// Update heads (SPFA; cycle → infeasible swap → return NULL)
 	{
 	int _nTasks = (int)newSolution->getScheduledTasks();
-	int _bfsLimit = _nTasks * 20; // JSP DAG has <=2 predecessors/node: valid SPFA terminates in O(N); cycle if exceeded
+	int _bfsLimit = _nTasks * 20;
 	std::vector<bool> inQueue(_nTasks, false);
 	taskQueue.push(arc->y); inQueue[arc->y] = true;
-	// Also seed arc->x since its head changes after the swap (its mp is now arc->y)
 	taskQueue.push(arc->x); inQueue[arc->x] = true;
 	int _bfsCount = 0;
 
 	while (!taskQueue.empty()) {
 		_bfsCount++;
 		if (_bfsCount > _bfsLimit) {
-			// Cycle detected: infeasible N2 swap creates precedence cycle -> skip this neighbour
 			delete lowerBound;
 			delete newSolution;
 			return NULL;
@@ -327,7 +169,6 @@ FuzzyFW::Fitness * NB_ParallelN2_MakespanIJSP::evaluateNeighbour(
 			jsz = -1;
 		else jsz = newSolution->taskInfo[z].task->js;
 
-		// Check if any predecessor is null
 		if (jpz != -1 && mpz != -1)
 			newHead = maximum(newSolution->taskInfo[mpz].head + newSolution->taskInfo[mpz].task->p,
 				newSolution->taskInfo[jpz].head + newSolution->taskInfo[jpz].task->p,
@@ -372,11 +213,9 @@ FuzzyFW::Fitness * NB_ParallelN2_MakespanIJSP::evaluateNeighbour(
 }
 
 
-
 //-----  Accept the neighbour  ------------------------------------------------
 void NB_ParallelN2_MakespanIJSP::acceptNeighbour(const unsigned int idx,
 	const FuzzyFW::SharedVars *svars) {
-	//std::cout << std::endl;
 	int job;
 	int z, msz, jsz;
 	FuzzyFW::Interval newTail;
@@ -386,7 +225,6 @@ void NB_ParallelN2_MakespanIJSP::acceptNeighbour(const unsigned int idx,
 		throw IJSPException("Neighbourhood", errorMsg);
 	}
 
-	// Update the current solution
 	if (!this->neighbours[idx]->isEvaluated())
 		this->evaluateNeighbour(idx, svars, false);
 	if (this->schedule != NULL)
@@ -398,7 +236,6 @@ void NB_ParallelN2_MakespanIJSP::acceptNeighbour(const unsigned int idx,
 	this->currentFitness = dynamic_cast<FuzzyFW::FitnessInterval *>
 		(this->neighbours[idx]->getEvaluatedFitness()->clone());
 
-	// Update tails for the next step
 	NeighbourIJSP_Arc *arc = this->neighbours[idx];
 	std::vector<int> tailsUpdated;
 	tailsUpdated.resize(this->schedule->getScheduledTasks(), 0);
@@ -408,7 +245,6 @@ void NB_ParallelN2_MakespanIJSP::acceptNeighbour(const unsigned int idx,
 	taskQueue.push(arc->y);
 	tailsUpdated[arc->y] = 1;
 
-	{
 	while (!taskQueue.empty()) {
 		z = taskQueue.front();
 		taskQueue.pop();
@@ -422,192 +258,23 @@ void NB_ParallelN2_MakespanIJSP::acceptNeighbour(const unsigned int idx,
 			newTail = maximum(this->schedule->taskInfo[msz].task->p + this->tails[msz],
 				this->schedule->taskInfo[jsz].task->p + this->tails[jsz],
 				FuzzyFW::Interval::M_COMPONENT);
-		else if (msz != -1) {
+		else if (msz != -1)
 			newTail = this->schedule->taskInfo[msz].task->p + this->tails[msz];
-		}
-
-		else if (jsz != -1) {
+		else if (jsz != -1)
 			newTail = this->schedule->taskInfo[jsz].task->p + this->tails[jsz];
-		}
 		if ((msz != -1 || jsz != -1) &&
 			!(this->tails[z].isEqualTo(newTail, FuzzyFW::Interval::C_COMPONENT))) {
 			this->tails[z] = newTail;
 			if (this->schedule->taskInfo[z].mp != -1 && !tailsUpdated[this->schedule->taskInfo[z].mp]) {
-				taskQueue.push(this->schedule->taskInfo[z].mp); // machine
+				taskQueue.push(this->schedule->taskInfo[z].mp);
 				tailsUpdated[this->schedule->taskInfo[z].mp]++;
 			}
 			if (this->schedule->taskInfo[z].task->jp != -1 && !tailsUpdated[this->schedule->taskInfo[z].task->jp]) {
-				taskQueue.push(this->schedule->taskInfo[z].task->jp); // job
+				taskQueue.push(this->schedule->taskInfo[z].task->jp);
 				tailsUpdated[this->schedule->taskInfo[z].task->jp]++;
 			}
 		}
 	}
-	}
 }
-
-
-
-//-----  Get the estimation  --------------------------------------------------
-FuzzyFW::Fitness * NB_ParallelN2_MakespanIJSP::getEstimation(
-	const unsigned int idx,
-	const FuzzyFW::SharedVars *svars) {
-
-	if (idx < 0 || idx >= this->numNeighbours) {
-		std::string errorMsg = "Trying to acces a non-existing neighbour";
-		throw IJSPException("Neighbourhood", errorMsg);
-	}
-	if (!this->neighbours[idx]->isEstimated()) {
-		if (this->estimator == NB_ParallelN2_MakespanIJSP::ESTIM_HEADTAILS)
-			this->estimateHeadsTails(idx);
-		else
-			this->neighbours[idx]->setEstimatedQuality(
-				new FuzzyFW::FitnessInterval(FuzzyFW::Interval(Infd, Infd), false));
-	}
-	return this->neighbours[idx]->getEstimatedQuality();
-}
-
-
-
-//-----  Discard a neighbour  --------------------------------------------------
-void NB_ParallelN2_MakespanIJSP::discardNeighbour(const unsigned int idx) {
-	if (idx < 0 || idx >= this->numNeighbours || this->neighbours[idx] == NULL) {
-		std::string errorMsg = "Trying to acces a non-existing neighbour";
-		throw IJSPException("Neighbourhood", errorMsg);
-	}
-	delete this->neighbours[idx];
-	this->neighbours[idx] = NULL;
-	//std::swap(this->neighbours[idx], this->neighbours[this->numNeighbours - 1]);
-	//this->numNeighbours--;
-}
-
-
-
-//-----  Estimate the quality of a neighbour through heads and tails  ---------
-void NB_ParallelN2_MakespanIJSP::estimateHeadsTails(const unsigned int idx) {
-	if (idx < 0 || idx >= this->numNeighbours) {
-		std::string errorMsg = "Trying to acces a non-existing neighbour";
-		throw IJSPException("Neighbourhood", errorMsg);
-	}
-
-	FuzzyFW::Interval tailX, tailY, headX, headY;
-	int mpy, jpy, msy, jsy;
-	int mpx, jpx, msx, jsx;
-	int mac;
-	FuzzyFW::Interval makespan;
-
-	NeighbourIJSP_Arc *arc = this->neighbours[idx];
-	unsigned int x = arc->x;
-	unsigned int y = arc->y;
-
-	mac = schedule->taskInfo[x].task->machine;
-	mpy = schedule->taskInfo[y].mp;
-	jpy = schedule->taskInfo[y].task->jp;
-	msy = schedule->taskInfo[y].ms;
-	msx = schedule->taskInfo[x].ms;
-	mpx = schedule->taskInfo[x].mp;
-	jpx = schedule->taskInfo[x].task->jp;
-
-	if (schedule->lastTaskJob[schedule->taskInfo[x].task->job] == x)
-		jsx = -1;
-	else
-		jsx = schedule->taskInfo[x].task->js;
-	if (schedule->lastTaskJob[schedule->taskInfo[y].task->job] == y)
-		jsy = -1;
-	else
-		jsy = schedule->taskInfo[y].task->js;
-
-	// New tail for task X
-	if (jsx != -1 && msy != -1)
-		tailX = maximum(this->tails[jsx] + schedule->taskInfo[jsx].task->p,
-			this->tails[msy] + schedule->taskInfo[msy].task->p, FuzzyFW::Interval::M_COMPONENT);
-	else if (jsx != -1)
-		tailX = this->tails[jsx] + schedule->taskInfo[jsx].task->p;
-	else if (msy != -1)
-		tailX = this->tails[msy] + schedule->taskInfo[msy].task->p;
-	else
-		tailX = FuzzyFW::Interval(0, 0);
-
-	// New tail for task Y
-	if (jsy != -1)
-		tailY = maximum(this->tails[jsy] + schedule->taskInfo[jsy].task->p,
-			tailX + schedule->taskInfo[x].task->p, FuzzyFW::Interval::M_COMPONENT);
-	else
-		tailY = tailX + schedule->taskInfo[x].task->p;
-
-	// New head for task Y
-	if (mpx != -1 && jpy != -1)
-		headY = maximum(schedule->taskInfo[mpx].head + schedule->taskInfo[mpx].task->p,
-			schedule->taskInfo[jpy].head + schedule->taskInfo[jpy].task->p,
-			FuzzyFW::Interval::M_COMPONENT);
-	else if (mpx != -1)
-		headY = schedule->taskInfo[mpx].head + schedule->taskInfo[mpx].task->p;
-	else if (jpy != -1)
-		headY = schedule->taskInfo[jpy].head + schedule->taskInfo[jpy].task->p;
-	else headY = FuzzyFW::Interval(0, 0);
-
-	// New head for task X
-	if (jpx != -1)
-		headX = maximum(headY + schedule->taskInfo[y].task->p,
-			schedule->taskInfo[jpx].head + schedule->taskInfo[jpx].task->p,
-			FuzzyFW::Interval::M_COMPONENT);
-	else headX = headY + schedule->taskInfo[y].task->p;
-
-	makespan = maximum(headX + schedule->taskInfo[x].task->p + tailX,
-		headY + schedule->taskInfo[y].task->p + tailY,
-		FuzzyFW::Interval::M_COMPONENT);
-
-	arc->setEstimatedQuality(new FuzzyFW::FitnessInterval(makespan, false));
-}
-
-
-
-//-----  Estimate the quality of a neighbour through heads and tails  ---------
-void NB_ParallelN2_MakespanIJSP::sortByEstimation(
-	const FuzzyFW::SharedVars *svars) {
-
-	if (this->estimator == Estimator::NONE)
-		return;
-	this->quickSort(0, this->numNeighbours - 1, svars);
-}
-
-
-//-----  Quick sort  ----------------------------------------------------------
-void NB_ParallelN2_MakespanIJSP::quickSort(const int left, const int right,
-	const FuzzyFW::SharedVars *svars) {
-
-	int pivot, pos;
-
-	if (left >= right)
-		return;
-
-	pivot = svars->rng->getInteger(left, right);
-
-	std::swap(this->neighbours[pivot], this->neighbours[right]);
-	pos = left;
-	for (int i = left; i < right; i++) {
-		if (this->getEstimation(i, svars)->isBetterThan(
-			this->getEstimation(right, svars))) {
-			std::swap(this->neighbours[i], this->neighbours[pos]);
-			pos++;
-		}
-	}
-
-	std::swap(neighbours[pos], neighbours[right]);
-	this->quickSort(left, pos - 1, svars);
-	this->quickSort(pos + 1, right, svars);
-}
-
-
-//-----  Gets an specific neighbour  ------------------------------------------
-FuzzyFW::Neighbour* NB_ParallelN2_MakespanIJSP::getNeighbour(const unsigned int idx) {
-	if (idx < 0 || idx >= this->numNeighbours || this->neighbours[idx] == NULL) {
-		std::string errorMsg = "Trying to acces a non-existing neighbour";
-		throw IJSPException("Neighbourhood", errorMsg);
-	}
-	return this->neighbours[idx];
-}
-
-
-//TODO
 
 } // namespace IJSP
