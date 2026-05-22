@@ -37,8 +37,8 @@ experiments/*_backup_*.xlsx
 experiments/resultados_experimentos.xlsx
 experiments/check_floats.R
 
-# Papers and reference documents (managed separately)
-data/
+# Root-level data directory (managed separately)
+/data/
 
 # Generated experiment results (baselines in statistical_results_exp7/ are tracked)
 experiments/statistical_results/
@@ -47,10 +47,23 @@ experiments/irace/
 experiments/irace_hc/
 experiments/n8_analysis/
 
-# Generated figures and plots
-figures/
+# Generated figures and plots (root-level and experiment subdirs only)
+/figures/
+Papers/figures/
 experiments/**/*.pdf
 experiments/**/*.png
+
+# Papers: only Papers/COR_Tabu/ source files are tracked
+Papers/ABC+PSO NACO/
+Papers/ABC+SA IACAE/
+Papers/Applied Soft Computing/
+Papers/Computers and Operations Research/
+Papers/Genetico Tardiness/
+Papers/criticality-Neighbourhoods/
+Papers/paper_draft.md
+Papers/s10696-025-09640-7.pdf
+# Within COR_Tabu, exclude data (CSVs) but keep source, figures and scripts
+Papers/COR_Tabu/data/
 
 # Word / Office documents
 *.docx
