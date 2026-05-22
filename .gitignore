@@ -16,6 +16,11 @@ FuzzyFW
 *.log
 *.spl
 *.synctex.gz
+*.fdb_latexmk
+*.fls
+
+# Downloaded reference PDFs (too large for repo)
+Papers/downloaded/
 
 # Backup files
 *~
@@ -33,7 +38,6 @@ experiments/resultados_experimentos.xlsx
 experiments/check_floats.R
 
 # Papers and reference documents (managed separately)
-Papers/
 data/
 
 # Generated experiment results (baselines in statistical_results_exp7/ are tracked)

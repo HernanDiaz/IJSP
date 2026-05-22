@@ -1,0 +1,5 @@
+aniadir mas papers y referencias para la bibliografia.
+Rellenar los campos que faltan en el documento
+Modificar las frases que se saltan el ancho de pagina.
+
+

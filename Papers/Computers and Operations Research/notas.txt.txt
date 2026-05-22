@@ -1,0 +1,4 @@
+/ Detallar las instancais que se utilizan, tamanios, nombre de instancia, etc
+/ Detallar el software y hardware que se utiliza para los experimentos.
+/ Donde pone sketch of proof desarrollarlo.
+/ Agregar referencias a mis otros papers.
