@@ -390,7 +390,7 @@ $N_3$             & $\bullet$ & $\bullet$ & $\bullet$ & $\bullet$ $^{\dagger}$ \
 \smallskip
 {\small $\bullet$\ always included\quad $-$\ always excluded\quad
 $?_v$\ conditional on \texttt{isViableSwap} ($N_{\rm ext}$)\\[2pt]
-$^{\dagger}$ $N_3$ additionally considers all $\binom{k}{2}$ contiguous subsequence reversals within each block of length $k$.\\[2pt]
+$^{\dagger}$ $N_3$ additionally generates three rearrangement types for each boundary triple $(x,y,z)$ of consecutive extreme-critical tasks on the same machine: cyclic left-shift ($x,y,z\!\to\!y,z,x$), cyclic right-shift ($x,y,z\!\to\!z,x,y$), and full reversal ($x,y,z\!\to\!z,y,x$).\\[2pt]
 $^{\ddagger}$ $N_8$ additionally generates extra-block reinsertion moves for each block endpoint (see Section~\ref{sec5.5}).}
 
 \caption{Critical block $B=(o_1,\ldots,o_5)$ on machine $M_k$ and arcs considered by each neighbourhood variant.}
@@ -410,7 +410,7 @@ $N_2$ restricts $N_1$ to arcs at the \emph{boundary} of each extreme critical bl
 \subsection{$N_3$: Subsequence Reversals}
 \label{sec5.3}
 
-$N_3$ extends the candidate set with reversals of \emph{contiguous subsequences} within a critical block. For block $B = \{o_1,\ldots,o_k\}$, in addition to the single-arc swaps of $N_1$, $N_3$ considers every contiguous pair $(o_i, o_j)$ with $j > i+1$ as a multi-step reversal candidate. This generates a strictly larger neighbourhood than $N_1$.
+$N_3$ augments the $N_2$ boundary arc swaps with three rearrangement types applied to \emph{boundary triples} of consecutive extreme-critical tasks. For each triple $(x, y, z)$ of successive operations on the same machine that are all extreme critical and span a block boundary (i.e.\ $x$ is the first task in its block or $z$ is the last), $N_3$ generates three candidate moves: a cyclic left-shift ($x,y,z\to y,z,x$), a cyclic right-shift ($x,y,z\to z,x,y$), and a full reversal ($x,y,z\to z,y,x$). Each candidate is checked for feasibility before being retained. The resulting neighbourhood strictly contains $N_2$.
 
 \subsection{$N_{\rm ext}$: Extended Nowicki--Smutnicki Neighbourhood}
 \label{sec5.4}
@@ -694,7 +694,7 @@ The experimental results lead to a small set of actionable recommendations:
 \item Choose between $N_2$ and $N_8$ based on instance size and time budget. $N_2$ is the default recommendation: it ties with $N_8$ for the best quality overall (negligible difference, $r = 0.07$) and is faster for small and medium instances (Table~\ref{tab:phaseb_groups}). On the tai$50{\times}15$ class, $N_8$ achieves the strictly lower group mean RE\,(\%) (0.22\% vs $N_2$'s 0.32\%) at a moderate extra runtime (218\,s vs 181\,s), consistent with its structural advantage in the single-dominant-critical-path regime \cite{Xie2022}; for tai$50{\times}20$, $N_2$ recovers the edge (2.03\% vs $N_8$'s 2.11\%, 554\,s vs 603\,s). $N_8$ is thus the preferred choice when quality is paramount on the largest 50-job instances with 15 machines, while $N_2$ is more robust across the full range.
 \item Do not assume $N_{\rm ext}$ is best on the basis of Phase~A results. Under irace-tuned tabu search, $N_{\rm ext}$ finishes third---a medium effect behind both $N_2$ and $N_8$---and becomes the \emph{slowest} viable neighbourhood on large instances (tai$50{\times}20$: 695\,s vs $N_2$'s 554\,s and $N_8$'s 603\,s, at a 0.79\,pp quality cost; Table~\ref{tab:phaseb_groups}). The heads-and-tails viability filter that makes $N_{\rm ext}$ efficient under hill climbing becomes a runtime bottleneck under tabu search with a full neighbourhood evaluation per iteration.
 \item Use LEX2 if interval width is the goal; operator choice has limited impact on midpoint. LEX2 yields makespan intervals 5--11\% narrower than the alternatives on average, with structural evidence for this effect (Section~\ref{sec7.2}), and this advantage is consistent across prior work that includes per-operator hyperparameter tuning \cite{DiazICAE2023,DiazIGPL2022}.
-\item Avoid $N_3$ in either setting. The multi-step subsequence reversals it adds beyond $N_1$ are dominated on both dimensions: it is the weakest neighbourhood on solution quality and the most expensive computationally, reaching the 900\,s time limit for the largest instances.
+\item Avoid $N_3$ in either setting. The 3-task block rearrangements it adds beyond $N_2$ are dominated on both dimensions: it is the weakest neighbourhood on solution quality and the most expensive computationally, reaching the 900\,s time limit for the largest instances.
 \end{enumerate}
 
 \subsection{Theoretical Connection: Why LEX2 Narrows Intervals}
@@ -705,7 +705,7 @@ Proposition~\ref{prop2} guarantees that reversing a non-extreme-critical arc can
 \subsection{Why $N_3$ Underperforms}
 \label{sec7.3}
 
-$N_3$ is counter-intuitive: it is a strict superset of $N_1$ in the move-generation sense (single-arc boundary swaps plus three types of 3-element subsequence reversals), yet it produces worse solutions. Each multi-arc reversal candidate requires a full feasibility evaluation to detect cycles before it can be considered, which significantly increases the per-iteration cost. More importantly, these extra candidates do not carry improving moves in practice: the boundary arc swaps already capture the structurally meaningful transitions (as justified by Proposition~\ref{prop2}), and the subsequence reversals add volume to the candidate pool without adding quality. Under best-improvement selection, a larger pool diluted with poor-quality candidates reduces the effective yield per evaluation, resulting in slower convergence to a worse plateau.
+$N_3$ is counter-intuitive: it is a strict superset of $N_2$ in the move-generation sense (boundary arc swaps plus three types of 3-task block rearrangements---cyclic left-shift, cyclic right-shift, and full reversal of boundary triples), yet it produces worse solutions. Each 3-task rearrangement candidate requires a full feasibility evaluation to detect cycles before it can be retained, which significantly increases the per-iteration cost. More importantly, these extra candidates do not carry improving moves in practice: the boundary arc swaps already capture the structurally meaningful transitions (as justified by Proposition~\ref{prop2}), and the 3-task rearrangements add volume to the candidate pool without adding quality. Under best-improvement selection, a larger pool diluted with poor-quality candidates reduces the effective yield per evaluation, resulting in slower convergence to a worse plateau.
 
 \subsection{Why $N_8$ Performs Well Under Tabu Search}
 \label{sec7.4}
