@@ -64,7 +64,7 @@
 
 %% Abstract
 \begin{abstract}
-The Job Shop Scheduling Problem with interval-valued processing times (IJSP) models real-world uncertainty where durations are unknown but bounded. Comparing schedules then requires an interval ranking operator, and the classical notion of critical path must be extended to both extreme scenarios. I formalise \emph{extreme critical paths} --- paths critical in the best-case or worst-case scenario graph --- and use them to define a neighbourhood $H(\sigma)$ for local search. I prove that $H(\sigma)$ is feasible, connected and loses no improving neighbours under any admissible interval ranking. Five neighbourhood variants ($N_1$, $N_2$, $N_3$, $N_{\rm ext}$, $N_8$) are formulated within this framework and combined with four ranking operators (EV, LEX1, LEX2, YX) on 82 benchmark instances of up to 1000 operations. Two findings are noteworthy: \emph{(i)} after irace-based tabu search tuning, $N_2$ and $N_8$ emerge as the two strongest neighbourhoods (statistically tied, negligible effect $r=0.07$), both outperforming $N_{\rm ext}$ by a medium effect and $N_1$ by a large effect; $N_3$ is weakest by a large margin. \emph{(ii)} LEX2 yields makespan intervals 5--11\% narrower than the alternatives on average; a float analysis of both extreme graphs shows LEX2 solutions concentrate critical operations in the worst-case graph, consistent with LEX2 directly tightening the worst-case critical path. \emph{(iii)} On the full 82-instance IJSP benchmark, the irace-tuned TS-$N_2$ reduces mean RE\,(\%) by 56.6\% on the 12 classical instances and 57.7\% on the 70 Taillard instances relative to the previous best published solver; the neighbourhood ranking is fully preserved on the corresponding deterministic (CRISP) counterparts.
+The Job Shop Scheduling Problem with interval-valued processing times (IJSP) models real-world uncertainty where durations are unknown but bounded. Comparing schedules then requires an interval ranking operator, and the classical notion of critical path must be extended to both extreme scenarios. I formalise \emph{extreme critical paths} --- paths critical in the best-case or worst-case scenario graph --- and use them to define a neighbourhood $H(\sigma)$ for local search. I prove that $H(\sigma)$ is feasible, connected and loses no improving neighbours under any admissible interval ranking. Five neighbourhood variants ($N_1$, $N_2$, $N_3$, $N_{\rm ext}$, $N_8$) are formulated within this framework and combined with four ranking operators (EV, LEX1, LEX2, YX) on 82 benchmark instances of up to 1000 operations. Two findings are noteworthy: \emph{(i)} after irace-based tabu search tuning, $N_2$ and $N_8$ emerge as the two strongest neighbourhoods (statistically tied, negligible effect $r=0.07$), both outperforming $N_{\rm ext}$ by a medium effect and $N_1$ by a large effect; $N_3$ is weakest by a large margin. \emph{(ii)} LEX2 yields makespan intervals 5--11\% narrower than the alternatives on average; a float analysis of both extreme graphs shows LEX2 solutions concentrate critical operations in the worst-case graph, consistent with LEX2 directly tightening the worst-case critical path. \emph{(iii)} On the full 82-instance IJSP benchmark, the irace-tuned TS-$N_2$ reduces mean RE\,(\%) by 56.6\% on the 12 classical instances and 57.7\% on the 70 Taillard instances relative to the previous best published solver; the neighbourhood ranking is consistent across all instance size classes.
 \end{abstract}
 
 
@@ -74,7 +74,6 @@ The Job Shop Scheduling Problem with interval-valued processing times (IJSP) mod
 \item Feasibility, connectivity and no-loss proofs for any admissible interval ranking.
 \item LEX2 yields 5--11\% narrower intervals by tightening the worst-case critical path.
 \item $N_2$ and $N_8$ are the strongest neighbourhoods after irace-tuned tabu search; $N_3$ worst.
-\item $N_8$ competitive on both CRISP and intervals when paired with tabu search.
 \end{highlights}
 
 %% Keywords
@@ -104,7 +103,7 @@ This paper makes the following contributions.
 
 \item Five neighbourhood variants within the $H(\sigma)$ framework (Section~\ref{sec5}). I formulate $N_1$, $N_2$, $N_3$, $N_{\rm ext}$ and a new variant $N_8$ (boundary arc swaps extended with extra-block reinsertion moves, after~\cite{Xie2022}) as instances of $H(\sigma)$, characterising their theoretical size and the cost of generating them.
 
-\item Empirical study on 82 benchmark instances (Section~\ref{sec6}). Three experimental phases are reported: \emph{(a)} a $5 \times 4$ comparison of five neighbourhoods and four operators at a common parameter setting (Section~\ref{sec6.2}); \emph{(b)} a head-to-head comparison of the five neighbourhoods after irace-based hyperparameter tuning, isolating the structural effect of the neighbourhood (Section~\ref{sec6.5}); and \emph{(c)} a validation phase on the 82 deterministic counterparts of the same instances (CRISP, Section~\ref{sec6.6}); and \emph{(d)} a comparison with three published IJSP metaheuristics (GA, $ABC_{E3}$, ESABC; Section~\ref{sec6.7}), showing that the irace-tuned TS-$N_2$ reduces mean RE\,(\%) by 56.6\% on classical instances and 57.7\% on Taillard instances relative to the previous best solver.
+\item Empirical study on 82 benchmark instances (Section~\ref{sec6}). Three experimental phases are reported: \emph{(a)} a $5 \times 4$ comparison of five neighbourhoods and four operators at a common parameter setting (Section~\ref{sec6.2}); \emph{(b)} a head-to-head comparison of the five neighbourhoods after irace-based hyperparameter tuning, isolating the structural effect of the neighbourhood (Section~\ref{sec6.5}); and \emph{(c)} a comparison with three published IJSP metaheuristics (GA, $ABC_{E3}$, ESABC; Section~\ref{sec6.7}), showing that the irace-tuned TS-$N_2$ reduces mean RE\,(\%) by 56.6\% on classical instances and 57.7\% on Taillard instances relative to the previous best solver.
 
 \item Discovery and structural explanation of the LEX2--width effect (Section~\ref{sec6.2}). LEX2 produces solutions with $\sim$5--11\% narrower makespan intervals than the other operators on average. A float analysis of both extreme graphs falsifies the natural ``more slack'' hypothesis and provides structural evidence for this effect: LEX2 solutions show more critical operations and less slack in $G^+(\sigma)$, consistent with LEX2 tightening the worst-case critical path directly.
 \end{enumerate}
@@ -434,7 +433,7 @@ $N_8$ is an exploratory variant that extends $N_2$ with \emph{extra-block reinse
 \end{itemize}
 Each reinsertion candidate is evaluated by updating heads and tails via a localised BFS propagation; it is retained only if the resulting makespan midpoint improves on the current incumbent.
 
-Because $N_8$ contains all $N_2$ boundary arc swaps, it satisfies all three structural guarantees of Section~\ref{sec4} for its arc-swap component: feasibility (Theorem~\ref{thm1}), no-loss (Proposition~\ref{prop2}, same argument as $N_2$), and connectivity (Theorem~\ref{thm2}, since $N_8 \supseteq N_2$). The reinsertion moves are outside the scope of Section~\ref{sec4}; their feasibility is verified at runtime and they carry no no-loss guarantee of their own. The motivation is the empirical question of whether extra-block moves benefit interval scheduling. As shown in Sections~\ref{sec6.5} and~\ref{sec6.6}, the answer is search-strategy dependent: $N_8$ underperforms under hill climbing (Phase~A) but matches $N_2$ under irace-tuned tabu search (Phase~B); Section~\ref{sec7.4} explains why.
+Because $N_8$ contains all $N_2$ boundary arc swaps, it satisfies all three structural guarantees of Section~\ref{sec4} for its arc-swap component: feasibility (Theorem~\ref{thm1}), no-loss (Proposition~\ref{prop2}, same argument as $N_2$), and connectivity (Theorem~\ref{thm2}, since $N_8 \supseteq N_2$). The reinsertion moves are outside the scope of Section~\ref{sec4}; their feasibility is verified at runtime and they carry no no-loss guarantee of their own. The motivation is the empirical question of whether extra-block moves benefit interval scheduling. As shown in Section~\ref{sec6.5}, the answer is search-strategy dependent: $N_8$ underperforms under hill climbing (Phase~A) but matches $N_2$ under irace-tuned tabu search (Phase~B); Section~\ref{sec7.4} explains why.
 
 
 \section{Experimental Study}
@@ -444,7 +443,7 @@ The experimental study is organised in three phases that address distinct questi
 \begin{description}
 \item[Phase A (Section~\ref{sec6.2}).] At a \emph{common} hyperparameter setting, I compare the four ranking operators on five neighbourhoods ($5 \times 4$ design), focusing on solution quality, the width of the returned interval, and the structural mechanism behind the LEX2--width effect.
 \item[Phase B (Section~\ref{sec6.5}).] After an irace-based tuning of the tabu search local search separately for each of the five neighbourhoods, I compare the five neighbourhoods on equal footing. The tuning isolates the structural effect of the neighbourhood from confounding parameter choices.
-\item[Phase C (Section~\ref{sec6.6}).] I validate Phase B on the 82 corresponding deterministic instances (CRISP), measuring the relative error RE\,(\%) from the published lower bounds and comparing the relative ranking of the five neighbourhoods.
+\item[Phase C (Section~\ref{sec6.7}).] I compare the best Phase~B configuration (TS-$N_2$) against three published IJSP metaheuristics (GA, $ABC_{E3}$, ESABC), providing external validation of the proposed approach.
 \end{description}
 
 \subsection{Setup Common to All Phases}
@@ -452,18 +451,18 @@ The experimental study is organised in three phases that address distinct questi
 
 \paragraph{Instances.} The benchmark suite contains 82 instances split into two groups. The first group (\emph{classical benchmarks}) comprises 12 instances selected from the OR-Library \cite{Beasley1990}: abz7, abz8, abz9 ($20\times15$); ft10 ($10\times10$), ft20 ($20\times5$); la21, la24, la25 ($15\times10$), la27, la29 ($20\times10$), la38, la40 ($15\times15$). The second group comprises 70 instances from the Taillard benchmark \cite{Taillard1993}, covering seven size classes with 10 instances each: $15\times15$ (225 operations), $20\times15$ (300), $20\times20$ (400), $30\times15$ (450), $30\times20$ (600), $50\times15$ (750) and $50\times20$ (1\,000). All 82 instances are derived from their deterministic counterparts by perturbing each nominal processing time $p_{ij}^{*}$ with a $\pm7.5\%$ uniform symmetric interval, $\mathbf{p}_{ij} = [0.925\,p_{ij}^{*},\, 1.075\,p_{ij}^{*}]$ (15\% relative width).
 
-\paragraph{Hardware and software.} All experiments were executed on an Intel Xeon E5-2680\,v4 workstation (14 cores / 28 threads, 2.40\,GHz, 16\,GB RAM) running Windows~10 with a WSL2 Linux environment. The fEABC algorithm was implemented in C++14 and compiled with GCC using optimisation flags \texttt{-O3 -march=native -mtune=native -ffast-math}. To reduce wall-clock time, up to 24 independent runs were dispatched in parallel (one process per thread). Hyperparameter tuning (Phase~B) used the irace package~\cite{Lopez2016} (R~4.5.3), with a budget of 1\,500 candidate evaluations per neighbourhood and a Friedman-test racing criterion; the tuning was parallelised over 24 cores and required approximately five days of wall-clock time across the five neighbourhoods. The subsequent Phase~B/C evaluation (12\,300 runs, 15-minute time limit per run) required approximately four additional days. Statistical analysis was performed in R with paired Wilcoxon tests and Holm--Bonferroni correction. To calibrate this cluster against the hardware used in the published IJSP solvers compared in Section~\ref{sec6.7}, I ran the Phase~A fEABC+HC configuration---identical in algorithm and parameters to the one reported in~\cite{DiazFEABC2023}, which used an Intel Xeon Gold~6132 at 2.60\,GHz under native Linux---on the same 12 classical instances and compared average runtimes: the ratio is approximately $2\times$ (geometric mean 2.10, range 1.4--2.8), indicating this cluster runs the identical workload roughly twice as slow. Runtime figures in Section~\ref{sec6.7} should be interpreted accordingly; RE\,(\%) comparisons are hardware-independent.
+\paragraph{Hardware and software.} All experiments were executed on an Intel Xeon E5-2680\,v4 workstation (14 cores / 28 threads, 2.40\,GHz, 16\,GB RAM) running Windows~10 with a WSL2 Linux environment. The fEABC algorithm was implemented in C++14 and compiled with GCC using optimisation flags \texttt{-O3 -march=native -mtune=native -ffast-math}. To reduce wall-clock time, up to 24 independent runs were dispatched in parallel (one process per thread). Hyperparameter tuning (Phase~B) used the irace package~\cite{Lopez2016} (R~4.5.3), with a budget of 1\,500 candidate evaluations per neighbourhood and a Friedman-test racing criterion; the tuning was parallelised over 24 cores and required approximately five days of wall-clock time across the five neighbourhoods. The subsequent Phase~B evaluation (12\,300 runs, 15-minute time limit per run) required approximately four additional days. Statistical analysis was performed in R with paired Wilcoxon tests and Holm--Bonferroni correction. To calibrate this cluster against the hardware used in the published IJSP solvers compared in Section~\ref{sec6.7}, I ran the Phase~A fEABC+HC configuration---identical in algorithm and parameters to the one reported in~\cite{DiazFEABC2023}, which used an Intel Xeon Gold~6132 at 2.60\,GHz under native Linux---on the same 12 classical instances and compared average runtimes: the ratio is approximately $2\times$ (geometric mean 2.10, range 1.4--2.8), indicating this cluster runs the identical workload roughly twice as slow. Runtime figures in Section~\ref{sec6.7} should be interpreted accordingly; RE\,(\%) comparisons are hardware-independent.
 
-\paragraph{Algorithm.} All configurations use \emph{fEABC}~\cite{DiazFEABC2023}, a population-based hybrid metaheuristic that combines an Artificial Bee Colony (ABC) framework, Particle Swarm Optimisation (PSO) velocity updates for solution generation, and an embedded local search applied at each generation to a fraction of the population, with Lamarckian propagation of improvements. Solutions are encoded as permutations with repetition (\emph{job-order}) and decoded via an insertion-based Schedule Generation Scheme (SGS); the population contains 250 individuals. The local search component differs by phase: Phase~A uses first-improvement hill climbing as a neutral, operator-agnostic baseline; Phases~B and~C use a tabu search (best-neighbour selection with a short-term tabu list) independently tuned by irace for each neighbourhood (Section~\ref{sec6.5}; the rationale for this switch is discussed there). The stopping criterion differs by phase: Phase~A terminates after 25 consecutive generations without improvement in the global best; Phases~B and~C terminate after 20 such generations or after a wall-clock limit of 900\,s (15~minutes) per run, whichever is reached first. Thirty independent runs are executed for every (instance, configuration) pair.
+\paragraph{Algorithm.} All configurations use \emph{fEABC}~\cite{DiazFEABC2023}, a population-based hybrid metaheuristic that combines an Artificial Bee Colony (ABC) framework, Particle Swarm Optimisation (PSO) velocity updates for solution generation, and an embedded local search applied at each generation to a fraction of the population, with Lamarckian propagation of improvements. Solutions are encoded as permutations with repetition (\emph{job-order}) and decoded via an insertion-based Schedule Generation Scheme (SGS); the population contains 250 individuals. The local search component differs by phase: Phase~A uses first-improvement hill climbing as a neutral, operator-agnostic baseline; Phase~B uses a tabu search (best-neighbour selection with a short-term tabu list) independently tuned by irace for each neighbourhood (Section~\ref{sec6.5}; the rationale for this switch is discussed there). The stopping criterion differs by phase: Phase~A terminates after 25 consecutive generations without improvement in the global best; Phase~B terminates after 20 such generations or after a wall-clock limit of 900\,s (15~minutes) per run, whichever is reached first. Thirty independent runs are executed for every (instance, configuration) pair.
 
 \paragraph{Hyperparameter configuration.}
 Phase~A adopts the configuration validated in the fEABC paper~\cite{DiazFEABC2023}: JOX (Job Order Crossover), inversion mutation, food-source abandonment limit $\text{NTmax}=20$ (maximum trials before a source is abandoned), elite size~40, and first-improvement hill-climbing local search applied to 75\% of individuals per generation.
 
-Phases~B and~C replace hill climbing with tabu search and tune six parameters independently per neighbourhood using irace~\cite{Lopez2016}: crossover operator, mutation operator, elite size, NTmax, local-search target fraction, and the bad-iteration limit (maximum consecutive non-improving tabu iterations). The remaining parameters are fixed: population~250, tabu-list minimum size~3, and LEX2 ranking. LEX2 is chosen because Phase~A shows it produces makespan intervals 5--11\% narrower than the alternatives (Table~\ref{tab3}) with no significant difference in midpoint quality versus EV ($p = 0.197$, $r = 0.026$, Table~\ref{tab2}); fixing it allows the neighbourhood comparison in Phase~B to be conducted under the operator that minimises solution uncertainty at no cost in makespan quality. Table~\ref{tab:tuned} reports the resulting configurations.
+Phase~B replaces hill climbing with tabu search and tunes six parameters independently per neighbourhood using irace~\cite{Lopez2016}: crossover operator, mutation operator, elite size, NTmax, local-search target fraction, and the bad-iteration limit (maximum consecutive non-improving tabu iterations). The remaining parameters are fixed: population~250, tabu-list minimum size~3, and LEX2 ranking. LEX2 is chosen because Phase~A shows it produces makespan intervals 5--11\% narrower than the alternatives (Table~\ref{tab3}) with no significant difference in midpoint quality versus EV ($p = 0.197$, $r = 0.026$, Table~\ref{tab2}); fixing it allows the neighbourhood comparison in Phase~B to be conducted under the operator that minimises solution uncertainty at no cost in makespan quality. Table~\ref{tab:tuned} reports the resulting configurations.
 
 \begin{table}[htbp]
 \centering
-\caption{Irace-tuned hyperparameter configurations for Phases~B and~C. Parameters not listed are fixed: population~250, tabu-min-size~3, LEX2 ranking. \emph{LS target}: fraction of individuals receiving local search per generation. \emph{Bad-iter}: maximum consecutive non-improving tabu iterations before the local search terminates.}
+\caption{Irace-tuned hyperparameter configurations for Phase~B. Parameters not listed are fixed: population~250, tabu-min-size~3, LEX2 ranking. \emph{LS target}: fraction of individuals receiving local search per generation. \emph{Bad-iter}: maximum consecutive non-improving tabu iterations before the local search terminates.}
 \label{tab:tuned}
 \begin{tabular}{l c c r r r r}
 \hline
@@ -553,7 +552,7 @@ Panels~(b) and~(c) refute the slack hypothesis: LEX2 has \emph{more} critical op
 \label{fig3}
 \end{figure}
 
-\paragraph{Conclusion and transition to Phase~B.} Since EV and LEX2 are statistically equivalent on midpoint quality ($p = 0.197$) while LEX2 yields 5--11\% narrower intervals, all Phase~B and~C configurations fix LEX2. Regarding neighbourhoods: under the common hill-climbing baseline the five variants produce broadly similar midpoints ($N_3$ is the exception; Table~\ref{tab1}), with $N_{\rm ext}$ competitive. Under irace-tuned tabu search---the subject of Phase~B---$N_2$ and $N_8$ emerge as co-leaders while $N_{\rm ext}$ falls to third; Figure~\ref{fig6} and Section~\ref{sec6.5.1} show the convergence profiles that underlie this result.
+\paragraph{Conclusion and transition to Phase~B.} Since EV and LEX2 are statistically equivalent on midpoint quality ($p = 0.197$) while LEX2 yields 5--11\% narrower intervals, all Phase~B configurations fix LEX2. Regarding neighbourhoods: under the common hill-climbing baseline the five variants produce broadly similar midpoints ($N_3$ is the exception; Table~\ref{tab1}), with $N_{\rm ext}$ competitive. Under irace-tuned tabu search---the subject of Phase~B---$N_2$ and $N_8$ emerge as co-leaders while $N_{\rm ext}$ falls to third; Figure~\ref{fig6} and Section~\ref{sec6.5.1} show the convergence profiles that underlie this result.
 
 \subsection{Phase B: Neighbourhood Comparison after Tuning}
 \label{sec6.5}
@@ -596,7 +595,7 @@ $N_2$         & $N_8$         & 1846.5 & 1847.8 & $-1.3$  & $0.001$      & 0.070
 \end{tabular}
 \end{table}
 
-The picture that emerges differs markedly from the common hyperparameter setting of Phase~A: $N_2$ and $N_8$---not $N_{\rm ext}$---are the two strongest neighbourhoods after irace-based tabu search tuning. The difference between $N_2$ and $N_8$ is negligible ($r = 0.07$; indeed the only pair in Table~\ref{tab4} without a large or medium effect), while both sit a medium effect ahead of $N_{\rm ext}$, a large effect ahead of $N_1$, and a very large margin above $N_3$. The rise of $N_8$ to the top tier is noteworthy: under hill climbing (Phase~A), its extra-block reinsertion moves were outweighed by their cost and the difficulty the midpoint-based filter had in selecting interval-improving candidates; under tabu search, the tabu mechanism prevents cycling through the enlarged candidate set, allowing the reinsertion moves to contribute genuine diversity to the search trajectory. Section~\ref{sec6.6} examines whether this picture holds on deterministic instances.
+The picture that emerges differs markedly from the common hyperparameter setting of Phase~A: $N_2$ and $N_8$---not $N_{\rm ext}$---are the two strongest neighbourhoods after irace-based tabu search tuning. The difference between $N_2$ and $N_8$ is negligible ($r = 0.07$; indeed the only pair in Table~\ref{tab4} without a large or medium effect), while both sit a medium effect ahead of $N_{\rm ext}$, a large effect ahead of $N_1$, and a very large margin above $N_3$. The rise of $N_8$ to the top tier is noteworthy: under hill climbing (Phase~A), its extra-block reinsertion moves were outweighed by their cost and the difficulty the midpoint-based filter had in selecting interval-improving candidates; under tabu search, the tabu mechanism prevents cycling through the enlarged candidate set, allowing the reinsertion moves to contribute genuine diversity to the search trajectory.
 
 \input{figures/tab_phaseb_groups}
 
@@ -615,34 +614,6 @@ Figure~\ref{fig6} shows the per-generation convergence profiles of the five irac
 \caption{Per-generation normalised best-midpoint profiles, by neighbourhood (Phase B, irace-tuned tabu search; mean over 82 instances $\times$ 30 runs per neighbourhood). The shaded ribbons represent $\pm 1$ standard error. All five neighbourhoods converge quickly (within $\sim$10 generations) and then plateau; $N_2$ and $N_8$ reach the lowest final values (0.793 and 0.799), consistent with their joint statistical lead in Table~\ref{tab4}.}
 \label{fig6}
 \end{figure}
-
-\clearpage
-\subsection{Phase C: Validation on Deterministic Instances (CRISP)}
-\label{sec6.6}
-
-To check whether the relative ranking of neighbourhoods carries over to the deterministic setting, I apply the same five tuned configurations of Phase B to the 82 \emph{crisp} (deterministic, CRISP) counterparts of the benchmark instances, obtained by setting $\mathbf{p}_{ij} = [p_{ij}^{*}, p_{ij}^{*}]$ (equivalently $G^-(\sigma) = G^+(\sigma)$). The metric is RE\,(\%) (Equation~\ref{eq:re}), with LB equal to the published BKS for each instance.
-
-Table~\ref{tab5} reports global summary statistics.
-
-\begin{table}[htbp]
-\centering
-\caption{Phase C: CRISP validation. RE\,(\%) against best-known solutions over 82 instances and 30 independent runs each (TS, irace-tuned configurations from Phase~B). Statistics are computed over all $82 \times 30 = 2{,}460$ observations per neighbourhood. Median $t$ is the per-run wall-clock time.}
-\label{tab5}
-\begin{tabular}{l c c c c c}
-\hline
-$\mathcal{N}$ & Mean RE\,(\%) & Median RE\,(\%) & SD & Max\,(\%) & Median $t$\,(s) \\
-\hline
-$N_2$         & 2.20 & 2.01 & 1.81 & 10.83 &  67.8 \\
-$N_8$         & 2.27 & 2.01 & 1.86 &  8.84 &  75.1 \\
-$N_{\rm ext}$ & 2.75 & 2.46 & 2.07 &  9.95 &  48.8 \\
-$N_1$         & 3.77 & 3.53 & 2.34 & 11.05 &  33.5 \\
-$N_3$         & 4.35 & 4.11 & 2.63 & 14.46 & 207.6 \\
-\hline
-\end{tabular}
-\end{table}
-
-The CRISP results fully preserve the Phase~B ranking: $N_2$ achieves the lowest mean RE\,(\%) (2.20\%), with $N_8$ statistically indistinguishable (2.27\%, $\Delta = 0.07$ pp), followed by $N_{\rm ext}$ (2.75\%), $N_1$ (3.77\%), and $N_3$ (4.35\%). This confirms that the relative neighbourhood ordering is not an artefact of the interval objective: the same structural advantages hold in the deterministic setting. The ranking is consistent across all instance groups, with the largest absolute RE\,(\%) values concentrated in the tai$30{\times}20$ group (ca.\ 6--10\%) for all neighbourhoods, reflecting the difficulty of those instances. $N_8$'s extra-block reinsertion moves provide a structural advantage in the single-critical-path regime established by~\cite{Xie2022}, matching its performance on the interval instances. $N_3$'s median runtime of 207.6\,s (over $4\times$ higher than $N_1$) reflects its large candidate set hitting the time limit on tai$50{\times}20$ instances, further penalising it on both quality and cost.
-
 
 \subsection{Comparison with Published IJSP Solvers}
 \label{sec6.7}
@@ -680,7 +651,7 @@ la40 & 1222 & 5.07 & 8.74 & 1.2 & 1.88 & 4.21 & 3.0 & 2.74 & 4.11 & 3.7 & 0.70 &
 \end{table*}
 
 \paragraph{Taillard instances.}
-Per-instance results on all 70 Taillard instances (TA1--TA70, seven size classes from $15{\times}15$ to $50{\times}20$) are given in Tables~\ref{tab:lit_taillard_i} and~\ref{tab:lit_taillard_ii} (Appendix~\ref{appendix:comparison}). GA results are unavailable for the Taillard IJSP instances; the comparison covers $ABC_{E3}$ and ESABC only; TS-$N_8$ is included alongside TS-$N_2$ for reference. TS-$N_2$ achieves a grand mean RE of $\mathbf{3.66\%}$ across all 70 instances, against 8.66\% for ESABC and 9.39\% for $ABC_{E3}$, a 57.7\% reduction relative to ESABC. TS-$N_2$ achieves the strictly lower average RE than both ABC methods on every one of the 70 instances. The improvement is consistent across size classes and most pronounced on tai$50{\times}15$ (TA51--TA60; group mean: TS-$N_2$ = 0.32\% vs.\ ESABC = 4.55\%), where the interval TS nearly matches the lower bound---TA51 achieves RE\,=\,0.02\% and TA53 achieves RE\,=\,0.04\%. The hardest class, tai$30{\times}20$ (TA41--TA50), yields a group mean of 8.62\% for TS-$N_2$ versus 15.32\% for ESABC; these instances remain the most challenging for all methods. TS-$N_8$ finishes marginally behind TS-$N_2$ in grand mean (3.74\% vs.\ 3.66\%), consistent with the Phase~B ranking (Section~\ref{sec6.5}), though it outperforms $N_2$ on individual instances where a single dominant critical path prevails (Section~\ref{sec7.4}).
+Per-instance results on all 70 Taillard instances (TA1--TA70, seven size classes from $15{\times}15$ to $50{\times}20$) are provided as supplementary material~\cite{DiazSupp2026}. GA results are unavailable for the Taillard IJSP instances; the comparison covers $ABC_{E3}$ and ESABC only; TS-$N_8$ is included alongside TS-$N_2$ for reference. TS-$N_2$ achieves a grand mean RE of $\mathbf{3.66\%}$ across all 70 instances, against 8.66\% for ESABC and 9.39\% for $ABC_{E3}$, a 57.7\% reduction relative to ESABC. TS-$N_2$ achieves the strictly lower average RE than both ABC methods on every one of the 70 instances. The improvement is consistent across size classes and most pronounced on tai$50{\times}15$ (TA51--TA60; group mean: TS-$N_2$ = 0.32\% vs.\ ESABC = 4.55\%), where the interval TS nearly matches the lower bound---TA51 achieves RE\,=\,0.02\% and TA53 achieves RE\,=\,0.04\%. The hardest class, tai$30{\times}20$ (TA41--TA50), yields a group mean of 8.62\% for TS-$N_2$ versus 15.32\% for ESABC; these instances remain the most challenging for all methods. TS-$N_8$ finishes marginally behind TS-$N_2$ in grand mean (3.74\% vs.\ 3.66\%), consistent with the Phase~B ranking (Section~\ref{sec6.5}), though it outperforms $N_2$ on individual instances where a single dominant critical path prevails (Section~\ref{sec7.4}).
 
 
 \section{Discussion}
@@ -714,7 +685,7 @@ $N_8$ extends $N_2$ with extra-block reinsertion moves filtered by a midpoint lo
 
 Under tabu search (Phase~B), this penalty reverses. Three mechanisms interact. First, the tabu list prevents revisiting recently-moved operations, forcing the search to explore the full breadth of $N_8$'s candidate set---including the reinsertion moves---rather than cycling near a local optimum where only arc swaps are informative. Second, tabu search employs best-improvement selection: among all candidate moves at each iteration (arc swaps and reinsertions alike), the globally best is chosen; in a larger neighbourhood this captures improvements that first-improvement hill climbing would miss. Third, the aspiration criterion allows a tabu move to be accepted if it improves the current best solution; this creates a channel through which reinsertion moves that improve the interval criterion in aggregate (even at a mid-iteration midpoint cost) are eventually accepted.
 
-In the deterministic setting (CRISP), the mechanism is simpler: with a single critical path, a reinsertion that improves the midpoint also improves the makespan, so the filter is calibrated, and extra-block moves help under both hill climbing and tabu search~\cite{Xie2022}. The practical implication is that $N_8$ is a neighbourhood whose benefit is conditional on the search strategy: it requires a memory-based mechanism to exploit its enlarged candidate set effectively.
+In the deterministic setting, the mechanism is simpler: with a single critical path, a reinsertion that improves the midpoint also improves the makespan, so the filter is calibrated and extra-block moves help under both hill climbing and tabu search~\cite{Xie2022}. The practical implication is that $N_8$ is a neighbourhood whose benefit is conditional on the search strategy: it requires a memory-based mechanism to exploit its enlarged candidate set effectively.
 
 \subsection{Limitations and Future Work}
 \label{sec7.5}
@@ -732,7 +703,7 @@ In the deterministic setting (CRISP), the mechanism is simpler: with a single cr
 
 I have presented a theoretical framework for neighbourhood-based local search in the Interval Job Shop Scheduling Problem grounded in the concept of \emph{extreme critical paths} --- arcs that are critical in either the best-case or worst-case scenario graph. The resulting neighbourhood $H(\sigma)$ satisfies feasibility, connectivity and the no-loss-of-improving-neighbours property for all four admissible interval rankings considered (EV, LEX1, LEX2, YX) simultaneously.
 
-Five neighbourhood variants ($N_1$, $N_2$, $N_3$, $N_{\rm ext}$, $N_8$) and four ranking operators were evaluated on 82 benchmark instances of up to 1000 operations, across four phases: a $5 \times 4$ comparison at a common parameter setting, a five-way comparison after irace-based tuning, a CRISP validation on the corresponding deterministic instances, and a comparison with three published IJSP metaheuristics.
+Five neighbourhood variants ($N_1$, $N_2$, $N_3$, $N_{\rm ext}$, $N_8$) and four ranking operators were evaluated on 82 benchmark instances of up to 1000 operations, across three phases: a $5 \times 4$ comparison at a common parameter setting, a five-way comparison after irace-based tuning, and a comparison with three published IJSP metaheuristics.
 
 After per-neighbourhood irace-tuned tabu search, $N_2$ and $N_8$ emerge as the two strongest variants---statistically tied (negligible effect $r=0.07$)---while $N_{\rm ext}$, $N_1$, and $N_3$ trail by medium, large, and very large effects respectively. Considered jointly with runtime, $N_2$ is the most efficient choice across all instance sizes: it ties for best quality, is faster than $N_{\rm ext}$ for all instances with $\geq 450$ operations, and is faster than $N_8$ for small and medium instances. $N_8$ is the preferred choice for large instances when runtimes of 200--600\,s are acceptable, as it achieves the best quality on the tai$50{\times}15$ class. Regarding ranking operators, LEX2 yields makespan intervals 5--11\% narrower than the alternatives on average. A float analysis of both extreme graphs provides structural support for this finding: LEX2 solutions show more critical operations and less per-operation slack in $G^+(\sigma)$, consistent with LEX2 directly tightening the worst-case critical path rather than leaving more structural slack. The $N_8$ variant's rise to the top tier under tabu search---in contrast to its mid-table performance under hill climbing---is a key finding: extra-block reinsertion moves provide no advantage under first-improvement hill climbing (the cost exceeds the gain), but become genuinely useful under tabu search, where the memory mechanism exploits the enlarged candidate set without cycling. This underscores that the choice of local-search strategy interacts strongly with neighbourhood design in the interval setting. The comparison against three published IJSP metaheuristics (GA, $ABC_{E3}$, ESABC) provides external validation of the approach: the irace-tuned TS-$N_2$ achieves strictly lower average RE\,(\%) than the previous best solver on every one of the 82 benchmark instances, with mean reductions of 56.6\% on the 12 classical instances and 57.7\% on the 70 Taillard instances.
 
@@ -751,7 +722,7 @@ The author declares that there are no known competing financial interests or per
 
 \section*{Data availability}
 
-[TODO: Confirm or replace.] The benchmark instances, source code of the local-search engine, irace tuning scripts, and the raw experimental data underlying every figure and table in this article are openly available at \texttt{https://github.com/<TODO-org>/<TODO-repo>}. The classical JSP benchmarks used to derive the interval instances are taken from the OR-Library and from \cite{TaillardBKS}.
+The raw experimental data underlying every figure and table in this article (run logs, aggregated CSVs, irace tuning records, instance files, and analysis scripts) are openly available on Zenodo~\cite{DiazData2026}. Per-instance RE\,(\%) results for all 70 Taillard instances are provided as a separate supplementary document~\cite{DiazSupp2026}. The classical JSP benchmarks used to derive the interval instances are taken from the OR-Library and from \cite{TaillardBKS}.
 
 
 \section*{Acknowledgements}
@@ -764,115 +735,6 @@ The author declares that there are no known competing financial interests or per
 %%
 %%   \bibliographystyle{elsarticle-num}
 %%   \bibliography{<your bibdatabase>}
-
-\appendix
-
-\section{Per-instance Comparison with Published IJSP Solvers}
-\label{appendix:comparison}
-
-Tables~\ref{tab:lit_taillard_i} and~\ref{tab:lit_taillard_ii} report per-instance RE\,(\%) for $ABC_{E3}$~\cite{DiazFEABC2023}, $ESABC$~\cite{DiazICAE2023}, $TS$-$N_2$, and $TS$-$N_8$ on all 70 Taillard IJSP instances (see Section~\ref{sec6.7} for a summary and discussion). A negative RE\,(\%) indicates that the interval $E[\mathbf{C}_{\max}]$ lies below the published deterministic lower bound; this can occur because the interval and deterministic problems are structurally distinct (the interval midpoint is not bounded below by the deterministic lower bound).
-
-\begin{table*}[p]
-\centering\small\setlength{\tabcolsep}{3pt}
-\caption{Comparison with $ABC_{E3}$~\cite{DiazFEABC2023} and $ESABC$~\cite{DiazICAE2023} on Taillard IJSP instances (Part~I, TA1--TA40). RE\,(\%) $= (E[\mathbf{C}_{\max}]-\text{LB})\,/\,\text{LB}\times100$ (Eq.~\ref{eq:re}). All methods: 30 runs. Bold: row-minimum average RE. $t$ = median runtime\,(s) for TS; average for ABC methods.}
-\label{tab:lit_taillard_i}
-\begin{tabular}{ll r | rr r | rr r | rr r | rr r}
-\hline
- & & & \multicolumn{3}{c|}{$ABC_{E3}$~\cite{DiazFEABC2023}} & \multicolumn{3}{c|}{$ESABC$~\cite{DiazICAE2023}} & \multicolumn{3}{c|}{$TS$-$N_2$ (ours)} & \multicolumn{3}{c}{$TS$-$N_8$ (ours)} \\
-Size & Inst. & LB & Best & Avg & $t$ & Best & Avg & $t$ & Best & Avg & $t$ & Best & Avg & $t$ \\
-\hline
-$15\times15$ & TA1 & 1231 & 4.71 & 6.73 & 3.7 & 4.51 & 7.27 & 5.4 & 1.26 & \textbf{1.85} & 20 & 1.30 & 1.96 & 27 \\
- & TA2 & 1244 & 2.65 & 4.20 & 3.9 & 3.26 & 4.87 & 5.2 & 0.24 & \textbf{1.65} & 19 & 0.88 & 1.73 & 27 \\
- & TA3 & 1218 & 3.65 & 5.63 & 4.4 & 3.74 & 5.57 & 5.7 & 1.35 & 2.34 & 23 & 1.60 & \textbf{2.30} & 26 \\
- & TA4 & 1175 & 4.38 & 6.99 & 4.0 & 5.15 & 6.96 & 5.9 & 0.34 & \textbf{1.31} & 21 & 0.34 & 1.47 & 28 \\
- & TA5 & 1224 & 3.19 & 4.89 & 3.5 & 2.49 & 4.27 & 5.0 & 1.06 & \textbf{2.22} & 19 & 1.27 & 2.23 & 24 \\
- & TA6 & 1238 & 3.39 & 5.61 & 4.2 & 2.34 & 4.89 & 5.5 & 1.29 & \textbf{1.97} & 20 & 1.29 & 2.02 & 28 \\
- & TA7 & 1227 & 2.81 & 4.86 & 3.6 & 2.57 & 4.42 & 5.3 & 0.61 & \textbf{1.77} & 16 & 0.61 & 1.90 & 22 \\
- & TA8 & 1217 & 2.55 & 5.41 & 3.9 & 1.97 & 5.68 & 5.2 & 1.15 & 2.37 & 17 & 1.15 & \textbf{2.24} & 22 \\
- & TA9 & 1274 & 4.47 & 8.25 & 4.1 & 5.46 & 8.26 & 5.7 & 2.35 & \textbf{2.73} & 17 & 2.35 & 2.94 & 23 \\
- & TA10 & 1241 & 3.14 & 6.16 & 3.8 & 3.71 & 6.44 & 5.3 & 0.24 & 2.23 & 19 & 0.24 & \textbf{1.74} & 23 \\
-\hline
-$20\times15$ & TA11 & 1357 & 6.26 & 9.37 & 6.6 & 6.74 & 8.37 & 9.7 & 2.76 & \textbf{4.11} & 45 & 2.51 & 4.31 & 51 \\
- & TA12 & 1367 & 4.46 & 5.99 & 5.8 & 2.93 & 5.28 & 8.5 & 1.57 & \textbf{2.21} & 31 & 1.79 & 2.55 & 42 \\
- & TA13 & 1342 & 6.26 & 8.88 & 7.1 & 7.19 & 9.25 & 9.8 & 2.38 & 3.91 & 43 & 2.42 & \textbf{3.91} & 62 \\
- & TA14 & 1345 & 3.75 & 5.02 & 6.3 & 2.49 & 4.43 & 8.6 & 0.45 & \textbf{1.82} & 35 & 0.97 & 1.84 & 44 \\
- & TA15 & 1339 & 5.94 & 8.53 & 6.3 & 4.59 & 7.05 & 9.6 & 2.43 & \textbf{3.96} & 44 & 2.61 & 4.00 & 57 \\
- & TA16 & 1360 & 7.02 & 8.98 & 6.3 & 6.84 & 9.22 & 8.6 & 1.95 & 3.28 & 38 & 0.85 & \textbf{2.98} & 55 \\
- & TA17 & 1462 & 5.75 & 8.72 & 6.1 & 4.31 & 8.06 & 8.0 & 1.92 & 3.14 & 40 & 1.71 & \textbf{2.82} & 52 \\
- & TA18 & 1377 & 9.40 & 11.79 & 6.6 & 9.37 & 11.63 & 9.6 & 3.70 & \textbf{5.23} & 44 & 3.74 & 5.58 & 58 \\
- & TA19 & 1332 & 8.52 & 11.36 & 5.7 & 7.96 & 9.70 & 8.9 & 1.99 & \textbf{4.54} & 48 & 2.97 & 4.96 & 63 \\
- & TA20 & 1348 & 4.97 & 8.09 & 6.2 & 5.27 & 7.02 & 10.2 & 2.15 & \textbf{3.54} & 41 & 2.45 & 3.67 & 51 \\
-\hline
-$20\times20$ & TA21 & 1642 & 6.52 & 8.07 & 6.9 & 5.42 & 7.47 & 11.2 & 2.38 & \textbf{3.75} & 60 & 2.47 & 3.90 & 73 \\
- & TA22 & 1561 & 8.65 & 10.53 & 8.1 & 8.23 & 9.77 & 11.8 & 4.16 & 5.88 & 59 & 4.13 & \textbf{5.88} & 74 \\
- & TA23 & 1518 & 10.01 & 11.56 & 8.0 & 9.49 & 11.23 & 11.8 & 4.45 & \textbf{5.80} & 49 & 4.22 & 6.44 & 67 \\
- & TA24 & 1644 & 5.14 & 7.47 & 7.8 & 5.29 & 6.91 & 11.0 & 1.43 & 2.86 & 58 & 1.09 & \textbf{2.64} & 75 \\
- & TA25 & 1558 & 9.27 & 10.97 & 7.8 & 8.06 & 11.22 & 11.2 & 5.10 & \textbf{6.50} & 59 & 5.36 & 6.84 & 87 \\
- & TA26 & 1591 & 10.50 & 13.05 & 8.4 & 9.99 & 12.93 & 11.7 & 6.66 & \textbf{8.02} & 54 & 7.01 & 8.25 & 72 \\
- & TA27 & 1652 & 8.57 & 10.42 & 8.3 & 7.45 & 9.82 & 11.6 & 3.93 & \textbf{5.08} & 58 & 3.87 & 5.23 & 72 \\
- & TA28 & 1603 & 6.46 & 8.21 & 7.5 & 6.24 & 7.52 & 10.9 & 2.18 & \textbf{3.27} & 60 & 2.12 & 3.42 & 75 \\
- & TA29 & 1583 & 7.99 & 10.21 & 7.6 & 7.64 & 9.63 & 12.0 & 4.36 & \textbf{5.10} & 50 & 4.36 & 5.22 & 61 \\
- & TA30 & 1528 & 9.75 & 12.22 & 7.7 & 10.01 & 12.04 & 10.6 & 5.99 & \textbf{7.13} & 70 & 4.74 & 7.37 & 85 \\
-\hline
-$30\times15$ & TA31 & 1764 & 6.01 & 8.78 & 12.5 & 5.70 & 7.81 & 18.7 & 1.02 & \textbf{1.97} & 102 & 1.05 & 2.43 & 140 \\
- & TA32 & 1774 & 10.68 & 13.07 & 13.4 & 9.53 & 11.84 & 19.8 & 4.17 & \textbf{5.32} & 127 & 3.95 & 5.65 & 161 \\
- & TA33 & 1788 & 9.40 & 11.71 & 13.3 & 9.03 & 10.58 & 18.8 & 3.75 & \textbf{4.61} & 106 & 3.78 & 4.74 & 135 \\
- & TA34 & 1828 & 8.23 & 9.63 & 12.2 & 7.28 & 8.76 & 17.3 & 3.39 & \textbf{4.73} & 98 & 3.58 & 4.86 & 103 \\
- & TA35 & 2007 & 1.47 & 3.25 & 11.7 & 1.59 & 3.92 & 13.0 & 0.00 & \textbf{0.26} & 61 & 0.00 & 0.39 & 72 \\
- & TA36 & 1819 & 7.94 & 9.63 & 12.7 & 6.24 & 8.83 & 18.2 & 1.29 & \textbf{2.82} & 105 & 0.88 & 2.84 & 133 \\
- & TA37 & 1771 & 8.16 & 9.70 & 12.7 & 7.06 & 9.11 & 16.4 & 2.88 & \textbf{3.85} & 113 & 2.48 & 3.89 & 150 \\
- & TA38 & 1673 & 8.52 & 10.65 & 12.1 & 7.29 & 9.51 & 18.9 & 3.17 & \textbf{4.35} & 122 & 2.93 & 4.58 & 136 \\
- & TA39 & 1795 & 6.13 & 8.35 & 13.2 & 5.46 & 7.82 & 18.0 & 1.45 & \textbf{2.67} & 90 & 1.11 & 2.71 & 120 \\
- & TA40 & 1651 & 11.18 & 13.42 & 13.1 & 11.21 & 12.71 & 17.8 & 4.18 & \textbf{6.17} & 102 & 4.78 & 6.67 & 134 \\
-\hline
-\end{tabular}
-\end{table*}
-
-\begin{table*}[p]
-\centering\small\setlength{\tabcolsep}{3pt}
-\caption{Comparison with $ABC_{E3}$~\cite{DiazFEABC2023} and $ESABC$~\cite{DiazICAE2023} on Taillard IJSP instances (Part~II, TA41--TA70). RE\,(\%) $= (E[\mathbf{C}_{\max}]-\text{LB})\,/\,\text{LB}\times100$ (Eq.~\ref{eq:re}). All methods: 30 runs. Bold: row-minimum average RE. $t$ = median runtime\,(s) for TS; average for ABC methods.}
-\label{tab:lit_taillard_ii}
-\begin{tabular}{ll r | rr r | rr r | rr r | rr r}
-\hline
- & & & \multicolumn{3}{c|}{$ABC_{E3}$~\cite{DiazFEABC2023}} & \multicolumn{3}{c|}{$ESABC$~\cite{DiazICAE2023}} & \multicolumn{3}{c|}{$TS$-$N_2$ (ours)} & \multicolumn{3}{c}{$TS$-$N_8$ (ours)} \\
-Size & Inst. & LB & Best & Avg & $t$ & Best & Avg & $t$ & Best & Avg & $t$ & Best & Avg & $t$ \\
-\hline
-$30\times20$ & TA41 & 1906 & 17.58 & 20.55 & 16.1 & 16.34 & 19.24 & 22.4 & 9.68 & 12.12 & 158 & 9.99 & \textbf{11.96} & 212 \\
- & TA42 & 1884 & 14.15 & 17.45 & 15.3 & 14.46 & 16.86 & 20.8 & 6.58 & \textbf{8.36} & 192 & 7.62 & 9.10 & 240 \\
- & TA43 & 1809 & 16.06 & 18.13 & 16.5 & 13.85 & 16.74 & 24.2 & 5.67 & 8.72 & 197 & 6.77 & \textbf{8.47} & 228 \\
- & TA44 & 1948 & 11.88 & 14.41 & 16.8 & 10.47 & 12.78 & 25.9 & 4.72 & \textbf{6.86} & 151 & 5.34 & 7.12 & 203 \\
- & TA45 & 1997 & 6.99 & 9.45 & 17.0 & 6.76 & 8.40 & 24.2 & 2.70 & \textbf{4.17} & 132 & 2.55 & 4.31 & 171 \\
- & TA46 & 1957 & 13.00 & 15.91 & 18.2 & 12.31 & 14.87 & 26.2 & 6.87 & \textbf{8.69} & 168 & 6.59 & 8.71 & 213 \\
- & TA47 & 1807 & 16.55 & 20.44 & 16.3 & 15.33 & 18.64 & 24.0 & 9.91 & \textbf{11.53} & 161 & 10.04 & 11.84 & 222 \\
- & TA48 & 1912 & 11.90 & 13.90 & 15.1 & 11.30 & 13.88 & 22.1 & 6.15 & \textbf{7.87} & 161 & 6.77 & 8.26 & 223 \\
- & TA49 & 1931 & 11.08 & 13.19 & 17.1 & 10.56 & 12.98 & 21.3 & 5.00 & \textbf{6.49} & 155 & 4.63 & 6.60 & 196 \\
- & TA50 & 1833 & 16.56 & 20.36 & 16.3 & 16.50 & 18.83 & 22.1 & 9.22 & 11.43 & 163 & 9.68 & \textbf{11.39} & 214 \\
-\hline
-$50\times15$ & TA51 & 2760 & 5.51 & 7.20 & 27.3 & 3.73 & 5.76 & 40.6 & 0.00 & \textbf{0.02} & 204 & 0.00 & 0.04 & 244 \\
- & TA52 & 2756 & 4.03 & 5.93 & 27.5 & 2.87 & 4.47 & 43.2 & 0.00 & \textbf{0.10} & 212 & 0.00 & 0.17 & 264 \\
- & TA53 & 2717 & 3.66 & 5.40 & 27.5 & 2.82 & 4.04 & 37.9 & 0.04 & \textbf{0.04} & 162 & 0.04 & 0.04 & 182 \\
- & TA54 & 2839 & 0.63 & 2.96 & 24.3 & 0.33 & 1.75 & 34.3 & 0.00 & 0.02 & 108 & -2.08 & \textbf{-1.07} & 162 \\
- & TA55 & 2679 & 6.01 & 8.44 & 29.3 & 5.88 & 7.52 & 39.2 & 0.34 & 0.87 & 244 & 0.34 & \textbf{0.75} & 326 \\
- & TA56 & 2781 & 3.25 & 5.04 & 23.7 & 3.00 & 4.57 & 36.9 & 0.11 & \textbf{0.27} & 156 & 0.11 & 0.32 & 202 \\
- & TA57 & 2943 & 1.63 & 3.61 & 26.9 & 1.22 & 2.48 & 41.1 & 0.00 & 0.03 & 127 & -0.34 & \textbf{-0.01} & 152 \\
- & TA58 & 2885 & 3.08 & 4.94 & 26.7 & 1.94 & 3.60 & 38.4 & 0.69 & \textbf{0.69} & 125 & 0.69 & \textbf{0.69} & 141 \\
- & TA59 & 2655 & 5.63 & 7.50 & 27.8 & 4.73 & 6.62 & 38.9 & 0.45 & \textbf{0.75} & 209 & 0.45 & 0.85 & 323 \\
- & TA60 & 2723 & 4.43 & 6.07 & 24.7 & 3.64 & 4.67 & 34.9 & 0.11 & \textbf{0.41} & 185 & 0.11 & 0.44 & 209 \\
-\hline
-$50\times20$ & TA61 & 2868 & 6.76 & 8.84 & 33.5 & 5.81 & 7.77 & 49.2 & 0.47 & 1.83 & 542 & 0.56 & \textbf{1.82} & 607 \\
- & TA62 & 2869 & 9.41 & 11.74 & 33.7 & 8.66 & 10.40 & 44.7 & 3.66 & \textbf{5.02} & 460 & 3.38 & 5.24 & 485 \\
- & TA63 & 2755 & 7.64 & 9.19 & 30.6 & 6.35 & 7.87 & 45.8 & 0.45 & 1.69 & 545 & 0.34 & \textbf{1.45} & 596 \\
- & TA64 & 2702 & 6.94 & 8.36 & 33.6 & 5.94 & 6.78 & 47.0 & 0.59 & \textbf{1.50} & 521 & 0.76 & 1.51 & 581 \\
- & TA65 & 2725 & 8.42 & 9.98 & 33.8 & 7.30 & 9.05 & 47.5 & 1.19 & \textbf{2.12} & 574 & 1.06 & 2.26 & 616 \\
- & TA66 & 2845 & 6.80 & 8.56 & 32.1 & 6.05 & 7.55 & 42.8 & 1.20 & 2.05 & 527 & 0.63 & \textbf{2.01} & 528 \\
- & TA67 & 2825 & 6.50 & 8.95 & 34.0 & 6.50 & 8.24 & 45.4 & 1.08 & \textbf{2.30} & 585 & 1.22 & 2.44 & 613 \\
- & TA68 & 2784 & 6.66 & 8.01 & 32.7 & 4.87 & 6.85 & 46.6 & 0.29 & \textbf{1.10} & 421 & 0.29 & 1.18 & 416 \\
- & TA69 & 3071 & 5.08 & 6.59 & 29.6 & 3.70 & 5.90 & 45.0 & 0.00 & \textbf{0.12} & 440 & 0.00 & 0.18 & 409 \\
- & TA70 & 2995 & 8.43 & 9.91 & 30.9 & 7.20 & 8.72 & 42.9 & 1.59 & \textbf{2.53} & 664 & 1.10 & 2.98 & 636 \\
-\hline
-\end{tabular}
-\end{table*}
-
 
 \bibliographystyle{elsarticle-num}
 \bibliography{references}
