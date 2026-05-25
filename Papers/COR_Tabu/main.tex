@@ -64,7 +64,7 @@
 
 %% Abstract
 \begin{abstract}
-The Job Shop Scheduling Problem with interval-valued processing times (IJSP) models real-world uncertainty where durations are unknown but bounded. Comparing schedules then requires an interval ranking operator, and the classical notion of critical path must be extended to both extreme scenarios. I formalise \emph{extreme critical paths} --- paths critical in the best-case or worst-case scenario graph --- and use them to define a neighbourhood $H(\sigma)$ for local search. I prove that $H(\sigma)$ is feasible, connected and loses no improving neighbours under any admissible interval ranking. Five neighbourhood variants ($N_1$, $N_2$, $N_3$, $N_{\rm ext}$, $N_8$) are formulated within this framework and combined with four ranking operators (EV, LEX1, LEX2, YX) on 82 benchmark instances of up to 1000 operations. Two findings are noteworthy: \emph{(i)} after irace-based tabu search tuning, $N_2$ and $N_8$ emerge as the two strongest neighbourhoods (statistically tied, negligible effect $r=0.07$), both outperforming $N_{\rm ext}$ by a medium effect and $N_1$ by a large effect; $N_3$ is weakest by a large margin. \emph{(ii)} LEX2 yields makespan intervals 5--11\% narrower than the alternatives on average; a float analysis of both extreme graphs shows LEX2 solutions concentrate critical operations in the worst-case graph, consistent with LEX2 directly tightening the worst-case critical path. \emph{(iii)} On the full 82-instance IJSP benchmark, the irace-tuned TS-$N_2$ reduces mean RE\,(\%) by 56.6\% on the 12 classical instances and 57.7\% on the 70 Taillard instances relative to the previous best published solver; the neighbourhood ranking is consistent across all instance size classes.
+The Job Shop Scheduling Problem with interval-valued processing times (IJSP) models real-world uncertainty where task durations are unknown but bounded. Comparing schedules then requires an interval ranking operator, and the classical notion of critical path must be extended to both extreme scenarios. I formalise \emph{extreme critical paths} --- paths critical in the best-case or worst-case scenario graph --- and use them to define a neighbourhood $H(\sigma)$ for local search. I prove that $H(\sigma)$ is feasible, connected and loses no improving neighbours under any admissible interval ranking. Five neighbourhood variants ($N_1$, $N_2$, $N_3$, $N_{\rm ext}$, $N_8$) are formulated within this framework and combined with four ranking operators (EV, LEX1, LEX2, YX) on 82 benchmark instances of up to 1000 operations. Two findings are noteworthy: \emph{(i)} after irace-based tabu search tuning, $N_2$ and $N_8$ emerge as the two strongest neighbourhoods (statistically tied, negligible effect $r=0.07$), both outperforming $N_{\rm ext}$ by a medium effect and $N_1$ by a large effect; $N_3$ is weakest by a large margin. \emph{(ii)} LEX2 yields makespan intervals 5--11\% narrower than the alternatives on average; a float analysis of both extreme graphs shows LEX2 solutions concentrate critical operations in the worst-case graph, consistent with LEX2 directly tightening the worst-case critical path. \emph{(iii)} On the full 82-instance IJSP benchmark, the irace-tuned TS-$N_2$ reduces mean RE\,(\%) by 56.6\% on the 12 classical instances and 57.7\% on the 70 Taillard instances relative to the previous best published solver; the neighbourhood ranking is consistent across all instance size classes.
 \end{abstract}
 
 
@@ -103,9 +103,9 @@ This paper makes the following contributions.
 
 \item Five neighbourhood variants within the $H(\sigma)$ framework (Section~\ref{sec5}). I formulate $N_1$, $N_2$, $N_3$, $N_{\rm ext}$ and a new variant $N_8$ (boundary arc swaps extended with extra-block reinsertion moves, after~\cite{Xie2022}) as instances of $H(\sigma)$, characterising their theoretical size and the cost of generating them.
 
-\item Empirical study on 82 benchmark instances (Section~\ref{sec6}). Three experimental phases are reported: \emph{(a)} a $5 \times 4$ comparison of five neighbourhoods and four operators at a common parameter setting (Section~\ref{sec6.2}); \emph{(b)} a head-to-head comparison of the five neighbourhoods after irace-based hyperparameter tuning, isolating the structural effect of the neighbourhood (Section~\ref{sec6.5}); and \emph{(c)} a comparison with three published IJSP metaheuristics (GA, $ABC_{E3}$, ESABC; Section~\ref{sec6.7}), showing that the irace-tuned TS-$N_2$ reduces mean RE\,(\%) by 56.6\% on classical instances and 57.7\% on Taillard instances relative to the previous best solver.
+\item Empirical study on 82 benchmark instances (Section~\ref{sec6}). Three experimental phases are reported: \emph{(a)} a $5 \times 4$ comparison of four ranking operators at a common parameter setting (Section~\ref{sec6.2}); \emph{(b)} a head-to-head comparison of the five neighbourhoods after irace-based hyperparameter tuning, isolating the structural effect of the neighbourhood (Section~\ref{sec6.5}); and \emph{(c)} a comparison with three published IJSP metaheuristics (GA, $ABC_{E3}$, ESABC; Section~\ref{sec6.7}), showing that the irace-tuned TS-$N_2$ achieves strictly lower mean RE\,(\%) than the previous best solver.
 
-\item Discovery and structural explanation of the LEX2--width effect (Section~\ref{sec6.2}). LEX2 produces solutions with $\sim$5--11\% narrower makespan intervals than the other operators on average. A float analysis of both extreme graphs falsifies the natural ``more slack'' hypothesis and provides structural evidence for this effect: LEX2 solutions show more critical operations and less slack in $G^+(\sigma)$, consistent with LEX2 tightening the worst-case critical path directly.
+\item Discovery and structural explanation of an interval-width effect (Section~\ref{sec6.2}). One ranking operator consistently yields makespan intervals narrower than the alternatives. A float analysis of both extreme graphs reveals the structural mechanism: the operator concentrates critical operations in the worst-case graph $G^+(\sigma)$, directly tightening the worst-case critical path.
 \end{enumerate}
 
 \subsection{Paper Organisation}
@@ -136,7 +136,8 @@ Since there is no natural total order on $\mathbb{IR}$, comparing schedules requ
 \begin{align}
 \mathbf{a} \leq_{\rm LEX1} \mathbf{b} &\iff a^- < b^- \,\vee\, (a^- = b^- \wedge a^+ \leq b^+) \\
 \mathbf{a} \leq_{\rm LEX2} \mathbf{b} &\iff a^+ < b^+ \,\vee\, (a^+ = b^+ \wedge a^- \leq b^-) \\
-\mathbf{a} \leq_{\rm YX}   \mathbf{b} &\iff (a^- + a^+) < (b^- + b^+) \,\vee\, ((a^- + a^+) = (b^- + b^+) \wedge (a^+ - a^-) \leq (b^+ - b^-)) \\
+\mathbf{a} \leq_{\rm YX}   \mathbf{b} &\iff (a^- + a^+) < (b^- + b^+) \notag\\
+    &\phantom{{}\iff{}} \vee\, \bigl((a^- + a^+) = (b^- + b^+) \wedge (a^+ - a^-) \leq (b^+ - b^-)\bigr) \\
 \mathbf{a} \leq_{\rm EV}   \mathbf{b} &\iff \tfrac{a^- + a^+}{2} \leq \tfrac{b^- + b^+}{2}
 \end{align}
 LEX1, LEX2 and YX are \emph{admissible} total orders on $\mathbb{IR}$ \cite{Bustince2013}: they refine the partial product order $\leq_{2}$ defined by $\mathbf{a} \leq_{2} \mathbf{b} \iff a^- \leq b^- \wedge a^+ \leq b^+$. EV ranks intervals by their midpoint $\tfrac{a^-+a^+}{2}$ and induces a total preorder rather than a strict total order, since two distinct intervals may share the same midpoint; it also refines $\leq_{2}$. This refinement property is essential for the theoretical guarantees of Section~\ref{sec4}: any move that simultaneously decreases both $C^-_{\max}$ and $C^+_{\max}$ is an improvement under all four rankings considered here.
@@ -245,7 +246,7 @@ Let $\sigma \in \Sigma$ be a feasible order and let $v \in D(\sigma)$ be a disju
 \begin{equation}
 C^-_{\max}(\sigma) \leq C^-_{\max}(\sigma_{(v)}) \quad\text{and}\quad C^+_{\max}(\sigma) \leq C^+_{\max}(\sigma_{(v)}),
 \end{equation}
-and consequently $\mathbf{C}_{\max}(\sigma) \leq_{R} \mathbf{C}_{\max}(\sigma_{(v)})$ for every ranking $R \in \{{\rm EV}, {\rm LEX1}, {\rm LEX2}, {\rm YX}\}$.
+and consequently $\mathbf{C}_{\max}(\sigma) \leq_{R} \mathbf{C}_{\max}(\sigma_{(v)})$ for every admissible ranking~$R$.
 \end{proposition}
 
 \begin{proof}
@@ -262,7 +263,7 @@ so $C^*_{\max}(\sigma_{(v)})\ge C^*_{\max}(\sigma)$.
 Applied to both extreme graphs: $C^-_{\max}(\sigma_{(v)})\ge C^-_{\max}(\sigma)$ and
 $C^+_{\max}(\sigma_{(v)})\ge C^+_{\max}(\sigma)$,
 i.e., $\mathbf{C}_{\max}(\sigma)\le_2\mathbf{C}_{\max}(\sigma_{(v)})$.
-Since every ranking $R\in\{\mathrm{EV},\mathrm{LEX1},\mathrm{LEX2},\mathrm{YX}\}$ refines $\le_2$,
+Since every admissible ranking $R$ refines $\le_2$,
 we obtain $\mathbf{C}_{\max}(\sigma)\le_R\mathbf{C}_{\max}(\sigma_{(v)})$.
 \end{proof}
 
@@ -417,9 +418,9 @@ $N_3$ augments the $N_2$ boundary arc swaps with three rearrangement types appli
 $N_{\rm ext}$ adapts the extended neighbourhood of \cite{Nowicki2005}. It starts from $N_2$ (boundary arcs unconditionally) and additionally considers interior block arcs that pass a heads-and-tails viability check, denoted \texttt{isViableSwap}:
 \begin{itemize}
 \item Boundary arcs $(o_1,o_2)$ and $(o_{k-1},o_k)$ are always included (as in $N_2$).
-\item Interior arcs $(o_i, o_{i+1})$, $2 \leq i \leq k-2$, are included only if $\texttt{isViableSwap}(o_i, o_{i+1})$ returns true.
+\item Interior arcs $(o_i, o_{i+1})$ with $2 \leq i \leq k-2$ are included only if the $\texttt{isViableSwap}$ check returns true.
 \end{itemize}
-$\texttt{isViableSwap}(x,y)$ computes an optimistic lower-bound estimate of the makespan after swapping $x$ and $y$ by recalculating only the local heads and tails of $x$ and $y$, without propagating changes through the full graph. Because the estimate is a lower bound, discarding a swap when the estimate exceeds the incumbent makespan is theoretically safe.
+The check \texttt{isViableSwap}$(x,y)$ computes an optimistic lower-bound estimate of the post-swap makespan by recalculating only the local heads and tails of $x$ and $y$. Because the estimate is a lower bound, discarding a swap when it exceeds the incumbent is theoretically safe.
 
 \subsection{$N_8$: Block-Boundary Swaps with Extra-Block Reinsertion}
 \label{sec5.5}
