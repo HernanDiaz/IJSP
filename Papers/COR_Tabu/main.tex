@@ -253,21 +253,7 @@ and consequently $\mathbf{C}_{\max}(\sigma) \leq_{R} \mathbf{C}_{\max}(\sigma_{(
 \end{proposition}
 
 \begin{proof}
-We prove $C^*_{\max}(\sigma)\le C^*_{\max}(\sigma_{(v)})$ for $*\in\{-,+\}$; both cases are identical.
-
-Since $(x,y)$ is not extreme critical, it lies on no critical path of $G^*(\sigma)$.
-Let $P^*$ be any critical path of $G^*(\sigma)$, of length $C^*_{\max}(\sigma)$.
-$P^*$ does not contain arc $(x,y)$.
-Since $G^*(\sigma_{(v)})$ differs from $G^*(\sigma)$ only by replacing $(x,y)$ with $(y,x)$,
-every arc of $P^*$ is still present in $G^*(\sigma_{(v)})$.
-Hence $P^*$ is a valid directed path in $G^*(\sigma_{(v)})$ of weight $C^*_{\max}(\sigma)$,
-so $C^*_{\max}(\sigma_{(v)})\ge C^*_{\max}(\sigma)$.
-
-Applied to both extreme graphs: $C^-_{\max}(\sigma_{(v)})\ge C^-_{\max}(\sigma)$ and
-$C^+_{\max}(\sigma_{(v)})\ge C^+_{\max}(\sigma)$,
-i.e., $\mathbf{C}_{\max}(\sigma)\le_2\mathbf{C}_{\max}(\sigma_{(v)})$.
-Since every admissible ranking $R$ refines $\le_2$,
-we obtain $\mathbf{C}_{\max}(\sigma)\le_R\mathbf{C}_{\max}(\sigma_{(v)})$.
+Fix $*\in\{-,+\}$. Since $(x,y)$ is not extreme critical, no critical path of $G^*(\sigma)$ contains it; any such path, of length $C^*_{\max}(\sigma)$, remains a valid path in $G^*(\sigma_{(v)})$ (whose only arc change is $(x,y)\mapsto(y,x)$), hence $C^*_{\max}(\sigma_{(v)})\ge C^*_{\max}(\sigma)$. Applying this to both extreme graphs gives $\mathbf{C}_{\max}(\sigma)\le_2\mathbf{C}_{\max}(\sigma_{(v)})$, and since every admissible $R$ refines $\le_2$, the claim follows.
 \end{proof}
 
 \medskip
