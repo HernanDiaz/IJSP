@@ -274,30 +274,11 @@ For every feasible $\sigma \in \Sigma$, the reversal of any extreme critical arc
 \end{theorem}
 
 \begin{proof}
-Suppose for contradiction that $G(\sigma_{(v)})$ contains a directed cycle.
-Since $G(\sigma)$ is acyclic and $G(\sigma_{(v)})=(G(\sigma)\setminus\{(x,y)\})\cup\{(y,x)\}$,
-any cycle in $G(\sigma_{(v)})$ must traverse the newly added arc $(y,x)$.
-Therefore there exists a directed path $\pi$ from $x$ to $y$ in $G(\sigma_{(v)})$ that avoids $(y,x)$.
-All arcs of $\pi$ belong to $G(\sigma)\setminus\{(x,y)\}$ (the arc $(x,y)$ was removed, and $\pi$ uses none of the new arcs); so $\pi$ is a valid path from $x$ to $y$ in $G(\sigma)$ not using $(x,y)$.
-
-In the standard JSP, $x$ and $y$ belong to the same machine but to different jobs; hence no job-precedence arc of $A$ runs directly from $x$ to $y$.
-Therefore $\pi$ has at least one intermediate operation $u$ distinct from $x$ and $y$.
-The length of $\pi$ in $G^*(\sigma)$ is
+Suppose $G(\sigma_{(v)})$ contains a directed cycle. Since $G(\sigma)$ is acyclic and only $(x,y)$ has been removed and $(y,x)$ added, the cycle traverses $(y,x)$, yielding a directed path $\pi$ from $x$ to $y$ in $G(\sigma)$ not using $(x,y)$. In standard JSP, $x$ and $y$ lie on the same machine but in different jobs, so no precedence arc joins them; $\pi$ has at least one intermediate operation $u$, and its length in $G^*(\sigma)$ satisfies
 \[
-  \ell(\pi) \;=\; p_x^* + p_u^* + \cdots \;\ge\; p_x^* + p_u^* \;>\; p_x^*,
+  \ell(\pi) \;=\; p_x^* + p_u^* + \cdots \;>\; p_x^*.
 \]
-since all processing times satisfy $p_z^*\ge p_z^->0$.
-
-On the other hand, $(x,y)$ lies on a critical path of $G^*(\sigma)$ (denote it $CP^*(\sigma)$), which implies that the head of $y$ is tight through the arc $(x,y)$:
-\[
-  r_y^* \;=\; r_x^* + p_x^*.
-\]
-But the path $\pi$ from $x$ to $y$ in $G(\sigma)$ yields
-\[
-  r_y^* \;\ge\; r_x^* + \ell(\pi) \;>\; r_x^*+p_x^* \;=\; r_y^*,
-\]
-a contradiction.
-Hence $G(\sigma_{(v)})$ is acyclic, and $\sigma_{(v)}\in\Sigma$.
+But $(x,y)$ lies on a critical path of $G^*(\sigma)$, so the head of $y$ is tight: $r_y^*=r_x^*+p_x^*$. The path $\pi$ then gives $r_y^*\ge r_x^*+\ell(\pi)>r_x^*+p_x^*=r_y^*$, a contradiction.
 \end{proof}
 
 \subsection{Connectivity}
