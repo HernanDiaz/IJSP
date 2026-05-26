@@ -378,7 +378,7 @@ $N_8$ is an exploratory variant that extends $N_2$ with \emph{extra-block reinse
 \item move $o_1$ to the head of the machine (before all tasks on that machine);
 \item move $o_k$ to the tail of the machine (after all tasks on that machine).
 \end{itemize}
-Each reinsertion candidate is evaluated by updating heads and tails via a localised BFS propagation; it is retained only if the resulting makespan midpoint improves on the current incumbent.
+Each reinsertion candidate is first filtered by an interval lower bound $\mathbf{LB}_8$ on the post-reinsertion makespan, computed from the new local heads of the moved operation and its displaced machine successor, plus cached tails (no graph propagation). The candidate is admitted only if $\mathbf{LB}_8 \not\ge_2 \mathbf{C}_{\max}^{\text{best}}$ --- a conservative filter that rejects only candidates dominated in both bounds, keeping every candidate that could potentially improve under any admissible ranking. Admitted candidates are then fully evaluated by applying the move and propagating head changes via breadth-first propagation through machine and job successors; the propagation aborts early if the running lower bound becomes worse than the incumbent under the active ranking. The final makespan interval, once heads stabilize, is compared to the incumbent by the tabu search under the active ranking.
 
 The motivation is the empirical question of whether extra-block moves benefit interval scheduling. As shown in Section~\ref{sec6.5}, the answer is search-strategy dependent: $N_8$ underperforms under hill climbing (Phase~A) but matches $N_2$ under irace-tuned tabu search (Phase~B); Section~\ref{sec7.4} explains why.
 
