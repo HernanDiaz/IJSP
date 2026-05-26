@@ -290,45 +290,19 @@ For every non-optimal $\sigma \in \Sigma$, there exists a finite sequence of mov
 \end{theorem}
 
 \begin{proof}
-Fix any globally optimal order $\sigma^*\in\Sigma^*$ that minimises the \emph{inversion count}
+Fix any globally optimal $\sigma^*\in\Sigma^*$ and define the \emph{inversion count}
 \[
   M(\sigma,\sigma^*) \;=\; \bigl|\{(x,y)\in D(\sigma) : (y,x)\in D(\sigma^*)\}\bigr|,
 \]
-which counts direct machine-order disagreements between $\sigma$ and $\sigma^*$.
-Note that $M(\sigma,\sigma^*)=0$ if and only if $D(\sigma)=D(\sigma^*)$, i.e., $\sigma=\sigma^*$.
+the number of machine-order disagreements; $M=0$ iff $\sigma=\sigma^*$.
 
 \medskip
-\noindent\textit{Key lemma.}
-If $\lambda$ is non-optimal, then there exists an extreme critical arc $(x,y)\in D(\lambda)$ with $(y,x)\in D(\sigma^*)$.
+\noindent\textit{Key lemma.} If $\lambda$ is non-optimal, there exists an extreme critical $(x,y)\in D(\lambda)$ with $(y,x)\in D(\sigma^*)$.
 
-\noindent\textit{Proof.}
-Since $\lambda$ is non-optimal and every ranking $R$ refines $\le_2$, we have
-$\mathbf{C}_{\max}(\lambda)\not\le_2 \mathbf{C}_{\max}(\sigma^*)$
-(otherwise $\mathbf{C}_{\max}(\lambda)\le_R\mathbf{C}_{\max}(\sigma^*)$, contradicting non-optimality).
-Thus either $C^-_{\max}(\lambda)>C^-_{\max}(\sigma^*)$ or $C^+_{\max}(\lambda)>C^+_{\max}(\sigma^*)$;
-assume without loss of generality the former.
-Let $P$ be a critical path in $G^-(\lambda)$, of length $C^-_{\max}(\lambda)$.
-If every disjunctive arc $(u,v)$ of $P$ satisfied $(u,v)\in D(\sigma^*)$, then $P$ would be a valid directed path in $G^-(\sigma^*)$ of length $C^-_{\max}(\lambda)>C^-_{\max}(\sigma^*)$, contradicting the definition of $C^-_{\max}(\sigma^*)$.
-Hence $P$ contains a disjunctive arc $(x,y)\in D(\lambda)\setminus D(\sigma^*)$.
-Since for every machine pair exactly one of $(x,y),(y,x)$ belongs to $D(\sigma^*)$, we get $(y,x)\in D(\sigma^*)$.
-Moreover $(x,y)$ is extreme critical because it lies on the critical path $P$ of $G^-(\lambda)$. \hfill$\square_{\text{lemma}}$
+\noindent\textit{Proof.} Non-optimality implies $\mathbf{C}_{\max}(\lambda)\not\le_2 \mathbf{C}_{\max}(\sigma^*)$ (else $\le_R$ follows by refinement), so WLOG $C^-_{\max}(\lambda)>C^-_{\max}(\sigma^*)$. Let $P$ be a critical path in $G^-(\lambda)$. If every disjunctive arc of $P$ lay in $D(\sigma^*)$, $P$ would be a valid path in $G^-(\sigma^*)$ of length $>C^-_{\max}(\sigma^*)$, a contradiction. So $P$ contains some $(x,y)\in D(\lambda)\setminus D(\sigma^*)$; since machine orientations are mutually exclusive, $(y,x)\in D(\sigma^*)$, and $(x,y)$ is extreme critical by membership in $P$. \hfill$\square_{\text{lemma}}$
 
 \medskip
-\noindent\textit{Construction and termination.}
-Build the sequence $\lambda_0=\sigma$, and at each step $k$:
-\begin{itemize}
-\item[(a)] If $\lambda_k$ is globally optimal, stop: a globally optimal order has been reached.
-\item[(b)] Otherwise, apply the key lemma to obtain an extreme critical $(x,y)\in D(\lambda_k)$ with $(y,x)\in D(\sigma^*)$.
-Set $\lambda_{k+1}=(\lambda_k)_{(x,y)}\in H(\lambda_k)$ (feasible by Theorem~\ref{thm1}).
-\end{itemize}
-After step (b), the inversion count satisfies $M(\lambda_{k+1},\sigma^*)=M(\lambda_k,\sigma^*)-1$:
-the reversal removes $(x,y)$ from $D(\lambda_{k+1})$ (eliminating one inversion, since $(y,x)\in D(\sigma^*)$),
-adds $(y,x)$ (which agrees with $\sigma^*$, adding no inversion),
-and leaves all other arcs unchanged.
-
-Since $M\ge 0$ and decreases by exactly one at each non-optimal step, within at most $M(\sigma,\sigma^*)$ steps the sequence must reach case (a): either a globally optimal $\lambda_k\ne\sigma^*$,
-or $M(\lambda_k,\sigma^*)=0$ implying $\lambda_k=\sigma^*$.
-In either case a globally optimal order is reached by a finite sequence of moves in $H$.
+\noindent\textit{Construction.} Build $\lambda_0=\sigma$; while $\lambda_k$ is non-optimal, apply the key lemma to obtain $(x,y)$ and set $\lambda_{k+1}=(\lambda_k)_{(x,y)}\in H(\lambda_k)$ (feasible by Theorem~\ref{thm1}). Each reversal removes $(x,y)$ from $D(\lambda_k)$ (one fewer inversion) and adds $(y,x)$ (already in $D(\sigma^*)$, no new inversion), so $M(\lambda_{k+1},\sigma^*)=M(\lambda_k,\sigma^*)-1$. Since $M\ge 0$, the loop terminates in at most $M(\sigma,\sigma^*)$ steps at a globally optimal $\lambda_k$.
 \end{proof}
 
 
