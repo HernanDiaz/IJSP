@@ -366,7 +366,7 @@ $N_{\rm ext}$ adapts the extended neighbourhood of \cite{Nowicki2005}. It starts
 \item Boundary arcs $(o_1,o_2)$ and $(o_{k-1},o_k)$ are always included (as in $N_2$).
 \item Interior arcs $(o_i, o_{i+1})$ with $2 \leq i \leq k-2$ are included only if the $\texttt{isViableSwap}$ check returns true.
 \end{itemize}
-The check \texttt{isViableSwap}$(x,y)$ computes an optimistic lower-bound estimate of the post-swap makespan by recalculating only the local heads and tails of $x$ and $y$. Because the estimate is a lower bound, discarding a swap when it exceeds the incumbent is theoretically safe.
+The check \texttt{isViableSwap}$(x,y)$ computes an interval lower bound $\mathbf{LB}(x,y)$ on the post-swap makespan $\mathbf{C}_{\max}(\sigma_{(x,y)})$ by recalculating only the local heads and tails of $x$ and $y$ on both extreme graphs and combining the two per-operation estimates ($\mathbf{r}_x + \mathbf{p}_x + \mathbf{q}_x$ and $\mathbf{r}_y + \mathbf{p}_y + \mathbf{q}_y$, all intervals) component-wise with interval max. The swap is discarded if $\mathbf{LB}(x,y)$ is not better than the current incumbent under the active ranking. Because $\mathbf{LB}(x,y) \le_2 \mathbf{C}_{\max}(\sigma_{(x,y)})$ and every admissible ranking refines $\le_2$, discarding is theoretically safe.
 
 \subsection{$N_8$: Block-Boundary Swaps with Extra-Block Reinsertion}
 \label{sec5.5}
