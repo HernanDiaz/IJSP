@@ -86,45 +86,45 @@ Job shop scheduling \sep combinatorial optimisation \sep local search \sep neigh
 %% main text
 
 \section{Introduction}
-\label{sec1}
+\label{sec:intro}
 
 The Job Shop Scheduling Problem (JSP) is a flagship combinatorial optimisation problem in operations research, and neighbourhood-based local search has been its most competitive algorithmic paradigm for three decades \cite{vanLaarhoven1992,Nowicki1996,Nowicki2005}. The effectiveness of these methods rests almost entirely on neighbourhood design: the critical-block insight of \cite{Nowicki1996} --- that reversing interior arcs of a critical block cannot improve the makespan --- reduces neighbourhood size by two-thirds without sacrificing solution quality, and the extended neighbourhood of \cite{Nowicki2005} refines this further with a heads-and-tails viability filter. In practice, however, processing times are rarely known precisely at planning time: operator variability, machine condition, and material heterogeneity introduce uncertainty that deterministic models cannot capture.
 
 A natural and tractable representation for such uncertainty is the \emph{closed interval} $[p^-, p^+]$, bounding the minimum and maximum possible durations \cite{Moore2009,Lei2012c}. The resulting \emph{Interval Job Shop Scheduling Problem (IJSP)} raises two intertwined challenges: comparing schedules requires an \emph{interval ranking operator} \cite{Bustince2013,Karmakar2012}, since the makespan is now an interval; and the critical-path concept that underpins efficient neighbourhood design must be reconsidered, because different paths may become critical under different realisations of the processing times \cite{Dubois2003,Artigues2015,GonzalezRodriguez2008}.
 
 \subsection{Contributions}
-\label{sec1.1}
+\label{sec:contributions}
 
 This paper makes the following contributions.
 \begin{enumerate}
-\item Formal definition of extreme criticality for IJSP (Section~\ref{sec3}). I define a task or arc as \emph{extreme critical} if it lies on a critical path of the best-case graph $G^-(\sigma)$ or the worst-case graph $G^+(\sigma)$, and prove that this definition encompasses all necessarily critical tasks and is contained within the set of possibly critical tasks, making it a computationally tractable and theoretically sound approximation of the general criticality concept of \cite{Artigues2015}.
+\item Formal definition of extreme criticality for IJSP (Section~\ref{sec:criticality}). I define a task or arc as \emph{extreme critical} if it lies on a critical path of the best-case graph $G^-(\sigma)$ or the worst-case graph $G^+(\sigma)$, and prove that this definition encompasses all necessarily critical tasks and is contained within the set of possibly critical tasks, making it a computationally tractable and theoretically sound approximation of the general criticality concept of \cite{Artigues2015}.
 
-\item Neighbourhood $H(\sigma)$ based on extreme critical arcs (Section~\ref{sec4}). I define $H(\sigma)$ as the set of all feasible processing orders reachable by reversing a single extreme critical disjunctive arc, and prove three structural properties: feasibility (every move yields a feasible order), no loss of improving neighbours (moves outside $H(\sigma)$ cannot improve the makespan under any admissible ranking), and connectivity (every non-optimal order can reach a global optimum via a finite sequence of moves in $H(\sigma)$).
+\item Neighbourhood $H(\sigma)$ based on extreme critical arcs (Section~\ref{sec:H}). I define $H(\sigma)$ as the set of all feasible processing orders reachable by reversing a single extreme critical disjunctive arc, and prove three structural properties: feasibility (every move yields a feasible order), no loss of improving neighbours (moves outside $H(\sigma)$ cannot improve the makespan under any admissible ranking), and connectivity (every non-optimal order can reach a global optimum via a finite sequence of moves in $H(\sigma)$).
 
-\item Five neighbourhood variants within the $H(\sigma)$ framework (Section~\ref{sec5}). I formulate $N_1$, $N_2$, $N_3$, $N_{\rm ext}$ and a new variant $N_8$ (boundary arc swaps extended with extra-block reinsertion moves, after~\cite{Xie2022}) as instances of $H(\sigma)$, characterising their theoretical size and the cost of generating them.
+\item Five neighbourhood variants within the $H(\sigma)$ framework (Section~\ref{sec:variants}). I formulate $N_1$, $N_2$, $N_3$, $N_{\rm ext}$ and a new variant $N_8$ (boundary arc swaps extended with extra-block reinsertion moves, after~\cite{Xie2022}) as instances of $H(\sigma)$, characterising their theoretical size and the cost of generating them.
 
-\item Empirical study on 82 benchmark instances (Section~\ref{sec6}). Three experimental phases are reported: \emph{(a)} a $5 \times 4$ comparison of four ranking operators at a common parameter setting (Section~\ref{sec6.2}); \emph{(b)} a head-to-head comparison of the five neighbourhoods after irace-based hyperparameter tuning, isolating the structural effect of the neighbourhood (Section~\ref{sec6.5}); and \emph{(c)} a comparison against the state of the art (Section~\ref{sec6.7}), showing that the irace-tuned TS-$N_2$ achieves strictly better average solution quality than the previous best published solver.
+\item Empirical study on 82 benchmark instances (Section~\ref{sec:experiments}). Three experimental phases are reported: \emph{(a)} a $5 \times 4$ comparison of four ranking operators at a common parameter setting (Section~\ref{sec:phaseA}); \emph{(b)} a head-to-head comparison of the five neighbourhoods after irace-based hyperparameter tuning, isolating the structural effect of the neighbourhood (Section~\ref{sec:phaseB}); and \emph{(c)} a comparison against the state of the art (Section~\ref{sec:phaseC}), showing that the irace-tuned TS-$N_2$ achieves strictly better average solution quality than the previous best published solver.
 
-\item Discovery and structural explanation of an interval-width effect (Section~\ref{sec6.2}). One ranking operator consistently yields makespan intervals narrower than the alternatives. A float analysis of both extreme graphs reveals the structural mechanism: the operator concentrates critical operations in the worst-case graph $G^+(\sigma)$, directly tightening the worst-case critical path.
+\item Discovery and structural explanation of an interval-width effect (Section~\ref{sec:phaseA}). One ranking operator consistently yields makespan intervals narrower than the alternatives. A float analysis of both extreme graphs reveals the structural mechanism: the operator concentrates critical operations in the worst-case graph $G^+(\sigma)$, directly tightening the worst-case critical path.
 \end{enumerate}
 
 \subsection{Paper Organisation}
-\label{sec1.2}
-Section~\ref{sec2} provides background on the deterministic JSP and interval ranking operators. Section~\ref{sec:rw} reviews related work on neighbourhood structures and published IJSP solvers. Section~\ref{sec3} defines extreme criticality. Section~\ref{sec4} defines the neighbourhood $H(\sigma)$ and proves its three structural properties. Section~\ref{sec5} describes the five neighbourhood variants. Section~\ref{sec6} reports the experimental study. Section~\ref{sec7} discusses the findings, and Section~\ref{sec8} concludes.
+\label{sec:organisation}
+Section~\ref{sec:background} provides background on the deterministic JSP and interval ranking operators. Section~\ref{sec:rw} reviews related work on neighbourhood structures and published IJSP solvers. Section~\ref{sec:criticality} defines extreme criticality. Section~\ref{sec:H} defines the neighbourhood $H(\sigma)$ and proves its three structural properties. Section~\ref{sec:variants} describes the five neighbourhood variants. Section~\ref{sec:experiments} reports the experimental study. Section~\ref{sec:discussion} discusses the findings, and Section~\ref{sec:conclusions} concludes.
 
 
 \section{Background}
-\label{sec2}
+\label{sec:background}
 
 \subsection{The Deterministic Job Shop Problem}
-\label{sec2.1}
+\label{sec:jsp}
 
 The JSP consists of $n$ jobs $\{J_1,\ldots,J_n\}$ and $m$ machines $\{M_1,\ldots,M_m\}$. Each job $J_i$ is a sequence of operations $O_{i,1},\ldots,O_{i,m}$, where operation $O_{i,j}$ must be processed on machine $M_j$ for exactly $p_{i,j}$ time units. Operations within a job must respect their precedence order, and each machine processes at most one operation at a time. The goal is to find a \emph{feasible processing order} $\sigma$ minimising the makespan $C_{\max}$.
 
 The \emph{solution graph} $G(\sigma) = (V, A \cup D(\sigma))$ represents a feasible order: $V$ is the set of operations augmented with a dummy source node $S$ and sink node $T$; $A$ contains precedence arcs within jobs; and $D(\sigma)$ contains disjunctive arcs imposed by the order $\sigma$ on each machine. The makespan equals the length of the longest path in $G(\sigma)$. The classical insight of \cite{vanLaarhoven1992} is that the neighbourhood for local search should restrict to reversals of arcs on critical paths, ensuring feasibility, while \cite{Nowicki1996} shows that reversals of \emph{interior} arcs of a critical block cannot improve the makespan, allowing further pruning.
 
 \subsection{Interval Arithmetic and Ranking Operators}
-\label{sec2.2}
+\label{sec:rankings}
 
 When processing times are uncertain, I represent each as $\mathbf{p}=[p^-, p^+] \in \mathbb{IR}$, where $\mathbb{IR}$ denotes the set of closed intervals. The IJSP requires three arithmetic operations on $\mathbb{IR}$ \cite{Moore2009}:
 \begin{align}
@@ -139,7 +139,7 @@ Since there is no natural total order on $\mathbb{IR}$, comparing schedules requ
 \mathbf{a} \leq_{\rm YX}   \mathbf{b} &\iff m(\mathbf{a}) < m(\mathbf{b}) \,\vee\, \bigl(m(\mathbf{a}) = m(\mathbf{b}) \wedge w(\mathbf{a}) \leq w(\mathbf{b})\bigr) \\
 \mathbf{a} \leq_{\rm EV}   \mathbf{b} &\iff m(\mathbf{a}) \leq m(\mathbf{b})
 \end{align}
-LEX1, LEX2 and YX are \emph{admissible} total orders on $\mathbb{IR}$ \cite{Bustince2013}: they refine the partial product order $\leq_{2}$ defined by $\mathbf{a} \leq_{2} \mathbf{b} \iff a^- \leq b^- \wedge a^+ \leq b^+$. EV ranks intervals by their midpoint $m(\mathbf{a})$ and induces a total preorder rather than a strict total order, since two distinct intervals may share the same midpoint; it also refines $\leq_{2}$. This refinement property is essential for the theoretical guarantees of Section~\ref{sec4}: any move that simultaneously decreases both $C^-_{\max}$ and $C^+_{\max}$ is an improvement under all four rankings considered here.
+LEX1, LEX2 and YX are \emph{admissible} total orders on $\mathbb{IR}$ \cite{Bustince2013}: they refine the partial product order $\leq_{2}$ defined by $\mathbf{a} \leq_{2} \mathbf{b} \iff a^- \leq b^- \wedge a^+ \leq b^+$. EV ranks intervals by their midpoint $m(\mathbf{a})$ and induces a total preorder rather than a strict total order, since two distinct intervals may share the same midpoint; it also refines $\leq_{2}$. This refinement property is essential for the theoretical guarantees of Section~\ref{sec:H}: any move that simultaneously decreases both $C^-_{\max}$ and $C^+_{\max}$ is an improvement under all four rankings considered here.
 
 \section{Related Work}
 \label{sec:rw}
@@ -150,14 +150,14 @@ The first neighbourhood for the fuzzy/interval JSP was proposed in \cite{Gonzale
 The Nowicki--Smutnicki extended neighbourhood~\cite{Nowicki2005}, adapted here as $N_{\rm ext}$, was originally proposed for the crisp JSP and achieves strong empirical performance by additionally considering interior block arcs that pass a heads-and-tails viability check. Its adaptation to the IJSP is a contribution of this work, exploiting the fact that the boundary-arc result of~\cite{Nowicki1996} can be lifted simultaneously to both extreme graphs $G^-(\sigma)$ and $G^+(\sigma)$. A fifth variant, $N_8$, is also proposed here: it extends $N_2$ with extra-block reinsertion moves that relocate critical block endpoints to positions outside the block, adapting the idea of~\cite{Xie2022} --- originally developed for the crisp JSP --- to the interval setting. For the deterministic JSP and FJSP, general frameworks for feasibility checking and quality evaluation of neighbourhood moves have been proposed in~\cite{Tamssaouet2023,GarciaGomez2026}; analogous efficiency improvements for the interval setting remain an open direction. In a complementary line, machine learning methods have been proposed to estimate quantile-based risk measures of the IJSP makespan~\cite{Calamita2025}.
 
 \paragraph{Metaheuristic solvers for the IJSP.}
-The fast-elitist Artificial Bee Colony ($ABC_{E3}$)~\cite{DiazFEABC2023} established best-known results on the 82-instance benchmark used here, combining ABC exploration with hill-climbing local search. The Elitist-Selection ABC ($ESABC$)~\cite{DiazICAE2023} further improved solution quality by incorporating a simulated-annealing diversity mechanism, at the cost of increased runtime. These two methods, together with the earlier GA of~\cite{DiazIPMU2020}, constitute the state of the art against which the proposed tabu search is compared in Section~\ref{sec6.7}.
+The fast-elitist Artificial Bee Colony ($ABC_{E3}$)~\cite{DiazFEABC2023} established best-known results on the 82-instance benchmark used here, combining ABC exploration with hill-climbing local search. The Elitist-Selection ABC ($ESABC$)~\cite{DiazICAE2023} further improved solution quality by incorporating a simulated-annealing diversity mechanism, at the cost of increased runtime. These two methods, together with the earlier GA of~\cite{DiazIPMU2020}, constitute the state of the art against which the proposed tabu search is compared in Section~\ref{sec:phaseC}.
 
 
 \section{Extreme Criticality for IJSP}
-\label{sec3}
+\label{sec:criticality}
 
 \subsection{Configurations and Extreme Scenario Graphs}
-\label{sec3.1}
+\label{sec:configurations}
 
 A \emph{configuration} $\omega = (p_1,\ldots,p_o)$, where $o = n \times m$, assigns a deterministic duration $p_i \in \mathbf{p}_i$ to each operation~$i$; let $\Omega$ denote the set of all configurations. Given a feasible processing order $\sigma$, two \emph{extreme scenario graphs} are of particular interest:
 \begin{itemize}
@@ -178,16 +178,16 @@ where $C^-_{\max}(\sigma)$ is the length of the longest path in $G^-(\sigma)$ an
 \end{figure}
 
 \subsection{Heads, Tails and Floats}
-\label{sec3.2}
+\label{sec:floats}
 
 For each extreme graph $G^{*}(\sigma)$ ($* \in \{-,+\}$), the \emph{head} $r_{x}^{*}$ of task $x$ is the length of the longest path from the dummy start node to $x$, and the \emph{tail} $q_{x}^{*}$ is the length of the longest path from the completion of $x$ to the end node. The \emph{float} of $x$ in $G^{*}(\sigma)$ is
 \begin{equation}
 F_{x}^{*}(\sigma) = C^{*}_{\max}(\sigma) - r_{x}^{*} - p_{x}^{*} - q_{x}^{*}.
 \end{equation}
-A task is critical in $G^{*}(\sigma)$ iff $F_{x}^{*}(\sigma) = 0$. The general problem of computing the minimum float $\min_{\omega\in\Omega} F_x(\sigma,\omega)$ over all configurations --- which equals zero iff $x$ is possibly critical --- is NP-hard \cite{Fortin2010,Dubois2005}; efficient branch-and-bound algorithms for this harder problem are given in \cite{Garaix2013}. The extreme-scenario floats $F_x^-$ and $F_x^+$ used here are computable in linear time and provide the tractable approximation exploited in Sections~\ref{sec4} and~\ref{sec5}.
+A task is critical in $G^{*}(\sigma)$ iff $F_{x}^{*}(\sigma) = 0$. The general problem of computing the minimum float $\min_{\omega\in\Omega} F_x(\sigma,\omega)$ over all configurations --- which equals zero iff $x$ is possibly critical --- is NP-hard \cite{Fortin2010,Dubois2005}; efficient branch-and-bound algorithms for this harder problem are given in \cite{Garaix2013}. The extreme-scenario floats $F_x^-$ and $F_x^+$ used here are computable in linear time and provide the tractable approximation exploited in Sections~\ref{sec:H} and~\ref{sec:variants}.
 
 \subsection{Definition and Connection to Possibly/Necessarily Critical Tasks}
-\label{sec3.3}
+\label{sec:critdef}
 
 \begin{definition}[Extreme critical path]
 \label{def1}
@@ -222,10 +222,10 @@ The practical consequence is that extreme criticality offers a computationally t
 
 
 \section{The Neighbourhood $H(\sigma)$ and Its Properties}
-\label{sec4}
+\label{sec:H}
 
 \subsection{Definition}
-\label{sec4.1}
+\label{sec:H-def}
 
 \begin{definition}[Neighbourhood $H(\sigma)$]
 \label{def2}
@@ -241,7 +241,7 @@ By Proposition~\ref{prop1}, $H(\sigma) \subseteq H'(\sigma)$, with strict inclus
 \end{definition}
 
 \subsection{No Loss of Improving Neighbours}
-\label{sec4.2}
+\label{sec:H-noloss}
 
 \begin{proposition}
 \label{prop2}
@@ -266,7 +266,7 @@ Neighbours in $H'(\sigma) \setminus H(\sigma)$ can never improve the makespan un
 Corollary~\ref{cor1} justifies using $H(\sigma)$ instead of the larger $H'(\sigma)$: the reduction is gained at zero cost in solution quality.
 
 \subsection{Feasibility}
-\label{sec4.3}
+\label{sec:H-feasibility}
 
 \begin{theorem}[Feasibility]
 \label{thm1}
@@ -282,7 +282,7 @@ But $(x,y)$ lies on a critical path of $G^*(\sigma)$, so the head of $y$ is tigh
 \end{proof}
 
 \subsection{Connectivity}
-\label{sec4.4}
+\label{sec:H-connectivity}
 
 \begin{theorem}[Connectivity]
 \label{thm2}
@@ -307,11 +307,11 @@ the number of machine-order disagreements; $M=0$ iff $\sigma=\sigma^*$.
 
 
 \section{Neighbourhood Variants for IJSP}
-\label{sec5}
+\label{sec:variants}
 
 I instantiate five concrete neighbourhood variants within the $H(\sigma)$ framework, differing in which subset of extreme critical arcs each one considers. Within a critical block $B = (o_1,\ldots,o_k)$, an arc $(o_i,o_{i+1})$ is a \emph{boundary arc} if $i=1$ or $i=k-1$, and an \emph{interior arc} otherwise. Figure~\ref{fig2} illustrates a critical block and the arcs included by each variant.
 
-All five variants inherit the three structural guarantees of Section~\ref{sec4} (feasibility, no-loss of improving neighbours, and connectivity) for their arc-swap component, either directly (when only interior arcs are excluded, by Proposition~\ref{prop2}) or by superset relation to a variant that does. $N_8$ additionally introduces reinsertion moves that fall outside the framework; their feasibility is verified at runtime, and $N_8$ is therefore included as an exploratory variant alongside the four arc-swap variants.
+All five variants inherit the three structural guarantees of Section~\ref{sec:H} (feasibility, no-loss of improving neighbours, and connectivity) for their arc-swap component, either directly (when only interior arcs are excluded, by Proposition~\ref{prop2}) or by superset relation to a variant that does. $N_8$ additionally introduces reinsertion moves that fall outside the framework; their feasibility is verified at runtime, and $N_8$ is therefore included as an exploratory variant alongside the four arc-swap variants.
 
 \begin{figure}[t]
 \centering
@@ -337,29 +337,29 @@ $N_8$             & $\bullet$ & $-$       & $-$       & $\bullet$ $^{\ddagger}$ 
 {\small $\bullet$\ always included\quad $-$\ always excluded\quad
 $?_v$\ conditional on \texttt{isViableSwap} ($N_{\rm ext}$)\\[2pt]
 $^{\dagger}$ $N_3$ additionally generates three rearrangement types for each boundary triple $(x,y,z)$ of consecutive extreme-critical tasks on the same machine: cyclic left-shift ($x,y,z\!\to\!y,z,x$), cyclic right-shift ($x,y,z\!\to\!z,x,y$), and full reversal ($x,y,z\!\to\!z,y,x$).\\[2pt]
-$^{\ddagger}$ $N_8$ additionally generates extra-block reinsertion moves for each block endpoint (see Section~\ref{sec5.5}).}
+$^{\ddagger}$ $N_8$ additionally generates extra-block reinsertion moves for each block endpoint (see Section~\ref{sec:N8}).}
 
 \caption{Critical block $B=(o_1,\ldots,o_5)$ on machine $M_k$ and arcs considered by each neighbourhood variant.}
 \label{fig2}
 \end{figure}
 
 \subsection{$N_1$: All Extreme Critical Arcs}
-\label{sec5.1}
+\label{sec:N1}
 
 $N_1$ includes every disjunctive arc $(x,y)$ such that $x$ immediately precedes $y$ on the same machine in $G(\sigma)$ \emph{and} the arc lies on a critical path of $G^-(\sigma)$ or $G^+(\sigma)$. No positional filter is applied within the block: both boundary and interior arcs of every extreme critical block are candidates. Generation cost: $O(|E|)$ per extreme graph.
 
 \subsection{$N_2$: Block-Boundary Filter}
-\label{sec5.2}
+\label{sec:N2}
 
 $N_2$ restricts $N_1$ to arcs at the \emph{boundary} of each extreme critical block. A block $B = \{o_1,\ldots,o_k\}$ is a maximal contiguous subsequence of operations on the same machine that all lie on a single extreme critical path. $N_2$ retains the two boundary arcs $(o_1,o_2)$ and $(o_{k-1},o_k)$ and discards interior arcs $(o_i,o_{i+1})$, $2 \leq i \leq k-2$. This is the direct adaptation of \cite{Nowicki1996} to the interval setting: by Proposition~\ref{prop2} applied simultaneously to $G^-(\sigma)$ and $G^+(\sigma)$, the discarded interior arcs cannot carry improving moves under any of the four rankings, so $N_2$ inherits the same theoretical guarantees as $N_1$.
 
 \subsection{$N_3$: Subsequence Reversals}
-\label{sec5.3}
+\label{sec:N3}
 
 $N_3$ augments the $N_2$ boundary arc swaps with three rearrangement types applied to \emph{boundary triples} of consecutive extreme-critical tasks. For each triple $(x, y, z)$ of successive operations on the same machine that are all extreme critical and span a block boundary (i.e.\ $x$ is the first task in its block or $z$ is the last), $N_3$ generates three candidate moves: a cyclic left-shift ($x,y,z\to y,z,x$), a cyclic right-shift ($x,y,z\to z,x,y$), and a full reversal ($x,y,z\to z,y,x$). Each candidate is checked for feasibility before being retained. The resulting neighbourhood strictly contains $N_2$.
 
 \subsection{$N_{\rm ext}$: Extended Nowicki--Smutnicki Neighbourhood}
-\label{sec5.4}
+\label{sec:Next}
 
 $N_{\rm ext}$ adapts the extended neighbourhood of \cite{Nowicki2005}. It starts from $N_2$ (boundary arcs unconditionally) and additionally considers interior block arcs that pass a heads-and-tails viability check, denoted \texttt{isViableSwap}:
 \begin{itemize}
@@ -369,7 +369,7 @@ $N_{\rm ext}$ adapts the extended neighbourhood of \cite{Nowicki2005}. It starts
 The check \texttt{isViableSwap}$(x,y)$ computes an interval lower bound $\mathbf{LB}(x,y)$ on the post-swap makespan $\mathbf{C}_{\max}(\sigma_{(x,y)})$ by recalculating only the local heads and tails of $x$ and $y$ on both extreme graphs and combining the two per-operation estimates ($\mathbf{r}_x + \mathbf{p}_x + \mathbf{q}_x$ and $\mathbf{r}_y + \mathbf{p}_y + \mathbf{q}_y$, all intervals) component-wise with interval max. The swap is discarded if $\mathbf{LB}(x,y)$ is not better than the current incumbent under the active ranking. Because $\mathbf{LB}(x,y) \le_2 \mathbf{C}_{\max}(\sigma_{(x,y)})$ and every admissible ranking refines $\le_2$, discarding is theoretically safe.
 
 \subsection{$N_8$: Block-Boundary Swaps with Extra-Block Reinsertion}
-\label{sec5.5}
+\label{sec:N8}
 
 $N_8$ is an exploratory variant that extends $N_2$ with \emph{extra-block reinsertion} moves, adapting the neighbourhood of~\cite{Xie2022} to the interval setting. For a critical block $B = (o_1,\ldots,o_k)$ on a machine, with machine predecessor $o_0$ (if any) and machine successor $o_{k+1}$ (if any), $N_8$ includes all $N_2$ boundary arc swaps and additionally considers four reinsertion candidates per block:
 \begin{itemize}
@@ -380,27 +380,27 @@ $N_8$ is an exploratory variant that extends $N_2$ with \emph{extra-block reinse
 \end{itemize}
 Each reinsertion candidate is first filtered by a heads-and-tails estimate $\mathbf{LB}_8$ of the post-reinsertion makespan, computed from cached heads and tails of the moved operation and its old and new machine neighbours (no graph propagation). The candidate is admitted unless $\mathbf{LB}_8 \ge_2 \mathbf{C}_{\max}^{\text{best}}$, i.e., dominated in both bounds. Admitted candidates are then evaluated exactly by applying the move and propagating head changes via breadth-first propagation through machine and job successors, with early termination if the running bound becomes worse than the incumbent under the active ranking.
 
-The motivation is the empirical question of whether extra-block moves benefit interval scheduling. As shown in Section~\ref{sec6.5}, the answer is search-strategy dependent: $N_8$ underperforms under hill climbing (Phase~A) but matches $N_2$ under irace-tuned tabu search (Phase~B); Section~\ref{sec7.4} explains why.
+The motivation is the empirical question of whether extra-block moves benefit interval scheduling. As shown in Section~\ref{sec:phaseB}, the answer is search-strategy dependent: $N_8$ underperforms under hill climbing (Phase~A) but matches $N_2$ under irace-tuned tabu search (Phase~B); Section~\ref{sec:N8-tabu} explains why.
 
 
 \section{Experimental Study}
-\label{sec6}
+\label{sec:experiments}
 
 The experimental study is organised in three phases that address distinct questions.
 \begin{description}
-\item[Phase A (Section~\ref{sec6.2}).] At a \emph{common} hyperparameter setting, I compare the four ranking operators on five neighbourhoods ($5 \times 4$ design), focusing on solution quality, the width of the returned interval, and the structural mechanism behind the LEX2--width effect.
-\item[Phase B (Section~\ref{sec6.5}).] After an irace-based tuning of the tabu search local search separately for each of the five neighbourhoods, I compare the five neighbourhoods on equal footing. The tuning isolates the structural effect of the neighbourhood from confounding parameter choices.
-\item[Phase C (Section~\ref{sec6.7}).] I compare the best Phase~B configuration (TS-$N_2$) against three published IJSP metaheuristics (GA, $ABC_{E3}$, ESABC), providing external validation of the proposed approach.
+\item[Phase A (Section~\ref{sec:phaseA}).] At a \emph{common} hyperparameter setting, I compare the four ranking operators on five neighbourhoods ($5 \times 4$ design), focusing on solution quality, the width of the returned interval, and the structural mechanism behind the LEX2--width effect.
+\item[Phase B (Section~\ref{sec:phaseB}).] After an irace-based tuning of the tabu search local search separately for each of the five neighbourhoods, I compare the five neighbourhoods on equal footing. The tuning isolates the structural effect of the neighbourhood from confounding parameter choices.
+\item[Phase C (Section~\ref{sec:phaseC}).] I compare the best Phase~B configuration (TS-$N_2$) against three published IJSP metaheuristics (GA, $ABC_{E3}$, ESABC), providing external validation of the proposed approach.
 \end{description}
 
 \subsection{Setup Common to All Phases}
-\label{sec6.1}
+\label{sec:setup}
 
 \paragraph{Instances.} The benchmark suite contains 82 instances split into two groups. The first group (\emph{classical benchmarks}) comprises 12 instances selected from the OR-Library \cite{Beasley1990}: abz7, abz8, abz9 ($20\times15$); ft10 ($10\times10$), ft20 ($20\times5$); la21, la24, la25 ($15\times10$), la27, la29 ($20\times10$), la38, la40 ($15\times15$). The second group comprises 70 instances from the Taillard benchmark \cite{Taillard1993}, covering seven size classes with 10 instances each: $15\times15$ (225 operations), $20\times15$ (300), $20\times20$ (400), $30\times15$ (450), $30\times20$ (600), $50\times15$ (750) and $50\times20$ (1\,000). All 82 instances are derived from their deterministic counterparts by perturbing each nominal processing time $p_{ij}^{*}$ with a $\pm7.5\%$ uniform symmetric interval, $\mathbf{p}_{ij} = [0.925\,p_{ij}^{*},\, 1.075\,p_{ij}^{*}]$ (15\% relative width).
 
-\paragraph{Hardware and software.} All experiments were executed on an Intel Xeon E5-2680\,v4 workstation (14 cores / 28 threads, 2.40\,GHz, 16\,GB RAM) running Windows~10 with a WSL2 Linux environment. The fEABC algorithm was implemented in C++14 and compiled with GCC using optimisation flags \texttt{-O3 -march=native -mtune=native -ffast-math}. To reduce wall-clock time, up to 24 independent runs were dispatched in parallel (one process per thread). Hyperparameter tuning (Phase~B) used the irace package~\cite{Lopez2016} (R~4.5.3), with a budget of 1\,500 candidate evaluations per neighbourhood and a Friedman-test racing criterion; the tuning was parallelised over 24 cores and required approximately five days of wall-clock time across the five neighbourhoods. The subsequent Phase~B evaluation (12\,300 runs, 15-minute time limit per run) required approximately four additional days. Statistical analysis was performed in R with paired Wilcoxon tests and Holm--Bonferroni correction. To calibrate this cluster against the hardware used in the published IJSP solvers compared in Section~\ref{sec6.7}, I ran the Phase~A fEABC+HC configuration---identical in algorithm and parameters to the one reported in~\cite{DiazFEABC2023}, which used an Intel Xeon Gold~6132 at 2.60\,GHz under native Linux---on the same 12 classical instances and compared average runtimes: the ratio is approximately $2\times$ (geometric mean 2.10, range 1.4--2.8), indicating this cluster runs the identical workload roughly twice as slow. Runtime figures in Section~\ref{sec6.7} should be interpreted accordingly; RE\,(\%) comparisons are hardware-independent.
+\paragraph{Hardware and software.} All experiments were executed on an Intel Xeon E5-2680\,v4 workstation (14 cores / 28 threads, 2.40\,GHz, 16\,GB RAM) running Windows~10 with a WSL2 Linux environment. The fEABC algorithm was implemented in C++14 and compiled with GCC using optimisation flags \texttt{-O3 -march=native -mtune=native -ffast-math}. To reduce wall-clock time, up to 24 independent runs were dispatched in parallel (one process per thread). Hyperparameter tuning (Phase~B) used the irace package~\cite{Lopez2016} (R~4.5.3), with a budget of 1\,500 candidate evaluations per neighbourhood and a Friedman-test racing criterion; the tuning was parallelised over 24 cores and required approximately five days of wall-clock time across the five neighbourhoods. The subsequent Phase~B evaluation (12\,300 runs, 15-minute time limit per run) required approximately four additional days. Statistical analysis was performed in R with paired Wilcoxon tests and Holm--Bonferroni correction. To calibrate this cluster against the hardware used in the published IJSP solvers compared in Section~\ref{sec:phaseC}, I ran the Phase~A fEABC+HC configuration---identical in algorithm and parameters to the one reported in~\cite{DiazFEABC2023}, which used an Intel Xeon Gold~6132 at 2.60\,GHz under native Linux---on the same 12 classical instances and compared average runtimes: the ratio is approximately $2\times$ (geometric mean 2.10, range 1.4--2.8), indicating this cluster runs the identical workload roughly twice as slow. Runtime figures in Section~\ref{sec:phaseC} should be interpreted accordingly; RE\,(\%) comparisons are hardware-independent.
 
-\paragraph{Algorithm.} All configurations use \emph{fEABC}~\cite{DiazFEABC2023}, a population-based hybrid metaheuristic that combines an Artificial Bee Colony (ABC) framework, Particle Swarm Optimisation (PSO) velocity updates for solution generation, and an embedded local search applied at each generation to a fraction of the population, with Lamarckian propagation of improvements. Solutions are encoded as permutations with repetition (\emph{job-order}) and decoded via an insertion-based Schedule Generation Scheme (SGS); the population contains 250 individuals. The local search component differs by phase: Phase~A uses first-improvement hill climbing as a neutral, operator-agnostic baseline; Phase~B uses a tabu search (best-neighbour selection with a short-term tabu list) independently tuned by irace for each neighbourhood (Section~\ref{sec6.5}; the rationale for this switch is discussed there). The stopping criterion differs by phase: Phase~A terminates after 25 consecutive generations without improvement in the global best; Phase~B terminates after 20 such generations or after a wall-clock limit of 900\,s (15~minutes) per run, whichever is reached first. Thirty independent runs are executed for every (instance, configuration) pair.
+\paragraph{Algorithm.} All configurations use \emph{fEABC}~\cite{DiazFEABC2023}, a population-based hybrid metaheuristic that combines an Artificial Bee Colony (ABC) framework, Particle Swarm Optimisation (PSO) velocity updates for solution generation, and an embedded local search applied at each generation to a fraction of the population, with Lamarckian propagation of improvements. Solutions are encoded as permutations with repetition (\emph{job-order}) and decoded via an insertion-based Schedule Generation Scheme (SGS); the population contains 250 individuals. The local search component differs by phase: Phase~A uses first-improvement hill climbing as a neutral, operator-agnostic baseline; Phase~B uses a tabu search (best-neighbour selection with a short-term tabu list) independently tuned by irace for each neighbourhood (Section~\ref{sec:phaseB}; the rationale for this switch is discussed there). The stopping criterion differs by phase: Phase~A terminates after 25 consecutive generations without improvement in the global best; Phase~B terminates after 20 such generations or after a wall-clock limit of 900\,s (15~minutes) per run, whichever is reached first. Thirty independent runs are executed for every (instance, configuration) pair.
 
 \paragraph{Hyperparameter configuration.}
 Phase~A adopts the configuration validated in the fEABC paper~\cite{DiazFEABC2023}: JOX (Job Order Crossover), inversion mutation, food-source abandonment limit $\text{NTmax}=20$ (maximum trials before a source is abandoned), elite size~40, and first-improvement hill-climbing local search applied to 75\% of individuals per generation.
@@ -427,7 +427,7 @@ $N_8$         & JOX & swap      & 39 & 27 & 100\%  & 21 \\
 \paragraph{Statistics.} Comparisons use the Friedman test (non-parametric repeated-measures ANOVA; the statistic follows a $\chi^2$ distribution with $k-1$ degrees of freedom for $k$ groups) followed by pairwise Wilcoxon signed-rank tests with Holm--Bonferroni correction. Effect size is reported as $r = |Z| / \sqrt{N}$, where $Z$ is the standardised Wilcoxon test statistic and $N$ is the number of paired observations, with the conventional thresholds (small $\geq 0.1$, medium $\geq 0.3$, large $\geq 0.5$). Each (instance, run) pair forms a paired block. The metric is the midpoint of the makespan interval, $(C^-_{\max} + C^+_{\max})/2$, which is a neutral common ground for all four operators.
 
 \subsection{Phase A: Operator Calibration}
-\label{sec6.2}
+\label{sec:phaseA}
 
 Phase A is preparatory rather than central: its purpose is to identify the ranking operator that minimises makespan interval uncertainty at negligible midpoint cost, so that it can be fixed for the neighbourhood comparison in Phase~B. The $5 \times 4$ design (five neighbourhoods, four operators, common first-improvement hill-climbing local search) gives $49{,}200$ runs and also establishes a neutral baseline that Phase~B will contrast against.
 
@@ -470,7 +470,7 @@ EV   & LEX2 & 1903.3 & 1903.9 & $-0.6$ & $0.197$    & 0.026 & negligible \\
 \end{tabular}
 \end{table}
 
-\paragraph{Interval width and its mechanism.} The width $C^+_{\max} - C^-_{\max}$ measures solution uncertainty~\cite{Moore2009,Lei2012c}. Table~\ref{tab3} shows that LEX2 yields intervals 5.3\% narrower than EV and 10.7\% narrower than LEX1; the ordering LEX2 $\prec$ YX $\prec$ EV $\prec$ LEX1 holds across every neighbourhood. The effect is consistent at the instance level: LEX2 produces narrower intervals than LEX1 in 88.8\%, than EV in 72.2\%, and than YX in 70.5\% of (instance, neighbourhood) pairs. Figure~\ref{fig3}(a) confirms the distributional shift; panels~(b) and~(c) reveal its mechanism. The natural hypothesis is that LEX2 leaves more structural slack in $G^+(\sigma)$, letting the worst-case path shorten. The float analysis refutes this: LEX2 solutions have \emph{more} critical operations and \emph{less} per-operation float in $G^+(\sigma)$, the opposite of the slack hypothesis. The mechanism is directional: LEX2 accepts moves that reduce $C^+_{\max}$ even when $C^-_{\max}$ stays unchanged, directly tightening the upper-bound graph. This asymmetry between the two extreme graphs is LEX2's structural fingerprint; Section~\ref{sec7.2} provides the theoretical account.
+\paragraph{Interval width and its mechanism.} The width $C^+_{\max} - C^-_{\max}$ measures solution uncertainty~\cite{Moore2009,Lei2012c}. Table~\ref{tab3} shows that LEX2 yields intervals 5.3\% narrower than EV and 10.7\% narrower than LEX1; the ordering LEX2 $\prec$ YX $\prec$ EV $\prec$ LEX1 holds across every neighbourhood. The effect is consistent at the instance level: LEX2 produces narrower intervals than LEX1 in 88.8\%, than EV in 72.2\%, and than YX in 70.5\% of (instance, neighbourhood) pairs. Figure~\ref{fig3}(a) confirms the distributional shift; panels~(b) and~(c) reveal its mechanism. The natural hypothesis is that LEX2 leaves more structural slack in $G^+(\sigma)$, letting the worst-case path shorten. The float analysis refutes this: LEX2 solutions have \emph{more} critical operations and \emph{less} per-operation float in $G^+(\sigma)$, the opposite of the slack hypothesis. The mechanism is directional: LEX2 accepts moves that reduce $C^+_{\max}$ even when $C^-_{\max}$ stays unchanged, directly tightening the upper-bound graph. This asymmetry between the two extreme graphs is LEX2's structural fingerprint; Section~\ref{sec:lex2-width} provides the theoretical account.
 
 \begin{table}[t]
 \centering
@@ -499,10 +499,10 @@ Panels~(b) and~(c) refute the slack hypothesis: LEX2 has \emph{more} critical op
 \label{fig3}
 \end{figure}
 
-\paragraph{Conclusion and transition to Phase~B.} Since EV and LEX2 are statistically equivalent on midpoint quality ($p = 0.197$) while LEX2 yields 5--11\% narrower intervals, all Phase~B configurations fix LEX2. Regarding neighbourhoods: under the common hill-climbing baseline the five variants produce broadly similar midpoints ($N_3$ is the exception; Table~\ref{tab1}), with $N_{\rm ext}$ competitive. Under irace-tuned tabu search---the subject of Phase~B---$N_2$ and $N_8$ emerge as co-leaders while $N_{\rm ext}$ falls to third; Figure~\ref{fig6} and Section~\ref{sec6.5.1} show the convergence profiles that underlie this result.
+\paragraph{Conclusion and transition to Phase~B.} Since EV and LEX2 are statistically equivalent on midpoint quality ($p = 0.197$) while LEX2 yields 5--11\% narrower intervals, all Phase~B configurations fix LEX2. Regarding neighbourhoods: under the common hill-climbing baseline the five variants produce broadly similar midpoints ($N_3$ is the exception; Table~\ref{tab1}), with $N_{\rm ext}$ competitive. Under irace-tuned tabu search---the subject of Phase~B---$N_2$ and $N_8$ emerge as co-leaders while $N_{\rm ext}$ falls to third; Figure~\ref{fig6} and Section~\ref{sec:convergence} show the convergence profiles that underlie this result.
 
 \subsection{Phase B: Neighbourhood Comparison after Tuning}
-\label{sec6.5}
+\label{sec:phaseB}
 
 Phase B is the central experimental contribution. Each neighbourhood is given its own irace-tuned tabu search configuration (Table~\ref{tab:tuned}), isolating structural neighbourhood differences from confounding parameter choices. The switch from hill climbing to tabu search is necessary: hill climbing converges quickly to a local optimum and then stalls, suppressing any structural difference between neighbourhoods; tabu search escapes local optima throughout the full time budget, allowing each neighbourhood's block geometry and candidate-set size to influence the search trajectory. Using the irace-tuned configurations, I evaluate the five neighbourhoods on the 82 benchmark instances (30 runs per instance, $5 \times 82 \times 30 = 12{,}300$ observations); the most notable configuration difference is that irace selected GOX crossover for $N_3$---the only variant using subsequence reversals---while all others retained JOX, and $N_3$ received the highest bad-iteration budget~(30), consistent with its larger candidate set.
 
@@ -511,7 +511,7 @@ Figure~\ref{fig5}(a) shows the per-instance relative error RE\,(\%):
 \mathrm{RE}\,(\%) = \frac{E[\mathbf{C}_{\max}] - \mathrm{LB}}{\mathrm{LB}} \times 100,
 \label{eq:re}
 \end{equation}
-where $\mathrm{LB}$ is the published lower bound from the literature \cite{Taillard1993,Beasley1990,DiazFEABC2023}. This single metric is used uniformly throughout Sections~\ref{sec6.5}--\ref{sec6.7}. The Friedman test yields $\chi^{2}(4) = 4120.58,\, p < 10^{-150}$; mean ranks are $N_2$: 2.143, $N_8$: 2.245, $N_{\rm ext}$: 2.638, $N_1$: 3.419, $N_3$: 4.555. Pairwise tests (Table~\ref{tab4}) reveal that $N_2$ and $N_8$ are essentially tied (negligible effect, $r = 0.07$, $p = 0.001$), while both are separated from $N_{\rm ext}$ by a medium effect, from $N_1$ by a large effect, and from $N_3$ by a very large margin.
+where $\mathrm{LB}$ is the published lower bound from the literature \cite{Taillard1993,Beasley1990,DiazFEABC2023}. This single metric is used uniformly throughout Sections~\ref{sec:phaseB}--\ref{sec:phaseC}. The Friedman test yields $\chi^{2}(4) = 4120.58,\, p < 10^{-150}$; mean ranks are $N_2$: 2.143, $N_8$: 2.245, $N_{\rm ext}$: 2.638, $N_1$: 3.419, $N_3$: 4.555. Pairwise tests (Table~\ref{tab4}) reveal that $N_2$ and $N_8$ are essentially tied (negligible effect, $r = 0.07$, $p = 0.001$), while both are separated from $N_{\rm ext}$ by a medium effect, from $N_1$ by a large effect, and from $N_3$ by a very large margin.
 
 \begin{figure}[t]
 \centering
@@ -551,7 +551,7 @@ Decomposing by instance group (Table~\ref{tab:phaseb_groups}), $N_2$ posts the l
 Figure~\ref{fig5}(b) visualises the quality--runtime trade-off aggregated across instance groups: $N_2$ achieves the lowest mean RE\,(\%) at moderate runtime, with $N_8$ nearly indistinguishable in quality at slightly higher cost; $N_1$ is the fastest but sits at substantially worse quality (a large effect separates it from $N_2$). Considered jointly, $N_2$ offers the best efficiency profile across all instance sizes: it ties with $N_8$ for the best quality and is the faster of the two for small and medium instances, while being faster than $N_{\rm ext}$ on all instances with $\geq 450$ operations. $N_8$ is equally recommended when the instance is large and runtimes exceeding 500\,s are acceptable, particularly for the tai$50{\times}15$ class where it achieves the lowest RE\,(\%) (0.22\% vs $N_2$'s 0.32\%). The practical implication is that $N_2$ is the default choice for most settings, and $N_8$ the preferred alternative for large instances with a generous time budget.
 
 \subsubsection{Convergence Profiles under Tabu Search}
-\label{sec6.5.1}
+\label{sec:convergence}
 
 Figure~\ref{fig6} shows the per-generation convergence profiles of the five irace-tuned tabu search configurations, averaged over all 82 instances and 30 runs. All five neighbourhoods converge rapidly in the first 5--10 generations, after which the curves separate and plateau. $N_2$ and $N_8$ reach the lowest normalised plateaus (0.793 and 0.799 respectively), consistent with their joint statistical lead in Table~\ref{tab4}. $N_{\rm ext}$ converges to a slightly higher plateau (0.808), and $N_1$ and $N_3$ trail at 0.816 and 0.834. Notably, $N_8$ plateaus slightly faster than $N_2$ and $N_{\rm ext}$, reflecting its larger per-iteration candidate set: fewer tabu iterations are needed to exhaust improvement opportunities. The convergence profiles provide a generation-level counterpart to the statistical results of Table~\ref{tab4}: the neighbourhood ranking is already visible from generation 10 onward and stable thereafter.
 
@@ -563,9 +563,9 @@ Figure~\ref{fig6} shows the per-generation convergence profiles of the five irac
 \end{figure}
 
 \subsection{Comparison with Published IJSP Solvers}
-\label{sec6.7}
+\label{sec:phaseC}
 
-I compare the irace-tuned TS under neighbourhood $N_2$ (Phase~B best, Section~\ref{sec6.5}) against three published IJSP metaheuristics on the same benchmark instances: a Genetic Algorithm (GA)~\cite{DiazIPMU2020}, a fast-elitist Artificial Bee Colony ($ABC_{E3}$)~\cite{DiazFEABC2023}, and an Elitist-Selection ABC ($ESABC$)~\cite{DiazICAE2023}. All methods use 30 independent runs per instance; results for the published solvers are taken directly from the cited papers. The comparison metric is RE\,(\%) (Equation~\ref{eq:re}), where the LB values are from~\cite{DiazFEABC2023} for the classical instances and from~\cite{Taillard1993} for the Taillard instances.
+I compare the irace-tuned TS under neighbourhood $N_2$ (Phase~B best, Section~\ref{sec:phaseB}) against three published IJSP metaheuristics on the same benchmark instances: a Genetic Algorithm (GA)~\cite{DiazIPMU2020}, a fast-elitist Artificial Bee Colony ($ABC_{E3}$)~\cite{DiazFEABC2023}, and an Elitist-Selection ABC ($ESABC$)~\cite{DiazICAE2023}. All methods use 30 independent runs per instance; results for the published solvers are taken directly from the cited papers. The comparison metric is RE\,(\%) (Equation~\ref{eq:re}), where the LB values are from~\cite{DiazFEABC2023} for the classical instances and from~\cite{Taillard1993} for the Taillard instances.
 
 \paragraph{Classical instances.}
 Table~\ref{tab:lit_classical} compares all four solvers on the 12 classical instances (ABZ7--9, FT10, FT20, LA21/24/25/27/29/38/40). TS-$N_2$ achieves a mean RE of $\mathbf{2.40\%}$, against 5.53\% for ESABC, 6.39\% for $ABC_{E3}$, and 9.78\% for GA, a reduction of 56.6\% relative to the previous best (ESABC). TS-$N_2$ attains the lowest mean RE on all 12 instances individually; the largest absolute gains arise on FT20 ($0.23\%$ vs.\ $1.78\%$ for ESABC) and la27 ($1.69\%$ vs.\ $4.12\%$).
@@ -598,35 +598,35 @@ la40 & 1222 & 5.07 & 8.74 & 1.2 & 1.88 & 4.21 & 3.0 & 2.74 & 4.11 & 3.7 & 0.70 &
 \end{table*}
 
 \paragraph{Taillard instances.}
-Per-instance results on all 70 Taillard instances (TA1--TA70, seven size classes from $15{\times}15$ to $50{\times}20$) are provided as supplementary material~\cite{DiazSupp2026}. GA results are unavailable for the Taillard IJSP instances; the comparison covers $ABC_{E3}$ and ESABC only; TS-$N_8$ is included alongside TS-$N_2$ for reference. TS-$N_2$ achieves a grand mean RE of $\mathbf{3.66\%}$ across all 70 instances, against 8.66\% for ESABC and 9.39\% for $ABC_{E3}$, a 57.7\% reduction relative to ESABC. TS-$N_2$ achieves the strictly lower average RE than both ABC methods on every one of the 70 instances. The improvement is consistent across size classes and most pronounced on tai$50{\times}15$ (TA51--TA60; group mean: TS-$N_2$ = 0.32\% vs.\ ESABC = 4.55\%), where the interval TS nearly matches the lower bound---TA51 achieves RE\,=\,0.02\% and TA53 achieves RE\,=\,0.04\%. The hardest class, tai$30{\times}20$ (TA41--TA50), yields a group mean of 8.62\% for TS-$N_2$ versus 15.32\% for ESABC; these instances remain the most challenging for all methods. TS-$N_8$ finishes marginally behind TS-$N_2$ in grand mean (3.74\% vs.\ 3.66\%), consistent with the Phase~B ranking (Section~\ref{sec6.5}), though it outperforms $N_2$ on individual instances where a single dominant critical path prevails (Section~\ref{sec7.4}).
+Per-instance results on all 70 Taillard instances (TA1--TA70, seven size classes from $15{\times}15$ to $50{\times}20$) are provided as supplementary material~\cite{DiazSupp2026}. GA results are unavailable for the Taillard IJSP instances; the comparison covers $ABC_{E3}$ and ESABC only; TS-$N_8$ is included alongside TS-$N_2$ for reference. TS-$N_2$ achieves a grand mean RE of $\mathbf{3.66\%}$ across all 70 instances, against 8.66\% for ESABC and 9.39\% for $ABC_{E3}$, a 57.7\% reduction relative to ESABC. TS-$N_2$ achieves the strictly lower average RE than both ABC methods on every one of the 70 instances. The improvement is consistent across size classes and most pronounced on tai$50{\times}15$ (TA51--TA60; group mean: TS-$N_2$ = 0.32\% vs.\ ESABC = 4.55\%), where the interval TS nearly matches the lower bound---TA51 achieves RE\,=\,0.02\% and TA53 achieves RE\,=\,0.04\%. The hardest class, tai$30{\times}20$ (TA41--TA50), yields a group mean of 8.62\% for TS-$N_2$ versus 15.32\% for ESABC; these instances remain the most challenging for all methods. TS-$N_8$ finishes marginally behind TS-$N_2$ in grand mean (3.74\% vs.\ 3.66\%), consistent with the Phase~B ranking (Section~\ref{sec:phaseB}), though it outperforms $N_2$ on individual instances where a single dominant critical path prevails (Section~\ref{sec:N8-tabu}).
 
 
 \section{Discussion}
-\label{sec7}
+\label{sec:discussion}
 
 \subsection{Practical Recommendations}
-\label{sec7.1}
+\label{sec:recommendations}
 
 The experimental results lead to a small set of actionable recommendations:
 \begin{enumerate}
 \item Choose between $N_2$ and $N_8$ based on instance size and time budget. $N_2$ is the default recommendation: it ties with $N_8$ for the best quality overall (negligible difference, $r = 0.07$) and is faster for small and medium instances (Table~\ref{tab:phaseb_groups}). On the tai$50{\times}15$ class, $N_8$ achieves the strictly lower group mean RE\,(\%) (0.22\% vs $N_2$'s 0.32\%) at a moderate extra runtime (218\,s vs 181\,s), consistent with its structural advantage in the single-dominant-critical-path regime \cite{Xie2022}; for tai$50{\times}20$, $N_2$ recovers the edge (2.03\% vs $N_8$'s 2.11\%, 554\,s vs 603\,s). $N_8$ is thus the preferred choice when quality is paramount on the largest 50-job instances with 15 machines, while $N_2$ is more robust across the full range.
 \item Do not assume $N_{\rm ext}$ is best on the basis of Phase~A results. Under irace-tuned tabu search, $N_{\rm ext}$ finishes third---a medium effect behind both $N_2$ and $N_8$---and becomes the \emph{slowest} viable neighbourhood on large instances (tai$50{\times}20$: 695\,s vs $N_2$'s 554\,s and $N_8$'s 603\,s, at a 0.79\,pp quality cost; Table~\ref{tab:phaseb_groups}). The heads-and-tails viability filter that makes $N_{\rm ext}$ efficient under hill climbing becomes a runtime bottleneck under tabu search with a full neighbourhood evaluation per iteration.
-\item Use LEX2 if interval width is the goal; operator choice has limited impact on midpoint. LEX2 yields makespan intervals 5--11\% narrower than the alternatives on average, with structural evidence for this effect (Section~\ref{sec7.2}), and this advantage is consistent across prior work that includes per-operator hyperparameter tuning \cite{DiazICAE2023,DiazIGPL2022}.
+\item Use LEX2 if interval width is the goal; operator choice has limited impact on midpoint. LEX2 yields makespan intervals 5--11\% narrower than the alternatives on average, with structural evidence for this effect (Section~\ref{sec:lex2-width}), and this advantage is consistent across prior work that includes per-operator hyperparameter tuning \cite{DiazICAE2023,DiazIGPL2022}.
 \item Avoid $N_3$ in either setting. The 3-task block rearrangements it adds beyond $N_2$ are dominated on both dimensions: it is the weakest neighbourhood on solution quality and the most expensive computationally, reaching the 900\,s time limit for the largest instances.
 \end{enumerate}
 
 \subsection{Theoretical Connection: Why LEX2 Narrows Intervals}
-\label{sec7.2}
+\label{sec:lex2-width}
 
-Proposition~\ref{prop2} guarantees that reversing a non-extreme-critical arc cannot improve either bound. LEX2 specifically targets $C^+_{\max}$, accepting moves that reduce $C^+_{\max}$ even when $C^-_{\max}$ stays put. Over many local search steps, this creates a bias toward configurations where $G^+(\sigma)$ has a shorter critical path --- and, by the structure of interval arithmetic, a tighter bound on the overall interval width. The float analysis of Section~\ref{sec6.2} provides direct empirical confirmation: LEX2 solutions have more critical operations in $G^+(\sigma)$ and less per-operation slack, while $G^-(\sigma)$ becomes relatively looser. The asymmetry between the two extreme graphs is a structural fingerprint of the LEX2 ranking rule.
+Proposition~\ref{prop2} guarantees that reversing a non-extreme-critical arc cannot improve either bound. LEX2 specifically targets $C^+_{\max}$, accepting moves that reduce $C^+_{\max}$ even when $C^-_{\max}$ stays put. Over many local search steps, this creates a bias toward configurations where $G^+(\sigma)$ has a shorter critical path --- and, by the structure of interval arithmetic, a tighter bound on the overall interval width. The float analysis of Section~\ref{sec:phaseA} provides direct empirical confirmation: LEX2 solutions have more critical operations in $G^+(\sigma)$ and less per-operation slack, while $G^-(\sigma)$ becomes relatively looser. The asymmetry between the two extreme graphs is a structural fingerprint of the LEX2 ranking rule.
 
 \subsection{Why $N_3$ Underperforms}
-\label{sec7.3}
+\label{sec:N3-underperforms}
 
 $N_3$ is counter-intuitive: it is a strict superset of $N_2$ in the move-generation sense (boundary arc swaps plus three types of 3-task block rearrangements---cyclic left-shift, cyclic right-shift, and full reversal of boundary triples), yet it produces worse solutions. Each 3-task rearrangement candidate requires a full feasibility evaluation to detect cycles before it can be retained, which significantly increases the per-iteration cost. More importantly, these extra candidates do not carry improving moves in practice: the boundary arc swaps already capture the structurally meaningful transitions (as justified by Proposition~\ref{prop2}), and the 3-task rearrangements add volume to the candidate pool without adding quality. Under best-improvement selection, a larger pool diluted with poor-quality candidates reduces the effective yield per evaluation, resulting in slower convergence to a worse plateau.
 
 \subsection{Why $N_8$ Performs Well Under Tabu Search}
-\label{sec7.4}
+\label{sec:N8-tabu}
 
 $N_8$ extends $N_2$ with extra-block reinsertion moves filtered by a heads-and-tails interval estimate. Under hill climbing (Phase~A), the reinsertion moves add evaluation cost without sufficient benefit: first-improvement hill climbing reaches a local optimum quickly and the larger candidate set yields few new improvements once stalled. The result is slower convergence at slightly worse quality compared with $N_2$, as visible in Figure~\ref{fig6}.
 
@@ -635,18 +635,18 @@ Under tabu search (Phase~B), this penalty reverses. Three mechanisms interact. F
 In the deterministic setting~\cite{Xie2022}, the additional reinsertion moves benefit even simple local search because there is a single critical path: every accepted move that shortens it improves the unique makespan. In the interval setting the disagreement between $G^-$ and $G^+$ makes candidates non-comparable more often, so the value of the larger candidate set depends on the search strategy --- $N_8$ requires a memory-based mechanism to exploit its enlarged candidate set effectively.
 
 \subsection{Limitations and Future Work}
-\label{sec7.5}
+\label{sec:limitations}
 
 \begin{itemize}
 \item Larger instances and per-operator tuning. Extending to tai$100{\times}20$ (2000 operations) would require excessively long runtimes on the current cluster, but would be valuable: larger search spaces tend to sharpen structural differences between neighbourhoods, and the question of whether operator differences persist under per-operator tuning remains open beyond the 12 small instances studied in \cite{DiazICAE2023,DiazIGPL2022}.
 \item Other uncertainty levels. The 15\% uniform interval width is a single noise level; sensitivity to other noise widths is left open.
-\item Hybrid algorithms. $({\rm LEX2}, N_2)$ is the natural starting point for a dedicated uncertainty-aware metaheuristic: LEX2 directly tightens the worst-case bound (Section~\ref{sec7.2}) and $N_2$ provides the strongest neighbourhood structure overall; $({\rm LEX2}, N_8)$ is a natural alternative for large instances. A dedicated algorithm that exploits the structural mechanism of Section~\ref{sec7.2}---directly optimising moves that tighten $G^+(\sigma)$---could improve on the general-purpose tabu search used here.
+\item Hybrid algorithms. $({\rm LEX2}, N_2)$ is the natural starting point for a dedicated uncertainty-aware metaheuristic: LEX2 directly tightens the worst-case bound (Section~\ref{sec:lex2-width}) and $N_2$ provides the strongest neighbourhood structure overall; $({\rm LEX2}, N_8)$ is a natural alternative for large instances. A dedicated algorithm that exploits the structural mechanism of Section~\ref{sec:lex2-width}---directly optimising moves that tighten $G^+(\sigma)$---could improve on the general-purpose tabu search used here.
 \item Other rankings. Additional admissible orders on intervals \cite{Bustince2013} could be tested with the same protocol; the structural mechanism uncovered for LEX2 should generalise to any operator that strictly prioritises one extreme.
 \end{itemize}
 
 
 \section{Conclusions}
-\label{sec8}
+\label{sec:conclusions}
 
 I have presented a theoretical framework for neighbourhood-based local search in the Interval Job Shop Scheduling Problem grounded in the concept of \emph{extreme critical paths} --- arcs that are critical in either the best-case or worst-case scenario graph. The resulting neighbourhood $H(\sigma)$ satisfies feasibility, connectivity and the no-loss-of-improving-neighbours property for all four admissible interval rankings considered (EV, LEX1, LEX2, YX) simultaneously.
 
