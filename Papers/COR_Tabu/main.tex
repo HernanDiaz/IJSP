@@ -311,7 +311,7 @@ the number of machine-order disagreements; $M=0$ iff $\sigma=\sigma^*$.
 
 I instantiate five concrete neighbourhood variants within the $H(\sigma)$ framework, differing in which subset of extreme critical arcs each one considers. Within a critical block $B = (o_1,\ldots,o_k)$, an arc $(o_i,o_{i+1})$ is a \emph{boundary arc} if $i=1$ or $i=k-1$, and an \emph{interior arc} otherwise. Figure~\ref{fig2} illustrates a critical block and the arcs included by each variant.
 
-All five variants inherit the three structural guarantees of Section~\ref{sec4} (feasibility, no-loss of improving neighbours, and connectivity) for their arc-swap component, either directly (when only interior arcs are excluded, by Proposition~\ref{prop2}) or by superset relation to a variant that does. The $N_8$ reinsertion moves of Section~\ref{sec5.4} are an exception: they fall outside the framework and their feasibility is verified at runtime; $N_8$ is therefore included as an exploratory variant.
+All five variants inherit the three structural guarantees of Section~\ref{sec4} (feasibility, no-loss of improving neighbours, and connectivity) for their arc-swap component, either directly (when only interior arcs are excluded, by Proposition~\ref{prop2}) or by superset relation to a variant that does. $N_8$ additionally introduces reinsertion moves that fall outside the framework; their feasibility is verified at runtime, and $N_8$ is therefore included as an exploratory variant alongside the four arc-swap variants.
 
 \begin{figure}[t]
 \centering
@@ -375,7 +375,7 @@ $N_8$ is an exploratory variant that extends $N_2$ with \emph{extra-block reinse
 \end{itemize}
 Each reinsertion candidate is evaluated by updating heads and tails via a localised BFS propagation; it is retained only if the resulting makespan midpoint improves on the current incumbent.
 
-Because $N_8$ contains all $N_2$ boundary arc swaps, it satisfies all three structural guarantees of Section~\ref{sec4} for its arc-swap component: feasibility (Theorem~\ref{thm1}), no-loss (Proposition~\ref{prop2}, same argument as $N_2$), and connectivity (Theorem~\ref{thm2}, since $N_8 \supseteq N_2$). The reinsertion moves are outside the scope of Section~\ref{sec4}; their feasibility is verified at runtime and they carry no no-loss guarantee of their own. The motivation is the empirical question of whether extra-block moves benefit interval scheduling. As shown in Section~\ref{sec6.5}, the answer is search-strategy dependent: $N_8$ underperforms under hill climbing (Phase~A) but matches $N_2$ under irace-tuned tabu search (Phase~B); Section~\ref{sec7.4} explains why.
+The motivation is the empirical question of whether extra-block moves benefit interval scheduling. As shown in Section~\ref{sec6.5}, the answer is search-strategy dependent: $N_8$ underperforms under hill climbing (Phase~A) but matches $N_2$ under irace-tuned tabu search (Phase~B); Section~\ref{sec7.4} explains why.
 
 \subsection{$N_3$: Subsequence Reversals}
 \label{sec5.5}
