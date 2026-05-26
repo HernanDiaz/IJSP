@@ -335,7 +335,7 @@ $N_3$             & $\bullet$ & $\bullet$ & $\bullet$ & $\bullet$ $^{\dagger}$ \
 {\small $\bullet$\ always included\quad $-$\ always excluded\quad
 $?_v$\ conditional on \texttt{isViableSwap} ($N_{\rm ext}$)\\[2pt]
 $^{\dagger}$ $N_3$ additionally generates three rearrangement types for each boundary triple $(x,y,z)$ of consecutive extreme-critical tasks on the same machine: cyclic left-shift ($x,y,z\!\to\!y,z,x$), cyclic right-shift ($x,y,z\!\to\!z,x,y$), and full reversal ($x,y,z\!\to\!z,y,x$).\\[2pt]
-$^{\ddagger}$ $N_8$ additionally generates extra-block reinsertion moves for each block endpoint (see Section~\ref{sec5.5}).}
+$^{\ddagger}$ $N_8$ additionally generates extra-block reinsertion moves for each block endpoint (see Section~\ref{sec5.4}).}
 
 \caption{Critical block $B=(o_1,\ldots,o_5)$ on machine $M_k$ and arcs considered by each neighbourhood variant.}
 \label{fig2}
@@ -351,13 +351,8 @@ $N_1$ includes every disjunctive arc $(x,y)$ such that $x$ immediately precedes 
 
 $N_2$ restricts $N_1$ to arcs at the \emph{boundary} of each extreme critical block. A block $B = \{o_1,\ldots,o_k\}$ is a maximal contiguous subsequence of operations on the same machine that all lie on a single extreme critical path. $N_2$ retains the two boundary arcs $(o_1,o_2)$ and $(o_{k-1},o_k)$ and discards interior arcs $(o_i,o_{i+1})$, $2 \leq i \leq k-2$. This is the direct adaptation of \cite{Nowicki1996} to the interval setting: by Proposition~\ref{prop2} applied simultaneously to $G^-(\sigma)$ and $G^+(\sigma)$, the discarded interior arcs cannot carry improving moves under any of the four rankings, so $N_2$ inherits the same theoretical guarantees as $N_1$.
 
-\subsection{$N_3$: Subsequence Reversals}
-\label{sec5.3}
-
-$N_3$ augments the $N_2$ boundary arc swaps with three rearrangement types applied to \emph{boundary triples} of consecutive extreme-critical tasks. For each triple $(x, y, z)$ of successive operations on the same machine that are all extreme critical and span a block boundary (i.e.\ $x$ is the first task in its block or $z$ is the last), $N_3$ generates three candidate moves: a cyclic left-shift ($x,y,z\to y,z,x$), a cyclic right-shift ($x,y,z\to z,x,y$), and a full reversal ($x,y,z\to z,y,x$). Each candidate is checked for feasibility before being retained. The resulting neighbourhood strictly contains $N_2$.
-
 \subsection{$N_{\rm ext}$: Extended Nowicki--Smutnicki Neighbourhood}
-\label{sec5.4}
+\label{sec5.3}
 
 $N_{\rm ext}$ adapts the extended neighbourhood of \cite{Nowicki2005}. It starts from $N_2$ (boundary arcs unconditionally) and additionally considers interior block arcs that pass a heads-and-tails viability check, denoted \texttt{isViableSwap}:
 \begin{itemize}
@@ -367,7 +362,7 @@ $N_{\rm ext}$ adapts the extended neighbourhood of \cite{Nowicki2005}. It starts
 The check \texttt{isViableSwap}$(x,y)$ computes an optimistic lower-bound estimate of the post-swap makespan by recalculating only the local heads and tails of $x$ and $y$. Because the estimate is a lower bound, discarding a swap when it exceeds the incumbent is theoretically safe.
 
 \subsection{$N_8$: Block-Boundary Swaps with Extra-Block Reinsertion}
-\label{sec5.5}
+\label{sec5.4}
 
 $N_8$ is an exploratory variant that extends $N_2$ with \emph{extra-block reinsertion} moves, adapting the neighbourhood of~\cite{Xie2022} to the interval setting. For a critical block $B = (o_1,\ldots,o_k)$ on a machine, with machine predecessor $o_0$ (if any) and machine successor $o_{k+1}$ (if any), $N_8$ includes all $N_2$ boundary arc swaps and additionally considers four reinsertion candidates per block:
 \begin{itemize}
@@ -379,6 +374,11 @@ $N_8$ is an exploratory variant that extends $N_2$ with \emph{extra-block reinse
 Each reinsertion candidate is evaluated by updating heads and tails via a localised BFS propagation; it is retained only if the resulting makespan midpoint improves on the current incumbent.
 
 Because $N_8$ contains all $N_2$ boundary arc swaps, it satisfies all three structural guarantees of Section~\ref{sec4} for its arc-swap component: feasibility (Theorem~\ref{thm1}), no-loss (Proposition~\ref{prop2}, same argument as $N_2$), and connectivity (Theorem~\ref{thm2}, since $N_8 \supseteq N_2$). The reinsertion moves are outside the scope of Section~\ref{sec4}; their feasibility is verified at runtime and they carry no no-loss guarantee of their own. The motivation is the empirical question of whether extra-block moves benefit interval scheduling. As shown in Section~\ref{sec6.5}, the answer is search-strategy dependent: $N_8$ underperforms under hill climbing (Phase~A) but matches $N_2$ under irace-tuned tabu search (Phase~B); Section~\ref{sec7.4} explains why.
+
+\subsection{$N_3$: Subsequence Reversals}
+\label{sec5.5}
+
+$N_3$ augments the $N_2$ boundary arc swaps with three rearrangement types applied to \emph{boundary triples} of consecutive extreme-critical tasks. For each triple $(x, y, z)$ of successive operations on the same machine that are all extreme critical and span a block boundary (i.e.\ $x$ is the first task in its block or $z$ is the last), $N_3$ generates three candidate moves: a cyclic left-shift ($x,y,z\to y,z,x$), a cyclic right-shift ($x,y,z\to z,x,y$), and a full reversal ($x,y,z\to z,y,x$). Each candidate is checked for feasibility before being retained. The resulting neighbourhood strictly contains $N_2$.
 
 
 \section{Experimental Study}
