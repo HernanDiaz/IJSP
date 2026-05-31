@@ -127,7 +127,7 @@ for n in NEIGHS_FOLDER:
     gcells += [f"{r:.2f}", str(int(round(t)))]
 main_lines += [
 "\\hline",
-f"\\textit{{Grand mean}}   & 82 & " + " & ".join(gcells) + " \\\\",
+f"\\textit{{Grand mean}}   &    & " + " & ".join(gcells) + " \\\\",
 "\\hline",
 "\\end{tabular}",
 "\\end{table*}",
