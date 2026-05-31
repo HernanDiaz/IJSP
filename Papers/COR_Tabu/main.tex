@@ -519,15 +519,15 @@ where $\mathrm{LB}$ is the published lower bound of the corresponding \emph{cris
 
 \begin{table}[t]
 \centering
-\caption{Phase B: pairwise Wilcoxon tests for tuned neighbourhoods ($n = 2460$ paired blocks, Holm--Bonferroni corrected). All differences are statistically significant. $^\dagger$~p-value underflows to zero in double precision; effect size exceeds 0.68 (large).}
+\caption{Phase B: pairwise Wilcoxon tests for tuned neighbourhoods ($n = 2460$ paired blocks, Holm--Bonferroni corrected). All differences are statistically significant; for the three $N_3$ comparisons the $p$-value underflows double precision, so a representable bound is shown.}
 \label{tab4}
 \begin{tabular}{l l c c c c c l}
 \hline
 A & B & Mean A & Mean B & Diff & $p_{\rm adj}$ & $r$ & Magnitude \\
 \hline
-$N_2$         & $N_3$         & 1846.5 & 1895.5 & $-49.0$ & $<10^{-3}$ & $-^{\dagger}$ & large$^\dagger$ \\
-$N_3$         & $N_8$         & 1895.5 & 1847.8 & $+47.7$ & $<10^{-3}$ & $-^{\dagger}$ & large$^\dagger$ \\
-$N_3$         & $N_{\rm ext}$ & 1895.5 & 1853.8 & $+41.7$ & $<10^{-3}$ & $-^{\dagger}$ & large$^\dagger$ \\
+$N_2$         & $N_3$         & 1846.5 & 1895.5 & $-49.0$ & $<10^{-300}$ & 0.825 & large \\
+$N_3$         & $N_8$         & 1895.5 & 1847.8 & $+47.7$ & $<10^{-300}$ & 0.824 & large \\
+$N_3$         & $N_{\rm ext}$ & 1895.5 & 1853.8 & $+41.7$ & $<10^{-300}$ & 0.794 & large \\
 $N_1$         & $N_3$         & 1868.6 & 1895.5 & $-26.9$ & $<10^{-249}$ & 0.682 & large \\
 $N_1$         & $N_2$         & 1868.6 & 1846.5 & $+22.1$ & $<10^{-222}$ & 0.643 & large \\
 $N_1$         & $N_8$         & 1868.6 & 1847.8 & $+20.9$ & $<10^{-196}$ & 0.603 & large \\
@@ -543,9 +543,9 @@ Figure~\ref{fig5}(b) visualises the quality--runtime trade-off aggregated across
 
 \input{figures/tab_phaseb_groups}
 
-Decomposing by instance group (Table~\ref{tab:phaseb_groups}), $N_2$ posts the lowest group-level RE\,(\%) on 11 of 19 groups (sole winner on 9, tied on 2); $N_8$ leads on 9 groups (sole on 7, tied on 2). $N_{\rm ext}$ achieves the minimum RE\,(\%) on only LA38 (1.88\% vs $N_2$'s 1.91\%, a margin of 0.03\,pp). The runtime columns tell a different story from Phase~A: $N_1$ is the fastest neighbourhood on small and medium instances (tai$30{\times}20$: 102\,s vs $N_2$'s 170\,s) but trails on quality by a large effect; $N_{\rm ext}$ is competitive on small instances (LA21: 8\,s) but becomes the \emph{slowest} viable neighbourhood on the largest instances (tai$50{\times}15$: 354\,s; tai$50{\times}20$: 695\,s), exceeding $N_2$'s runtimes (181\,s; 554\,s) by a factor of $\approx$2 at inferior quality. $N_3$ again occupies the worst position on both dimensions: its median runtime reaches 898\,s at tai$50{\times}20$---effectively hitting the 900\,s time limit---with the worst quality on every instance group.
+Decomposing by instance group (Table~\ref{tab:phaseb_groups}), $N_2$ posts the lowest group-level RE\,(\%) on 7 of 8 groups---the aggregated Classical row and all Taillard size classes except tai$50{\times}15$, where $N_8$ leads. $N_{\rm ext}$, $N_1$ and $N_3$ never win at the group level; per-instance results (where $N_{\rm ext}$ wins LA24 and LA38, and $N_8$ wins 22 of the 82 individual instances overall) are provided in the supplementary material~\cite{DiazSupp2026}. On runtime, the picture varies by instance size: $N_1$ is the fastest neighbourhood on the small and medium Taillard classes (tai$30{\times}20$: 102\,s vs $N_2$'s 170\,s) but trails on quality by a large effect; $N_{\rm ext}$ becomes the \emph{slowest} viable neighbourhood on the largest instances (tai$50{\times}15$: 354\,s; tai$50{\times}20$: 695\,s), exceeding $N_2$'s runtimes (181\,s; 554\,s) by a factor of $\approx$2 at inferior quality. $N_3$ again occupies the worst position on both dimensions: its median runtime reaches 898\,s at tai$50{\times}20$---effectively hitting the 900\,s time limit---with the worst quality on every instance group.
 
-Considered jointly, $N_2$ offers the best efficiency profile across all instance sizes: it ties with $N_8$ for the best quality and is the faster of the two for small and medium instances, while being faster than $N_{\rm ext}$ on all instances with $\geq 450$ operations. $N_8$ is equally recommended when the instance is large and runtimes exceeding 500\,s are acceptable, particularly for the tai$50{\times}15$ class where it achieves the lowest RE\,(\%) (0.22\% vs $N_2$'s 0.32\%). The practical implication is that $N_2$ is the default choice for most settings, and $N_8$ the preferred alternative for large instances with a generous time budget.
+Considered jointly, $N_2$ offers the best efficiency profile across all instance sizes: it ties with $N_8$ for the best quality and is the faster of the two for small and medium instances, while being faster than $N_{\rm ext}$ on all instances with $\geq 450$ operations. $N_8$ is equally recommended when the instance is large and runtimes exceeding 500\,s are acceptable, particularly for the tai$50{\times}15$ class where it achieves the lowest RE\,(\%) (0.22\% vs $N_2$'s 0.32\%). The practical implication is that $N_2$ is the default choice for most settings; $N_8$ may be a viable alternative in some cases, depending on instance size and the available time budget.
 
 \subsubsection{Convergence Profiles under Tabu Search}
 \label{sec:convergence}
