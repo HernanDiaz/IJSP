@@ -550,12 +550,12 @@ Considered jointly, $N_2$ offers the best efficiency profile across all instance
 \subsubsection{Convergence Profiles}
 \label{sec:convergence}
 
-Figure~\ref{fig6} shows the per-generation convergence profiles of the five irace-tuned configurations, averaged over all 82 instances and 30 runs. Each run's best midpoint is divided by its generation-0 value, so every curve starts at 1.0 and decreases. All five neighbourhoods converge rapidly in the first 5--10 generations, after which the curves separate and plateau. $N_2$ and $N_8$ reach the lowest plateaus (0.793 and 0.799 respectively), consistent with their joint statistical lead in Table~\ref{tab4}; $N_{\rm ext}$ converges to a slightly higher plateau (0.808), and $N_1$ and $N_3$ trail at 0.816 and 0.834. Notably, $N_8$ plateaus slightly faster than $N_2$ and $N_{\rm ext}$, reflecting its larger per-iteration candidate set: fewer tabu iterations are needed to exhaust improvement opportunities. The neighbourhood ranking is already visible from generation 10 onward and stable thereafter.
+Figure~\ref{fig6} shows the per-generation convergence profiles of the five neighbourhoods, each under its irace-tuned configuration, averaged over all 82 instances and 30 runs. Each run's best midpoint is divided by its generation-0 value, so every curve starts at 1.0 and decreases. The bulk of the improvement is captured very early: all curves cover $\sim$83--86\% of their total reduction by generation~5 and $\sim$90--93\% by generation~10, and the neighbourhood ranking is already set from the first few generations. By generation~25 the curves have largely stabilised: $N_2$ and $N_8$ are essentially tied at the lowest values (0.803 and 0.802 respectively), $N_{\rm ext}$ sits at 0.807, $N_1$ at 0.815, and $N_3$ at 0.830, consistent with the statistical lead of $N_2$ and $N_8$ in Table~\ref{tab4}.
 
 \begin{figure}[t]
 \centering
 \includegraphics[width=0.95\linewidth]{fig6_convergence}
-\caption{Per-generation normalised best-midpoint profiles, by neighbourhood (Phase B, irace-tuned tabu search; mean over 82 instances $\times$ 30 runs per neighbourhood). The shaded ribbons represent $\pm 1$ standard error. All five neighbourhoods converge quickly (within $\sim$10 generations) and then plateau; $N_2$ and $N_8$ reach the lowest final values (0.793 and 0.799), consistent with their joint statistical lead in Table~\ref{tab4}.}
+\caption{Per-generation normalised best-midpoint profiles, by neighbourhood (Phase B, irace-tuned tabu search; mean over 82 instances $\times$ 30 runs per neighbourhood; each run is normalised by its generation-0 value). The shaded ribbons represent $\pm 1$ standard error.}
 \label{fig6}
 \end{figure}
 
