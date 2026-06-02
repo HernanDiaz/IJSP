@@ -645,11 +645,7 @@ Under tabu search (Phase~B) this penalty reverses, for three interacting reasons
 \subsection{Limitations and Future Work}
 \label{sec:limitations}
 
-\begin{itemize}
-\item Larger instances and per-operator tuning. Extending to tai$100{\times}20$ (2000 operations) and other 100-job classes would be valuable: larger search spaces tend to sharpen structural differences between neighbourhoods, and the question of whether operator differences persist under per-operator tuning remains open beyond the 12 small instances studied in \cite{DiazICAE2023,DiazIGPL2022}.
-\item Other uncertainty levels. The 15\% uniform interval width is a single noise level; sensitivity to other noise widths is left open.
-\item Hybrid algorithms. $({\rm LEX2}, N_2)$ is the natural starting point for a dedicated uncertainty-aware metaheuristic: LEX2 directly tightens the worst-case bound (Section~\ref{sec:lex2-width}) and $N_2$ provides the strongest neighbourhood structure overall; $({\rm LEX2}, N_8)$ is a natural alternative for large instances. A dedicated algorithm that exploits the structural mechanism of Section~\ref{sec:lex2-width}---directly optimising moves that tighten $G^+(\sigma)$---could improve on the general-purpose tabu search used here.
-\end{itemize}
+Several directions remain open. The benchmark could be extended to tai$100{\times}20$ (2000 operations) and other 100-job classes, where larger search spaces tend to sharpen structural differences between neighbourhoods; the question of whether ranking-operator differences persist under per-operator tuning also remains open beyond the 12 small instances studied in \cite{DiazICAE2023,DiazIGPL2022}. The $\pm 7.5\%$ uniform interval used here is a single noise level, and characterising how both the makespan midpoint and the interval width $C^+_{\max} - C^-_{\max}$ scale with the input uncertainty---and which ranking operators best preserve solution robustness as that uncertainty grows---remains an open question. Finally, $({\rm LEX2}, N_2)$ is the natural starting point for a dedicated uncertainty-aware metaheuristic: LEX2 directly tightens the worst-case bound (Section~\ref{sec:lex2-width}) and $N_2$ provides the strongest neighbourhood structure overall, while $({\rm LEX2}, N_8)$ is a natural alternative for large instances. A dedicated algorithm that exploits the structural mechanism of Section~\ref{sec:lex2-width} could improve on the general-purpose tabu search used here.
 
 
 \section{Conclusions}
