@@ -502,6 +502,13 @@ Panels~(b) and~(c) refute the slack hypothesis: LEX2 has \emph{more} critical op
 
 \paragraph{Conclusion and transition to Phase~B.} Although YX attains the best mean midpoint, its edge over LEX2 is small ($r \leq 0.16$) and LEX2 is statistically equivalent to EV ($p = 0.197$); since LEX2 also yields the narrowest intervals (5--11\% narrower than the alternatives), all Phase~B configurations fix LEX2. This is consistent with prior analyses where, even under per-operator hyperparameter tuning, LEX2 attained comparable solution quality with greater robustness~\cite{DiazICAE2023,DiazIGPL2022}; the relationship between robustness and interval width (uncertainty) remains to be characterised.
 
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{fig5_combined}
+\caption{Phase B (irace-tuned tabu search). \textbf{(a)}~Per-instance RE\,(\%) on the makespan midpoint by neighbourhood (Eq.~\ref{eq:re}). Each box pools $82 \times 30 = 2{,}460$ observations; pairwise significance and effect sizes are reported in Table~\ref{tab4}. \textbf{(b)}~Quality--runtime trade-off (N3 omitted for scale clarity): each point is the mean RE\,(\%) vs.\ mean median runtime aggregated over all instance groups; error bars are $\pm 1$ SE. Aggregated over all groups, $N_2$ achieves the lowest mean RE\,(\%) at moderate runtime ($\approx$73\,s); $N_8$ is slightly slower ($\approx$88\,s) with nearly identical RE\,(\%); $N_1$ is fastest ($\approx$58\,s) but incurs a large-effect quality penalty; $N_{\rm ext}$ sits between $N_8$ and $N_1$ on both axes.}
+\label{fig5}
+\end{figure}
+
 \subsection{Phase B: Neighbourhood Comparison after Tuning}
 \label{sec:phaseB}
 
@@ -513,13 +520,6 @@ Figure~\ref{fig5}(a) shows the per-instance relative error RE\,(\%):
 \label{eq:re}
 \end{equation}
 where $\mathrm{LB}$ is the published lower bound of the corresponding \emph{crisp} (deterministic) instance \cite{Taillard1993,Beasley1990,DiazFEABC2023}. Since this bound need not coincide with the interval-makespan midpoint, RE\,(\%) is an indicative common yardstick rather than a strict optimality gap; it is used uniformly throughout Sections~\ref{sec:phaseB}--\ref{sec:phaseC}. The Friedman test yields $\chi^{2}(4) = 4120.58,\, p < 10^{-150}$; mean ranks are $N_2$: 2.143, $N_8$: 2.245, $N_{\rm ext}$: 2.638, $N_1$: 3.419, $N_3$: 4.555. Pairwise tests (Table~\ref{tab4}) reveal that $N_2$ and $N_8$ are essentially tied (negligible effect, $r = 0.07$, $p = 0.001$), while both are separated from $N_{\rm ext}$ by a medium effect, from $N_1$ by a large effect, and from $N_3$ by a very large margin.
-
-\begin{figure}[t]
-\centering
-\includegraphics[width=\linewidth]{fig5_combined}
-\caption{Phase B (irace-tuned tabu search). \textbf{(a)}~Per-instance RE\,(\%) on the makespan midpoint by neighbourhood (Eq.~\ref{eq:re}). Each box pools $82 \times 30 = 2{,}460$ observations; pairwise significance and effect sizes are reported in Table~\ref{tab4}. \textbf{(b)}~Quality--runtime trade-off (N3 omitted for scale clarity): each point is the mean RE\,(\%) vs.\ mean median runtime aggregated over all instance groups; error bars are $\pm 1$ SE. Aggregated over all groups, $N_2$ achieves the lowest mean RE\,(\%) at moderate runtime ($\approx$73\,s); $N_8$ is slightly slower ($\approx$88\,s) with nearly identical RE\,(\%); $N_1$ is fastest ($\approx$58\,s) but incurs a large-effect quality penalty; $N_{\rm ext}$ sits between $N_8$ and $N_1$ on both axes.}
-\label{fig5}
-\end{figure}
 
 \begin{table}[t]
 \centering
