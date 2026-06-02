@@ -110,7 +110,7 @@ This paper makes the following contributions.
 
 \item Empirical study on 82 benchmark instances (Section~\ref{sec:experiments}). Three experimental phases are reported: \emph{(a)} a $5 \times 4$ comparison of four ranking operators at a common parameter setting (Section~\ref{sec:phaseA}); \emph{(b)} a head-to-head comparison of the five neighbourhoods after irace-based hyperparameter tuning, isolating the structural effect of the neighbourhood (Section~\ref{sec:phaseB}); and \emph{(c)} a comparison against the state of the art (Section~\ref{sec:phaseC}), showing that the irace-tuned TS-$N_2$ achieves strictly better average solution quality than the previous best published solver.
 
-\item Discovery and structural explanation of an interval-width effect (Section~\ref{sec:phaseA}). One ranking operator consistently yields makespan intervals narrower than the alternatives. A float analysis of both extreme graphs reveals the structural mechanism: the operator concentrates critical operations in the worst-case graph $G^+(\sigma)$, directly tightening the worst-case critical path.
+\item Structural explanation of LEX2's interval-width effect (Section~\ref{sec:phaseA}). LEX2 consistently yields makespan intervals narrower than the alternatives. A float analysis reveals the structural mechanism: LEX2 concentrates critical operations in the worst-case graph $G^+(\sigma)$, directly tightening the worst-case critical path.
 \end{enumerate}
 
 \subsection{Paper Organisation}
