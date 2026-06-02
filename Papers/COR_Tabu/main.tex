@@ -395,7 +395,7 @@ The motivation is the empirical question of whether extra-block moves benefit in
 \section{Tabu Search with the $H(\sigma)$ Neighbourhoods}
 \label{sec:ts}
 
-The experimental study of Section~\ref{sec:experiments} uses the fEABC algorithm of~\cite{DiazFEABC2023}---a hybrid ABC/PSO metaheuristic with an embedded local search applied each generation to a fraction of the population---as the base solver. Solutions are encoded as permutations with repetition (\emph{job-order}) and decoded via an insertion-based Schedule Generation Scheme (SGS). The embedded local-search component is either a first-improvement hill climbing (the standard ``accept the first improving move from the candidate set'' procedure, not detailed further) or the short-term-memory tabu search (TS) of Algorithm~\ref{alg:ts}; the choice between them is part of the experimental design and is fixed in Section~\ref{sec:experiments}.
+The experimental study of Section~\ref{sec:experiments} uses fEABC~\cite{DiazFEABC2023}---a hybrid ABC/PSO metaheuristic with an embedded local search applied each generation to a fraction of the population---as the base solver, with solutions encoded as job-order permutations with repetition and decoded via an insertion-based Schedule Generation Scheme (SGS). The embedded local-search component is either a first-improvement hill climbing or the short-term-memory tabu search (TS) of Algorithm~\ref{alg:ts}; the choice between them is fixed in Section~\ref{sec:experiments}.
 
 \begin{algorithm}[H]
 \caption{Tabu search with the $H(\sigma)$ neighbourhood (LS\_Tabu).}
