@@ -387,6 +387,18 @@ Each reinsertion candidate is first filtered by a heads-and-tails estimate $\mat
 The motivation is the empirical question of whether extra-block moves benefit interval scheduling. As shown in Section~\ref{sec:phaseB}, the answer is search-strategy dependent: $N_8$ underperforms under hill climbing (Phase~A) but matches $N_2$ under irace-tuned tabu search (Phase~B); Section~\ref{sec:N8-tabu} explains why.
 
 
+\section{Tabu Search with the $H(\sigma)$ Neighbourhoods}
+\label{sec:ts}
+
+The experimental study of Section~\ref{sec:experiments} compares the $H(\sigma)$ neighbourhood variants under two local-search strategies: first-improvement hill climbing in Phase~A and a short-term-memory tabu search (TS) in Phase~B. The hill-climbing variant is the standard ``accept the first improving move from the candidate set'' procedure and is not detailed further; the TS algorithm is described below.
+
+The TS is invoked on individuals of the fEABC population at each generation (Section~\ref{sec:setup}); each call starts from its input individual with an empty tabu list and proceeds as follows.
+
+\paragraph{Iteration.} The active neighbourhood $N(\sigma) \in \{N_1(\sigma), N_2(\sigma), N_3(\sigma), N_{\rm ext}(\sigma), N_8(\sigma)\}$ is regenerated from the current solution at each TS iteration, and the resulting candidate set is sorted by a heads-and-tails interval lower bound on the post-move makespan (the same bound used by $N_{\rm ext}$'s viability filter; Section~\ref{sec:Next}). An early-termination filter prunes candidates whose lower bound already dominates the running best, exploiting the sorted order. Among the surviving candidates, the move with the best actual makespan under the active ranking is selected by best-improvement, subject to two restrictions: a move is \emph{tabu} if its reverse appears in the tabu list, and the reverse of the last accepted move is additionally blocked to prevent an immediate undo. The standard \emph{aspiration} criterion overrides the tabu status when a tabu candidate strictly improves the incumbent best solution found within the TS call.
+
+\paragraph{Tabu list and termination.} The tabu list is FIFO: each newly accepted move is pushed onto the front, and the oldest entry is dropped when the size cap is reached. The minimum size is fixed at~3; the maximum is left unbounded in the configurations used here, so the effective tenure is governed by the local-search horizon. The TS terminates when the candidate set is empty (a strict local optimum under the active ranking), when a per-call wall-clock cap of 2\,s is reached, or when a configurable number of consecutive non-improving iterations (the per-neighbourhood irace-tuned \emph{Bad-iter} bound; Section~\ref{sec:setup}, Table~\ref{tab:tuned}) has elapsed. Improvements found by the TS are propagated back into the fEABC population by Lamarckian replacement.
+
+
 \section{Experimental Study}
 \label{sec:experiments}
 
