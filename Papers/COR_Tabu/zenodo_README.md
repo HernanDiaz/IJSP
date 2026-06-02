@@ -192,7 +192,7 @@ slower than the cluster used in the published comparators).
 
 - **Paper:** Computers & Operations Research, DOI \[paper DOI\].
 - **Supplementary material PDF:** per-instance Taillard comparison tables,
-  Zenodo DOI \[supplementary DOI\].
+  Zenodo DOI [10.5281/zenodo.20511981](https://doi.org/10.5281/zenodo.20511981).
 
 ---
 
