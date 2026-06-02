@@ -599,7 +599,18 @@ la40 & 1222 & 5.07 & 8.74 & 1.2 & 1.88 & 4.21 & 3.0 & 2.74 & 4.11 & 3.7 & 0.70 &
 \end{table*}
 
 \paragraph{Taillard instances.}
-Per-instance results on all 70 Taillard instances (TA1--TA70, seven size classes from $15{\times}15$ to $50{\times}20$) are provided as supplementary material~\cite{DiazSupp2026}. GA results are unavailable for the Taillard IJSP instances; the comparison covers \emph{fEABC} and ESABC only; TS-$N_8$ is included alongside TS-$N_2$ for reference. TS-$N_2$ achieves a grand mean RE of $\mathbf{3.66\%}$ across all 70 instances, against 8.66\% for ESABC and 9.39\% for \emph{fEABC}, a 57.7\% reduction relative to ESABC. TS-$N_2$ achieves the strictly lower average RE than both ABC methods on every one of the 70 instances. The improvement is consistent across size classes and most pronounced on tai$50{\times}15$ (TA51--TA60; group mean: TS-$N_2$ = 0.32\% vs.\ ESABC = 4.55\%), where the interval TS nearly matches the lower bound---TA51 achieves RE\,=\,0.02\% and TA53 achieves RE\,=\,0.04\%. The hardest class, tai$30{\times}20$ (TA41--TA50), yields a group mean of 8.62\% for TS-$N_2$ versus 15.32\% for ESABC; these instances remain the most challenging for all methods. TS-$N_8$ finishes marginally behind TS-$N_2$ in grand mean (3.74\% vs.\ 3.66\%), consistent with the Phase~B ranking (Section~\ref{sec:phaseB}), though it outperforms $N_2$ on individual instances where a single dominant critical path prevails (Section~\ref{sec:N8-tabu}).
+Per-instance results on all 70 Taillard instances (TA1--TA70, seven size classes from $15{\times}15$ to $50{\times}20$) are provided as supplementary material~\cite{DiazSupp2026}; Figure~\ref{fig:taillard_compar} summarises mean RE\,(\%) per size class. GA results are unavailable for the Taillard IJSP instances; the comparison covers \emph{fEABC} and ESABC only; TS-$N_8$ is included alongside TS-$N_2$ for reference. TS-$N_2$ achieves a grand mean RE of $\mathbf{3.66\%}$ across all 70 instances, against 8.66\% for ESABC and 9.39\% for \emph{fEABC}, a 57.7\% reduction relative to ESABC. TS-$N_2$ achieves the strictly lower average RE than both ABC methods on every one of the 70 instances. The improvement is consistent across size classes and most pronounced on tai$50{\times}15$ (TA51--TA60; group mean: TS-$N_2$ = 0.32\% vs.\ ESABC = 4.55\%), where the interval TS nearly matches the lower bound---TA51 achieves RE\,=\,0.02\% and TA53 achieves RE\,=\,0.04\%. The hardest class, tai$30{\times}20$ (TA41--TA50), yields a group mean of 8.62\% for TS-$N_2$ versus 15.32\% for ESABC; these instances remain the most challenging for all methods. TS-$N_8$ finishes marginally behind TS-$N_2$ in grand mean (3.74\% vs.\ 3.66\%), consistent with the Phase~B ranking (Section~\ref{sec:phaseB}), though it outperforms $N_2$ on individual instances where a single dominant critical path prevails (Section~\ref{sec:N8-tabu}).
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\linewidth]{fig_taillard_compar}
+\caption{Mean RE\,(\%) per Taillard size class for the four solvers compared
+on the 70 Taillard IJSP instances (30 runs per instance). The irace-tuned
+TS variants reduce mean RE relative to ESABC across all classes (range
+44\%--93\%; 57.7\% on the grand mean). Per-instance values are provided as
+supplementary material~\cite{DiazSupp2026}.}
+\label{fig:taillard_compar}
+\end{figure*}
 
 
 \section{Discussion}
