@@ -22,6 +22,11 @@
 \usepackage{amsmath}
 \usepackage{amsthm}
 \usepackage{xcolor}
+%% url provides URL-safe \path{} for DOIs with underscores in main.bbl.
+%% Stub \href so the bibliography \href{url}{label} compiles without
+%% hyperref, since hyperref shifts the page layout of every float.
+\usepackage{url}
+\providecommand{\href}[2]{#2}
 
 %% Theorem-like environments
 \newtheorem{theorem}{Theorem}
