@@ -96,8 +96,8 @@ p <- ggplot(dat, aes(x = class, y = re, fill = alg)) +
   geom_bar(stat = "identity",
            position = position_dodge(width = 0.78),
            width = 0.72,
-           colour = "grey40",
-           linewidth = 0.25) +
+           colour = "black",
+           linewidth = 0.3) +
   scale_fill_manual(values = ALG_COLORS, labels = ALG_LABELS) +
   scale_x_discrete(labels = class_labels) +
   scale_y_continuous(name   = "mean RE [%]",
