@@ -94,8 +94,8 @@ ALG_LABELS <- c(
 
 p <- ggplot(dat, aes(x = class, y = re, fill = alg)) +
   geom_bar(stat = "identity",
-           position = position_dodge(width = 0.78),
-           width = 0.72,
+           position = position_dodge(width = 0.8),
+           width = 0.8,
            colour = "black",
            linewidth = 0.3) +
   scale_fill_manual(values = ALG_COLORS, labels = ALG_LABELS) +
