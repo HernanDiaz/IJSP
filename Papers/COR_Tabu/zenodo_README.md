@@ -40,10 +40,8 @@ Each (instance, configuration) pair is executed for 30 independent runs.
 ├── instances/                         Instance files
 │   ├── classical/                       12 OR-Library instances (ABZ7-9, FT10,
 │   │                                    FT20, LA21/24/25/27/29/38/40)
-│   ├── taillard_82/                     70 Taillard 15x15 to 50x20 instances
-│   │                                    (TA1-TA70)
-│   └── taillard_100x20/                 10 Taillard 100x20 instances
-│                                        (extended benchmark, Section 9.5)
+│   └── taillard_82/                     70 Taillard 15x15 to 50x20 instances
+│                                        (TA1-TA70)
 │
 ├── setup/                             Algorithm setup files (parameters)
 │   ├── phaseA/                          Phase A common-HC setups
@@ -134,8 +132,7 @@ file. Key columns:
 - `phaseB_group_summary.csv`: `group, neigh, n, mean_re, med_re, med_rt, …`
   (40 rows = 5 neigh x 8 size classes).
 - `per_instance_stats.csv`: `neigh, instance, group, n_runs, best_E, avg_E,
-  sd_E, med_rt` (460 rows = 5 neigh x 92 instances; includes 10 extra
-  tai100x20 instances).
+  sd_E, med_rt` (410 rows = 5 neigh x 82 instances).
 - `convergence_data_ts.csv`: `neigh, step, mean_best_norm, sd_best_norm,
   n_obs` (one row per step per neighbourhood).
 
