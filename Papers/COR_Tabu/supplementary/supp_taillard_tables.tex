@@ -63,6 +63,30 @@ $50{\times}15$ (TA51--60), $50{\times}20$ (TA61--70).
 30 independent runs per instance, 15-minute wall-clock time limit per run,
 on an Intel Xeon E5-2680\,v4 at 2.40\,GHz (WSL2 Linux).
 
+\medskip\noindent
+\textbf{Irace training instances.} The irace tuning of Phase~B (Section~7.1
+of the main paper) used a stratified random subset of 20 of the 82 benchmark
+instances ($\approx$\,24\%), drawn uniformly at random within each size
+stratum. The 62 instances \emph{not} included in the list below were held
+out from tuning and contribute the unbiased evaluation reported in the
+main paper and in Tables~\ref{tab:supp_taillard_i}--\ref{tab:supp_taillard_ii}.
+
+\begin{itemize}\setlength{\itemsep}{2pt}
+  \item \emph{Classical} (3 of 12): \texttt{ft10}, \texttt{abz7}, \texttt{la27}.
+  \item \emph{Taillard $15{\times}15$} (2 of 10): TA3, TA8.
+  \item \emph{Taillard $20{\times}15$} (2 of 10): TA12, TA17.
+  \item \emph{Taillard $20{\times}20$} (3 of 10): TA21, TA24, TA29.
+  \item \emph{Taillard $30{\times}15$} (2 of 10): TA32, TA36.
+  \item \emph{Taillard $30{\times}20$} (3 of 10): TA43, TA47, TA50.
+  \item \emph{Taillard $50{\times}15$} (2 of 10): TA52, TA57.
+  \item \emph{Taillard $50{\times}20$} (3 of 10): TA63, TA67, TA70.
+\end{itemize}
+
+\noindent
+The full irace input files (\texttt{instances.txt}, \texttt{parameters.txt},
+\texttt{scenario.txt}) and the resulting \texttt{iracedump.rda} files for
+each of the five neighbourhoods are archived at~\cite{DiazData2026}.
+
 \bigskip
 
 \begin{table*}[htbp]
@@ -200,6 +224,14 @@ H.~D\'iaz, J.~J.~Palacios, I.~Gonz\'alez-Rodr\'iguez, C.~R.~Vela.
 E.~Taillard.
 \newblock Benchmarks for basic scheduling problems.
 \newblock \textit{European Journal of Operational Research}, 64(2):278--285, 1993.
+
+\bibitem{DiazData2026}
+H.~D\'iaz.
+\newblock Raw experimental data, irace tuning records, and analysis scripts
+  accompanying ``Neighbourhood Structures and Ranking Operators for the
+  Interval Job Shop Scheduling Problem''.
+\newblock Zenodo, 2026.
+\newblock \url{https://doi.org/10.5281/zenodo.XXXXXXX} \textit{[DOI to be assigned]}
 
 \end{thebibliography}
 
