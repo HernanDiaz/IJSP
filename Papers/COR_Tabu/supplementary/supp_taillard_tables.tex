@@ -19,7 +19,7 @@ on All 70 Taillard Instances\\[6pt]
 {\normalsize Companion to: ``Neighbourhood Structures and Ranking Operators\\
 for the Interval Job Shop Scheduling Problem''}}
 
-\author{Hern\'an D\'iaz \and Juan Jos\'e Palacios \and In\'es Gonz\'alez-Rodr\'iguez \and Camino R. Vela}
+\author{Hern\'an D\'iaz}
 
 \date{}
 
@@ -37,11 +37,14 @@ $TS\text{-}N_2$ (this work), and $TS\text{-}N_8$ (this work).
 \medskip\noindent
 \textbf{Metric.}
 $\mathrm{RE}(\%) = (E[\mathbf{C}_{\max}] - \mathrm{LB})\,/\,\mathrm{LB} \times 100$,
-where $\mathrm{LB}$ is the published deterministic lower bound \cite{Taillard1993}.
-A negative RE\,(\%) indicates that the interval midpoint lies below the
-deterministic lower bound; this can occur because the interval and deterministic
-problems are structurally distinct (the interval midpoint is not bounded below
-by the deterministic lower bound).
+where $\mathrm{LB}$ is the published lower bound of the \emph{crisp} (deterministic)
+counterpart of each Taillard instance \cite{Taillard1993}. The interval IJSP and
+the crisp JSP are structurally distinct optimisation problems, so these crisp
+lower bounds are used here only as a common, hardware-independent reference
+yardstick; they are \emph{indicative} for the interval setting and do not
+constitute a strict optimality gap. In particular, a negative RE\,(\%) is possible
+when the interval-makespan midpoint falls below the crisp lower bound, and does
+not signal a violation.
 
 \medskip\noindent
 \textbf{Columns.} For each solver: \emph{Best} = best RE\,(\%) over 30 runs;
