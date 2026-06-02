@@ -22,11 +22,10 @@
 \usepackage{amsmath}
 \usepackage{amsthm}
 \usepackage{xcolor}
-%% url provides URL-safe \path{} for DOIs with underscores in main.bbl.
-%% Stub \href so the bibliography \href{url}{label} compiles without
-%% hyperref, since hyperref shifts the page layout of every float.
-\usepackage{url}
-\providecommand{\href}[2]{#2}
+%% Elsevier's elsarticle-num.bst defaults to hrefform=2 (hyperref mode):
+%% the generated bibliography uses \href{URL}{\path{doi:...}}, which
+%% requires hyperref. This is the canonical Elsevier setup.
+\usepackage{hyperref}
 
 %% Theorem-like environments
 \newtheorem{theorem}{Theorem}
