@@ -26,6 +26,9 @@
 %% the generated bibliography uses \href{URL}{\path{doi:...}}, which
 %% requires hyperref. This is the canonical Elsevier setup.
 \usepackage{hyperref}
+%% Pseudocode for the TS algorithm in §sec:ts.
+\usepackage{algorithm}
+\usepackage{algpseudocode}
 
 %% Theorem-like environments
 \newtheorem{theorem}{Theorem}
@@ -390,13 +393,44 @@ The motivation is the empirical question of whether extra-block moves benefit in
 \section{Tabu Search with the $H(\sigma)$ Neighbourhoods}
 \label{sec:ts}
 
-The experimental study of Section~\ref{sec:experiments} compares the $H(\sigma)$ neighbourhood variants under two local-search strategies: first-improvement hill climbing in Phase~A and a short-term-memory tabu search (TS) in Phase~B. The hill-climbing variant is the standard ``accept the first improving move from the candidate set'' procedure and is not detailed further; the TS algorithm is described below.
+The experimental study of Section~\ref{sec:experiments} compares the $H(\sigma)$ neighbourhood variants under two local-search strategies: first-improvement hill climbing in Phase~A and a short-term-memory tabu search (TS) in Phase~B. The hill-climbing variant is the standard ``accept the first improving move from the candidate set'' procedure and is not detailed further; the TS algorithm is given in Algorithm~\ref{alg:ts}. It is invoked on individuals of the fEABC population at each generation (Section~\ref{sec:setup}), and each call starts from its input individual with an empty tabu list.
 
-The TS is invoked on individuals of the fEABC population at each generation (Section~\ref{sec:setup}); each call starts from its input individual with an empty tabu list and proceeds as follows.
+\begin{algorithm}[!ht]
+\caption{Tabu search with the $H(\sigma)$ neighbourhood (LS\_Tabu).}
+\label{alg:ts}
+\begin{algorithmic}[1]
+\Require initial solution $\sigma_0$; neighbourhood variant $N$; ranking $R$; tabu-size cap $L_{\max}$; bad-iteration cap $B_{\max}$; wall-clock cap $T_{\max}$
+\Ensure best solution $\sigma^{\ast}$ found within the call
+\State $\sigma \gets \sigma_0$;\enspace $\sigma^{\ast} \gets \sigma_0$;\enspace $L \gets \emptyset$;\enspace $b \gets 0$;\enspace $m_{\text{last}} \gets \text{null}$
+\While{$b < B_{\max}$ \textbf{and} runtime $< T_{\max}$}
+  \State $C \gets N(\sigma)$ \Comment{generate candidate moves}
+  \State sort $C$ ascending by heads-and-tails interval lower bound $\widehat{\text{LB}}$
+  \State $m^{\star} \gets \text{null}$;\enspace $v^{\star} \gets +\infty$
+  \ForAll{$c \in C$ in sorted order}
+    \If{$\widehat{\text{LB}}(c) \geq_R v^{\star}$}\enspace \textbf{break} \Comment{early-termination filter}
+    \EndIf
+    \State $\text{tabu} \gets (\text{reverse of }c) \in L$
+    \State $\text{undo}  \gets c \equiv \text{reverse}(m_{\text{last}})$
+    \State $v \gets$ exact value of $c$ under $R$ \Comment{post-move makespan}
+    \If{$v <_R v^{\star}$ \textbf{and} ($\neg\text{tabu}$ \textbf{or} $v <_R \mathrm{fit}(\sigma^{\ast})$) \textbf{and} $\neg\text{undo}$}
+      \State $m^{\star} \gets c$;\enspace $v^{\star} \gets v$ \Comment{aspiration on $\sigma^{\ast}$}
+    \EndIf
+  \EndFor
+  \If{$m^{\star} = \text{null}$}\enspace \textbf{break} \Comment{dead end / local optimum}
+  \EndIf
+  \State $\sigma \gets$ apply $m^{\star}$ to $\sigma$;\enspace $L.\text{push\_front}(m^{\star})$;\enspace $m_{\text{last}} \gets m^{\star}$
+  \If{$|L| > L_{\max}$}\enspace $L.\text{pop\_back}()$ \EndIf
+  \If{$\mathrm{fit}(\sigma) <_R \mathrm{fit}(\sigma^{\ast})$}
+    \State $\sigma^{\ast} \gets \sigma$;\enspace $b \gets 0$
+  \Else
+    \State $b \gets b + 1$
+  \EndIf
+\EndWhile
+\State \Return $\sigma^{\ast}$
+\end{algorithmic}
+\end{algorithm}
 
-\paragraph{Iteration.} The active neighbourhood $N(\sigma) \in \{N_1(\sigma), N_2(\sigma), N_3(\sigma), N_{\rm ext}(\sigma), N_8(\sigma)\}$ is regenerated from the current solution at each TS iteration, and the resulting candidate set is sorted by a heads-and-tails interval lower bound on the post-move makespan (the same bound used by $N_{\rm ext}$'s viability filter; Section~\ref{sec:Next}). An early-termination filter prunes candidates whose lower bound already dominates the running best, exploiting the sorted order. Among the surviving candidates, the move with the best actual makespan under the active ranking is selected by best-improvement, subject to two restrictions: a move is \emph{tabu} if its reverse appears in the tabu list, and the reverse of the last accepted move is additionally blocked to prevent an immediate undo. The standard \emph{aspiration} criterion overrides the tabu status when a tabu candidate strictly improves the incumbent best solution found within the TS call.
-
-\paragraph{Tabu list and termination.} The tabu list is FIFO: each newly accepted move is pushed onto the front, and the oldest entry is dropped when the size cap is reached. The minimum size is fixed at~3; the maximum is left unbounded in the configurations used here, so the effective tenure is governed by the local-search horizon. The TS terminates when the candidate set is empty (a strict local optimum under the active ranking), when a per-call wall-clock cap of 2\,s is reached, or when a configurable number of consecutive non-improving iterations (the per-neighbourhood irace-tuned \emph{Bad-iter} bound; Section~\ref{sec:setup}, Table~\ref{tab:tuned}) has elapsed. Improvements found by the TS are propagated back into the fEABC population by Lamarckian replacement.
+The candidate set $C = N(\sigma)$ is regenerated on every iteration. Sorting $C$ by a heads-and-tails interval lower bound (the same bound used by $N_{\rm ext}$'s viability filter; Section~\ref{sec:Next}) enables the early-termination test on line~7: once $\widehat{\text{LB}}$ exceeds the running best $v^{\star}$, the remainder of the sorted list is dominated and can be skipped. The acceptance test on line~12 combines best-improvement with the tabu and last-move-reverse restrictions, and admits a tabu candidate only when it strictly improves the in-call best $\sigma^{\ast}$ (the \emph{aspiration} criterion). The tabu list $L$ is FIFO with minimum size~3; $L_{\max}$ is left unbounded in the configurations used here, so the effective tenure is governed by the local-search horizon. The wall-clock cap is $T_{\max} = 2$\,s per call; $B_{\max}$ is the per-neighbourhood irace-tuned \emph{Bad-iter} value of Table~\ref{tab:tuned}. Improvements returned by the TS are propagated back into the fEABC population by Lamarckian replacement.
 
 
 \section{Experimental Study}
