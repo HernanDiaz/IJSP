@@ -54,7 +54,7 @@ Each (instance, configuration) pair is executed for 30 independent runs.
 ├── results/                           Raw per-run results (one CSV per run)
 │   ├── phaseA_HC/                       Hill-climbing results
 │   │   └── <nb>_<op>/                   20 directories (5 nb x 4 op)
-│   │       └── <instance>_<timestamp>.csv  (+ _Sols, _Robustness, _Scenarios)
+│   │       └── <instance>_<timestamp>.csv  (+ _Sols)
 │   └── phaseB_TS/                       Tabu-search results
 │       └── N<x>_tuned/                  5 directories
 │           └── <instance>_<timestamp>.csv  (+ _Sols, _Robustness, _Scenarios)
@@ -112,7 +112,7 @@ nominal Taillard or OR-Library duration $p^{*}_{ij}$.
 
 ### 3.2 Per-run results (`results/`)
 
-Each (instance, configuration, run-batch) produces three CSVs:
+Each (instance, configuration, run-batch) produces two CSVs:
 
 - **`<instance>_<timestamp>.csv`** — main result CSV. Contains:
     - Solver configuration in lines 1-43 (algorithm name, parameters, encoding,
@@ -124,10 +124,6 @@ Each (instance, configuration, run-batch) produces three CSVs:
     - Optional: per-iteration evolution traces.
 - **`<instance>_<timestamp>_Sols.csv`** — the best schedule of each run, as
   `<run>;<permutation>;<objective>`.
-- **`<instance>_<timestamp>_Robustness.csv`** — Monte Carlo simulation
-  (420 sampled scenarios) of each best schedule, columns `S1`...`S420`.
-- **`<instance>_Scenarios.csv`** — the 420 scenarios used in the robustness
-  evaluation (one row per scenario, one column per operation).
 
 ### 3.3 Aggregated CSVs (`aggregated_csvs/`)
 
