@@ -68,9 +68,7 @@ Each (instance, configuration) pair is executed for 30 independent runs.
 │   ├── base_setup_ts_lex2.txt           base TS+LEX2 template
 │   └── results/
 │       └── irace_N<x>/                  5 directories (one per neighbourhood)
-│           ├── iracedump.rda              R object: full tuning trajectory
-│           ├── irace_N<x>.log             irace progress log
-│           └── irace_N<x>_stdout.log      raw stdout
+│           └── irace_N<x>.log             irace progress log
 │
 ├── aggregated_csvs/                   Pre-aggregated CSVs (sources of figures)
 │   ├── phaseB/
@@ -92,10 +90,11 @@ Each (instance, configuration) pair is executed for 30 independent runs.
     │   └── gen_tab6_v2.py                 Table 6 + supplementary table
     │                                      builder
     └── R/
+        ├── combine_fig34.R                generates the Phase A operator
+        │                                  comparison figure (paper Figure 3)
         ├── combine_fig5.R                 generates fig5_combined.pdf
         ├── generate_fig6_ts.R             generates fig6_convergence.pdf
         ├── generate_fig_taillard_compar.R generates fig_taillard_compar.pdf
-        ├── gen_phaseb_table.R             alternative Table 6 builder (R)
         └── get_phaseC_runtimes.R          Phase C runtime extraction
 ```
 
@@ -150,11 +149,12 @@ Each artefact in the paper can be regenerated from this dataset:
 |----------|------------|--------|
 | Table 1 (Phase A midpoints) | `per_instance_stats.csv` (Phase A subset) | `scripts/python/build_stats_data_exp4.py` |
 | Table 4 (Wilcoxon Phase B) | `runs_data.csv` | (in-paper R script, not included) |
-| Table 6 (Phase B groups) | `phaseB_group_summary.csv` | `scripts/python/gen_tab6_v2.py` or `scripts/R/gen_phaseb_table.R` |
+| Table 6 (Phase B groups) | `phaseB_group_summary.csv` | `scripts/python/gen_tab6_v2.py` |
 | Table 7 (Phase C classical) | Phase B + published comparators | manual aggregation |
-| Figure 5 (Phase B boxplot + scatter) | `runs_data.csv`, `phaseB_group_summary.csv` | `scripts/R/combine_fig5.R` |
-| Figure 6 (Phase B convergence) | `convergence_data_ts.csv` | `scripts/R/generate_fig6_ts.R` |
-| Figure 7 (Phase C Taillard) | `phaseB_group_summary.csv` + supplementary data | `scripts/R/generate_fig_taillard_compar.R` |
+| Figure 3 (Phase A operator comparison) | `per_instance_stats.csv` (Phase A subset) | `scripts/R/combine_fig34.R` |
+| Figure 4 (Phase B boxplot + scatter) | `runs_data.csv`, `phaseB_group_summary.csv` | `scripts/R/combine_fig5.R` |
+| Figure 5 (Phase B convergence) | `convergence_data_ts.csv` | `scripts/R/generate_fig6_ts.R` |
+| Figure 6 (Phase C Taillard) | `phaseB_group_summary.csv` + supplementary data | `scripts/R/generate_fig_taillard_compar.R` |
 | Supplementary tables | `per_instance_stats.csv` | `scripts/python/gen_tab6_v2.py` |
 
 To regenerate from raw runs (instead of using the pre-aggregated CSVs), the full
