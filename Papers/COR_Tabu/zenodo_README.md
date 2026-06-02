@@ -174,8 +174,8 @@ per_instance_stats.csv  ── gen_tab6_v2.py ──>  Table 6 + supplementary
 
 ## 5. Software requirements
 
-- **Solver:** FuzzyFW (C++14, GCC 13+). The binary `FuzzyFW` is **not** included
-  in this dataset (it ships with the source repository; see Section 7).
+- **Solver:** FuzzyFW (C++14, GCC 13+). The compiled binary is **not** included
+  in this dataset; contact the author for access to the solver source.
 - **Analysis:**
     - Python 3.10+ with the standard library only (no extra dependencies for
       the included scripts).
@@ -197,8 +197,6 @@ slower than the cluster used in the published comparators).
 
 ## 7. Related resources
 
-- **Source code:** the FuzzyFW solver source (C++) is hosted at
-  \[repository URL\].
 - **Paper:** Computers & Operations Research, DOI \[paper DOI\].
 - **Supplementary material PDF:** per-instance Taillard comparison tables,
   Zenodo DOI \[supplementary DOI\].
