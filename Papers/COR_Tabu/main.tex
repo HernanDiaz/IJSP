@@ -26,9 +26,12 @@
 %% the generated bibliography uses \href{URL}{\path{doi:...}}, which
 %% requires hyperref. This is the canonical Elsevier setup.
 \usepackage{hyperref}
-%% Pseudocode for the TS algorithm in §sec:ts.
+%% Pseudocode for the TS algorithm in §sec:ts. The `float` package
+%% provides the [H] specifier used to pin Algorithm 1 next to its text
+%% instead of letting it float.
 \usepackage{algorithm}
 \usepackage{algpseudocode}
+\usepackage{float}
 
 %% Theorem-like environments
 \newtheorem{theorem}{Theorem}
@@ -389,44 +392,38 @@ Each reinsertion candidate is first filtered by a heads-and-tails estimate $\mat
 
 The motivation is the empirical question of whether extra-block moves benefit interval scheduling. As shown in Section~\ref{sec:phaseB}, the answer is search-strategy dependent: $N_8$ underperforms under hill climbing (Phase~A) but matches $N_2$ under irace-tuned tabu search (Phase~B); Section~\ref{sec:N8-tabu} explains why.
 
-
 \section{Tabu Search with the $H(\sigma)$ Neighbourhoods}
 \label{sec:ts}
 
-The experimental study of Section~\ref{sec:experiments} compares the $H(\sigma)$ neighbourhood variants under two local-search strategies: first-improvement hill climbing in Phase~A and a short-term-memory tabu search (TS) in Phase~B. The hill-climbing variant is the standard ``accept the first improving move from the candidate set'' procedure and is not detailed further; the TS algorithm is given in Algorithm~\ref{alg:ts}. It is invoked on individuals of the fEABC population at each generation (Section~\ref{sec:setup}), and each call starts from its input individual with an empty tabu list.
+The experimental study of Section~\ref{sec:experiments} uses the fEABC algorithm of~\cite{DiazFEABC2023}---a hybrid ABC/PSO metaheuristic with an embedded local search applied each generation to a fraction of the population---as the base solver, and compares the $H(\sigma)$ neighbourhood variants under two choices for that local-search component: first-improvement hill climbing in Phase~A and a short-term-memory tabu search (TS) in Phase~B, given in Algorithm~\ref{alg:ts}. Each TS call starts from its input individual with an empty tabu list, and the improved solution returned at line~\ref{alg:ts:return} is reinserted by Lamarckian replacement.
 
-\begin{algorithm}[!ht]
+\begin{algorithm}[H]
 \caption{Tabu search with the $H(\sigma)$ neighbourhood (LS\_Tabu).}
 \label{alg:ts}
 \begin{algorithmic}[1]
-\Require initial solution $\sigma_0$; neighbourhood variant $N$; ranking $R$; tabu-size cap $L_{\max}$; bad-iteration cap $B_{\max}$; wall-clock cap $T_{\max}$
-\Ensure best solution $\sigma^{\ast}$ found within the call
+\Require $\sigma_0$, $N$, $R$; caps $L_{\max}, B_{\max}, T_{\max}$
+\Ensure best solution $\sigma^{\ast}$
 \State $\sigma \gets \sigma_0$;\enspace $\sigma^{\ast} \gets \sigma_0$;\enspace $L \gets \emptyset$;\enspace $b \gets 0$;\enspace $m_{\text{last}} \gets \text{null}$
 \While{$b < B_{\max}$ \textbf{and} runtime $< T_{\max}$}
-  \State $C \gets N(\sigma)$ \Comment{generate candidate moves}
-  \State sort $C$ ascending by heads-and-tails interval lower bound $\widehat{\text{LB}}$
+  \State $C \gets N(\sigma)$; sort $C$ ascending by heads-and-tails LB $\widehat{\text{LB}}$
   \State $m^{\star} \gets \text{null}$;\enspace $v^{\star} \gets +\infty$
   \ForAll{$c \in C$ in sorted order}
-    \If{$\widehat{\text{LB}}(c) \geq_R v^{\star}$}\enspace \textbf{break} \Comment{early-termination filter}
+    \If{$\widehat{\text{LB}}(c) \geq_R v^{\star}$}\enspace \textbf{break} \Comment{LB-filter}
     \EndIf
-    \State $\text{tabu} \gets (\text{reverse of }c) \in L$
-    \State $\text{undo}  \gets c \equiv \text{reverse}(m_{\text{last}})$
-    \State $v \gets$ exact value of $c$ under $R$ \Comment{post-move makespan}
+    \State $v \gets$ exact value of $c$ under $R$
+    \State $\text{tabu} \gets (\text{reverse of }c) \in L$;\enspace $\text{undo} \gets c \equiv \text{reverse}(m_{\text{last}})$
     \If{$v <_R v^{\star}$ \textbf{and} ($\neg\text{tabu}$ \textbf{or} $v <_R \mathrm{fit}(\sigma^{\ast})$) \textbf{and} $\neg\text{undo}$}
-      \State $m^{\star} \gets c$;\enspace $v^{\star} \gets v$ \Comment{aspiration on $\sigma^{\ast}$}
+      \State $m^{\star} \gets c$;\enspace $v^{\star} \gets v$ \Comment{aspiration}
     \EndIf
   \EndFor
-  \If{$m^{\star} = \text{null}$}\enspace \textbf{break} \Comment{dead end / local optimum}
+  \If{$m^{\star} = \text{null}$}\enspace \textbf{break} \Comment{dead end}
   \EndIf
-  \State $\sigma \gets$ apply $m^{\star}$ to $\sigma$;\enspace $L.\text{push\_front}(m^{\star})$;\enspace $m_{\text{last}} \gets m^{\star}$
-  \If{$|L| > L_{\max}$}\enspace $L.\text{pop\_back}()$ \EndIf
-  \If{$\mathrm{fit}(\sigma) <_R \mathrm{fit}(\sigma^{\ast})$}
-    \State $\sigma^{\ast} \gets \sigma$;\enspace $b \gets 0$
-  \Else
-    \State $b \gets b + 1$
+  \State apply $m^{\star}$ to $\sigma$;\enspace $L.\text{push\_front}(m^{\star})$;\enspace $m_{\text{last}} \gets m^{\star}$;\enspace \textbf{if} $|L|>L_{\max}$ \textbf{then} $L.\text{pop\_back}()$
+  \If{$\mathrm{fit}(\sigma) <_R \mathrm{fit}(\sigma^{\ast})$} \State $\sigma^{\ast} \gets \sigma$;\enspace $b \gets 0$
+  \Else \State $b \gets b + 1$
   \EndIf
 \EndWhile
-\State \Return $\sigma^{\ast}$
+\State \Return $\sigma^{\ast}$ \label{alg:ts:return}
 \end{algorithmic}
 \end{algorithm}
 
