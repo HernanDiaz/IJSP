@@ -1,0 +1,10 @@
+Friedman test (per-instance mean midpoint, n_inst=2460, k=5 neighbourhoods)
+  chi^2(4) = 3948.3715
+  p = 0.000000e+00
+
+Mean ranks (ascending = better):
+  n2: 2.1315
+  n8: 2.2400
+  next: 2.6502
+  n1: 3.4407
+  n3: 4.5376

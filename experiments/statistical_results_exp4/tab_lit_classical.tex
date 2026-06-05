@@ -1,0 +1,26 @@
+\begin{table*}[t]
+\centering\small\setlength{\tabcolsep}{3.5pt}
+\caption{Comparison with published IJSP solvers on 12 classical instances (Phase~B, irace-tuned TS). Metric: RE\,(\%) $= (E[\mathbf{C}_{\max}] - \text{LB})\,/\,\text{LB} \times 100$. LBs from~\cite{DiazFEABC2023}. GA from~\cite{DiazIPMU2020}; $ABC_{E3}$ from~\cite{DiazFEABC2023}; $ESABC$ from~\cite{DiazICAE2023}. All methods: 30 independent runs. Bold: row-minimum average RE.}
+\label{tab:lit_classical}
+\begin{tabular}{l r | rr r | rr r | rr r | rr r}
+\hline
+ & & \multicolumn{3}{c|}{$GA$~\cite{DiazIPMU2020}} & \multicolumn{3}{c|}{$ABC_{E3}$~\cite{DiazFEABC2023}} & \multicolumn{3}{c|}{$ESABC$~\cite{DiazICAE2023}} & \multicolumn{3}{c}{$TS$-$N_2$ (ours)} \\
+Instance & LB & Best & Avg & $t$ & Best & Avg & $t$ & Best & Avg & $t$ & Best & Avg & $t$ \\
+\hline
+ABZ7 & 656 & 6.33 & 12.50 & 1.8 & 5.26 & 7.32 & 4.5 & 4.19 & 6.73 & 6.5 & 1.83 & \textbf{3.03} & 32 \\
+ABZ8 & 645 & 11.32 & 18.48 & 1.8 & 8.99 & 12.06 & 4.2 & 8.68 & 10.95 & 7.7 & 4.50 & \textbf{6.64} & 39 \\
+ABZ9 & 661 & 13.01 & 17.97 & 2.2 & 9.68 & 13.13 & 6.0 & 8.55 & 11.19 & 8.7 & 5.07 & \textbf{6.31} & 40 \\
+FT10 & 930 & 1.83 & 5.23 & 0.5 & 1.08 & 4.11 & 1.6 & 0.59 & 3.01 & 1.8 & 0.59 & \textbf{0.99} & 7 \\
+FT20 & 1165 & 1.46 & 4.35 & 0.7 & 0.69 & 1.73 & 2.7 & 0.69 & 1.78 & 2.9 & 0.09 & \textbf{0.23} & 9 \\
+la21 & 1046 & 3.15 & 5.01 & 1.1 & 2.58 & 5.01 & 1.8 & 2.06 & 3.96 & 2.9 & 0.57 & \textbf{1.39} & 11 \\
+la24 & 935 & 4.06 & 6.34 & 0.8 & 2.25 & 5.06 & 2.7 & 3.53 & 4.95 & 2.6 & 0.80 & \textbf{1.37} & 10 \\
+la25 & 977 & 1.94 & 5.11 & 1.0 & 1.94 & 3.88 & 2.4 & 1.33 & 2.74 & 3.0 & 0.20 & \textbf{1.31} & 10 \\
+la27 & 1235 & 4.57 & 10.22 & 1.3 & 2.75 & 4.66 & 4.1 & 2.75 & 4.12 & 5.8 & 0.97 & \textbf{1.69} & 19 \\
+la29 & 1152 & 11.11 & 14.23 & 1.1 & 5.51 & 8.65 & 4.4 & 4.99 & 7.03 & 6.7 & 1.95 & \textbf{2.87} & 21 \\
+la38 & 1196 & 6.02 & 9.16 & 1.4 & 4.52 & 6.88 & 6.0 & 3.01 & 5.83 & 7.2 & 0.71 & \textbf{1.91} & 20 \\
+la40 & 1222 & 5.07 & 8.74 & 1.2 & 1.88 & 4.21 & 3.0 & 2.74 & 4.11 & 3.7 & 0.70 & \textbf{1.09} & 17 \\
+\hline
+\textit{Mean} & & & 9.78 & & & 6.39 & & & 5.53 & & & \textbf{2.40} & \\
+\hline
+\end{tabular}
+\end{table*}

@@ -68,8 +68,8 @@ dat <- data.frame(
     5.87, 8.67, 10.27,  9.82, 16.38, 5.71, 9.01,
     # ESABC (DiazICAE2023): computed from the same supplementary
     5.86, 8.00,  9.85,  9.09, 15.32, 4.55, 7.91,
-    # TS-N_8 (this work): matches tab_phaseb_groups
-    2.05, 3.66,  5.52,  3.88,  8.78, 0.22, 2.11,
+    # TS-N_8 (this work): matches tab_phaseb_groups (post-bugfix2)
+    1.95, 3.69,  5.42,  3.80,  8.85, 0.33, 2.13,
     # TS-N_2 (this work): matches tab_phaseb_groups
     2.04, 3.58,  5.34,  3.68,  8.62, 0.32, 2.03
   )
