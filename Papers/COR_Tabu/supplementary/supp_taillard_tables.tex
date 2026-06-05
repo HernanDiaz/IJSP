@@ -42,9 +42,7 @@ counterpart of each Taillard instance \cite{Taillard1993}. The interval IJSP and
 the crisp JSP are structurally distinct optimisation problems, so these crisp
 lower bounds are used here only as a common, hardware-independent reference
 yardstick; they are \emph{indicative} for the interval setting and do not
-constitute a strict optimality gap. In particular, a negative RE\,(\%) is possible
-when the interval-makespan midpoint falls below the crisp lower bound, and does
-not signal a violation.
+constitute a strict optimality gap.
 
 \medskip\noindent
 \textbf{Columns.} For each solver: \emph{Best} = best RE\,(\%) over 30 runs;
@@ -67,7 +65,7 @@ $50{\times}15$ (TA51--60), $50{\times}20$ (TA61--70).
 on an Intel Xeon E5-2680\,v4 at 2.40\,GHz (WSL2 Linux).
 
 \medskip\noindent
-\textbf{Irace training instances.} The irace tuning of Phase~B (Section~7.1
+\textbf{Irace training instances.} The irace tuning of Phase~B (Section~8.1
 of the main paper) used a stratified random subset of 20 of the 82 benchmark
 instances ($\approx$\,24\%), drawn uniformly at random within each size
 stratum. The 62 instances \emph{not} included in the list below were held
@@ -100,6 +98,12 @@ All methods: 30 runs. Bold: row-minimum average RE.
 $t$ = median runtime\,(s) for TS; average for ABC methods.}
 \label{tab:supp_taillard_i}
 \begin{tabular}{ll r | rr r | rr r | rr r | rr r}
+\hline
+ & & & \multicolumn{3}{c|}{\emph{fEABC} \cite{DiazFEABC2023}} &
+         \multicolumn{3}{c|}{$ESABC$ \cite{DiazICAE2023}} &
+         \multicolumn{3}{c|}{$TS$-$N_2$ (ours)} &
+         \multicolumn{3}{c}{$TS$-$N_8$ (ours)} \\
+Size & Inst. & LB & Best & Avg & $t$ & Best & Avg & $t$ & Best & Avg & $t$ & Best & Avg & $t$ \\
 \hline
 $15\times15$ & TA1 & 1231 & 4.71 & 6.73 & 3.7 & 4.51 & 7.27 & 5.4 & 1.26 & \textbf{1.85} & 20 & 1.26 & 2.09 & 34 \\
  & TA2 & 1244 & 2.65 & 4.20 & 3.9 & 3.26 & 4.87 & 5.2 & 0.24 & 1.65 & 19 & 0.88 & \textbf{1.57} & 37 \\
@@ -158,6 +162,12 @@ All methods: 30 runs. Bold: row-minimum average RE.
 $t$ = median runtime\,(s) for TS; average for ABC methods.}
 \label{tab:supp_taillard_ii}
 \begin{tabular}{ll r | rr r | rr r | rr r | rr r}
+\hline
+ & & & \multicolumn{3}{c|}{\emph{fEABC} \cite{DiazFEABC2023}} &
+         \multicolumn{3}{c|}{$ESABC$ \cite{DiazICAE2023}} &
+         \multicolumn{3}{c|}{$TS$-$N_2$ (ours)} &
+         \multicolumn{3}{c}{$TS$-$N_8$ (ours)} \\
+Size & Inst. & LB & Best & Avg & $t$ & Best & Avg & $t$ & Best & Avg & $t$ & Best & Avg & $t$ \\
 \hline
 $30\times20$ & TA41 & 1906 & 17.58 & 20.55 & 16.1 & 16.34 & 19.24 & 22.4 & 9.68 & \textbf{12.12} & 158 & 10.36 & 12.31 & 257 \\
  & TA42 & 1884 & 14.15 & 17.45 & 15.3 & 14.46 & 16.86 & 20.8 & 6.58 & \textbf{8.36} & 192 & 6.53 & 8.77 & 323 \\

@@ -114,7 +114,7 @@ pb <- ggplot(float_agg, aes(x = op_f, y = mean_ncrit, fill = op_f)) +
   annotate("text",
            x = 2.5, y = max(float_agg$mean_ncrit) + 6,
            label = "more critical ops",
-           size = 2.4, colour = "grey15", fontface = "italic") +
+           size = 3.0, colour = "grey15", fontface = "italic") +
   scale_fill_manual(values = OP_COLORS) +
   scale_y_continuous(
     name   = expression("Critical ops in "*G^"+"*"("*sigma*")  [mean]"),
@@ -138,7 +138,7 @@ pc <- ggplot(float_agg, aes(x = op_f, y = mean_float, fill = op_f)) +
   annotate("text",
            x = 2.5, y = max(float_agg$mean_float) + 4,
            label = "less slack per op",
-           size = 2.4, colour = "grey15", fontface = "italic") +
+           size = 3.0, colour = "grey15", fontface = "italic") +
   scale_fill_manual(values = OP_COLORS) +
   scale_y_continuous(
     name   = expression("Mean float in "*G^"+"*"("*sigma*")  [time units]"),

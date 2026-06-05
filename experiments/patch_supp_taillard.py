@@ -96,19 +96,30 @@ block_II = build_block(41, 70)
 # Backup
 shutil.copy(SUPP, SUPP.with_suffix(SUPP.suffix + ".preBugfix2"))
 
-# Splice: find each table's row region and replace.
-# Anchor: from "\hline" right after "Size & Inst. & LB..." header
-# to the closing "\hline\n\end{tabular}"
+# Splice: find each table's row region (the TA-data rows only) and replace.
+# The table structure is:
+#   \begin{tabular}{...}
+#   \hline                          <-- top rule
+#   ... multicolumn header rows ... <-- column headers (preserve!)
+#   \hline                          <-- header/data separator
+#   <data rows here>
+#   \hline                          <-- bottom rule
+#   \end{tabular}
+# We anchor on the SECOND \hline (the header/data separator) so the column
+# headers between the first two \hline rules are preserved.
 def splice(text, block, header_marker, end_marker):
     h_idx = text.find(header_marker)
     if h_idx < 0:
         raise RuntimeError(f"header not found: {header_marker[:40]}")
-    # Find first \hline after the column header
+    # First \hline (top rule)
     first_hline = text.find(r"\hline", h_idx)
     if first_hline < 0:
         raise RuntimeError("first \\hline not found")
-    # First data starts after that \hline + newline
-    data_start = text.find("\n", first_hline) + 1
+    # Second \hline (separator after column headers) — this is where DATA starts
+    second_hline = text.find(r"\hline", first_hline + len(r"\hline"))
+    if second_hline < 0:
+        raise RuntimeError("second \\hline (header/data separator) not found")
+    data_start = text.find("\n", second_hline) + 1
     # End: last \hline before \end{tabular} (closing rule line)
     et_idx = text.find(end_marker, data_start)
     if et_idx < 0:
