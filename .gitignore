@@ -68,3 +68,7 @@ Papers/COR_Tabu/data/
 # Word / Office documents
 *.docx
 *.xlsx
+
+# Dataset zip (lives on Zenodo, too big for GitHub)
+Papers/COR_Tabu/IJSP_dataset_2026.zip
+Papers/COR_Tabu/IJSP_dataset_2026.zip.preBugfix2
