@@ -72,3 +72,6 @@ Papers/COR_Tabu/data/
 # Dataset zip (lives on Zenodo, too big for GitHub)
 Papers/COR_Tabu/IJSP_dataset_2026.zip
 Papers/COR_Tabu/IJSP_dataset_2026.zip.preBugfix2
+
+# Statistical result CSVs (regenerable from raw data on Zenodo)
+experiments/statistical_results*/*.csv
