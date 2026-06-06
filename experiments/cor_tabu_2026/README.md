@@ -13,12 +13,22 @@ The code state corresponding to the submitted version is tagged
 
 ```
 cor_tabu_2026/
+├── scripts/                   analysis pipeline + utilities
+│   ├── build_phaseB_stats.py
+│   ├── build_convergence_data_ts.py
+│   ├── gen_phaseB_tables.py
+│   ├── validate_phaseA.py
+│   ├── rebuild_supp_taillard_tables.py
+│   ├── patch_supp_taillard.py
+│   ├── rebuild_dataset_zip.py
+│   ├── build_submission_zip.py
+│   └── check_paper_compliance.py
+├── diagnostics/               bug-fix tooling and PDF inspection helpers
+│   ├── scan_n8_bug.py
+│   ├── verify_ta54_2792.py
+│   └── figtab_map.py
 ├── setup/                     irace-tuned config files (5 neighbourhoods)
-│   ├── setup_N1_tuned.txt
-│   ├── setup_N2_tuned.txt
-│   ├── setup_N3_tuned.txt
-│   ├── setup_N8_tuned.txt
-│   └── setup_Next_tuned.txt
+│   └── setup_N{1,2,3,8,Next}_tuned.txt
 ├── irace/                     irace tuning records (input + master log)
 │   ├── parameters.txt
 │   ├── instances.txt
@@ -27,22 +37,22 @@ cor_tabu_2026/
 │   ├── forbidden.txt
 │   ├── run_irace.sh
 │   └── results/                  per-neighbourhood irace dumps
-└── statistical_results/       aggregated Phase B outputs
-    ├── runs_data.csv             per (NB, instance, run) interval data
-    ├── per_instance_stats.csv    per (NB, instance) summary
-    ├── convergence_data_ts.csv   per-generation profile (fig 6)
-    ├── wilcoxon_table.csv        Wilcoxon raw results
-    ├── tab4_wilcoxon.tex         Table 4 LaTeX
-    ├── tab_phaseb_groups.tex     Table 6 LaTeX
-    ├── friedman.txt              Friedman test result
-    └── REGENERATION_NOTES.md     pipeline overview + data sources
+├── statistical_results/       aggregated Phase B outputs
+│   ├── runs_data.csv             per (NB, instance, run) interval data
+│   ├── per_instance_stats.csv    per (NB, instance) summary
+│   ├── convergence_data_ts.csv   per-generation profile (fig 6)
+│   ├── wilcoxon_table.csv        Wilcoxon raw results
+│   ├── tab4_wilcoxon.tex         Table 4 LaTeX
+│   ├── tab_phaseb_groups.tex     Table 6 LaTeX
+│   ├── friedman.txt              Friedman test result
+│   └── REGENERATION_NOTES.md     pipeline overview + data sources
+└── run_phaseB_tai100.sh       optional extension run script
 ```
 
 ## Reproducing the paper analysis
 
-The analysis pipeline scripts live one level up (`experiments/`). They are
-generic across papers; the setup/irace/statistical_results dirs above are the
-inputs and outputs specific to this paper.
+The scripts under `scripts/` use absolute paths to the project root, so they
+can be invoked from any working directory.
 
 ### 1. Pull the raw run data from Zenodo
 
@@ -55,10 +65,10 @@ subdirectories).
 ### 2. Regenerate the aggregated CSVs
 
 ```bash
-cd experiments
-python3 build_phaseB_stats.py       # → cor_tabu_2026/statistical_results/{runs_data,per_instance_stats}.csv
-python3 build_convergence_data_ts.py  # → convergence_data_ts.csv
-python3 gen_phaseB_tables.py         # → tab4_wilcoxon.tex, tab_phaseb_groups.tex, friedman.txt, wilcoxon_table.csv
+cd experiments/cor_tabu_2026/scripts
+python3 build_phaseB_stats.py        # → ../statistical_results/{runs_data,per_instance_stats}.csv
+python3 build_convergence_data_ts.py # → ../statistical_results/convergence_data_ts.csv
+python3 gen_phaseB_tables.py         # → ../statistical_results/{tab4_wilcoxon,tab_phaseb_groups}.tex, friedman.txt, wilcoxon_table.csv
 ```
 
 ### 3. Regenerate the figures (requires R)
