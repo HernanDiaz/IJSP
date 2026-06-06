@@ -73,5 +73,10 @@ Papers/COR_Tabu/data/
 Papers/COR_Tabu/IJSP_dataset_2026.zip
 Papers/COR_Tabu/IJSP_dataset_2026.zip.preBugfix2
 
-# Statistical result CSVs (regenerable from raw data on Zenodo)
-experiments/statistical_results*/*.csv
+# Statistical result CSVs from older / unrelated experiments
+# (the paper-relevant statistical_results_exp4/ CSVs are kept tracked
+#  because they are small (~740 KB) and let the paper's analysis be
+#  reproduced without re-running the full study)
+experiments/statistical_results_exp7/*.csv
+experiments/statistical_results_exp8/*.csv
+experiments/statistical_results_exp9/*.csv
