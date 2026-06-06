@@ -1,0 +1,6 @@
+# Forbidden parameter combinations
+# tabu_max must be strictly greater than tabu_min
+tabu_max <= tabu_min
+
+# elite_sel must not exceed elite_size
+elite_sel > elite_size

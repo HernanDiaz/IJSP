@@ -2,11 +2,11 @@
 """stats_phaseB_corrected.py - Friedman + pairwise Wilcoxon signed-rank
 with Holm-Bonferroni correction over the corrected Phase B dataset.
 
-Reads:  statistical_results_exp4/runs_data.csv
-Writes: statistical_results_exp4/tab4_wilcoxon.tex
-        statistical_results_exp4/tab_phaseb_groups.tex
-        statistical_results_exp4/wilcoxon_table.csv
-        statistical_results_exp4/friedman.txt
+Reads:  cor_tabu_2026/statistical_results/runs_data.csv
+Writes: cor_tabu_2026/statistical_results/tab4_wilcoxon.tex
+        cor_tabu_2026/statistical_results/tab_phaseb_groups.tex
+        cor_tabu_2026/statistical_results/wilcoxon_table.csv
+        cor_tabu_2026/statistical_results/friedman.txt
 
 Mirrors the existing paper Table 4 schema:
   A | B | Mean A | Mean B | Diff | p_adj | r | Magnitude
@@ -19,7 +19,7 @@ import os
 _WSL = "/mnt/c/Users/diazhernan/CLionProjects/IJSP"
 _WIN = "C:/Users/diazhernan/CLionProjects/IJSP"
 ROOT = Path(_WSL if os.path.isdir(_WSL) else _WIN)
-OUT  = ROOT / "experiments" / "statistical_results_exp4"
+OUT  = ROOT / "experiments" / "cor_tabu_2026/statistical_results"
 
 NBS = ["n1","n2","n3","next","n8"]
 NB_LABEL = {"n1": r"$N_1$", "n2": r"$N_2$", "n3": r"$N_3$",

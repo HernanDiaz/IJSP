@@ -3,7 +3,7 @@
 Taillard tables (TA1-TA70) from corrected per_instance_stats.csv. Keeps the
 fEABC and ESABC columns verbatim from the existing tex file (they come from
 cited papers and are unchanged), and replaces TS-N_2 + TS-N_8 columns with
-authoritative values from statistical_results_exp4.
+authoritative values from cor_tabu_2026/statistical_results.
 
 Outputs the new tex content to stdout (and saves a backup of the current file).
 """
@@ -13,7 +13,7 @@ from pathlib import Path
 _WSL = "/mnt/c/Users/diazhernan/CLionProjects/IJSP"
 _WIN = "C:/Users/diazhernan/CLionProjects/IJSP"
 ROOT = Path(_WSL if os.path.isdir(_WSL) else _WIN)
-STATS = ROOT / "experiments" / "statistical_results_exp4" / "per_instance_stats.csv"
+STATS = ROOT / "experiments" / "cor_tabu_2026/statistical_results" / "per_instance_stats.csv"
 SUPP  = ROOT / "Papers" / "COR_Tabu" / "supplementary" / "supp_taillard_tables.tex"
 
 # TA index -> instance stem

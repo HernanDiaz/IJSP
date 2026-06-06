@@ -17,7 +17,7 @@
 EXE="/home/diazhernan/FuzzyFW"
 SCRIPT_DIR="/mnt/c/Users/diazhernan/CLionProjects/IJSP/experiments"
 INSTANCES_DIR="/mnt/c/Users/diazhernan/CLionProjects/IJSP/SelectosYTaillardIntervalos"
-SETUP_DIR="${SCRIPT_DIR}/setup/exp4"
+SETUP_DIR="${SCRIPT_DIR}/cor_tabu_2026/setup"
 RESULTS_BASE="${SCRIPT_DIR}/results/exp4"
 LOG_FILE="/home/diazhernan/run_phaseB_tai100.log"
 

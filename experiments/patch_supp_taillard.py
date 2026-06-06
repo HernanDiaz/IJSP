@@ -6,7 +6,7 @@ from pathlib import Path
 _WSL = "/mnt/c/Users/diazhernan/CLionProjects/IJSP"
 _WIN = "C:/Users/diazhernan/CLionProjects/IJSP"
 ROOT = Path(_WSL if os.path.isdir(_WSL) else _WIN)
-STATS = ROOT / "experiments" / "statistical_results_exp4" / "per_instance_stats.csv"
+STATS = ROOT / "experiments" / "cor_tabu_2026/statistical_results" / "per_instance_stats.csv"
 SUPP  = ROOT / "Papers" / "COR_Tabu" / "supplementary" / "supp_taillard_tables.tex"
 
 TAILLARD_LBS = {

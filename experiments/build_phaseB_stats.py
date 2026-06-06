@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 """
-build_stats_data_exp4.py
-Extract per-instance per-run final best E[Cmax] and runtime from Phase B TS exp4 CSV files.
+build_phaseB_stats.py
+Extract per-instance per-run final best E[Cmax] and runtime from Phase B TS result CSVs.
 
 Reads the "Best solution" row from the "Basic statistics" section and the
 "Total runtime" row from the "Runtimes" section — no need to parse the evolution table.
 
-Output: statistical_results_exp4/per_instance_stats.csv
+Output: cor_tabu_2026/statistical_results/per_instance_stats.csv
 Format: neigh, instance, group, n_runs, best_E, avg_E, sd_E, med_rt
 """
 
@@ -17,7 +17,7 @@ import statistics
 from collections import defaultdict
 
 RESULTS_BASE = "/mnt/c/Users/diazhernan/CLionProjects/IJSP/experiments/results/exp4"
-OUT_DIR      = "/mnt/c/Users/diazhernan/CLionProjects/IJSP/experiments/statistical_results_exp4"
+OUT_DIR      = "/mnt/c/Users/diazhernan/CLionProjects/IJSP/experiments/cor_tabu_2026/statistical_results"
 
 CONFIGS = {
     "N1_tuned":   "n1",

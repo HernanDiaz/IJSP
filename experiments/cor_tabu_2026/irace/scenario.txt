@@ -1,0 +1,27 @@
+# irace scenario for IJSP neighbourhood tuning
+# Run irace separately for each neighbourhood via run_irace.sh
+
+targetRunner       = "./target-runner.cmd"
+targetCmdline      = "{configurationID} {instanceID} {seed} {instance} {targetRunnerArgs}"
+parameterFile      = "./parameters.txt"
+trainInstancesFile = "./instances.txt"
+
+# Budget: 1500 experiments total
+# With 20 instances and racing, ~75 configs will be fully evaluated
+maxExperiments  = 1500
+
+# Parallelism — use all available cores
+parallel        = 24
+
+# Statistical test for racing
+testType        = "friedman"
+
+# Minimum number of experiments before elimination
+minNbSurvival   = 3
+
+# Output verbosity
+debugLevel      = 1
+logFile         = "irace.log"
+
+# Reproducibility
+seed            = 42

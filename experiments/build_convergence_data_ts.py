@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """
 build_convergence_data_ts.py
-Extract per-generation convergence profiles from Phase B TS exp4 CSV files.
+Extract per-generation convergence profiles from Phase B TS result CSVs.
 
-Output: statistical_results_exp4/convergence_data_ts.csv
+Output: cor_tabu_2026/statistical_results/convergence_data_ts.csv
 Format: neigh, step, mean_best_norm, sd_best_norm, n_obs
   - step: rounded generation number (integer)
   - best_norm: best midpoint at step / best midpoint at step 0, per run
@@ -17,7 +17,7 @@ import statistics
 from collections import defaultdict
 
 RESULTS_BASE = "/mnt/c/Users/diazhernan/CLionProjects/IJSP/experiments/results/exp4"
-OUT_DIR      = "/mnt/c/Users/diazhernan/CLionProjects/IJSP/experiments/statistical_results_exp4"
+OUT_DIR      = "/mnt/c/Users/diazhernan/CLionProjects/IJSP/experiments/cor_tabu_2026/statistical_results"
 
 CONFIGS = {
     "N1_tuned":   "n1",

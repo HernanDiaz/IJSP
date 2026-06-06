@@ -2,7 +2,7 @@
 # =============================================================================
 # generate_fig6_ts.R  (COR_Tabu — Tabu Search version)
 # Figure 6: Per-generation convergence profiles, irace-tuned TS (Phase B, exp4)
-# Data: experiments/statistical_results_exp4/convergence_data_ts.csv
+# Data: experiments/cor_tabu_2026/statistical_results/convergence_data_ts.csv
 # Metric: best_norm = best_midpoint[step] / best_midpoint[0]  (lower = better)
 # Averaged over 82 instances × 30 runs per (neigh, step)
 # =============================================================================
@@ -16,7 +16,7 @@ BASE_DIR  <- "C:/Users/diazhernan/CLionProjects/IJSP"
 COR_DIR   <- file.path(BASE_DIR, "Papers/COR_Tabu")
 OUT_DIR   <- file.path(COR_DIR, "figures")
 DATA_CONV <- file.path(BASE_DIR,
-               "experiments/statistical_results_exp4/convergence_data_ts.csv")
+               "experiments/cor_tabu_2026/statistical_results/convergence_data_ts.csv")
 
 MM2IN   <- 1 / 25.4
 W_FULL  <- 160 * MM2IN

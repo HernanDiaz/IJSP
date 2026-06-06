@@ -1,0 +1,23 @@
+# IJSP irace training instances
+# 20 instances, 5 per size group, ordered fast->slow for efficient racing
+
+/mnt/c/Users/diazhernan/CLionProjects/IJSP/SelectosYTaillardIntervalos/F0.15.0.ft10_10.txt
+/mnt/c/Users/diazhernan/CLionProjects/IJSP/SelectosYTaillardIntervalos/F0.15.0.abz7_06.txt
+/mnt/c/Users/diazhernan/CLionProjects/IJSP/SelectosYTaillardIntervalos/F0.15.0.la27_09.txt
+/mnt/c/Users/diazhernan/CLionProjects/IJSP/SelectosYTaillardIntervalos/tai15_15_03.F.15_01.txt
+/mnt/c/Users/diazhernan/CLionProjects/IJSP/SelectosYTaillardIntervalos/tai15_15_08.F.15_01.txt
+/mnt/c/Users/diazhernan/CLionProjects/IJSP/SelectosYTaillardIntervalos/tai20_15_02.F.15_01.txt
+/mnt/c/Users/diazhernan/CLionProjects/IJSP/SelectosYTaillardIntervalos/tai20_15_07.F.15_01.txt
+/mnt/c/Users/diazhernan/CLionProjects/IJSP/SelectosYTaillardIntervalos/tai20_20_04.F.15_01.txt
+/mnt/c/Users/diazhernan/CLionProjects/IJSP/SelectosYTaillardIntervalos/tai20_20_09.F.15_01.txt
+/mnt/c/Users/diazhernan/CLionProjects/IJSP/SelectosYTaillardIntervalos/tai20_20_01.F.15_01.txt
+/mnt/c/Users/diazhernan/CLionProjects/IJSP/SelectosYTaillardIntervalos/tai30_15_02.F.15_01.txt
+/mnt/c/Users/diazhernan/CLionProjects/IJSP/SelectosYTaillardIntervalos/tai30_15_06.F.15_01.txt
+/mnt/c/Users/diazhernan/CLionProjects/IJSP/SelectosYTaillardIntervalos/tai30_20_03.F.15_01.txt
+/mnt/c/Users/diazhernan/CLionProjects/IJSP/SelectosYTaillardIntervalos/tai30_20_07.F.15_01.txt
+/mnt/c/Users/diazhernan/CLionProjects/IJSP/SelectosYTaillardIntervalos/tai30_20_10.F.15_01.txt
+/mnt/c/Users/diazhernan/CLionProjects/IJSP/SelectosYTaillardIntervalos/tai50_15_02.F.15_01.txt
+/mnt/c/Users/diazhernan/CLionProjects/IJSP/SelectosYTaillardIntervalos/tai50_15_07.F.15_01.txt
+/mnt/c/Users/diazhernan/CLionProjects/IJSP/SelectosYTaillardIntervalos/tai50_20_03.F.15_01.txt
+/mnt/c/Users/diazhernan/CLionProjects/IJSP/SelectosYTaillardIntervalos/tai50_20_07.F.15_01.txt
+/mnt/c/Users/diazhernan/CLionProjects/IJSP/SelectosYTaillardIntervalos/tai50_20_10.F.15_01.txt

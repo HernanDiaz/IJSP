@@ -5,7 +5,7 @@ with the post-bugfix Phase B data.
 Strategy:
 - Copy everything from the old zip UNCHANGED except:
   - results/phaseB_TS/*      → replaced with current exp4/ data (82 common stems)
-  - aggregated_csvs/phaseB/* → replaced with current statistical_results_exp4/
+  - aggregated_csvs/phaseB/* → replaced with current cor_tabu_2026/statistical_results/
   - scripts/python/*         → replaced with current patched scripts (and renames)
   - scripts/R/*              → replaced with current R scripts
 
@@ -22,7 +22,7 @@ OLD_ZIP = ROOT / "Papers" / "COR_Tabu" / "IJSP_dataset_2026.zip"
 NEW_ZIP = ROOT / "Papers" / "COR_Tabu" / "IJSP_dataset_2026.zip.new"
 
 EXP4_BASE = ROOT / "experiments" / "results" / "exp4"
-STATS_DIR = ROOT / "experiments" / "statistical_results_exp4"
+STATS_DIR = ROOT / "experiments" / "cor_tabu_2026/statistical_results"
 EXPDIR    = ROOT / "experiments"
 FIGDIR    = ROOT / "Papers" / "COR_Tabu" / "figures"
 
@@ -126,7 +126,7 @@ def main():
 
         # 4. Add updated scripts
         # scripts/python/
-        for py_name in ("build_stats_data_exp4.py",
+        for py_name in ("build_phaseB_stats.py",
                          "build_convergence_data_ts.py",
                          "gen_phaseB_tables.py"):
             src = EXPDIR / py_name
