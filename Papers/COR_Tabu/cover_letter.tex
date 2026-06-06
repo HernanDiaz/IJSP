@@ -1,0 +1,82 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[top=2cm,bottom=2cm,left=2.2cm,right=2.2cm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 1pt minus 1pt}
+\pagenumbering{gobble}
+
+\begin{document}
+
+\begin{flushright}
+Hern\'an D\'iaz Rodr\'iguez\\
+University of Oviedo\\
+Department of Computer Science\\[2pt]
+June 6, 2026
+\end{flushright}
+
+\bigskip
+
+\noindent
+The Editors\\
+\emph{Computers \& Operations Research}\\
+Elsevier
+
+\bigskip
+
+\noindent Dear Editor,
+
+I am pleased to submit my manuscript, ``\textbf{Neighbourhood Structures and
+Ranking Operators for the Interval Job Shop Scheduling Problem},'' for
+consideration as a regular research article in \emph{Computers \& Operations
+Research}. The paper addresses the Interval JSP, where processing times are
+bounded but uncertain, and contributes on both theoretical and computational
+fronts.
+
+On the theoretical side, I formalise the notion of \emph{extreme critical
+paths} --- arcs critical in either the best- or worst-case scenario graph
+--- and define a neighbourhood $H(\sigma)$ on this basis. I prove that
+$H(\sigma)$ satisfies feasibility, connectivity and the
+no-loss-of-improving-neighbours property under any admissible interval
+ranking operator. Five neighbourhood variants ($N_1$, $N_2$, $N_3$,
+$N_{\rm ext}$ and a new variant $N_8$) are formulated within this framework;
+the adaptations of the Nowicki--Smutnicki extended neighbourhood and of
+recent crisp-JSP reinsertion moves to the interval setting are, to the best
+of my knowledge, novel. On the empirical side, the paper reports a
+$12{,}300$-run study on 82 benchmark instances of up to 1000 operations,
+organised in three phases: a $5{\times}4$ comparison of four interval
+ranking operators (EV, LEX1, LEX2, YX), a head-to-head comparison of the
+five neighbourhoods after per-neighbourhood irace tuning of a tabu search
+metaheuristic, and a comparison against three published IJSP solvers. The
+irace-tuned tabu search with $N_2$ reduces mean relative error by
+$\approx$57\% over the previous best published IJSP solver on every one of
+the 82 instances.
+
+I believe the paper aligns well with the scope of \emph{Computers \& Operations
+Research}: it combines a constructive theoretical framework with an extensive
+numerical study and explicit comparisons against the prior state of the art.
+In line with the journal's emphasis on reproducibility, all raw run logs,
+aggregated CSVs, irace tuning records, instance files and analysis scripts are
+openly available on Zenodo (\texttt{10.5281/zenodo.20562888}), with per-instance
+results on the 70 Taillard instances in a separate supplementary document
+(\texttt{10.5281/zenodo.20562857}). I confirm that this manuscript has not been
+published previously, is not under consideration by any other journal, and
+that all listed contributors have approved the submission. I declare no
+competing financial interests or personal relationships that could have
+appeared to influence the work reported. Thank you for considering this
+submission.
+
+\bigskip
+
+\noindent Sincerely,
+
+\medskip
+
+\noindent
+Hern\'an D\'iaz Rodr\'iguez\\
+University of Oviedo\\
+Department of Computer Science\\
+\texttt{diazhernan@uniovi.es}
+
+\end{document}
