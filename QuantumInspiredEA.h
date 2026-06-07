@@ -37,6 +37,7 @@ namespace FuzzyFW {
 #define QEA_ROT_END        "qea.rot_end"       // rotation at last generation (default = qea.rotation)
 #define QEA_FLOOR_START    "qea.floor_start"   // floor at generation 0 (default = qea.floor)
 #define QEA_FLOOR_END      "qea.floor_end"     // floor at last generation (default = qea.floor)
+#define QEA_SCHED_TYPE     "qea.schedule_type" // "linear" (default) | "cosine"
 
 #define QEA_GENERATIONS    "generations"       // stopping criteria (reused)
 #define QEA_TIME           "timelimit"
@@ -79,10 +80,14 @@ protected:
 	/** Minimum probability kept for every symbol to preserve exploration */
 	double floorProb;
 
-	/** Floor schedule: linear ramp between floorStart and floorEnd along the
+	/** Floor schedule: ramp between floorStart and floorEnd along the
 	 *  generation budget. If both equal floorProb -> constant (baseline). */
 	double floorStart;
 	double floorEnd;
+
+	/** Schedule shape: false = linear ramp (baseline); true = cosine
+	 *  annealing (smooth ease-in/ease-out). Affects both rotation and floor. */
+	bool cosineSchedule;
 
 	/** Search-space model: false = positional amplitude[pos][job];
 	 *  true = precedence model pref[a][b] (invariant to absolute position) */

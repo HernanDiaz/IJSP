@@ -30,6 +30,7 @@ QuantumInspiredEA::QuantumInspiredEA(ParameterDB *params)
 	this->floorProb = 0.0;
 	this->floorStart = -1.0;
 	this->floorEnd = -1.0;
+	this->cosineSchedule = false;
 	this->usePrecedence = false;
 
 	this->maxGenerations = Infi;
@@ -83,6 +84,7 @@ void QuantumInspiredEA::clearAll() {
 	this->floorProb = 0.0;
 	this->floorStart = -1.0;
 	this->floorEnd = -1.0;
+	this->cosineSchedule = false;
 }
 
 
@@ -116,6 +118,8 @@ void QuantumInspiredEA::printSetupTree(std::ofstream & output) const {
 	output << std::endl;
 	output << ";Model scheme:;"
 		<< (this->usePrecedence ? "Precedence" : "Positional") << std::endl;
+	output << ";Schedule type:;"
+		<< (this->cosineSchedule ? "Cosine annealing" : "Linear") << std::endl;
 
 	output << ";Stopping criteria:" << std::endl;
 	output << ";;Max.Generations:;";
@@ -230,6 +234,8 @@ void QuantumInspiredEA::prepareToRun(ParameterDB *params) {
 	// Optional floor schedule (defaults to the constant floorProb)
 	this->floorStart = p->getDouble(QEA_FLOOR_START, this->floorProb);
 	this->floorEnd = p->getDouble(QEA_FLOOR_END, this->floorProb);
+	this->cosineSchedule =
+		(p->getStringLower(QEA_SCHED_TYPE).compare("cosine") == 0);
 	this->usePrecedence =
 		(p->getStringLower(QEA_SCHEME).compare("precedence") == 0);
 
@@ -573,15 +579,27 @@ std::vector<int> QuantumInspiredEA::observe() {
 		: this->observePositional();
 }
 
+// Schedule interpolant. t in [0,1] is the linear progress; this returns the
+// fraction in [0,1] that we travel from start to end at that point.
+//   linear           -> t
+//   cosine annealing -> 0.5 * (1 - cos(pi * t))
+// The cosine version starts near 0, accelerates through the middle, and
+// decelerates as it approaches 1 (ease-in/ease-out).
+static inline double scheduleProgress(double t, bool cosine) {
+	if (t < 0.0) t = 0.0;
+	if (t > 1.0) t = 1.0;
+	if (!cosine) return t;
+	return 0.5 * (1.0 - std::cos(M_PI * t));
+}
+
 double QuantumInspiredEA::currentRotation() const {
 	if (compareDouble(this->rotStart, this->rotEnd) == 0)
 		return this->rotStart;
 	double t = 0.0;
 	if (this->maxGenerations > 1)
 		t = (double)this->generation / (double)(this->maxGenerations - 1);
-	if (t < 0.0) t = 0.0;
-	if (t > 1.0) t = 1.0;
-	return this->rotStart + (this->rotEnd - this->rotStart) * t;
+	double f = scheduleProgress(t, this->cosineSchedule);
+	return this->rotStart + (this->rotEnd - this->rotStart) * f;
 }
 
 double QuantumInspiredEA::currentFloor() const {
@@ -590,9 +608,8 @@ double QuantumInspiredEA::currentFloor() const {
 	double t = 0.0;
 	if (this->maxGenerations > 1)
 		t = (double)this->generation / (double)(this->maxGenerations - 1);
-	if (t < 0.0) t = 0.0;
-	if (t > 1.0) t = 1.0;
-	return this->floorStart + (this->floorEnd - this->floorStart) * t;
+	double f = scheduleProgress(t, this->cosineSchedule);
+	return this->floorStart + (this->floorEnd - this->floorStart) * f;
 }
 
 void QuantumInspiredEA::rotateTowards(const std::vector<int> &bestGenotype) {
