@@ -38,6 +38,8 @@ namespace FuzzyFW {
 #define QEA_FLOOR_START    "qea.floor_start"   // floor at generation 0 (default = qea.floor)
 #define QEA_FLOOR_END      "qea.floor_end"     // floor at last generation (default = qea.floor)
 #define QEA_SCHED_TYPE     "qea.schedule_type" // "linear" (default) | "cosine"
+#define QEA_SAMP_START     "qea.samples_start" // samples at generation 0 (default = qea.samples)
+#define QEA_SAMP_END       "qea.samples_end"   // samples at last generation (default = qea.samples)
 
 #define QEA_GENERATIONS    "generations"       // stopping criteria (reused)
 #define QEA_TIME           "timelimit"
@@ -68,6 +70,11 @@ protected:
 	//-----  CONFIGURATION FIELDS  ----------------------------------------
 	/** Number of solutions observed (sampled) each generation */
 	unsigned int samples;
+
+	/** Samples schedule: ramp between samplesStart and samplesEnd along the
+	 *  generation budget. If both equal samples -> constant (baseline). */
+	int samplesStart;
+	int samplesEnd;
 
 	/** Rotation step applied to the amplitudes (radians) */
 	double deltaTheta;
@@ -201,6 +208,9 @@ protected:
 
 	/** Returns the floor probability for the current generation (schedule-aware). */
 	double currentFloor() const;
+
+	/** Returns the sample size for the current generation (schedule-aware). */
+	int currentSamples() const;
 
 	/** Keeps a minimum probability to avoid premature collapse. Dispatches. */
 	void applyFloor();

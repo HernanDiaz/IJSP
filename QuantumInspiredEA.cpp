@@ -24,6 +24,8 @@ QuantumInspiredEA::QuantumInspiredEA(ParameterDB *params)
 	GeneticClassRegister::registerClasses();
 
 	this->samples = 0;
+	this->samplesStart = -1;
+	this->samplesEnd = -1;
 	this->deltaTheta = 0.0;
 	this->rotStart = -1.0;
 	this->rotEnd = -1.0;
@@ -78,6 +80,8 @@ void QuantumInspiredEA::clearAll() {
 	this->maxRuntime = Infi;
 	this->maxPlateau = Infi;
 	this->samples = 0;
+	this->samplesStart = -1;
+	this->samplesEnd = -1;
 	this->deltaTheta = 0.0;
 	this->rotStart = -1.0;
 	this->rotEnd = -1.0;
@@ -105,7 +109,11 @@ void QuantumInspiredEA::printSetupTree(std::ofstream & output) const {
 	for (int i = 1; i < (int)names.size(); i++)
 		output << ";" + names[i] << std::endl;
 
-	output << ";Samples per generation:;" << this->samples << std::endl;
+	output << ";Samples per generation:;" << this->samples;
+	if (this->samplesStart != this->samplesEnd)
+		output << "  (schedule: " << this->samplesStart
+			<< " -> " << this->samplesEnd << ")";
+	output << std::endl;
 	output << ";Rotation step:;" << valueToString(this->deltaTheta);
 	if (compareDouble(this->rotStart, this->rotEnd) != 0)
 		output << "  (schedule: " << valueToString(this->rotStart)
@@ -226,6 +234,9 @@ void QuantumInspiredEA::prepareToRun(ParameterDB *params) {
 
 	// QEA-specific parameters
 	this->samples = p->getInteger(QEA_SAMPLES, -1);
+	// Optional samples schedule (defaults to the constant samples)
+	this->samplesStart = p->getInteger(QEA_SAMP_START, (int)this->samples);
+	this->samplesEnd = p->getInteger(QEA_SAMP_END, (int)this->samples);
 	this->deltaTheta = p->getDouble(QEA_ROTATION, -1.0);
 	// Optional rotation schedule (defaults to the constant deltaTheta)
 	this->rotStart = p->getDouble(QEA_ROT_START, this->deltaTheta);
@@ -365,9 +376,10 @@ std::pair<Solution *, Objective *> QuantumInspiredEA::run(Problem *problem,
 
 		Population *currentPopulation = new Population();
 
-		// ----- Observe K samples -----
+		// ----- Observe K samples (K may vary along the schedule) -----
+		int K = this->currentSamples();
 		timePoint = clock();
-		for (unsigned int k = 0; k < this->samples; k++) {
+		for (int k = 0; k < K; k++) {
 			std::vector<int> genotype = this->observe();
 			currentPopulation->addIndividual(new IndividualArrayInt(genotype));
 		}
@@ -377,7 +389,7 @@ std::pair<Solution *, Objective *> QuantumInspiredEA::run(Problem *problem,
 		timePoint = clock();
 		this->evaluator->evaluatePopulation(this->sharedVariables,
 			currentPopulation);
-		this->evaluations += (long int)this->samples;
+		this->evaluations += (long int)K;
 		this->evaluationTime += clock() - timePoint;
 
 		// ----- Update best so far -----
@@ -610,6 +622,19 @@ double QuantumInspiredEA::currentFloor() const {
 		t = (double)this->generation / (double)(this->maxGenerations - 1);
 	double f = scheduleProgress(t, this->cosineSchedule);
 	return this->floorStart + (this->floorEnd - this->floorStart) * f;
+}
+
+int QuantumInspiredEA::currentSamples() const {
+	if (this->samplesStart == this->samplesEnd)
+		return this->samplesStart;
+	double t = 0.0;
+	if (this->maxGenerations > 1)
+		t = (double)this->generation / (double)(this->maxGenerations - 1);
+	double f = scheduleProgress(t, this->cosineSchedule);
+	int k = (int)std::round((double)this->samplesStart
+		+ ((double)this->samplesEnd - (double)this->samplesStart) * f);
+	if (k < 1) k = 1;
+	return k;
 }
 
 void QuantumInspiredEA::rotateTowards(const std::vector<int> &bestGenotype) {
