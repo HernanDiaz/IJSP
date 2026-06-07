@@ -25,6 +25,8 @@ QuantumInspiredEA::QuantumInspiredEA(ParameterDB *params)
 
 	this->samples = 0;
 	this->deltaTheta = 0.0;
+	this->rotStart = -1.0;
+	this->rotEnd = -1.0;
 	this->floorProb = 0.0;
 	this->usePrecedence = false;
 
@@ -74,6 +76,8 @@ void QuantumInspiredEA::clearAll() {
 	this->maxPlateau = Infi;
 	this->samples = 0;
 	this->deltaTheta = 0.0;
+	this->rotStart = -1.0;
+	this->rotEnd = -1.0;
 	this->floorProb = 0.0;
 }
 
@@ -96,7 +100,11 @@ void QuantumInspiredEA::printSetupTree(std::ofstream & output) const {
 		output << ";" + names[i] << std::endl;
 
 	output << ";Samples per generation:;" << this->samples << std::endl;
-	output << ";Rotation step:;" << valueToString(this->deltaTheta) << std::endl;
+	output << ";Rotation step:;" << valueToString(this->deltaTheta);
+	if (compareDouble(this->rotStart, this->rotEnd) != 0)
+		output << "  (schedule: " << valueToString(this->rotStart)
+			<< " -> " << valueToString(this->rotEnd) << ")";
+	output << std::endl;
 	output << ";Floor probability:;" << valueToString(this->floorProb) << std::endl;
 	output << ";Model scheme:;"
 		<< (this->usePrecedence ? "Precedence" : "Positional") << std::endl;
@@ -207,6 +215,9 @@ void QuantumInspiredEA::prepareToRun(ParameterDB *params) {
 	// QEA-specific parameters
 	this->samples = p->getInteger(QEA_SAMPLES, -1);
 	this->deltaTheta = p->getDouble(QEA_ROTATION, -1.0);
+	// Optional rotation schedule (defaults to the constant deltaTheta)
+	this->rotStart = p->getDouble(QEA_ROT_START, this->deltaTheta);
+	this->rotEnd = p->getDouble(QEA_ROT_END, this->deltaTheta);
 	this->floorProb = p->getDouble(QEA_FLOOR, 0.0);
 	this->usePrecedence =
 		(p->getStringLower(QEA_SCHEME).compare("precedence") == 0);
@@ -495,7 +506,8 @@ std::vector<int> QuantumInspiredEA::observePositional() {
 
 
 //-----  rotatePositional  ----------------------------------------------------
-void QuantumInspiredEA::rotatePositional(const std::vector<int> &bestGenotype) {
+void QuantumInspiredEA::rotatePositional(const std::vector<int> &bestGenotype,
+	double step) {
 	for (int p = 0; p < this->genotypeLength; p++) {
 		int jstar = bestGenotype[p];
 		double c = this->amplitude[p][jstar];
@@ -503,8 +515,7 @@ void QuantumInspiredEA::rotatePositional(const std::vector<int> &bestGenotype) {
 		if (r2 < 1e-12)
 			continue;					// already collapsed onto jstar
 		double r = std::sqrt(r2);
-		double cNew = c * std::cos(this->deltaTheta)
-			+ r * std::sin(this->deltaTheta);
+		double cNew = c * std::cos(step) + r * std::sin(step);
 		if (cNew > 1.0)
 			cNew = 1.0;
 		double rNew = std::sqrt(1.0 - cNew * cNew);
@@ -550,11 +561,23 @@ std::vector<int> QuantumInspiredEA::observe() {
 		: this->observePositional();
 }
 
+double QuantumInspiredEA::currentRotation() const {
+	if (compareDouble(this->rotStart, this->rotEnd) == 0)
+		return this->rotStart;
+	double t = 0.0;
+	if (this->maxGenerations > 1)
+		t = (double)this->generation / (double)(this->maxGenerations - 1);
+	if (t < 0.0) t = 0.0;
+	if (t > 1.0) t = 1.0;
+	return this->rotStart + (this->rotEnd - this->rotStart) * t;
+}
+
 void QuantumInspiredEA::rotateTowards(const std::vector<int> &bestGenotype) {
+	double step = this->currentRotation();
 	if (this->usePrecedence)
-		this->rotatePrecedence(bestGenotype);
+		this->rotatePrecedence(bestGenotype, step);
 	else
-		this->rotatePositional(bestGenotype);
+		this->rotatePositional(bestGenotype, step);
 }
 
 void QuantumInspiredEA::applyFloor() {
@@ -626,7 +649,8 @@ std::vector<int> QuantumInspiredEA::observePrecedence() {
 
 
 //-----  rotatePrecedence  ----------------------------------------------------
-void QuantumInspiredEA::rotatePrecedence(const std::vector<int> &bestGenotype) {
+void QuantumInspiredEA::rotatePrecedence(const std::vector<int> &bestGenotype,
+	double step) {
 	// Mean position of each job in the best sequence (stable precedence signal)
 	std::vector<double> sumPos(this->nJobs, 0.0);
 	std::vector<int> cnt(this->nJobs, 0);
@@ -639,8 +663,8 @@ void QuantumInspiredEA::rotatePrecedence(const std::vector<int> &bestGenotype) {
 	for (int j = 0; j < this->nJobs; j++)
 		meanPos[j] = (cnt[j] > 0) ? sumPos[j] / cnt[j] : 0.0;
 
-	double s = std::sin(this->deltaTheta);
-	double c = std::cos(this->deltaTheta);
+	double s = std::sin(step);
+	double c = std::cos(step);
 	for (int a = 0; a < this->nJobs; a++) {
 		for (int b = a + 1; b < this->nJobs; b++) {
 			double pa = this->pref[a][b];          // P(a before b)

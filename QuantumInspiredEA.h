@@ -33,6 +33,8 @@ namespace FuzzyFW {
 #define QEA_ROTATION       "qea.rotation"      // rotation step (delta theta)
 #define QEA_FLOOR          "qea.floor"         // minimum probability per symbol
 #define QEA_SCHEME         "qea.scheme"        // "positional" (default) | "precedence"
+#define QEA_ROT_START      "qea.rot_start"     // rotation at generation 0 (default = qea.rotation)
+#define QEA_ROT_END        "qea.rot_end"       // rotation at last generation (default = qea.rotation)
 
 #define QEA_GENERATIONS    "generations"       // stopping criteria (reused)
 #define QEA_TIME           "timelimit"
@@ -66,6 +68,11 @@ protected:
 
 	/** Rotation step applied to the amplitudes (radians) */
 	double deltaTheta;
+
+	/** Rotation schedule: linear ramp between rotStart and rotEnd along the
+	 *  generation budget. If both equal deltaTheta -> constant (baseline). */
+	double rotStart;
+	double rotEnd;
 
 	/** Minimum probability kept for every symbol to preserve exploration */
 	double floorProb;
@@ -173,20 +180,24 @@ protected:
 	 *  Dispatches to the positional or precedence variant. */
 	std::vector<int> observe();
 
-	/** Rotates the model towards the best solution. Dispatches by scheme. */
+	/** Rotates the model towards the best solution with the default step.
+	 *  Dispatches by scheme. */
 	void rotateTowards(const std::vector<int> &bestGenotype);
+
+	/** Returns the rotation step for the current generation (schedule-aware). */
+	double currentRotation() const;
 
 	/** Keeps a minimum probability to avoid premature collapse. Dispatches. */
 	void applyFloor();
 
 	//-----  Positional scheme: amplitude[position][job]  -----------------
 	std::vector<int> observePositional();
-	void rotatePositional(const std::vector<int> &bestGenotype);
+	void rotatePositional(const std::vector<int> &bestGenotype, double step);
 	void applyFloorPositional();
 
 	//-----  Precedence scheme: pref[a][b] = P(job a precedes job b)  -----
 	std::vector<int> observePrecedence();
-	void rotatePrecedence(const std::vector<int> &bestGenotype);
+	void rotatePrecedence(const std::vector<int> &bestGenotype, double step);
 	void applyFloorPrecedence();
 };
 
