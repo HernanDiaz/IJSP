@@ -42,6 +42,8 @@ namespace FuzzyFW {
 #define QEA_SAMP_END       "qea.samples_end"   // samples at last generation (default = qea.samples)
 #define QEA_TAU_START      "qea.tau_start"     // sampling temperature at gen 0 (default 1.0)
 #define QEA_TAU_END        "qea.tau_end"       // sampling temperature at last gen (default 1.0)
+#define QEA_TWGT_START     "qea.target_w_start" // P(use bestSoFar as rotation target) at gen 0 (default 1.0 = baseline)
+#define QEA_TWGT_END       "qea.target_w_end"   // P(use bestSoFar as rotation target) at last gen (default 1.0 = baseline)
 
 #define QEA_GENERATIONS    "generations"       // stopping criteria (reused)
 #define QEA_TIME           "timelimit"
@@ -105,6 +107,13 @@ protected:
 	 *  ramp between tauStart and tauEnd; tauStart == tauEnd == 1.0 disables. */
 	double tauStart;
 	double tauEnd;
+
+	/** Target-choice schedule: P(rotate toward bestSoFar) vs genBest of the
+	 *  current generation. 1.0 = always bestSoFar (baseline). <1.0 = with
+	 *  some probability use the generation's local best. Schedule allows
+	 *  more novelty-driven exploration early and stable commitment late. */
+	double targetWStart;
+	double targetWEnd;
 
 	/** Search-space model: false = positional amplitude[pos][job];
 	 *  true = precedence model pref[a][b] (invariant to absolute position) */
@@ -224,6 +233,9 @@ protected:
 
 	/** Returns the sampling temperature for the current generation. */
 	double currentTau() const;
+
+	/** Returns P(use bestSoFar as rotation target) for the current generation. */
+	double currentTargetW() const;
 
 	/** Keeps a minimum probability to avoid premature collapse. Dispatches. */
 	void applyFloor();

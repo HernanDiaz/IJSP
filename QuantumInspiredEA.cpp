@@ -35,6 +35,8 @@ QuantumInspiredEA::QuantumInspiredEA(ParameterDB *params)
 	this->cosineSchedule = false;
 	this->tauStart = 1.0;
 	this->tauEnd = 1.0;
+	this->targetWStart = 1.0;
+	this->targetWEnd = 1.0;
 	this->usePrecedence = false;
 
 	this->maxGenerations = Infi;
@@ -93,6 +95,8 @@ void QuantumInspiredEA::clearAll() {
 	this->cosineSchedule = false;
 	this->tauStart = 1.0;
 	this->tauEnd = 1.0;
+	this->targetWStart = 1.0;
+	this->targetWEnd = 1.0;
 }
 
 
@@ -139,6 +143,13 @@ void QuantumInspiredEA::printSetupTree(std::ofstream & output) const {
 	else
 		output << valueToString(this->tauStart) << " -> "
 			<< valueToString(this->tauEnd) << std::endl;
+	output << ";P(target=bestSoFar):;";
+	if (compareDouble(this->targetWStart, 1.0) == 0
+		&& compareDouble(this->targetWEnd, 1.0) == 0)
+		output << "1.0 (always bestSoFar)" << std::endl;
+	else
+		output << valueToString(this->targetWStart) << " -> "
+			<< valueToString(this->targetWEnd) << std::endl;
 
 	output << ";Stopping criteria:" << std::endl;
 	output << ";;Max.Generations:;";
@@ -262,6 +273,12 @@ void QuantumInspiredEA::prepareToRun(ParameterDB *params) {
 	this->tauEnd = p->getDouble(QEA_TAU_END, 1.0);
 	if (this->tauStart <= 0.0) this->tauStart = 1.0;
 	if (this->tauEnd <= 0.0) this->tauEnd = 1.0;
+	this->targetWStart = p->getDouble(QEA_TWGT_START, 1.0);
+	this->targetWEnd = p->getDouble(QEA_TWGT_END, 1.0);
+	if (this->targetWStart < 0.0) this->targetWStart = 0.0;
+	if (this->targetWStart > 1.0) this->targetWStart = 1.0;
+	if (this->targetWEnd < 0.0) this->targetWEnd = 0.0;
+	if (this->targetWEnd > 1.0) this->targetWEnd = 1.0;
 	this->usePrecedence =
 		(p->getStringLower(QEA_SCHEME).compare("precedence") == 0);
 
@@ -422,9 +439,17 @@ std::pair<Solution *, Objective *> QuantumInspiredEA::run(Problem *problem,
 			this->iterationsNI++;
 
 		// ----- Rotate the distribution towards the best -----
+		// Target-choice schedule: with prob currentTargetW use bestSoFar
+		// (global, stable); otherwise use genBest (local, more novelty).
+		// Default w = 1.0 -> always bestSoFar (baseline behaviour).
 		timePoint = clock();
-		IndividualArrayInt *bi =
-			dynamic_cast<IndividualArrayInt *>(this->bestSoFar);
+		Individual *target = this->bestSoFar;
+		double w = this->currentTargetW();
+		if (compareDouble(w, 1.0) < 0
+			&& this->sharedVariables->rng->getProbability() >= w) {
+			target = genBest;
+		}
+		IndividualArrayInt *bi = dynamic_cast<IndividualArrayInt *>(target);
 		this->rotateTowards(bi->getGenotype());
 		this->applyFloor();
 		this->rotationTime += clock() - timePoint;
@@ -670,6 +695,16 @@ double QuantumInspiredEA::currentTau() const {
 		t = (double)this->generation / (double)(this->maxGenerations - 1);
 	double f = scheduleProgress(t, this->cosineSchedule);
 	return this->tauStart + (this->tauEnd - this->tauStart) * f;
+}
+
+double QuantumInspiredEA::currentTargetW() const {
+	if (compareDouble(this->targetWStart, this->targetWEnd) == 0)
+		return this->targetWStart;
+	double t = 0.0;
+	if (this->maxGenerations > 1)
+		t = (double)this->generation / (double)(this->maxGenerations - 1);
+	double f = scheduleProgress(t, this->cosineSchedule);
+	return this->targetWStart + (this->targetWEnd - this->targetWStart) * f;
 }
 
 void QuantumInspiredEA::rotateTowards(const std::vector<int> &bestGenotype) {
