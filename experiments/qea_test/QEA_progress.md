@@ -41,6 +41,7 @@ Se registran **todas** las ideas probadas, mejoren o no, para no repetirlas.
 - Esquema de **precedencia** `pref[a][b]` → **22.30%** (peor). NO funcionó: pierde el intercalado fino de operaciones. Descartado.
 - floor 0.02 → 0.01 → **15.29%** (−1.5). Funcionó: el floor es el parámetro dominante (floor 0.05 es claramente el peor).
 - Lamarckismo no → sí → **15.30%** (≈0). No funcionó: sin efecto apreciable.
+- Aprendizaje por **élite** (rotar hacia top ~10% de cada generación en vez de hacia el único bestSoFar, estilo UMDA; mejor combo del barrido: elitefrac=0.1, rotation=0.10) → **15.43%**. NO funciona: 0.14 puntos peor que el baseline. Probada, sin mejora.
 - **Mejor versión actual (baseline): posicional, población 250, floor 0.01, rotación 0.04 → AvgRE 15.29%.** Es el techo del motor puro; queda ~5.5 puntos por encima del GA puro.
 
 ---
