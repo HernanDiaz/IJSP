@@ -33,6 +33,8 @@ QuantumInspiredEA::QuantumInspiredEA(ParameterDB *params)
 	this->floorStart = -1.0;
 	this->floorEnd = -1.0;
 	this->cosineSchedule = false;
+	this->tauStart = 1.0;
+	this->tauEnd = 1.0;
 	this->usePrecedence = false;
 
 	this->maxGenerations = Infi;
@@ -89,6 +91,8 @@ void QuantumInspiredEA::clearAll() {
 	this->floorStart = -1.0;
 	this->floorEnd = -1.0;
 	this->cosineSchedule = false;
+	this->tauStart = 1.0;
+	this->tauEnd = 1.0;
 }
 
 
@@ -128,6 +132,13 @@ void QuantumInspiredEA::printSetupTree(std::ofstream & output) const {
 		<< (this->usePrecedence ? "Precedence" : "Positional") << std::endl;
 	output << ";Schedule type:;"
 		<< (this->cosineSchedule ? "Cosine annealing" : "Linear") << std::endl;
+	output << ";Sampling tau:;";
+	if (compareDouble(this->tauStart, 1.0) == 0
+		&& compareDouble(this->tauEnd, 1.0) == 0)
+		output << "1.0 (raw probabilities)" << std::endl;
+	else
+		output << valueToString(this->tauStart) << " -> "
+			<< valueToString(this->tauEnd) << std::endl;
 
 	output << ";Stopping criteria:" << std::endl;
 	output << ";;Max.Generations:;";
@@ -247,6 +258,10 @@ void QuantumInspiredEA::prepareToRun(ParameterDB *params) {
 	this->floorEnd = p->getDouble(QEA_FLOOR_END, this->floorProb);
 	this->cosineSchedule =
 		(p->getStringLower(QEA_SCHED_TYPE).compare("cosine") == 0);
+	this->tauStart = p->getDouble(QEA_TAU_START, 1.0);
+	this->tauEnd = p->getDouble(QEA_TAU_END, 1.0);
+	if (this->tauStart <= 0.0) this->tauStart = 1.0;
+	if (this->tauEnd <= 0.0) this->tauEnd = 1.0;
 	this->usePrecedence =
 		(p->getStringLower(QEA_SCHEME).compare("precedence") == 0);
 
@@ -498,12 +513,21 @@ std::vector<int> QuantumInspiredEA::observePositional() {
 	std::vector<int> perm;
 	perm.reserve(this->genotypeLength);
 
+	// Sampling temperature: P[j] ~ amplitude[p][j]^(2 * tau).
+	// tau = 1.0 -> raw probability (baseline); tau > 1 sharpens, tau < 1 flattens.
+	double tau = this->currentTau();
+	bool useTau = (compareDouble(tau, 1.0) != 0);
+
 	for (int p = 0; p < this->genotypeLength; p++) {
-		// Probability mass of jobs still available at this position
+		// Compute weights of jobs still available at this position.
+		// Weight = amplitude^2 when tau=1; weight = amplitude^(2*tau) otherwise.
 		double total = 0.0;
-		for (int j = 0; j < this->nJobs; j++)
-			if (remaining[j] > 0)
-				total += this->amplitude[p][j] * this->amplitude[p][j];
+		for (int j = 0; j < this->nJobs; j++) {
+			if (remaining[j] > 0) {
+				double a2 = this->amplitude[p][j] * this->amplitude[p][j];
+				total += useTau ? std::pow(a2, tau) : a2;
+			}
+		}
 
 		// Roulette-wheel selection restricted to available jobs
 		double u = this->sharedVariables->rng->getProbability() * total;
@@ -511,7 +535,8 @@ std::vector<int> QuantumInspiredEA::observePositional() {
 		int chosen = -1;
 		for (int j = 0; j < this->nJobs; j++) {
 			if (remaining[j] > 0) {
-				acc += this->amplitude[p][j] * this->amplitude[p][j];
+				double a2 = this->amplitude[p][j] * this->amplitude[p][j];
+				acc += useTau ? std::pow(a2, tau) : a2;
 				if (u <= acc) {
 					chosen = j;
 					break;
@@ -637,6 +662,16 @@ int QuantumInspiredEA::currentSamples() const {
 	return k;
 }
 
+double QuantumInspiredEA::currentTau() const {
+	if (compareDouble(this->tauStart, this->tauEnd) == 0)
+		return this->tauStart;
+	double t = 0.0;
+	if (this->maxGenerations > 1)
+		t = (double)this->generation / (double)(this->maxGenerations - 1);
+	double f = scheduleProgress(t, this->cosineSchedule);
+	return this->tauStart + (this->tauEnd - this->tauStart) * f;
+}
+
 void QuantumInspiredEA::rotateTowards(const std::vector<int> &bestGenotype) {
 	double step = this->currentRotation();
 	if (this->usePrecedence)
@@ -677,11 +712,14 @@ std::vector<int> QuantumInspiredEA::observePrecedence() {
 		score[j] = s;
 	}
 
+	double tau = this->currentTau();
+	bool useTau = (compareDouble(tau, 1.0) != 0);
+
 	for (int p = 0; p < this->genotypeLength; p++) {
 		double total = 0.0;
 		for (int j = 0; j < this->nJobs; j++)
 			if (remaining[j] > 0)
-				total += score[j];
+				total += useTau ? std::pow(score[j], tau) : score[j];
 
 		int chosen = -1;
 		if (total > 1e-12) {
@@ -689,7 +727,7 @@ std::vector<int> QuantumInspiredEA::observePrecedence() {
 			double acc = 0.0;
 			for (int j = 0; j < this->nJobs; j++) {
 				if (remaining[j] > 0) {
-					acc += score[j];
+					acc += useTau ? std::pow(score[j], tau) : score[j];
 					if (u <= acc) { chosen = j; break; }
 				}
 			}

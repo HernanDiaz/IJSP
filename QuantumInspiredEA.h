@@ -40,6 +40,8 @@ namespace FuzzyFW {
 #define QEA_SCHED_TYPE     "qea.schedule_type" // "linear" (default) | "cosine"
 #define QEA_SAMP_START     "qea.samples_start" // samples at generation 0 (default = qea.samples)
 #define QEA_SAMP_END       "qea.samples_end"   // samples at last generation (default = qea.samples)
+#define QEA_TAU_START      "qea.tau_start"     // sampling temperature at gen 0 (default 1.0)
+#define QEA_TAU_END        "qea.tau_end"       // sampling temperature at last gen (default 1.0)
 
 #define QEA_GENERATIONS    "generations"       // stopping criteria (reused)
 #define QEA_TIME           "timelimit"
@@ -95,6 +97,14 @@ protected:
 	/** Schedule shape: false = linear ramp (baseline); true = cosine
 	 *  annealing (smooth ease-in/ease-out). Affects both rotation and floor. */
 	bool cosineSchedule;
+
+	/** Sampling-temperature schedule: when observing K individuals, the
+	 *  sampling distribution is P[j] proportional to amplitude^(2*tau).
+	 *  tau = 1.0 -> baseline (raw probabilities). tau > 1 sharpens the mode
+	 *  (more exploitation); tau < 1 flattens it (more exploration). Linear
+	 *  ramp between tauStart and tauEnd; tauStart == tauEnd == 1.0 disables. */
+	double tauStart;
+	double tauEnd;
 
 	/** Search-space model: false = positional amplitude[pos][job];
 	 *  true = precedence model pref[a][b] (invariant to absolute position) */
@@ -211,6 +221,9 @@ protected:
 
 	/** Returns the sample size for the current generation (schedule-aware). */
 	int currentSamples() const;
+
+	/** Returns the sampling temperature for the current generation. */
+	double currentTau() const;
 
 	/** Keeps a minimum probability to avoid premature collapse. Dispatches. */
 	void applyFloor();
