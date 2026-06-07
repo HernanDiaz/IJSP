@@ -43,6 +43,7 @@ Se registran **todas** las ideas probadas, mejoren o no, para no repetirlas.
 - Lamarckismo no → sí → **15.30%** (≈0). No funcionó: sin efecto apreciable.
 - Aprendizaje por **élite** (rotar hacia top ~10% de cada generación en vez de hacia el único bestSoFar, estilo UMDA; mejor combo del barrido: elitefrac=0.1, rotation=0.10) → **15.43%**. NO funciona: 0.14 puntos peor que el baseline. Probada, sin mejora.
 - **Mutación de amplitudes** (perturbación PBIL: cada generación, con prob mutprob por posición, mezclar la distribución con la uniforme con fuerza mutstr; mejor combo del barrido: mutprob=0.10, mutstr=0.10) → **15.37%**. NO funciona: 0.08 puntos peor que el baseline. Probada, sin mejora.
+- **Reinicio selectivo de posiciones colapsadas** (cada reset_every generaciones, reiniciar a uniforme las posiciones con max(α²) > reset_thr; mejor combo: thr=0.95, every=50) → **15.29%**. EMPATE exacto con el baseline (el umbral 0.95 nunca se dispara en este presupuesto). Probada, sin mejora.
 - **Mejor versión actual (baseline): posicional, población 250, floor 0.01, rotación 0.04 → AvgRE 15.29%.** Es el techo del motor puro; queda ~5.5 puntos por encima del GA puro.
 
 ---
