@@ -1,0 +1,7 @@
+# Generated results (regenerable CSVs) — not versioned
+run30/
+run30_prec/
+run30_tuned/
+run30_lam/
+sweep/
+log/

@@ -1,0 +1,40 @@
+# QEA — positional, hand-tuned (floor=0.01) — 30-run comparison
+
+# GENERIC
+algorithm = QEA
+seed = 1
+runs = 30
+
+# PROBLEM
+problem.hasbounds = no
+
+# OBJECTIVE
+objective = ijsp.makespan
+evaluation.interval.comparison = LEX2
+evaluation.interval.maximum = Component
+evaluation.lamarckism = no
+
+# CODIFICATION
+codification = ijsp.job-order
+decodification = ijsp.job-order
+decode.sgs = insertion
+sgs.interval.comparison = LEX2
+
+# QEA PARAMETERS (positional; floor lowered 0.02 -> 0.01 from the sweep)
+qea.scheme = positional
+qea.samples = 250
+qea.rotation = 0.04
+qea.floor = 0.01
+
+# STOPPING CRITERION
+generations = 500
+
+# STATISTICS
+statistics.1.metric = best
+statistics.1.value = ijsp.makespan
+statistics.2.metric = average
+statistics.2.value = ijsp.makespan
+
+# EVOLUTION REPORTING
+evolution.unit = iteration
+evolution.span = 50
