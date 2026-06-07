@@ -35,6 +35,8 @@ namespace FuzzyFW {
 #define QEA_SCHEME         "qea.scheme"        // "positional" (default) | "precedence"
 #define QEA_ROT_START      "qea.rot_start"     // rotation at generation 0 (default = qea.rotation)
 #define QEA_ROT_END        "qea.rot_end"       // rotation at last generation (default = qea.rotation)
+#define QEA_FLOOR_START    "qea.floor_start"   // floor at generation 0 (default = qea.floor)
+#define QEA_FLOOR_END      "qea.floor_end"     // floor at last generation (default = qea.floor)
 
 #define QEA_GENERATIONS    "generations"       // stopping criteria (reused)
 #define QEA_TIME           "timelimit"
@@ -76,6 +78,11 @@ protected:
 
 	/** Minimum probability kept for every symbol to preserve exploration */
 	double floorProb;
+
+	/** Floor schedule: linear ramp between floorStart and floorEnd along the
+	 *  generation budget. If both equal floorProb -> constant (baseline). */
+	double floorStart;
+	double floorEnd;
 
 	/** Search-space model: false = positional amplitude[pos][job];
 	 *  true = precedence model pref[a][b] (invariant to absolute position) */
@@ -186,6 +193,9 @@ protected:
 
 	/** Returns the rotation step for the current generation (schedule-aware). */
 	double currentRotation() const;
+
+	/** Returns the floor probability for the current generation (schedule-aware). */
+	double currentFloor() const;
 
 	/** Keeps a minimum probability to avoid premature collapse. Dispatches. */
 	void applyFloor();

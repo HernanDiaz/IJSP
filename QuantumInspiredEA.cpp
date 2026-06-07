@@ -28,6 +28,8 @@ QuantumInspiredEA::QuantumInspiredEA(ParameterDB *params)
 	this->rotStart = -1.0;
 	this->rotEnd = -1.0;
 	this->floorProb = 0.0;
+	this->floorStart = -1.0;
+	this->floorEnd = -1.0;
 	this->usePrecedence = false;
 
 	this->maxGenerations = Infi;
@@ -79,6 +81,8 @@ void QuantumInspiredEA::clearAll() {
 	this->rotStart = -1.0;
 	this->rotEnd = -1.0;
 	this->floorProb = 0.0;
+	this->floorStart = -1.0;
+	this->floorEnd = -1.0;
 }
 
 
@@ -105,7 +109,11 @@ void QuantumInspiredEA::printSetupTree(std::ofstream & output) const {
 		output << "  (schedule: " << valueToString(this->rotStart)
 			<< " -> " << valueToString(this->rotEnd) << ")";
 	output << std::endl;
-	output << ";Floor probability:;" << valueToString(this->floorProb) << std::endl;
+	output << ";Floor probability:;" << valueToString(this->floorProb);
+	if (compareDouble(this->floorStart, this->floorEnd) != 0)
+		output << "  (schedule: " << valueToString(this->floorStart)
+			<< " -> " << valueToString(this->floorEnd) << ")";
+	output << std::endl;
 	output << ";Model scheme:;"
 		<< (this->usePrecedence ? "Precedence" : "Positional") << std::endl;
 
@@ -219,6 +227,9 @@ void QuantumInspiredEA::prepareToRun(ParameterDB *params) {
 	this->rotStart = p->getDouble(QEA_ROT_START, this->deltaTheta);
 	this->rotEnd = p->getDouble(QEA_ROT_END, this->deltaTheta);
 	this->floorProb = p->getDouble(QEA_FLOOR, 0.0);
+	// Optional floor schedule (defaults to the constant floorProb)
+	this->floorStart = p->getDouble(QEA_FLOOR_START, this->floorProb);
+	this->floorEnd = p->getDouble(QEA_FLOOR_END, this->floorProb);
 	this->usePrecedence =
 		(p->getStringLower(QEA_SCHEME).compare("precedence") == 0);
 
@@ -530,9 +541,10 @@ void QuantumInspiredEA::rotatePositional(const std::vector<int> &bestGenotype,
 
 //-----  applyFloorPositional  ------------------------------------------------
 void QuantumInspiredEA::applyFloorPositional() {
-	if (compareDouble(this->floorProb, 0.0) <= 0)
+	double f = this->currentFloor();
+	if (compareDouble(f, 0.0) <= 0)
 		return;
-	double minAmp = std::sqrt(this->floorProb);
+	double minAmp = std::sqrt(f);
 	for (int p = 0; p < this->genotypeLength; p++) {
 		bool changed = false;
 		for (int j = 0; j < this->nJobs; j++)
@@ -570,6 +582,17 @@ double QuantumInspiredEA::currentRotation() const {
 	if (t < 0.0) t = 0.0;
 	if (t > 1.0) t = 1.0;
 	return this->rotStart + (this->rotEnd - this->rotStart) * t;
+}
+
+double QuantumInspiredEA::currentFloor() const {
+	if (compareDouble(this->floorStart, this->floorEnd) == 0)
+		return this->floorStart;
+	double t = 0.0;
+	if (this->maxGenerations > 1)
+		t = (double)this->generation / (double)(this->maxGenerations - 1);
+	if (t < 0.0) t = 0.0;
+	if (t > 1.0) t = 1.0;
+	return this->floorStart + (this->floorEnd - this->floorStart) * t;
 }
 
 void QuantumInspiredEA::rotateTowards(const std::vector<int> &bestGenotype) {
@@ -687,10 +710,11 @@ void QuantumInspiredEA::rotatePrecedence(const std::vector<int> &bestGenotype,
 
 //-----  applyFloorPrecedence  ------------------------------------------------
 void QuantumInspiredEA::applyFloorPrecedence() {
-	if (compareDouble(this->floorProb, 0.0) <= 0)
+	double f = this->currentFloor();
+	if (compareDouble(f, 0.0) <= 0)
 		return;
-	double lo = this->floorProb;
-	double hi = 1.0 - this->floorProb;
+	double lo = f;
+	double hi = 1.0 - f;
 	for (int a = 0; a < this->nJobs; a++)
 		for (int b = a + 1; b < this->nJobs; b++) {
 			double pa = this->pref[a][b];
