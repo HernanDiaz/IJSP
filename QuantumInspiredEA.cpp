@@ -37,6 +37,8 @@ QuantumInspiredEA::QuantumInspiredEA(ParameterDB *params)
 	this->tauEnd = 1.0;
 	this->targetWStart = 1.0;
 	this->targetWEnd = 1.0;
+	this->antiStepStart = 0.0;
+	this->antiStepEnd = 0.0;
 	this->usePrecedence = false;
 
 	this->maxGenerations = Infi;
@@ -97,6 +99,8 @@ void QuantumInspiredEA::clearAll() {
 	this->tauEnd = 1.0;
 	this->targetWStart = 1.0;
 	this->targetWEnd = 1.0;
+	this->antiStepStart = 0.0;
+	this->antiStepEnd = 0.0;
 }
 
 
@@ -150,6 +154,13 @@ void QuantumInspiredEA::printSetupTree(std::ofstream & output) const {
 	else
 		output << valueToString(this->targetWStart) << " -> "
 			<< valueToString(this->targetWEnd) << std::endl;
+	output << ";Anti-rotation step (toward genWorst):;";
+	if (compareDouble(this->antiStepStart, 0.0) == 0
+		&& compareDouble(this->antiStepEnd, 0.0) == 0)
+		output << "0 (disabled)" << std::endl;
+	else
+		output << valueToString(this->antiStepStart) << " -> "
+			<< valueToString(this->antiStepEnd) << std::endl;
 
 	output << ";Stopping criteria:" << std::endl;
 	output << ";;Max.Generations:;";
@@ -279,6 +290,10 @@ void QuantumInspiredEA::prepareToRun(ParameterDB *params) {
 	if (this->targetWStart > 1.0) this->targetWStart = 1.0;
 	if (this->targetWEnd < 0.0) this->targetWEnd = 0.0;
 	if (this->targetWEnd > 1.0) this->targetWEnd = 1.0;
+	this->antiStepStart = p->getDouble(QEA_ANTI_START, 0.0);
+	this->antiStepEnd = p->getDouble(QEA_ANTI_END, 0.0);
+	if (this->antiStepStart < 0.0) this->antiStepStart = 0.0;
+	if (this->antiStepEnd < 0.0) this->antiStepEnd = 0.0;
 	this->usePrecedence =
 		(p->getStringLower(QEA_SCHEME).compare("precedence") == 0);
 
@@ -451,6 +466,23 @@ std::pair<Solution *, Objective *> QuantumInspiredEA::run(Problem *problem,
 		}
 		IndividualArrayInt *bi = dynamic_cast<IndividualArrayInt *>(target);
 		this->rotateTowards(bi->getGenotype());
+
+		// ----- Anti-rotation toward genWorst (negative learning) -----
+		// After the main rotation, apply a negative step toward the worst
+		// individual of the generation to push amplitudes away from poor
+		// job placements. Disabled when antiStep <= 0.
+		double antiStep = this->currentAntiStep();
+		if (compareDouble(antiStep, 0.0) > 0 && K > 1) {
+			Individual *genWorst = currentPopulation->getBest(
+				this->sharedVariables, (unsigned int)(K - 1));
+			IndividualArrayInt *wi = dynamic_cast<IndividualArrayInt *>(
+				genWorst);
+			if (this->usePrecedence)
+				this->rotatePrecedence(wi->getGenotype(), -antiStep);
+			else
+				this->rotatePositional(wi->getGenotype(), -antiStep);
+		}
+
 		this->applyFloor();
 		this->rotationTime += clock() - timePoint;
 
@@ -597,6 +629,8 @@ void QuantumInspiredEA::rotatePositional(const std::vector<int> &bestGenotype,
 		double cNew = c * std::cos(step) + r * std::sin(step);
 		if (cNew > 1.0)
 			cNew = 1.0;
+		if (cNew < 0.0)
+			cNew = 0.0;       // anti-rotation safety: amplitudes are non-negative
 		double rNew = std::sqrt(1.0 - cNew * cNew);
 		double scale = rNew / r;
 		this->amplitude[p][jstar] = cNew;
@@ -705,6 +739,16 @@ double QuantumInspiredEA::currentTargetW() const {
 		t = (double)this->generation / (double)(this->maxGenerations - 1);
 	double f = scheduleProgress(t, this->cosineSchedule);
 	return this->targetWStart + (this->targetWEnd - this->targetWStart) * f;
+}
+
+double QuantumInspiredEA::currentAntiStep() const {
+	if (compareDouble(this->antiStepStart, this->antiStepEnd) == 0)
+		return this->antiStepStart;
+	double t = 0.0;
+	if (this->maxGenerations > 1)
+		t = (double)this->generation / (double)(this->maxGenerations - 1);
+	double f = scheduleProgress(t, this->cosineSchedule);
+	return this->antiStepStart + (this->antiStepEnd - this->antiStepStart) * f;
 }
 
 void QuantumInspiredEA::rotateTowards(const std::vector<int> &bestGenotype) {

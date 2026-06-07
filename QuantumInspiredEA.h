@@ -44,6 +44,8 @@ namespace FuzzyFW {
 #define QEA_TAU_END        "qea.tau_end"       // sampling temperature at last gen (default 1.0)
 #define QEA_TWGT_START     "qea.target_w_start" // P(use bestSoFar as rotation target) at gen 0 (default 1.0 = baseline)
 #define QEA_TWGT_END       "qea.target_w_end"   // P(use bestSoFar as rotation target) at last gen (default 1.0 = baseline)
+#define QEA_ANTI_START     "qea.anti_step_start" // anti-rotation step toward genWorst at gen 0 (default 0 = disabled)
+#define QEA_ANTI_END       "qea.anti_step_end"   // anti-rotation step toward genWorst at last gen (default 0 = disabled)
 
 #define QEA_GENERATIONS    "generations"       // stopping criteria (reused)
 #define QEA_TIME           "timelimit"
@@ -114,6 +116,13 @@ protected:
 	 *  more novelty-driven exploration early and stable commitment late. */
 	double targetWStart;
 	double targetWEnd;
+
+	/** Anti-rotation step: after each main rotation, apply a negative step
+	 *  toward the genotype of the WORST individual of the current generation
+	 *  to discourage bad job placements. Schedule from antiStepStart to
+	 *  antiStepEnd along the budget. 0 = disabled (baseline). */
+	double antiStepStart;
+	double antiStepEnd;
 
 	/** Search-space model: false = positional amplitude[pos][job];
 	 *  true = precedence model pref[a][b] (invariant to absolute position) */
@@ -236,6 +245,9 @@ protected:
 
 	/** Returns P(use bestSoFar as rotation target) for the current generation. */
 	double currentTargetW() const;
+
+	/** Returns the anti-rotation step magnitude for the current generation. */
+	double currentAntiStep() const;
 
 	/** Keeps a minimum probability to avoid premature collapse. Dispatches. */
 	void applyFloor();
