@@ -158,6 +158,24 @@ Los AvgRE de aquí **no** son comparables con los de §2 (presupuesto distinto).
   conviene rotación inicial más fuerte para converger antes. La metodología de
   G fijo (vs recalibrar) elimina el ruido que hizo inconcluso a T2.
 
+- **T4 — Re-validar target_w sobre la base T3** (G fijo, sweep 3 inst, runs=10:
+  tw0_1 base 6.72, tw0_08 6.85, tw0_05 7.48, tw05_1 8.20, tw1c 8.37, tw0c 8.53).
+  El rango **0.0→1.0 ya es óptimo** (todas las variantes peores) → sin mejora.
+  Robusto al cambio de régimen (igual que con 500 gen: solo los extremos
+  completos genBest→bestSoFar funcionan). Patrón: tau era frágil al régimen,
+  rotation y target_w no lo son.
+
+- **T5 — Agotar palancas baratas restantes (anti-step, floor)** (G fijo, sweep
+  3 inst, runs=10: base 6.72; anti0 7.26, anti005_04 7.19, anti01_03 6.97;
+  floor002 7.11, floor0075 7.73, floor01 7.56). Todas peores → **anti 0.005→0.02
+  y floor 0.005 ya óptimos** (anti0 confirma que la anti-rotación ayuda). Sin
+  mejora. **Re-tuneo de parámetros existentes AGOTADO**: solo quitar tau (−1.54)
+  y rot_start 0.04 (−0.35) ayudaron; samples/target_w/anti/floor ya óptimos.
+  Para cerrar la brecha con el GA (2.95 pts) hacen falta **ideas nuevas** (no
+  re-tuneo): p.ej. inicialización heurística de las amplitudes (warm start) que
+  aproveche el presupuesto corto empezando de una distribución mejor que la
+  uniforme.
+
 **Mejor versión bajo tiempo (baseline del loop-T):** posicional, samples
 100→400 cosine, rotación cosine **0.04→0.08**, floor 0.005, target_w 0→1,
 anti-rotación 0.005→0.02, **SIN tau**, parada por generaciones (G calibrado a
