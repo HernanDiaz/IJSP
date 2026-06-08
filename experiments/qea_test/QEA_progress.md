@@ -138,10 +138,30 @@ Los AvgRE de aquí **no** son comparables con los de §2 (presupuesto distinto).
   generación pesa tanto como la calidad por generación**; las operaciones caras
   (pow por muestra) hay que evitarlas salvo que su ganancia por gen sea enorme.
 
+- **T2 — Re-tunear el samples schedule sobre notau** (variantes (start,end):
+  100→400 base, 100→300, 100→250, 100→200, 250 const, 50→250; sweep 3 inst con
+  **recalibración de G por variante**). Resultados 7.33–8.19%, pero **sin mejora
+  detectable**: la calibración de G por tiempo es **ruidosa** (~0.5 pts — la
+  misma config notau dio 6.91% en T1 y 7.41% en T2 por G distinto), y todas las
+  diferencias caen dentro de ese ruido. Se mantiene samples 100→400. **Lección
+  metodológica:** para variantes que NO cambian el coste/gen (rotation,
+  target_w, floor, anti-step), usar el **G FIJO** de notau (sin recalibrar)
+  elimina este ruido; solo recalibrar cuando la variante cambia el coste/gen
+  (samples, o reintroducir tau).
+
+- **T3 — Re-tunear el rotation schedule sobre notau** (G **FIJO** de notau, sin
+  recalibrar → comparación limpia; sweep 3 inst, runs=10: r02_08 base 6.96,
+  **r04_08 6.72**, r04c 6.75, r02_12 6.78, r02_10 7.08, r02_06 7.32). Mejor:
+  **rot_start 0.04** (vs 0.02), rot_end 0.08. Full 12×30: **12.73%** (−0.35 vs
+  notau 13.08%), gana en 9/12 (mayores en abz −0.5/−0.86 y la38 −1.01). ✅
+  **FUNCIONA** (modesta). Con ~300 gen (menos que las 500 del régimen viejo)
+  conviene rotación inicial más fuerte para converger antes. La metodología de
+  G fijo (vs recalibrar) elimina el ruido que hizo inconcluso a T2.
+
 **Mejor versión bajo tiempo (baseline del loop-T):** posicional, samples
-100→400 cosine, rotación cosine 0.02→0.08, floor 0.005, target_w 0→1,
+100→400 cosine, rotación cosine **0.04→0.08**, floor 0.005, target_w 0→1,
 anti-rotación 0.005→0.02, **SIN tau**, parada por generaciones (G calibrado a
-≤ 4× GA) → AvgRE **13.08%**. Brecha con GA puro: 3.3 puntos.
+≤ 4× GA) → AvgRE **12.73%**. Brecha con GA puro: 2.95 puntos.
 
 ---
 
