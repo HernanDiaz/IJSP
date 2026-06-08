@@ -31,7 +31,55 @@ Referencias del paper COR_Tabu (puros y meméticos): **GA puro 9.78%**, **TS-N�
 
 ---
 
+## 1.5 Restricción de tiempo (requisito de publicación)
+
+**Para una publicación, el QEA no puede tardar mucho más que el GA de
+referencia** o los revisores lo rechazarían. Se impone por tanto un
+**presupuesto de tiempo: el tiempo de un run del QEA debe ser ≤ 4× la mediana
+de tiempo del GA**, por instancia. El GA es el de \cite{DiazIPMU2020} (columna
+*t* de la Tabla `tab:lit_classical` en `Papers/COR_Tabu/main.tex`); se toma el
+valor de la tabla tal cual (**4× literal, sin ajuste de hardware**).
+
+| Inst | GA t (s) | 4×GA (s) | | Inst | GA t (s) | 4×GA (s) |
+|------|----------|----------|-|------|----------|----------|
+| ABZ7 | 1.8 | 7.2 | | la24 | 0.8 | 3.2 |
+| ABZ8 | 1.8 | 7.2 | | la25 | 1.0 | 4.0 |
+| ABZ9 | 2.2 | 8.8 | | la27 | 1.3 | 5.2 |
+| FT10 | 0.5 | 2.0 | | la29 | 1.1 | 4.4 |
+| FT20 | 0.7 | 2.8 | | la38 | 1.4 | 5.6 |
+| la21 | 1.1 | 4.4 | | la40 | 1.2 | 4.8 |
+
+**Mecanismo:** el QEA sigue parando **por generaciones** (reproducible — parar
+por tiempo dependería de la carga de la máquina y no sería reportable), pero el
+número de generaciones *G* se **calibra por instancia** para que un run quede
+≤ 4× GA. La calibración mide cuántas generaciones completa la versión actual
+dentro de 4× GA (`calibrate.sh`). *G* depende de la versión: una operación más
+cara por generación deja menos generaciones, así que **se recalibra cada vez que
+cambia el coste por generación**. El tiempo a comparar es el **single-process**
+(sin contención de runs en paralelo), que es el comparable con la tabla del GA.
+
+**Guardrail del loop:** una idea se descarta si, además de no mejorar AvgRE,
+empuja el tiempo por encima de 4× GA a igualdad de presupuesto.
+
+**Implicación metodológica (importante):** todas las mediciones de la sección 2
+se hicieron con **500 generaciones**, sin restricción de tiempo. Bajo el
+presupuesto de tiempo, una mejora cara por generación (p.ej. el sampling con
+`pow(tau)`) deja menos generaciones y puede dejar de compensar. Comprobado: el
+baseline iter 17 (todos los schedules) da AvgRE **10.96%** con 500 gen, pero
+**14.62%** al recortarlo a ≤ 4× GA (G ≈ 78–127). Por eso el desarrollo se
+**reinicia desde el baseline posicional** (commit `d8f1d66`) y cada idea se
+re-valida por su efecto en AvgRE *a igualdad de tiempo* (≤ 4× GA), no de
+generaciones.
+
+---
+
 ## 2. Cosas probadas
+
+> ⚠️ **Cambio de régimen (ver §1.5).** Las entradas siguientes se midieron con
+> **500 generaciones sin límite de tiempo** y se conservan como conocimiento
+> histórico (qué se probó y por qué funcionó/no). A partir del reinicio, el loop
+> opera bajo el **presupuesto de tiempo (≤ 4× GA)** y cada idea se **re-valida**
+> en ese régimen — su veredicto histórico no se da por bueno automáticamente.
 
 Una por línea (qué se probó → resultado → conclusión). Métrica: media de AvgRE(%).
 Se registran **todas** las ideas probadas, mejoren o no, para no repetirlas.
@@ -58,7 +106,42 @@ Se registran **todas** las ideas probadas, mejoren o no, para no repetirlas.
 - **Step factor diferenciado para genBest target** (cuando target=genBest en iter 14, multiplicar el step de rotación por un factor < 1 para amortiguar la señal ruidosa; sin schedule, sólo escalar fijo. Mejor del barrido: factor=0.7, −0.33 puntos en 3 instancias, pero patrón no-monotónico: 0.85 empeora, 0.5 empeora más) → **11.30%**. NO funciona: 0.22 puntos peor, gana solo en 5 de 12. Las medianas (la21, la24, la29) salen peor (~+0.85 cada una), confirmando que el step REDUCIDO impide a la rotación capitalizar la "novedad" de genBest. Refina la teoría iter 14: **rotar hacia genBest requiere step COMPLETO** — la dirección de exploración solo aporta cuando se aplica con magnitud completa; amortiguarla la convierte en ruido inútil. Probada, sin mejora.
 - **Step factor amplificado para bestSoFar target** (la simétrica conceptual de iter 15: cuando target=bestSoFar, escalar el step por un factor > 1 para reforzar la señal estable. Mejor del barrido: factor=1.3, −0.57 puntos en 3 instancias) → **11.08%**. EMPATE EXACTO al segundo decimal con baseline (11.08 = 11.08), gana en 6 de 12 (ABZ7 −0.58, ABZ8 −0.94) pero pierde en 6 (la21 +0.70, la24 +0.62) — las mejoras y empeoramientos se cancelan exactamente. Hipótesis simétrica refutada: amplificar la señal estable NO ayuda. Refina aún más la teoría: el step `rot_end=0.08` ya está bien tuneado para AMBOS targets; cualquier asimetría en el step (ni amplificar bestSoFar ni amortiguar genBest) mejora la búsqueda. **La rotación es agnóstica al target**: lo que importa es la dirección, no la magnitud. Probada, sin mejora.
 - **Anti-rotación hacia genWorst** (tras la rotación principal, aplicar un paso negativo (`-antiStep`) hacia el peor individuo de la generación actual para alejar la distribución de genotipos malos; schedule monótono `anti_step_start → anti_step_end`. Mejor combo del barrido en 3 instancias: 0.005 → 0.02, −0.60 puntos; 0.02→0 taper off: −0.31; constante 0.005: −0.05; 0→0.01 ramp: +0.72; constante 0.01: +0.55; 0→0.02 ramp: −0.07) → **10.96%**. FUNCIONA: 0.12 puntos mejor, gana globalmente aunque con mejoras pequeñas por instancia. Primera vez que se introduce **señal negativa** (aprendizaje contrastivo); el efecto es modesto pero consistente. Se añade clamp `cNew < 0.0` en `rotatePositional` para pasos negativos. Nuevos parámetros `qea.anti_step_start` / `qea.anti_step_end` (opt-in, default 0 = desactivado).
+- **Stagnation-triggered K boost** (cuando `iterationsNI >= stagnation_threshold`, multiplicar K por `boost_k` para explorar más ampliamente; la señal se resetea cuando bestSoFar mejora. Mejor combo del barrido en 3 instancias: thresh=10, boost_k=3.0 → 5.43% vs baseline 6.06% (−0.63 pts)) → **DESCARTADO POR TRAMPA METODOLÓGICA**. Con thresh=10 y boost_k=3.0, el algoritmo estanca frecuentemente desde gen 10 → K queda triplicado la mayor parte del run (K efectivo ~750 vs K nominal 250), lo que supone ~3× más evaluaciones que el baseline. La mejora observada en el sweep es un artefacto de usar más evaluaciones, no del mecanismo adaptativo. Los boosts justos (boost_k=1.5, solo 50% más evaluaciones) no dan mejora apreciable en el sweep (−0.06 pts, ruido). Además, boost_k=3.0 hace que cada run tarde ~3× más, haciendo impracticable el experimento de 30 runs (abortado). **Conclusión: cualquier mejora por "muestrear más cuando estancado" equivale a simplemente aumentar el presupuesto de evaluaciones, no a una mejora algorítmica real.**
+- **Consensus reinforcement** (tras la rotación principal, aplicar un paso extra SOLO en las posiciones donde el target de rotación y genSecondBest colocan el mismo job; el doble acuerdo entre buenos individuos debería reforzar posiciones con evidencia sólida. Mejor combo del barrido en 3 instancias: no hay — TODOS son peores que baseline. Baseline: 6.06%; mejor consensus: 0→0.03 da 6.13% (+0.07), pero la mayoría empeoran significativamente (0→0.01: +0.87, 0→0.02: +0.87).) → NO funciona. **Diagnóstico**: genBest y genSecondBest tienen alta correlación (ambos se muestrean de la misma distribución ya parcialmente convergida), por lo que el consensus se activa en casi todas las posiciones y equivale a duplicar el paso de rotación → convergencia prematura. Probada, sin mejora.
+- **Amplitude decay (olvido explícito hacia uniforme)** (cada generación, mezclar amplitudes ligeramente hacia la distribución uniforme: `a = normalize((1-d)*a + d*(1/√n))`; factor `d` scheduled de alto (inicio, más olvido) a bajo (final, menos olvido). Análogo al dropout en redes neuronales pero continuo. Barrido en 3 instancias: baseline 6.06%; mejor decay: constant 0.005 → 6.35% (+0.29); peor: 0.001→0.0001 → 7.18% (+1.12).) → **NO funciona.** Todos los variants con decay empeoran. El olvido acumulado en 500 generaciones es destructivo: incluso d=0.001 da `(1-d)^500 ≈ 0.61` → 40% del aprendizaje borrado. El floor ya maneja la diversidad sin interferir con la señal de aprendizaje. Probada, sin mejora.
+- **Anti-rotation conflict filter** (skip anti-rotation at positions where genWorst places the SAME job as bestSoFar; rationale: at those positions anti-rotating reduces the amplitude of bestSoFar's job, opposing the main learning signal. Parámetro: `qea.anti_filter = true`. Barrido en 3 instancias: baseline 6.06%; filter+0.002→0.01: 6.51%, filter+0.01→0.04: 6.60%, filter+0.005→0.02: 6.68%, filter+0.005→0.04: 7.13%.) → **NO funciona.** Todos los variants con filtro empeoran. El filtro REDUCE la anti-rotación total (elimina posiciones que sí se actualizaban), y el efecto "conflictivo" de esas posiciones es menor que el costo de perder su presupuesto de anti-rotación. La anti-rotación necesita cubrir todas las posiciones consistentemente para ser efectiva.
+- **Anti-rotación multi-objetivo (bottom-M)** (en lugar de anti-rotar solo hacia genWorst (rango K-1), anti-rotar hacia los M peores con paso antiStep/M cada uno (mismo presupuesto total, señal más robusta). Parámetro: `qea.anti_num`. Barrido en 3 instancias: baseline N=1: 6.06%; N=2 mismo total: 6.51%; N=3 mismo total: 6.36%; N=5 mismo total: 7.22%; N=2 con 2× presupuesto: 6.11%.) → **NO funciona.** Todos peores que baseline. El paso reducido por target (antiStep/M) es demasiado pequeño para ser efectivo. La anti-rotación necesita la MAGNITUD COMPLETA en un solo target para dar señal significativa. El ruido en un único individuo extremo no es el problema — la robustez de múltiples targets no compensa la pérdida de magnitud. El caso N=2 con 2× presupuesto (6.11%) es casi igual al baseline pero esto equivale simplemente a doblar el anti-step, ya probado como peor en iter 17.
 - **Mejor versión actual (baseline): posicional, samples schedule 100→400 cosine (avg 250), rotación cosine 0.02→0.08, floor constante 0.005, sampling τ 0.7→1.3, target_w 0.0→1.0, anti-rotación 0.005→0.02 → AvgRE 10.96%.** Brecha con GA puro: ~1.18 puntos. El QEA puro está prácticamente a la par del GA puro.
+
+---
+
+## 2.T Re-validación bajo presupuesto de tiempo (≤ 4× GA)
+
+Desde el reinicio (§1.5) cada idea se mide bajo el presupuesto de tiempo
+(generaciones calibradas a ≤ 4× GA por instancia, calibración single-process).
+Los AvgRE de aquí **no** son comparables con los de §2 (presupuesto distinto).
+
+**Puntos de referencia bajo tiempo (12 inst × 30 runs):**
+- Baseline posicional simple (sin schedules, G ≈ 155–255): **16.54%**.
+- iter 17 completo (todos los schedules, G ≈ 78–127): **14.62%**.
+- *(meta: GA puro 9.78%)*
+
+- **T1 — Quitar el schedule de temperatura de muestreo (tau)** (sweep 3 inst,
+  calibrado a 4× GA: full 8.71%, **notau 6.91%** (−1.80); nosamp 9.50, noanti
+  9.00, nosamp_noanti 9.99 → samples-schedule y anti-rotación SÍ ayudan bajo
+  tiempo, solo tau estorba). Full 12×30: **13.08%** (−1.54 vs iter17 14.62%).
+  ✅ **FUNCIONA.** Sin el `pow()` del muestreo el QEA completa 3–4× más
+  generaciones (G ≈ 249–403 vs 78–127); la mayor cantidad de iteraciones supera
+  a la mejor explotación por iteración. **Contra-intuitivo:** tau fue la MAYOR
+  mejora con 500 gen (−1.56) y es la PEOR bajo tiempo — el régimen de tiempo
+  reordena las prioridades. Lección: bajo presupuesto corto, **el coste por
+  generación pesa tanto como la calidad por generación**; las operaciones caras
+  (pow por muestra) hay que evitarlas salvo que su ganancia por gen sea enorme.
+
+**Mejor versión bajo tiempo (baseline del loop-T):** posicional, samples
+100→400 cosine, rotación cosine 0.02→0.08, floor 0.005, target_w 0→1,
+anti-rotación 0.005→0.02, **SIN tau**, parada por generaciones (G calibrado a
+≤ 4× GA) → AvgRE **13.08%**. Brecha con GA puro: 3.3 puntos.
 
 ---
 

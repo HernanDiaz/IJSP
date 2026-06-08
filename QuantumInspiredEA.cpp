@@ -688,33 +688,42 @@ static inline double scheduleProgress(double t, bool cosine) {
 	return 0.5 * (1.0 - std::cos(M_PI * t));
 }
 
+// Linear progress t in [0,1] for the schedules, mapped through the shape.
+// When a timelimit is active, progress is measured by elapsed time so that
+// the schedules complete within the time budget even though the stopping
+// criterion is time (not generations). Otherwise it falls back to the
+// generation count (legacy behaviour). Used to CALIBRATE the per-instance
+// generation budget G that fits within 4x the GA time; production runs stop
+// by generations (generations=G) for reproducibility.
+double QuantumInspiredEA::scheduleFraction() const {
+	double t = 0.0;
+	if (this->maxRuntime > 0.0) {
+		double rt = this->totalRuntime / (double)CLOCKS_PER_SEC;
+		t = rt / this->maxRuntime;
+	} else if (this->maxGenerations > 1) {
+		t = (double)this->generation / (double)(this->maxGenerations - 1);
+	}
+	return scheduleProgress(t, this->cosineSchedule);
+}
+
 double QuantumInspiredEA::currentRotation() const {
 	if (compareDouble(this->rotStart, this->rotEnd) == 0)
 		return this->rotStart;
-	double t = 0.0;
-	if (this->maxGenerations > 1)
-		t = (double)this->generation / (double)(this->maxGenerations - 1);
-	double f = scheduleProgress(t, this->cosineSchedule);
+	double f = this->scheduleFraction();
 	return this->rotStart + (this->rotEnd - this->rotStart) * f;
 }
 
 double QuantumInspiredEA::currentFloor() const {
 	if (compareDouble(this->floorStart, this->floorEnd) == 0)
 		return this->floorStart;
-	double t = 0.0;
-	if (this->maxGenerations > 1)
-		t = (double)this->generation / (double)(this->maxGenerations - 1);
-	double f = scheduleProgress(t, this->cosineSchedule);
+	double f = this->scheduleFraction();
 	return this->floorStart + (this->floorEnd - this->floorStart) * f;
 }
 
 int QuantumInspiredEA::currentSamples() const {
 	if (this->samplesStart == this->samplesEnd)
 		return this->samplesStart;
-	double t = 0.0;
-	if (this->maxGenerations > 1)
-		t = (double)this->generation / (double)(this->maxGenerations - 1);
-	double f = scheduleProgress(t, this->cosineSchedule);
+	double f = this->scheduleFraction();
 	int k = (int)std::round((double)this->samplesStart
 		+ ((double)this->samplesEnd - (double)this->samplesStart) * f);
 	if (k < 1) k = 1;
@@ -724,30 +733,21 @@ int QuantumInspiredEA::currentSamples() const {
 double QuantumInspiredEA::currentTau() const {
 	if (compareDouble(this->tauStart, this->tauEnd) == 0)
 		return this->tauStart;
-	double t = 0.0;
-	if (this->maxGenerations > 1)
-		t = (double)this->generation / (double)(this->maxGenerations - 1);
-	double f = scheduleProgress(t, this->cosineSchedule);
+	double f = this->scheduleFraction();
 	return this->tauStart + (this->tauEnd - this->tauStart) * f;
 }
 
 double QuantumInspiredEA::currentTargetW() const {
 	if (compareDouble(this->targetWStart, this->targetWEnd) == 0)
 		return this->targetWStart;
-	double t = 0.0;
-	if (this->maxGenerations > 1)
-		t = (double)this->generation / (double)(this->maxGenerations - 1);
-	double f = scheduleProgress(t, this->cosineSchedule);
+	double f = this->scheduleFraction();
 	return this->targetWStart + (this->targetWEnd - this->targetWStart) * f;
 }
 
 double QuantumInspiredEA::currentAntiStep() const {
 	if (compareDouble(this->antiStepStart, this->antiStepEnd) == 0)
 		return this->antiStepStart;
-	double t = 0.0;
-	if (this->maxGenerations > 1)
-		t = (double)this->generation / (double)(this->maxGenerations - 1);
-	double f = scheduleProgress(t, this->cosineSchedule);
+	double f = this->scheduleFraction();
 	return this->antiStepStart + (this->antiStepEnd - this->antiStepStart) * f;
 }
 

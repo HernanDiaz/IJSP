@@ -231,6 +231,13 @@ protected:
 	 *  Dispatches by scheme. */
 	void rotateTowards(const std::vector<int> &bestGenotype);
 
+	/** Linear schedule progress t in [0,1] mapped through the schedule shape.
+	 *  Driven by elapsed time when a timelimit is set (so all schedules still
+	 *  complete within the time budget when stopping by time rather than by
+	 *  generations); otherwise driven by the generation count. Shared by all
+	 *  current* schedule accessors below. */
+	double scheduleFraction() const;
+
 	/** Returns the rotation step for the current generation (schedule-aware). */
 	double currentRotation() const;
 
