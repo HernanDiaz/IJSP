@@ -40,6 +40,7 @@
 #include "DecoderFVRP.h"
 #include "DecoderIJSP.h"
 #include "CreationIJSP.h"
+#include "CreationIJSP_FromFile.h"
 
 
 
@@ -341,6 +342,7 @@ public:
 		CreationMap[toUpper("ijsp.STPT.makespan")] = &createCreationInstance<IJSP::CreationSCTFIntervalMkSchedule>;        //Shortest total processing time
 		CreationMap[toUpper("ijsp.LTPT.makespan")] = &createCreationInstance<IJSP::CreationLCTFIntervalMkSchedule>;		   //Longest total processing time
 		CreationMap[toUpper("ijsp.Manager.makespan")] = &createCreationInstance<IJSP::CreationManagerIntervalMkSchedule>;
+		CreationMap[toUpper("ijsp.solutions-file")] = &createCreationInstance<IJSP::CreationFromFileSchedule>;
 		
 		// -----  CROSSOVER OPERATORS  ----------------------------------------
 		CrossoverMap[toUpper("ijsp.jox")] = &createCrossoverInstance<IJSP::Crossover_JOX>;

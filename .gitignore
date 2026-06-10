@@ -75,6 +75,8 @@ Papers/COR_Tabu/IJSP_dataset_2026.zip.preBugfix2
 
 # IPRTS experiments: raw run logs stay local (summaries/aggregates are tracked)
 experiments/iprts_2026/results/*/
+# Seed solutions are derived from the Zenodo dataset (rebuild: scripts/prepare_seeds.sh)
+experiments/iprts_2026/seeds/
 
 # Statistical result CSVs from older / unrelated experiments
 # (the paper-relevant statistical_results_exp4/ CSVs are kept tracked

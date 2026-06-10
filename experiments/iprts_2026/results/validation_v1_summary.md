@@ -63,3 +63,39 @@ while IPRTS keeps improving up to the cap and ends ABOVE the baseline's
 converged quality on the 15×10 family. v1's weak flank is convergence SPEED,
 not (only) final quality — which is exactly what better seeding, deep TS
 chains and irace target.
+
+## Ablation (a): PR candidates over N2 instead of N1 (same budget)
+
+Mean Δavg jumps from **+1.35 % (N1) to +2.93 % (N2)**, worse on 12/12
+instances; the three 15×10 wins disappear. Empirical confirmation of the
+design argument: N2's block-boundary filter removes exactly the disagreeing
+interior-block arcs the walk needs, truncating the relinking. PR needs the
+navigation-complete extreme-critical set (N1); the improvement-filtered set
+belongs in the TS. Results: `results/validation_v1_prN2/`
+(setup `setup_IPRTS_val_prN2.txt`).
+
+## Warm-start from the paper's stored solutions (Hernán's proposal)
+
+Pool seeded from the Phase-B tuned TS-N2 run solutions
+(`seeds/N2_tuned/<instance>_Sols.csv`, loaded by the new
+`creation = ijsp.solutions-file` strategy, 20 % random mix). Same 5×60 s
+budget:
+
+- **Δavg −0.67 % mean: better average-E than the baseline's 30-run average on
+  12/12 instances** (from −0.06 % on la40 to −1.86 % on abz8).
+- d_best: ties the baseline best on 7/12, +0.1…+0.7 % on the rest. **No
+  best-known value improved yet.**
+- Caveats for the strong claim ("PR improves the baseline's converged
+  solutions"): each warm run starts from a sample of the baseline's own 30
+  solutions, so beating its *average* partly reflects per-run selection of
+  good seeds. The clean open test is beating its *best* envelope.
+- **Fidelity finding (append-vs-insertion test on abz7):** the stored files
+  cannot reproduce the original objectives at all. The `_Sols.csv` writer
+  stores `ScheduleIJSP::toString()` = the schedule's `taskOrder` sequence,
+  which does not capture the final machine sequences (`taskInfo[].mp/.ms`);
+  rebuilding abz7's 668 order yields ~672.5–673 with BOTH append and
+  insertion SGS (and the SGS choice is immaterial in outcome — Hernán's
+  Lamarckian intuition confirmed). The recoverable warm-start envelope on
+  abz7 floors at ~672.5, 4.5 points above the stored best. Exact warm-starts
+  would need the runs re-dumped with a writer that stores a topological
+  order of the final schedule (future, additive change).
