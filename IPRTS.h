@@ -27,6 +27,13 @@ namespace FuzzyFW {
 *	- pool.restart-patience : after this many consecutive cycles without any
 *			pool insertion, the worst half of the pool is re-seeded (scout
 *			phase analogue; -1 disables it)
+*	- pool.restart-perturbation : refill restarted slots by perturbing
+*			surviving elites (extract+reinsert genotype moves, rebuilt
+*			through the decoder) instead of creating fresh seeds; perturbed
+*			material starts at elite level, so it can actually re-enter the
+*			pool and re-diversify a saturated search
+*	- pool.perturbation-strength : perturbation moves as a fraction of the
+*			genotype length
 *	- pool.seed-retries : creation attempts per pool slot before relaxing the
 *			diversity rule during (re-)seeding
 *	- pr.neighbourhood / pr.max-steps : see PathRelinkIJSP
@@ -44,6 +51,8 @@ namespace FuzzyFW {
 
 #define IPRTS_SEED_RETRIES "pool.seed-retries"
 #define IPRTS_RESTART_PATIENCE "pool.restart-patience"
+#define IPRTS_RESTART_PERTURB "pool.restart-perturbation"
+#define IPRTS_PERTURB_STRENGTH "pool.perturbation-strength"
 #define IPRTS_LS_ROUNDS "localsearch.max-rounds"
 
 #define IPRTS_CYCLES "generations"
@@ -99,6 +108,8 @@ protected:
 	unsigned int poolSize;
 	double poolMinDistance;
 	int restartPatience;
+	bool restartPerturbation;
+	double perturbationStrength;
 	int seedRetries;
 
 	/**
@@ -201,6 +212,18 @@ protected:
 	* first, relaxed after seedRetries failures per free slot)
 	*/
 	void fillPool();
+
+	/**
+	* Refills restarted slots with TS-improved perturbations of surviving
+	* elites; falls back to fillPool for any slot left
+	*/
+	void refillByPerturbation();
+
+	/**
+	* Clone of a random elite with extract+reinsert genotype moves applied,
+	* re-decoded and re-evaluated (NULL if the genotype is not an int array)
+	*/
+	Individual * perturbedElite();
 
 	/**
 	* Stores the statistical values in each time/cycle span

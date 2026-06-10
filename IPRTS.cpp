@@ -33,6 +33,8 @@ IPRTS::IPRTS(ParameterDB *params)
 	this->poolSize = 0;
 	this->poolMinDistance = 0.0;
 	this->restartPatience = -1;
+	this->restartPerturbation = true;
+	this->perturbationStrength = 0.15;
 	this->cyclesSinceInsertion = 0;
 	this->seedRetries = 0;
 
@@ -115,6 +117,12 @@ void IPRTS::printSetupTree(std::ofstream &output) const {
 		<< valueToString(this->poolMinDistance) << std::endl;
 	output << ";;Restart Patience:;"
 		<< valueToString(this->restartPatience) << std::endl;
+	output << ";;Restart Mode:;";
+	if (this->restartPerturbation)
+		output << "elite perturbation (strength "
+			<< valueToString(this->perturbationStrength) << ")" << std::endl;
+	else
+		output << "fresh seeds" << std::endl;
 
 	output << ";Stopping criteria:" << std::endl;
 	output << ";;Max.Cycles:;";
@@ -220,6 +228,7 @@ std::vector< std::vector<double> > IPRTS::getEvolution(
 	labels.push_back("Runtime");
 	labels.push_back("Best");
 	labels.push_back("Avg");
+	labels.push_back("PoolDist");
 	return this->evolutionStats;
 }
 
@@ -270,6 +279,8 @@ void IPRTS::prepareToRun(ParameterDB *params) {
 	this->poolSize = p->getInteger(POOL_SIZE, 10);
 	this->poolMinDistance = p->getDouble(POOL_MIN_DISTANCE, 0.05);
 	this->restartPatience = p->getInteger(IPRTS_RESTART_PATIENCE, 50);
+	this->restartPerturbation = p->getBoolean(IPRTS_RESTART_PERTURB, true);
+	this->perturbationStrength = p->getDouble(IPRTS_PERTURB_STRENGTH, 0.15);
 	this->seedRetries = p->getInteger(IPRTS_SEED_RETRIES, 5);
 
 	// Stopping criteria
@@ -458,7 +469,10 @@ std::pair<Solution *, Objective *> IPRTS::run(Problem *problem,
 		if (this->restartPatience >= 0
 			&& (int)this->cyclesSinceInsertion >= this->restartPatience) {
 			this->pool.dropWorstHalf();
-			this->fillPool();
+			if (this->restartPerturbation)
+				this->refillByPerturbation();
+			else
+				this->fillPool();
 			this->poolRestarts++;
 			this->cyclesSinceInsertion = 0;
 		}
@@ -573,6 +587,69 @@ void IPRTS::fillPool() {
 }
 
 
+//-----  refillByPerturbation  ------------------------------------------------
+void IPRTS::refillByPerturbation() {
+	int tries = 0;
+	const int maxTries = this->seedRetries
+		* (int)(this->poolSize - this->pool.size());
+
+	while (this->pool.size() < this->poolSize && tries < maxTries
+		&& this->pool.size() > 0) {
+		Individual *candidate = this->perturbedElite();
+		if (candidate == NULL)
+			break;	// genotype type not supported: use fresh seeds instead
+		this->applyLocalSearch(candidate);
+		this->pool.tryInsert(candidate);
+		tries++;
+	}
+
+	// Any remaining slot falls back to the standard seeding path
+	this->fillPool();
+}
+
+
+//-----  perturbedElite  --------------------------------------------------------
+Individual * IPRTS::perturbedElite() {
+	clock_t timePoint = clock();
+
+	Individual *candidate = this->pool.get(this->sharedVariables->rng
+		->getInteger(0, this->pool.size() - 1))->clone();
+
+	IndividualArrayInt *intCandidate =
+		dynamic_cast<IndividualArrayInt *>(candidate);
+	if (intCandidate == NULL) {
+		delete candidate;
+		return NULL;
+	}
+
+	// Extract+reinsert moves keep the job-repetition counts valid
+	std::vector<int> &genes = intCandidate->getGenotype();
+	int moves = (int)(this->perturbationStrength * genes.size());
+	if (moves < 2)
+		moves = 2;
+	for (int m = 0; m < moves; m++) {
+		const int from = this->sharedVariables->rng
+			->getInteger(0, genes.size() - 1);
+		const int gene = genes[from];
+		genes.erase(genes.begin() + from);
+		const int to = this->sharedVariables->rng
+			->getInteger(0, genes.size());
+		genes.insert(genes.begin() + to, gene);
+	}
+
+	// Rebuild phenotype and fitness from the perturbed genotype
+	Solution *decoded = this->sharedVariables->decoder
+		->decode(candidate, this->sharedVariables);
+	candidate->updatePhenotype(decoded->clone());
+	candidate->updateFitness(
+		this->evaluator->evaluate(this->sharedVariables, candidate));
+	this->evaluations++;
+
+	this->creationTime += clock() - timePoint;
+	return candidate;
+}
+
+
 //-----  computeStatistics  ---------------------------------------------------
 void IPRTS::computeStatistics() {
 	std::vector<double> stats;
@@ -587,6 +664,7 @@ void IPRTS::computeStatistics() {
 	stats.push_back(runtime);	// Runtime
 	stats.push_back(this->bestSoFar->getFitness()->toDouble());	// Best
 	stats.push_back(this->pool.averageFitness());	// Pool average
+	stats.push_back(this->pool.averageDistanceFrac());	// Pool diversity
 
 	this->evolutionStats.push_back(stats);
 
