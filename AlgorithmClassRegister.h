@@ -22,6 +22,7 @@
 #include "ArtificialBeeColonyPSO.h"
 #include "ArtificialBeeColonyCell.h"
 #include "RandomPopulation.h"
+#include "IPRTS.h"
 
 namespace FuzzyFW {
 
@@ -58,6 +59,8 @@ public:
 		AlgorithmMap[toUpper("ABCT")]     = &createInstance<ArtificialBeeColonyThread>;
 		AlgorithmMap[toUpper("ABCPSO")]   = &createInstance<ArtificialBeeColonyPSO>;
 		AlgorithmMap[toUpper("ABCCELL")]  = &createInstance<ArtificialBeeColonyCell>;
+		AlgorithmMap[toUpper("IPRTS")]    = &createInstance<IPRTS>;
+		AlgorithmMap[toUpper("PR-TS")]    = &createInstance<IPRTS>;
 	}
 };
 

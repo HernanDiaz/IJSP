@@ -1,0 +1,4 @@
+# Shell and Python scripts must keep LF endings: they are executed inside WSL,
+# where CRLF breaks the interpreter even when the repo is cloned on Windows.
+*.sh text eol=lf
+*.py text eol=lf

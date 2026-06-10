@@ -73,6 +73,9 @@ Papers/COR_Tabu/data/
 Papers/COR_Tabu/IJSP_dataset_2026.zip
 Papers/COR_Tabu/IJSP_dataset_2026.zip.preBugfix2
 
+# IPRTS experiments: raw run logs stay local (summaries/aggregates are tracked)
+experiments/iprts_2026/results/*/
+
 # Statistical result CSVs from older / unrelated experiments
 # (the paper-relevant statistical_results_exp4/ CSVs are kept tracked
 #  because they are small (~740 KB) and let the paper's analysis be
