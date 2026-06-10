@@ -24,21 +24,8 @@ QuantumInspiredEA::QuantumInspiredEA(ParameterDB *params)
 	GeneticClassRegister::registerClasses();
 
 	this->samples = 0;
-	this->samplesStart = -1;
-	this->samplesEnd = -1;
 	this->deltaTheta = 0.0;
-	this->rotStart = -1.0;
-	this->rotEnd = -1.0;
 	this->floorProb = 0.0;
-	this->floorStart = -1.0;
-	this->floorEnd = -1.0;
-	this->cosineSchedule = false;
-	this->tauStart = 1.0;
-	this->tauEnd = 1.0;
-	this->targetWStart = 1.0;
-	this->targetWEnd = 1.0;
-	this->antiStepStart = 0.0;
-	this->antiStepEnd = 0.0;
 	this->usePrecedence = false;
 
 	this->maxGenerations = Infi;
@@ -86,21 +73,8 @@ void QuantumInspiredEA::clearAll() {
 	this->maxRuntime = Infi;
 	this->maxPlateau = Infi;
 	this->samples = 0;
-	this->samplesStart = -1;
-	this->samplesEnd = -1;
 	this->deltaTheta = 0.0;
-	this->rotStart = -1.0;
-	this->rotEnd = -1.0;
 	this->floorProb = 0.0;
-	this->floorStart = -1.0;
-	this->floorEnd = -1.0;
-	this->cosineSchedule = false;
-	this->tauStart = 1.0;
-	this->tauEnd = 1.0;
-	this->targetWStart = 1.0;
-	this->targetWEnd = 1.0;
-	this->antiStepStart = 0.0;
-	this->antiStepEnd = 0.0;
 }
 
 
@@ -121,46 +95,11 @@ void QuantumInspiredEA::printSetupTree(std::ofstream & output) const {
 	for (int i = 1; i < (int)names.size(); i++)
 		output << ";" + names[i] << std::endl;
 
-	output << ";Samples per generation:;" << this->samples;
-	if (this->samplesStart != this->samplesEnd)
-		output << "  (schedule: " << this->samplesStart
-			<< " -> " << this->samplesEnd << ")";
-	output << std::endl;
-	output << ";Rotation step:;" << valueToString(this->deltaTheta);
-	if (compareDouble(this->rotStart, this->rotEnd) != 0)
-		output << "  (schedule: " << valueToString(this->rotStart)
-			<< " -> " << valueToString(this->rotEnd) << ")";
-	output << std::endl;
-	output << ";Floor probability:;" << valueToString(this->floorProb);
-	if (compareDouble(this->floorStart, this->floorEnd) != 0)
-		output << "  (schedule: " << valueToString(this->floorStart)
-			<< " -> " << valueToString(this->floorEnd) << ")";
-	output << std::endl;
+	output << ";Samples per generation:;" << this->samples << std::endl;
+	output << ";Rotation step:;" << valueToString(this->deltaTheta) << std::endl;
+	output << ";Floor probability:;" << valueToString(this->floorProb) << std::endl;
 	output << ";Model scheme:;"
 		<< (this->usePrecedence ? "Precedence" : "Positional") << std::endl;
-	output << ";Schedule type:;"
-		<< (this->cosineSchedule ? "Cosine annealing" : "Linear") << std::endl;
-	output << ";Sampling tau:;";
-	if (compareDouble(this->tauStart, 1.0) == 0
-		&& compareDouble(this->tauEnd, 1.0) == 0)
-		output << "1.0 (raw probabilities)" << std::endl;
-	else
-		output << valueToString(this->tauStart) << " -> "
-			<< valueToString(this->tauEnd) << std::endl;
-	output << ";P(target=bestSoFar):;";
-	if (compareDouble(this->targetWStart, 1.0) == 0
-		&& compareDouble(this->targetWEnd, 1.0) == 0)
-		output << "1.0 (always bestSoFar)" << std::endl;
-	else
-		output << valueToString(this->targetWStart) << " -> "
-			<< valueToString(this->targetWEnd) << std::endl;
-	output << ";Anti-rotation step (toward genWorst):;";
-	if (compareDouble(this->antiStepStart, 0.0) == 0
-		&& compareDouble(this->antiStepEnd, 0.0) == 0)
-		output << "0 (disabled)" << std::endl;
-	else
-		output << valueToString(this->antiStepStart) << " -> "
-			<< valueToString(this->antiStepEnd) << std::endl;
 
 	output << ";Stopping criteria:" << std::endl;
 	output << ";;Max.Generations:;";
@@ -267,33 +206,8 @@ void QuantumInspiredEA::prepareToRun(ParameterDB *params) {
 
 	// QEA-specific parameters
 	this->samples = p->getInteger(QEA_SAMPLES, -1);
-	// Optional samples schedule (defaults to the constant samples)
-	this->samplesStart = p->getInteger(QEA_SAMP_START, (int)this->samples);
-	this->samplesEnd = p->getInteger(QEA_SAMP_END, (int)this->samples);
 	this->deltaTheta = p->getDouble(QEA_ROTATION, -1.0);
-	// Optional rotation schedule (defaults to the constant deltaTheta)
-	this->rotStart = p->getDouble(QEA_ROT_START, this->deltaTheta);
-	this->rotEnd = p->getDouble(QEA_ROT_END, this->deltaTheta);
 	this->floorProb = p->getDouble(QEA_FLOOR, 0.0);
-	// Optional floor schedule (defaults to the constant floorProb)
-	this->floorStart = p->getDouble(QEA_FLOOR_START, this->floorProb);
-	this->floorEnd = p->getDouble(QEA_FLOOR_END, this->floorProb);
-	this->cosineSchedule =
-		(p->getStringLower(QEA_SCHED_TYPE).compare("cosine") == 0);
-	this->tauStart = p->getDouble(QEA_TAU_START, 1.0);
-	this->tauEnd = p->getDouble(QEA_TAU_END, 1.0);
-	if (this->tauStart <= 0.0) this->tauStart = 1.0;
-	if (this->tauEnd <= 0.0) this->tauEnd = 1.0;
-	this->targetWStart = p->getDouble(QEA_TWGT_START, 1.0);
-	this->targetWEnd = p->getDouble(QEA_TWGT_END, 1.0);
-	if (this->targetWStart < 0.0) this->targetWStart = 0.0;
-	if (this->targetWStart > 1.0) this->targetWStart = 1.0;
-	if (this->targetWEnd < 0.0) this->targetWEnd = 0.0;
-	if (this->targetWEnd > 1.0) this->targetWEnd = 1.0;
-	this->antiStepStart = p->getDouble(QEA_ANTI_START, 0.0);
-	this->antiStepEnd = p->getDouble(QEA_ANTI_END, 0.0);
-	if (this->antiStepStart < 0.0) this->antiStepStart = 0.0;
-	if (this->antiStepEnd < 0.0) this->antiStepEnd = 0.0;
 	this->usePrecedence =
 		(p->getStringLower(QEA_SCHEME).compare("precedence") == 0);
 
@@ -423,10 +337,9 @@ std::pair<Solution *, Objective *> QuantumInspiredEA::run(Problem *problem,
 
 		Population *currentPopulation = new Population();
 
-		// ----- Observe K samples (K may vary along the schedule) -----
-		int K = this->currentSamples();
+		// ----- Observe K samples -----
 		timePoint = clock();
-		for (int k = 0; k < K; k++) {
+		for (unsigned int k = 0; k < this->samples; k++) {
 			std::vector<int> genotype = this->observe();
 			currentPopulation->addIndividual(new IndividualArrayInt(genotype));
 		}
@@ -436,7 +349,7 @@ std::pair<Solution *, Objective *> QuantumInspiredEA::run(Problem *problem,
 		timePoint = clock();
 		this->evaluator->evaluatePopulation(this->sharedVariables,
 			currentPopulation);
-		this->evaluations += (long int)K;
+		this->evaluations += (long int)this->samples;
 		this->evaluationTime += clock() - timePoint;
 
 		// ----- Update best so far -----
@@ -454,35 +367,10 @@ std::pair<Solution *, Objective *> QuantumInspiredEA::run(Problem *problem,
 			this->iterationsNI++;
 
 		// ----- Rotate the distribution towards the best -----
-		// Target-choice schedule: with prob currentTargetW use bestSoFar
-		// (global, stable); otherwise use genBest (local, more novelty).
-		// Default w = 1.0 -> always bestSoFar (baseline behaviour).
 		timePoint = clock();
-		Individual *target = this->bestSoFar;
-		double w = this->currentTargetW();
-		if (compareDouble(w, 1.0) < 0
-			&& this->sharedVariables->rng->getProbability() >= w) {
-			target = genBest;
-		}
-		IndividualArrayInt *bi = dynamic_cast<IndividualArrayInt *>(target);
+		IndividualArrayInt *bi =
+			dynamic_cast<IndividualArrayInt *>(this->bestSoFar);
 		this->rotateTowards(bi->getGenotype());
-
-		// ----- Anti-rotation toward genWorst (negative learning) -----
-		// After the main rotation, apply a negative step toward the worst
-		// individual of the generation to push amplitudes away from poor
-		// job placements. Disabled when antiStep <= 0.
-		double antiStep = this->currentAntiStep();
-		if (compareDouble(antiStep, 0.0) > 0 && K > 1) {
-			Individual *genWorst = currentPopulation->getBest(
-				this->sharedVariables, (unsigned int)(K - 1));
-			IndividualArrayInt *wi = dynamic_cast<IndividualArrayInt *>(
-				genWorst);
-			if (this->usePrecedence)
-				this->rotatePrecedence(wi->getGenotype(), -antiStep);
-			else
-				this->rotatePositional(wi->getGenotype(), -antiStep);
-		}
-
 		this->applyFloor();
 		this->rotationTime += clock() - timePoint;
 
@@ -570,21 +458,12 @@ std::vector<int> QuantumInspiredEA::observePositional() {
 	std::vector<int> perm;
 	perm.reserve(this->genotypeLength);
 
-	// Sampling temperature: P[j] ~ amplitude[p][j]^(2 * tau).
-	// tau = 1.0 -> raw probability (baseline); tau > 1 sharpens, tau < 1 flattens.
-	double tau = this->currentTau();
-	bool useTau = (compareDouble(tau, 1.0) != 0);
-
 	for (int p = 0; p < this->genotypeLength; p++) {
-		// Compute weights of jobs still available at this position.
-		// Weight = amplitude^2 when tau=1; weight = amplitude^(2*tau) otherwise.
+		// Probability mass of jobs still available at this position
 		double total = 0.0;
-		for (int j = 0; j < this->nJobs; j++) {
-			if (remaining[j] > 0) {
-				double a2 = this->amplitude[p][j] * this->amplitude[p][j];
-				total += useTau ? std::pow(a2, tau) : a2;
-			}
-		}
+		for (int j = 0; j < this->nJobs; j++)
+			if (remaining[j] > 0)
+				total += this->amplitude[p][j] * this->amplitude[p][j];
 
 		// Roulette-wheel selection restricted to available jobs
 		double u = this->sharedVariables->rng->getProbability() * total;
@@ -592,8 +471,7 @@ std::vector<int> QuantumInspiredEA::observePositional() {
 		int chosen = -1;
 		for (int j = 0; j < this->nJobs; j++) {
 			if (remaining[j] > 0) {
-				double a2 = this->amplitude[p][j] * this->amplitude[p][j];
-				acc += useTau ? std::pow(a2, tau) : a2;
+				acc += this->amplitude[p][j] * this->amplitude[p][j];
 				if (u <= acc) {
 					chosen = j;
 					break;
@@ -617,8 +495,7 @@ std::vector<int> QuantumInspiredEA::observePositional() {
 
 
 //-----  rotatePositional  ----------------------------------------------------
-void QuantumInspiredEA::rotatePositional(const std::vector<int> &bestGenotype,
-	double step) {
+void QuantumInspiredEA::rotatePositional(const std::vector<int> &bestGenotype) {
 	for (int p = 0; p < this->genotypeLength; p++) {
 		int jstar = bestGenotype[p];
 		double c = this->amplitude[p][jstar];
@@ -626,11 +503,10 @@ void QuantumInspiredEA::rotatePositional(const std::vector<int> &bestGenotype,
 		if (r2 < 1e-12)
 			continue;					// already collapsed onto jstar
 		double r = std::sqrt(r2);
-		double cNew = c * std::cos(step) + r * std::sin(step);
+		double cNew = c * std::cos(this->deltaTheta)
+			+ r * std::sin(this->deltaTheta);
 		if (cNew > 1.0)
 			cNew = 1.0;
-		if (cNew < 0.0)
-			cNew = 0.0;       // anti-rotation safety: amplitudes are non-negative
 		double rNew = std::sqrt(1.0 - cNew * cNew);
 		double scale = rNew / r;
 		this->amplitude[p][jstar] = cNew;
@@ -643,10 +519,9 @@ void QuantumInspiredEA::rotatePositional(const std::vector<int> &bestGenotype,
 
 //-----  applyFloorPositional  ------------------------------------------------
 void QuantumInspiredEA::applyFloorPositional() {
-	double f = this->currentFloor();
-	if (compareDouble(f, 0.0) <= 0)
+	if (compareDouble(this->floorProb, 0.0) <= 0)
 		return;
-	double minAmp = std::sqrt(f);
+	double minAmp = std::sqrt(this->floorProb);
 	for (int p = 0; p < this->genotypeLength; p++) {
 		bool changed = false;
 		for (int j = 0; j < this->nJobs; j++)
@@ -675,88 +550,11 @@ std::vector<int> QuantumInspiredEA::observe() {
 		: this->observePositional();
 }
 
-// Schedule interpolant. t in [0,1] is the linear progress; this returns the
-// fraction in [0,1] that we travel from start to end at that point.
-//   linear           -> t
-//   cosine annealing -> 0.5 * (1 - cos(pi * t))
-// The cosine version starts near 0, accelerates through the middle, and
-// decelerates as it approaches 1 (ease-in/ease-out).
-static inline double scheduleProgress(double t, bool cosine) {
-	if (t < 0.0) t = 0.0;
-	if (t > 1.0) t = 1.0;
-	if (!cosine) return t;
-	return 0.5 * (1.0 - std::cos(M_PI * t));
-}
-
-// Linear progress t in [0,1] for the schedules, mapped through the shape.
-// When a timelimit is active, progress is measured by elapsed time so that
-// the schedules complete within the time budget even though the stopping
-// criterion is time (not generations). Otherwise it falls back to the
-// generation count (legacy behaviour). Used to CALIBRATE the per-instance
-// generation budget G that fits within 4x the GA time; production runs stop
-// by generations (generations=G) for reproducibility.
-double QuantumInspiredEA::scheduleFraction() const {
-	double t = 0.0;
-	if (this->maxRuntime > 0.0) {
-		double rt = this->totalRuntime / (double)CLOCKS_PER_SEC;
-		t = rt / this->maxRuntime;
-	} else if (this->maxGenerations > 1) {
-		t = (double)this->generation / (double)(this->maxGenerations - 1);
-	}
-	return scheduleProgress(t, this->cosineSchedule);
-}
-
-double QuantumInspiredEA::currentRotation() const {
-	if (compareDouble(this->rotStart, this->rotEnd) == 0)
-		return this->rotStart;
-	double f = this->scheduleFraction();
-	return this->rotStart + (this->rotEnd - this->rotStart) * f;
-}
-
-double QuantumInspiredEA::currentFloor() const {
-	if (compareDouble(this->floorStart, this->floorEnd) == 0)
-		return this->floorStart;
-	double f = this->scheduleFraction();
-	return this->floorStart + (this->floorEnd - this->floorStart) * f;
-}
-
-int QuantumInspiredEA::currentSamples() const {
-	if (this->samplesStart == this->samplesEnd)
-		return this->samplesStart;
-	double f = this->scheduleFraction();
-	int k = (int)std::round((double)this->samplesStart
-		+ ((double)this->samplesEnd - (double)this->samplesStart) * f);
-	if (k < 1) k = 1;
-	return k;
-}
-
-double QuantumInspiredEA::currentTau() const {
-	if (compareDouble(this->tauStart, this->tauEnd) == 0)
-		return this->tauStart;
-	double f = this->scheduleFraction();
-	return this->tauStart + (this->tauEnd - this->tauStart) * f;
-}
-
-double QuantumInspiredEA::currentTargetW() const {
-	if (compareDouble(this->targetWStart, this->targetWEnd) == 0)
-		return this->targetWStart;
-	double f = this->scheduleFraction();
-	return this->targetWStart + (this->targetWEnd - this->targetWStart) * f;
-}
-
-double QuantumInspiredEA::currentAntiStep() const {
-	if (compareDouble(this->antiStepStart, this->antiStepEnd) == 0)
-		return this->antiStepStart;
-	double f = this->scheduleFraction();
-	return this->antiStepStart + (this->antiStepEnd - this->antiStepStart) * f;
-}
-
 void QuantumInspiredEA::rotateTowards(const std::vector<int> &bestGenotype) {
-	double step = this->currentRotation();
 	if (this->usePrecedence)
-		this->rotatePrecedence(bestGenotype, step);
+		this->rotatePrecedence(bestGenotype);
 	else
-		this->rotatePositional(bestGenotype, step);
+		this->rotatePositional(bestGenotype);
 }
 
 void QuantumInspiredEA::applyFloor() {
@@ -791,14 +589,11 @@ std::vector<int> QuantumInspiredEA::observePrecedence() {
 		score[j] = s;
 	}
 
-	double tau = this->currentTau();
-	bool useTau = (compareDouble(tau, 1.0) != 0);
-
 	for (int p = 0; p < this->genotypeLength; p++) {
 		double total = 0.0;
 		for (int j = 0; j < this->nJobs; j++)
 			if (remaining[j] > 0)
-				total += useTau ? std::pow(score[j], tau) : score[j];
+				total += score[j];
 
 		int chosen = -1;
 		if (total > 1e-12) {
@@ -806,7 +601,7 @@ std::vector<int> QuantumInspiredEA::observePrecedence() {
 			double acc = 0.0;
 			for (int j = 0; j < this->nJobs; j++) {
 				if (remaining[j] > 0) {
-					acc += useTau ? std::pow(score[j], tau) : score[j];
+					acc += score[j];
 					if (u <= acc) { chosen = j; break; }
 				}
 			}
@@ -831,8 +626,7 @@ std::vector<int> QuantumInspiredEA::observePrecedence() {
 
 
 //-----  rotatePrecedence  ----------------------------------------------------
-void QuantumInspiredEA::rotatePrecedence(const std::vector<int> &bestGenotype,
-	double step) {
+void QuantumInspiredEA::rotatePrecedence(const std::vector<int> &bestGenotype) {
 	// Mean position of each job in the best sequence (stable precedence signal)
 	std::vector<double> sumPos(this->nJobs, 0.0);
 	std::vector<int> cnt(this->nJobs, 0);
@@ -845,8 +639,8 @@ void QuantumInspiredEA::rotatePrecedence(const std::vector<int> &bestGenotype,
 	for (int j = 0; j < this->nJobs; j++)
 		meanPos[j] = (cnt[j] > 0) ? sumPos[j] / cnt[j] : 0.0;
 
-	double s = std::sin(step);
-	double c = std::cos(step);
+	double s = std::sin(this->deltaTheta);
+	double c = std::cos(this->deltaTheta);
 	for (int a = 0; a < this->nJobs; a++) {
 		for (int b = a + 1; b < this->nJobs; b++) {
 			double pa = this->pref[a][b];          // P(a before b)
@@ -869,11 +663,10 @@ void QuantumInspiredEA::rotatePrecedence(const std::vector<int> &bestGenotype,
 
 //-----  applyFloorPrecedence  ------------------------------------------------
 void QuantumInspiredEA::applyFloorPrecedence() {
-	double f = this->currentFloor();
-	if (compareDouble(f, 0.0) <= 0)
+	if (compareDouble(this->floorProb, 0.0) <= 0)
 		return;
-	double lo = f;
-	double hi = 1.0 - f;
+	double lo = this->floorProb;
+	double hi = 1.0 - this->floorProb;
 	for (int a = 0; a < this->nJobs; a++)
 		for (int b = a + 1; b < this->nJobs; b++) {
 			double pa = this->pref[a][b];
