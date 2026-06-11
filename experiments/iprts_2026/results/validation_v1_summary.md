@@ -89,6 +89,52 @@ budget:
   solutions"): each warm run starts from a sample of the baseline's own 30
   solutions, so beating its *average* partly reflects per-run selection of
   good seeds. The clean open test is beating its *best* envelope.
+## Full-budget warm experiment (30 runs × 900 s, rank-biased N2+N8 seeding)
+
+Setup `setup_IPRTS_warm_full.txt`, results `results/warm_full_v1/`. RE % vs
+the paper's lower bounds (same table as the supplementary material):
+
+- **Mean RE (avg of runs): IPRTS 1.59 % vs TS-N2 2.40 %** — the paper's
+  headline metric, reduced by a third (inherits partly from warm seeding).
+- **Mean RE (best of runs): 1.56 % vs 1.50 %** — par overall, but with real
+  news: **3 baseline best-knowns improved** — abz9 692.5 (was 694.5), la24
+  940.5 (was 942.5), la40 1229.5 (was 1230.5) — solutions the donor solver
+  never produced in 30×900 s, found by PR+TS from its own material. 5 ties
+  (abz8, ft10, ft20, la21, la25); 4 losses (abz7, la27, la29, la38), all
+  consistent with the seed-fidelity floor (stored bests not reconstructible
+  from `_Sols.csv`, see below).
+- Plateau (5000 cycles) stopped every run far below the 900 s cap
+  (median 18–54 s small, 80–137 s large): the warm search saturates;
+  remaining margin must come from machinery (deep TS) or tuning, not budget.
+- Zero-variance rows (avg = best across 30 runs, e.g. la21 at 1052 with 8
+  distinct schedules all at (982, 1122)) are the expected signature of
+  "warm floor reached at seeding + stagnation stop", verified per-run.
+
+## v2: elite-perturbation restarts (Hernán's exhaustion diagnosis → fix)
+
+Hernán's reading of the full-budget warm runs — "the search is exhausted" —
+was verified (most runs: exactly 5000 sterile cycles after seeding; the
+cold runs on large instances are instead budget-limited, still improving at
+the 60 s cap). Cause: stagnation re-seeds can't compete with the elite
+level. Fix (commit `19e23be`): `pool.restart-perturbation` — restarts
+refill by perturbing surviving elites (extract+reinsert genotype moves,
+re-decoded + TS), plus a `PoolDist` evolution column.
+
+**Cold quick, v1 → v2:** mean RE avg 3.80 → 3.11, best 3.02 → 2.22; gains
+concentrate exactly on the large instances (la38 best 1234 → 1206.5, abz9
+721 → 707, la29 1198 → 1181).
+
+**Warm full budget, v1 → v2 (results/warm_full_v2_perturb/):**
+
+- Mean RE avg-of-runs **1.69 vs baseline 2.40**; best-of-runs **1.41 vs
+  1.50** — both aggregate metrics now beat the tuned baseline.
+- Best envelope: **4 baseline best-knowns improved** — abz9 691.0 (−3.5),
+  la27 1242.5 (−4.5), la24 940.5 (−2.0), la40 1229.5 (−1.0) — 7 exact
+  ties, and abz7 at +0.5 as the only miss. The v1 fidelity-floor losses
+  (la27/la29/la38) were all recovered or turned into wins.
+- De-saturation visible in runtimes: abz8 now ~6 min/run mean (3 h for 30
+  runs) vs ~2.3 min/run in v1 — the search uses the budget again.
+
 - **Fidelity finding (append-vs-insertion test on abz7):** the stored files
   cannot reproduce the original objectives at all. The `_Sols.csv` writer
   stores `ScheduleIJSP::toString()` = the schedule's `taskOrder` sequence,
