@@ -1,7 +1,8 @@
 # irace base template — cold IPRTS (perturbation restarts), LEX2, TS-N2 kernel
 # Placeholders IRACE_* are filled by target-runner.sh per configuration.
 # Fixed: seeding ijsp.random, PR over N1, tabu-size.min=3, LS max-time=2,
-# stopping = timelimit 300 s + noimprovement 5000 PR cycles (convergence stop).
+# stopping = timelimit 900 s (paper-parity budget) + noimprovement 5000 PR
+# cycles (convergence stop).
 
 # GENERIC
 algorithm = IPRTS
@@ -41,7 +42,7 @@ pr.max-steps = -1
 
 # STOPPING CRITERION
 noimprovement = 5000
-timelimit = 300
+timelimit = 900
 
 # EVOLUTION REPORTING (coarse: tuning runs don't need fine curves)
 evolution.unit = time

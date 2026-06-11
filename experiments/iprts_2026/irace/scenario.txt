@@ -5,8 +5,8 @@ targetCmdline      = "{configurationID} {instanceID} {seed} {instance} {targetRu
 parameterFile      = "./parameters.txt"
 trainInstancesFile = "./instances.txt"
 
-# Budget: 2000 experiments (7-dimensional space)
-maxExperiments  = 2000
+# Budget: 1500 experiments (paper parity; 7-dimensional space)
+maxExperiments  = 1500
 
 # Parallelism
 parallel        = 24

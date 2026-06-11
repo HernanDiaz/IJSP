@@ -46,8 +46,8 @@ sed \
     -e "s/IRACE_MAX_ROUNDS/${param_max_rounds}/" \
     "$BASE_SETUP" > "$SETUP_FILE"
 
-# --- Run FuzzyFW with background timeout (timelimit 300 + margin) ---
-TIMEOUT=${IRACE_TIMEOUT:-360}
+# --- Run FuzzyFW with background timeout (timelimit 900 + margin) ---
+TIMEOUT=${IRACE_TIMEOUT:-960}
 setsid "$EXE" "$SETUP_FILE" "$INSTANCE" "$OUT_DIR" > /dev/null 2>&1 &
 EXE_PID=$!
 ( sleep ${TIMEOUT}; kill -9 -${EXE_PID} 2>/dev/null; kill -9 ${EXE_PID} 2>/dev/null ) &
