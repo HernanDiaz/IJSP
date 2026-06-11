@@ -16,6 +16,12 @@
 #include "PostExecutionAnalyzer.h"
 
 namespace PostExecution {
+
+// Optional switch: "postexecution = no" skips the robustness analysis
+// entirely (used by tuning runs, where only the solutions file matters and
+// the analysis dominates the wall time on large instances). Defaults to yes.
+#define POSTEXECUTION_ENABLED "postexecution"
+
 class PostExecutionManager {
 	//=====================================================================
 	//		FIELDS
@@ -34,6 +40,8 @@ public:
 	void analyze(FuzzyFW::Problem *problem, FuzzyFW::Solution * solution, FuzzyFW::Fitness* objective , const  FuzzyFW::ParameterDB *params, int numRun);
 
 private:
+
+	bool enabled;
 
 	PostExecutionAnalyzer* robustnessAnalyzer;
 

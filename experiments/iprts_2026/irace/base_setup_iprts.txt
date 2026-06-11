@@ -44,6 +44,11 @@ pr.max-steps = -1
 noimprovement = 5000
 timelimit = 900
 
+# POST-EXECUTION: disabled for tuning runs (the robustness analysis dominates
+# wall time on large instances and the tuning objective only needs Sols.csv;
+# with 24 parallel evaluations it pushed runs past the wall-clock killer)
+postexecution = no
+
 # EVOLUTION REPORTING (coarse: tuning runs don't need fine curves)
 evolution.unit = time
 evolution.span = 30

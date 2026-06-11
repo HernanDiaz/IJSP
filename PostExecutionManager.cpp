@@ -19,14 +19,20 @@ namespace PostExecution {
 	//====  Default constructor  ==================================================
 	PostExecutionManager::PostExecutionManager() {
 		PostExecution::PostExecutionClassRegister::registerClasses();
+		this->enabled = true;
 	}
 
 	void PostExecutionManager::analyze(FuzzyFW::Problem *problem, FuzzyFW::Solution * solution, FuzzyFW::Fitness* objective, const FuzzyFW::ParameterDB *params, int numRun) {
+		if (!this->enabled)
+			return;
 		this->robustnessAnalyzer->analyze(problem, solution, objective, params, numRun);
 		//this->IJSPTardinessAnalyzer->analyze(problem, solution, objective, params, numRun);
 	}
-		
+
 	void PostExecutionManager::open(FuzzyFW::Problem *problem, std::string outputPrefix, std::string signature, const FuzzyFW::ParameterDB *params) {
+		this->enabled = params->getBoolean(POSTEXECUTION_ENABLED, true);
+		if (!this->enabled)
+			return;
 	    this->loadAnalyzers(params);
 		this->robustnessAnalyzer->open(problem, outputPrefix, signature);
 		//this->IJSPTardinessAnalyzer->open(problem, outputPrefix, signature);
@@ -55,6 +61,8 @@ namespace PostExecution {
 	}
 
 	void PostExecutionManager::close() {
+		if (!this->enabled)
+			return;
 		this->robustnessAnalyzer->close();
 		//this->IJSPTardinessAnalyzer->close();
 	}
