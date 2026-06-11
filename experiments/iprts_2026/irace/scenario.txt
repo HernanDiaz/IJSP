@@ -1,0 +1,25 @@
+# irace scenario for IPRTS tuning (cold start, perturbation restarts)
+
+targetRunner       = "./target-runner.cmd"
+targetCmdline      = "{configurationID} {instanceID} {seed} {instance} {targetRunnerArgs}"
+parameterFile      = "./parameters.txt"
+trainInstancesFile = "./instances.txt"
+
+# Budget: 2000 experiments (7-dimensional space)
+maxExperiments  = 2000
+
+# Parallelism
+parallel        = 24
+
+# Statistical test for racing
+testType        = "friedman"
+
+# Minimum number of configurations surviving elimination
+minNbSurvival   = 3
+
+# Output verbosity
+debugLevel      = 1
+logFile         = "irace_IPRTS.log"
+
+# Reproducibility
+seed            = 42

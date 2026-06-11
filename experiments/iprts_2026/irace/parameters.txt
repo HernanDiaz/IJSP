@@ -1,0 +1,15 @@
+# irace parameter space for IPRTS (cold start, perturbation restarts)
+# Fixed in base_setup: creation=ijsp.random, PR over N1, tabu_min=3,
+# ls.max-time=2, timelimit=300, noimprovement=5000
+# name          switch              type   range
+
+# --- Elite pool ---
+pool_size      "--pool_size "      i      (6, 20)
+pool_mindist   "--pool_mindist "   r      (0.01, 0.20)
+patience       "--patience "       i      (20, 300)
+perturb        "--perturb "        r      (0.05, 0.40)
+
+# --- Local Search (Tabu) ---
+tabu_iter      "--tabu_iter "      i      (20, 300)
+tabu_max       "--tabu_max "       i      (4, 30)
+max_rounds     "--max_rounds "     i      (1, 60)
