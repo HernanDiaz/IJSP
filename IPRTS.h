@@ -143,6 +143,7 @@ protected:
 	* Runtimes
 	*/
 	clock_t totalRuntime;
+	clock_t runStartClock;
 	clock_t creationTime;
 	clock_t localSearchTime;
 	clock_t pathRelinkingTime;
@@ -196,6 +197,17 @@ protected:
 	* Indicates if the stopping criteria has been met
 	*/
 	virtual bool stop();
+
+	/**
+	* Live check of the time budget: pool seeding and multi-round local
+	* search run outside the main loop's stop() and must not overrun the
+	* time limit (aggressive configurations could otherwise spend the whole
+	* budget seeding and get killed before reporting any solution)
+	*/
+	bool budgetExhausted() const {
+		return this->maxRuntime >= 0 && (clock() - this->runStartClock)
+			/ (double)CLOCKS_PER_SEC >= this->maxRuntime;
+	}
 
 	/**
 	* Applies the tabu search to one individual (lamarckism aware)

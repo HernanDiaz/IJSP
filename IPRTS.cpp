@@ -57,6 +57,7 @@ IPRTS::IPRTS(ParameterDB *params)
 	this->bestSoFar = NULL;
 
 	this->totalRuntime = 0;
+	this->runStartClock = 0;
 	this->creationTime = 0;
 	this->localSearchTime = 0;
 	this->pathRelinkingTime = 0;
@@ -391,6 +392,7 @@ std::pair<Solution *, Objective *> IPRTS::run(Problem *problem,
 	this->sharedVariables->problem = problem;
 
 	runStart = clock();
+	this->runStartClock = runStart;
 
 	// Seed the elite pool  -------------------------------
 	this->pool.configure(this->poolSize, this->poolMinDistance);
@@ -542,7 +544,8 @@ void IPRTS::applyLocalSearch(Individual *individual) {
 
 		if (!improved)
 			break;
-	} while (this->lsMaxRounds < 0 || round < this->lsMaxRounds);
+	} while ((this->lsMaxRounds < 0 || round < this->lsMaxRounds)
+		&& !this->budgetExhausted());
 
 	if (this->lsLamarckism)
 		this->sharedVariables->encoder->encode(individual->getPhenotype(),
@@ -571,15 +574,19 @@ void IPRTS::fillPool() {
 	const int maxTries = this->seedRetries
 		* (int)(this->poolSize - this->pool.size());
 
-	while (this->pool.size() < this->poolSize && tries < maxTries) {
+	while (this->pool.size() < this->poolSize && tries < maxTries
+		&& !this->budgetExhausted()) {
 		Individual *seed = this->newSeedIndividual();
 		this->applyLocalSearch(seed);
 		this->pool.tryInsert(seed);
 		tries++;
 	}
 
-	// Diversity could not be honoured (e.g. tiny instances): relax it
-	while (this->pool.size() < this->poolSize) {
+	// Diversity could not be honoured (e.g. tiny instances): relax it.
+	// Always reach at least 2 elites (relinking needs a pair), but stop
+	// growing further once the time budget is gone.
+	while (this->pool.size() < this->poolSize
+		&& (this->pool.size() < 2 || !this->budgetExhausted())) {
 		Individual *seed = this->newSeedIndividual();
 		this->applyLocalSearch(seed);
 		this->pool.forceInsert(seed);
@@ -594,7 +601,7 @@ void IPRTS::refillByPerturbation() {
 		* (int)(this->poolSize - this->pool.size());
 
 	while (this->pool.size() < this->poolSize && tries < maxTries
-		&& this->pool.size() > 0) {
+		&& this->pool.size() > 0 && !this->budgetExhausted()) {
 		Individual *candidate = this->perturbedElite();
 		if (candidate == NULL)
 			break;	// genotype type not supported: use fresh seeds instead

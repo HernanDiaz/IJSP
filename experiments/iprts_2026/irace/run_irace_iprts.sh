@@ -29,6 +29,15 @@ sed -i 's/\r$//' "$OUT_DIR/target-runner.sh"
 RLIB="C:/Users/diazhernan/AppData/Local/R/win-library/4.5"
 
 cd "$OUT_DIR"
+
+# Pre-flight diagnostic: how does THIS context's R see the world?
+{
+    echo "--- diag $(date) ---"
+    echo "whoami(wsl): $(whoami)  cwd: $(pwd)"
+    "$RSCRIPT" -e ".libPaths(c('$RLIB', .libPaths())); print(.libPaths()); print(Sys.getenv(c('R_LIBS_USER','R_USER','USERPROFILE','HOME'))); print(file.exists('$RLIB/irace')); print(R.version.string)"
+    echo "diag Rscript exit: $?"
+} > diag.log 2>&1
+
 "$RSCRIPT" -e ".libPaths(c('$RLIB', .libPaths())); library(irace); irace_main(scenario=readScenario('scenario.txt'))" \
     > irace_IPRTS_stdout.log 2>&1
 EXIT_CODE=$?
