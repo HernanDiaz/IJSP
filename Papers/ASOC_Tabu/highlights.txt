@@ -1,0 +1,7 @@
+Highlights
+
+- Unified extreme critical path framework for neighbourhoods in the interval JSP.
+- Feasibility, connectivity and no-loss proofs for any admissible interval ranking.
+- Lexicographic interval ranking yields 5-11% narrower makespan intervals on average.
+- N_2 and N_8 are the strongest neighbourhoods after irace-tuned tabu search; N_3 worst.
+- Irace-tuned TS-N_2 reduces mean relative error ~57% vs best previous IJSP solver.

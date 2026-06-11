@@ -85,3 +85,9 @@ experiments/iprts_2026/seeds/
 experiments/statistical_results_exp7/*.csv
 experiments/statistical_results_exp8/*.csv
 experiments/statistical_results_exp9/*.csv
+
+# ASOC transfer working copy: generated artifacts stay local
+Papers/ASOC_Tabu/figures/
+Papers/ASOC_Tabu/main.pdf
+Papers/ASOC_Tabu/supplementary/*.pdf
+Papers/ASOC_Tabu/supplementary/*.out
