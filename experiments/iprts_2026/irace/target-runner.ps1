@@ -19,7 +19,7 @@ $QuotedArgs = $PassArgs | ForEach-Object {
 }
 # Pass IRACE_TIMEOUT explicitly to WSL environment (env vars are NOT inherited by WSL from PS)
 $iraceTimeout = $env:IRACE_TIMEOUT
-if (-not $iraceTimeout -or $iraceTimeout -le 0) { $iraceTimeout = '900' }
+if (-not $iraceTimeout -or $iraceTimeout -le 0) { $iraceTimeout = '1300' }
 $WslArgStr = 'env IRACE_TIMEOUT=' + $iraceTimeout + ' bash "' + $ShScript + '" ' + ($QuotedArgs -join ' ')
 
 $psi = New-Object System.Diagnostics.ProcessStartInfo
@@ -38,9 +38,10 @@ $proc.StandardInput.Close()           # EOF on stdin immediately
 $stdoutTask = $proc.StandardOutput.ReadToEndAsync()
 $stderrTask = $proc.StandardError.ReadToEndAsync()   # Consumed but discarded
 
-# Windows-side timeout: read from env var, default 1100s
+# Windows-side timeout: read from env var, default 1500s (must stay above the
+# bash-side IRACE_TIMEOUT killer, which is the one meant to fire first)
 $psTimeout = [int]($env:IRACE_PS_TIMEOUT)
-if ($psTimeout -le 0) { $psTimeout = 1100000 }
+if ($psTimeout -le 0) { $psTimeout = 1500000 }
 
 if (-not $proc.WaitForExit($psTimeout)) {
     # Timeout: kill the wsl process tree (wsl + bash + FuzzyFW)

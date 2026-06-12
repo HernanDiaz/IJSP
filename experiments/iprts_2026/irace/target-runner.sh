@@ -49,6 +49,7 @@ sed \
 # --- Run FuzzyFW with background timeout (timelimit 900 + margin for the
 # post-execution robustness analysis, which is heavy on large instances) ---
 TIMEOUT=${IRACE_TIMEOUT:-1200}
+START=$(date +%s)
 setsid "$EXE" "$SETUP_FILE" "$INSTANCE" "$OUT_DIR" > /dev/null 2>&1 &
 EXE_PID=$!
 ( sleep ${TIMEOUT}; kill -9 -${EXE_PID} 2>/dev/null; kill -9 ${EXE_PID} 2>/dev/null ) &
@@ -57,10 +58,14 @@ wait ${EXE_PID}
 kill ${KILLER_PID} 2>/dev/null
 wait ${KILLER_PID} 2>/dev/null
 
+# --- Per-call observability: one line per evaluation ---
+RUNLOG="$(dirname "$0")/runs.log"
+
 # --- Extract best midpoint from Sols.csv ---
 SOLS=$(ls "$OUT_DIR"/*_Sols.csv 2>/dev/null | head -1)
 
 if [[ -z "$SOLS" || $(wc -l < "$SOLS") -lt 2 ]]; then
+    echo "$(date '+%F %T') cfg=$CONFIG_ID inst=$(basename "$INSTANCE") wall=$(($(date +%s)-START))s timeout=$TIMEOUT result=Inf" >> "$RUNLOG"
     echo "Inf"
     exit 0
 fi
@@ -75,4 +80,5 @@ best_mid=$(awk -F';' 'NR>1 {
     }
 } END { print best }' "$SOLS")
 
+echo "$(date '+%F %T') cfg=$CONFIG_ID inst=$(basename "$INSTANCE") wall=$(($(date +%s)-START))s timeout=$TIMEOUT result=$best_mid" >> "$RUNLOG"
 echo "$best_mid"
