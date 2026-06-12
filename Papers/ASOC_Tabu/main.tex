@@ -122,7 +122,7 @@ Section~\ref{sec:background} provides background on the deterministic JSP and in
 \subsection{The Deterministic Job Shop Problem}
 \label{sec:jsp}
 
-The JSP consists of $n$ jobs $\{J_1,\ldots,J_n\}$ and $m$ machines $\{M_1,\ldots,M_m\}$. Each job $J_i$ is a sequence of operations $O_{i,1},\ldots,O_{i,m}$, where operation $O_{i,j}$ must be processed on machine $M_j$ for exactly $p_{i,j}$ time units. Operations within a job must respect their precedence order, and each machine processes at most one operation at a time. The goal is to find a \emph{feasible processing order} $\sigma$ minimising the makespan $C_{\max}$.
+The JSP consists of $n$ jobs $\{J_1,\ldots,J_n\}$ and $m$ machines $\{M_1,\ldots,M_m\}$. Each job $J_i$ is a sequence of operations $O_{i,1},\ldots,O_{i,m}$, where operation $O_{i,j}$ must be processed on machine $M_j$ for exactly $p_{i,j}$ time units. Operations within a job must respect their precedence order, and each machine processes at most one operation at a time. The goal is to find a \emph{feasible processing order} $\sigma$ minimising the makespan $C_{\max}$; throughout, $\Sigma$ denotes the set of all feasible processing orders.
 
 The \emph{solution graph} $G(\sigma) = (V, A \cup D(\sigma))$ represents a feasible order: $V$ is the set of operations augmented with a dummy source node $S$ and sink node $T$; $A$ contains precedence arcs within jobs; and $D(\sigma)$ contains disjunctive arcs imposed by the order $\sigma$ on each machine. The makespan equals the length of the longest path in $G(\sigma)$. The classical insight of \cite{vanLaarhoven1992} is that the neighbourhood for local search should restrict to reversals of arcs on critical paths, ensuring feasibility, while \cite{Nowicki1996} shows that reversals of \emph{interior} arcs of a critical block cannot improve the makespan, allowing further pruning.
 
@@ -144,23 +144,7 @@ Since there is no natural total order on $\mathbb{IR}$, comparing schedules requ
 \end{align}
 LEX1, LEX2 and YX are \emph{admissible} total orders on $\mathbb{IR}$ \cite{Bustince2013}: they refine the partial product order $\leq_{2}$ defined by $\mathbf{a} \leq_{2} \mathbf{b} \iff a^- \leq b^- \wedge a^+ \leq b^+$. EV ranks intervals by their midpoint $m(\mathbf{a})$ and induces a total preorder rather than a strict total order, since two distinct intervals may share the same midpoint; it also refines $\leq_{2}$. This refinement property is essential for the theoretical guarantees of Section~\ref{sec:H}: any move that simultaneously decreases both $C^-_{\max}$ and $C^+_{\max}$ is an improvement under all four rankings considered here.
 
-\paragraph{Operational meaning of the interval makespan.}
-The interval makespan is not a modelling postulate but the exact range of realizable makespans. For a fixed processing order $\sigma$ (a feasible orientation of the disjunctive graph), let $C_{\max}(\sigma, p)$ denote the deterministic makespan obtained when the processing times take the realization $p \in \Pi = \prod_{i,j}\, [p^-_{ij},\, p^+_{ij}]$.
-
-\begin{lemma}[Exact range]\label{lem:range}
-For every fixed processing order $\sigma$,
-\[
-\bigl\{\, C_{\max}(\sigma, p) \;:\; p \in \Pi \,\bigr\}
-\;=\;
-\bigl[\, C^-_{\max}(\sigma),\; C^+_{\max}(\sigma) \,\bigr],
-\]
-where $\mathbf{C}_{\max}(\sigma) = [C^-_{\max}(\sigma), C^+_{\max}(\sigma)]$ is the interval obtained by propagating the interval operations above through the schedule.
-\end{lemma}
-\begin{proof}
-For fixed $\sigma$, $C_{\max}(\sigma, \cdot)$ is the length of a longest path in an acyclic graph whose arc lengths are the realized processing times; it is therefore continuous and componentwise nondecreasing in $p$. Its minimum and maximum over the box $\Pi$ are attained at the extreme scenarios $p = (p^-_{ij})$ and $p = (p^+_{ij})$ respectively, which is precisely what interval propagation computes, and every intermediate value is attained by continuity of $t \mapsto C_{\max}\bigl(\sigma,\, p^- + t\,(p^+ - p^-)\bigr)$ on $[0,1]$.
-\end{proof}
-
-Lemma~\ref{lem:range} gives the ranking operators a direct reading in the language of robust optimisation: $C^+_{\max}(\sigma)$ \emph{is} the worst-case makespan of $\sigma$ over the scenario box and $C^-_{\max}(\sigma)$ its best case. Minimising under LEX2 is therefore exactly lexicographic min--max (worst-case) optimisation with ties broken by the best case, while EV and YX trade both extremes off through the midpoint. Throughout the paper, ``narrower makespan interval'' can thus be read as ``tighter guarantee on the range of realizable makespans''.
+These rankings acquire a direct operational reading once the makespan interval is tied to its scenario semantics. As shown in Section~\ref{sec:configurations} (Lemma~\ref{lem:range}), the bounds of the interval makespan are exactly the best- and worst-case makespans over all realizations of the processing times, so minimising under LEX2 amounts to lexicographic min--max (worst-case) optimisation with ties broken by the best case, while EV and YX trade both extremes off through the midpoint. Throughout the paper, ``narrower makespan interval'' can thus be read as ``tighter guarantee on the range of realizable makespans''.
 
 \section{Related Work}
 \label{sec:rw}
@@ -193,6 +177,23 @@ The makespan interval satisfies
 \mathbf{C}_{\max}(\sigma) = [C^-_{\max}(\sigma),\, C^+_{\max}(\sigma)],
 \end{equation}
 where $C^-_{\max}(\sigma)$ is the length of the longest path in $G^-(\sigma)$ and $C^+_{\max}(\sigma)$ is the length of the longest path in $G^+(\sigma)$. An illustrative example is shown in Figure~\ref{fig1}: two jobs ($J_1$: $O_{11}(M_1,[2,6])\!\to\!O_{12}(M_2,[2,3])$; $J_2$: $O_{21}(M_2,[4,4])\!\to\!O_{22}(M_1,[1,4])$), with schedule $\sigma$ fixing $M_1$ order $(O_{11},O_{22})$ and $M_2$ order $(O_{21},O_{12})$. In $G^-(\sigma)$ the critical path runs through the $M_2$ disjunctive arc ($C^-_{\max}=6$); in $G^+(\sigma)$ it runs through the $M_1$ disjunctive arc ($C^+_{\max}=10$). The critical arcs in the two extreme graphs differ, motivating the need to consider both.
+
+The interval $\mathbf{C}_{\max}(\sigma)$ is not merely a pair of bounds: it is the exact range of makespans realizable under $\sigma$.
+
+\begin{lemma}[Exact range]\label{lem:range}
+For every feasible processing order $\sigma$,
+\[
+\bigl\{\, C_{\max}(\sigma, \omega) \;:\; \omega \in \Omega \,\bigr\}
+\;=\;
+\bigl[\, C^-_{\max}(\sigma),\; C^+_{\max}(\sigma) \,\bigr],
+\]
+where $C_{\max}(\sigma,\omega)$ denotes the deterministic makespan of $\sigma$ under configuration $\omega$.
+\end{lemma}
+\begin{proof}
+For fixed $\sigma$, $C_{\max}(\sigma,\omega)$ is the length of a longest path in $G(\sigma)$ with arc weights given by $\omega$; it is therefore continuous and componentwise nondecreasing in $\omega$. Its minimum and maximum over $\Omega = \mathbf{p}_1 \times \cdots \times \mathbf{p}_o$ are attained at the extreme configurations $\omega^- = (p_1^-,\ldots,p_o^-)$ and $\omega^+ = (p_1^+,\ldots,p_o^+)$, whose longest-path lengths are precisely $C^-_{\max}(\sigma)$ and $C^+_{\max}(\sigma)$; every intermediate value is attained by continuity of $t \mapsto C_{\max}\bigl(\sigma,\, \omega^- + t\,(\omega^+ - \omega^-)\bigr)$ on $[0,1]$.
+\end{proof}
+
+In robust-optimisation terms, $C^+_{\max}(\sigma)$ is the worst-case makespan of $\sigma$ and $C^-_{\max}(\sigma)$ its best case; the LEX2 ranking of Section~\ref{sec:rankings} thus performs lexicographic min--max (worst-case) optimisation.
 
 \begin{figure}[t]
 \centering
@@ -314,19 +315,19 @@ For every non-optimal $\sigma \in \Sigma$, there exists a finite sequence of mov
 \end{theorem}
 
 \begin{proof}
-Fix any globally optimal $\sigma^*\in\Sigma^*$ and define the \emph{inversion count}
+Fix a globally optimal order $\sigma^{\star}$ and define the \emph{inversion count}
 \[
-  M(\sigma,\sigma^*) \;=\; \bigl|\{(x,y)\in D(\sigma) : (y,x)\in D(\sigma^*)\}\bigr|,
+  M(\sigma,\sigma^{\star}) \;=\; \bigl|\{(x,y)\in D(\sigma) : (y,x)\in D(\sigma^{\star})\}\bigr|,
 \]
-the number of machine-order disagreements; $M=0$ iff $\sigma=\sigma^*$.
+the number of machine-order disagreements; $M=0$ iff $\sigma=\sigma^{\star}$.
 
 \medskip
-\noindent\textit{Key lemma.} If $\lambda$ is non-optimal, there exists an extreme critical $(x,y)\in D(\lambda)$ with $(y,x)\in D(\sigma^*)$.
+\noindent\textit{Key lemma.} If $\lambda$ is non-optimal, there exists an extreme critical $(x,y)\in D(\lambda)$ with $(y,x)\in D(\sigma^{\star})$.
 
-\noindent\textit{Proof.} Non-optimality implies $\mathbf{C}_{\max}(\lambda)\not\le_2 \mathbf{C}_{\max}(\sigma^*)$ (else $\le_R$ follows by refinement), so WLOG $C^-_{\max}(\lambda)>C^-_{\max}(\sigma^*)$. Let $P$ be a critical path in $G^-(\lambda)$. If every disjunctive arc of $P$ lay in $D(\sigma^*)$, $P$ would be a valid path in $G^-(\sigma^*)$ of length $>C^-_{\max}(\sigma^*)$, a contradiction. So $P$ contains some $(x,y)\in D(\lambda)\setminus D(\sigma^*)$; since machine orientations are mutually exclusive, $(y,x)\in D(\sigma^*)$, and $(x,y)$ is extreme critical by membership in $P$. \hfill$\square_{\text{lemma}}$
+\noindent\textit{Proof.} Non-optimality implies $\mathbf{C}_{\max}(\lambda)\not\le_2 \mathbf{C}_{\max}(\sigma^{\star})$ (else $\le_R$ follows by refinement), so WLOG $C^-_{\max}(\lambda)>C^-_{\max}(\sigma^{\star})$. Let $P$ be a critical path in $G^-(\lambda)$. If every disjunctive arc of $P$ lay in $D(\sigma^{\star})$, $P$ would be a valid path in $G^-(\sigma^{\star})$ of length $>C^-_{\max}(\sigma^{\star})$, a contradiction. So $P$ contains some $(x,y)\in D(\lambda)\setminus D(\sigma^{\star})$; since machine orientations are mutually exclusive, $(y,x)\in D(\sigma^{\star})$, and $(x,y)$ is extreme critical by membership in $P$. \hfill$\square_{\text{lemma}}$
 
 \medskip
-\noindent\textit{Construction.} Build $\lambda_0=\sigma$; while $\lambda_k$ is non-optimal, apply the key lemma to obtain $(x,y)$ and set $\lambda_{k+1}=(\lambda_k)_{(x,y)}\in H(\lambda_k)$ (feasible by Theorem~\ref{thm1}). Each reversal removes $(x,y)$ from $D(\lambda_k)$ (one fewer inversion) and adds $(y,x)$ (already in $D(\sigma^*)$, no new inversion), so $M(\lambda_{k+1},\sigma^*)=M(\lambda_k,\sigma^*)-1$. Since $M\ge 0$, the loop terminates in at most $M(\sigma,\sigma^*)$ steps at a globally optimal $\lambda_k$.
+\noindent\textit{Construction.} Build $\lambda_0=\sigma$; while $\lambda_k$ is non-optimal, apply the key lemma to obtain $(x,y)$ and set $\lambda_{k+1}=(\lambda_k)_{(x,y)}\in H(\lambda_k)$ (feasible by Theorem~\ref{thm1}). Each reversal removes $(x,y)$ from $D(\lambda_k)$ (one fewer inversion) and adds $(y,x)$ (already in $D(\sigma^{\star})$, no new inversion), so $M(\lambda_{k+1},\sigma^{\star})=M(\lambda_k,\sigma^{\star})-1$. Since $M\ge 0$, the loop terminates in at most $M(\sigma,\sigma^{\star})$ steps at a globally optimal $\lambda_k$.
 \end{proof}
 
 
@@ -477,7 +478,7 @@ $N_8$         & JOX & swap      & 39 & 27 & 100\%  & 21 \\
 \end{tabular}
 \end{table}
 
-\paragraph{Statistics.} Comparisons use the Friedman test (non-parametric repeated-measures ANOVA; the statistic follows a $\chi^2$ distribution with $k-1$ degrees of freedom for $k$ groups) followed by pairwise Wilcoxon signed-rank tests with Holm--Bonferroni correction. Effect size is reported as $r = |Z| / \sqrt{N}$, where $Z$ is the standardised Wilcoxon test statistic and $N$ is the number of paired observations, with the conventional thresholds (small $\geq 0.1$, medium $\geq 0.3$, large $\geq 0.5$). Each (instance, run) pair forms a paired block. The metric is the midpoint of the makespan interval, $(C^-_{\max} + C^+_{\max})/2$.
+\paragraph{Statistics.} Comparisons use the Friedman test (non-parametric repeated-measures ANOVA; the statistic follows a $\chi^2$ distribution with $k-1$ degrees of freedom for $k$ groups) followed by pairwise Wilcoxon signed-rank tests with Holm--Bonferroni correction. Effect size is reported as $r = |Z| / \sqrt{N}$, where $Z$ is the standardised Wilcoxon test statistic and $N$ is the number of paired observations, with the conventional thresholds (small $\geq 0.1$, medium $\geq 0.3$, large $\geq 0.5$). Each (instance, run) pair forms a paired block. The metric is the midpoint of the makespan interval, denoted $E[\mathbf{C}_{\max}] = (C^-_{\max} + C^+_{\max})/2$ in what follows.
 
 \subsection{Phase A: Operator Calibration}
 \label{sec:phaseA}
