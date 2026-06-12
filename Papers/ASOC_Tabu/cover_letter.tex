@@ -30,13 +30,12 @@ Elsevier
 I am pleased to submit my manuscript, ``\textbf{Neighbourhood Structures and
 Ranking Operators for the Interval Job Shop Scheduling Problem},'' for
 consideration as a regular research article in \emph{Applied Soft Computing}.
-The manuscript is transferred from \emph{Computers \& Operations Research},
-where the handling editor assessed the results as interesting but considered
-the topic a better fit for a venue closer to the soft computing community ---
-which is, indeed, where this work belongs: it extends a line of research on
-fuzzy and interval job shop scheduling developed largely in this journal and
-its sister venues, and its solver builds on artificial-bee-colony
-metaheuristics previously published in this field.
+The work sits squarely within the journal's scope: it addresses scheduling
+under uncertainty modelled with intervals --- a research line on fuzzy and
+interval job shop scheduling developed largely in this journal and its sister
+venues --- and its methodology is metaheuristic search (tabu search with
+irace-based hyperparameter tuning), evaluated against published
+soft-computing solvers for the same problem.
 
 The paper addresses the Interval JSP, where processing times are bounded but
 uncertain, and contributes on both theoretical and computational fronts. On
@@ -46,25 +45,23 @@ define a neighbourhood $H(\sigma)$ on this basis, proving feasibility,
 connectivity and the no-loss-of-improving-neighbours property under any
 admissible interval ranking operator. Five neighbourhood variants ($N_1$,
 $N_2$, $N_3$, $N_{\rm ext}$ and a new variant $N_8$) are formulated within
-this framework. On the empirical side, the paper reports a $12{,}300$-run
-study on 82 benchmark instances of up to 1000 operations, organised in three
-phases: a $5{\times}4$ comparison of four interval ranking operators (EV,
-LEX1, LEX2, YX), a head-to-head comparison of the five neighbourhoods after
+this framework. The interval semantics are made operational: a lemma shows
+that the interval makespan computed by propagation is exactly the range of
+realizable makespans --- its bounds are the best- and worst-case makespans
+--- so the LEX2 ranking corresponds to lexicographic worst-case (robust)
+optimisation, bridging the interval-ranking approach used in soft computing
+with the robust scheduling perspective of operations research. On the
+empirical side, the paper reports a $12{,}300$-run study on 82 benchmark
+instances of up to 1000 operations, organised in three phases: a
+$5{\times}4$ comparison of four interval ranking operators (EV, LEX1, LEX2,
+YX), a head-to-head comparison of the five neighbourhoods after
 per-neighbourhood irace tuning of a tabu search metaheuristic, and a
 comparison against three published IJSP solvers (GA, \emph{fEABC}, ESABC).
 The irace-tuned tabu search with $N_2$ reduces mean relative error by
 $\approx$57\% over the previous best published solver on every one of the 82
-instances.
-
-Relative to the version examined at \emph{Computers \& Operations Research},
-this revision makes the operational semantics of the interval makespan
-explicit: a new lemma shows that the interval computed by propagation is
-exactly the range of realizable makespans --- its bounds are the best- and
-worst-case makespans --- so the LEX2 ranking corresponds to lexicographic
-worst-case (robust) optimisation. A new related-work paragraph positions the
-approach with respect to the min--max regret literature on interval data and
-explains why regret-based criteria do not scale to job shop instances of this
-size.
+instances, and a float analysis explains structurally why LEX2 yields
+consistently narrower makespan intervals --- i.e., tighter uncertainty
+guarantees.
 
 In line with the journal's emphasis on reproducibility, all raw run logs,
 aggregated CSVs, irace tuning records, instance files and analysis scripts are
