@@ -30,38 +30,39 @@ Elsevier
 I am pleased to submit my manuscript, ``\textbf{Neighbourhood Structures and
 Ranking Operators for the Interval Job Shop Scheduling Problem},'' for
 consideration as a regular research article in \emph{Applied Soft Computing}.
-The work sits squarely within the journal's scope: it addresses scheduling
-under uncertainty modelled with intervals --- a research line on fuzzy and
+The work sits squarely within the journal's scope. It addresses scheduling
+under uncertainty modelled with intervals, a research line on fuzzy and
 interval job shop scheduling developed largely in this journal and its sister
-venues --- and its methodology is metaheuristic search (tabu search with
-irace-based hyperparameter tuning), evaluated against published
+venues. Its methodology is a hybrid metaheuristic that embeds a tabu search
+within an artificial bee colony framework, with per-neighbourhood
+hyperparameter tuning by irace, and it is evaluated against published
 soft-computing solvers for the same problem.
 
 The paper addresses the Interval JSP, where processing times are bounded but
 uncertain, and contributes on both theoretical and computational fronts. On
-the theoretical side, I formalise the notion of \emph{extreme critical paths}
---- arcs critical in either the best- or worst-case scenario graph --- and
-define a neighbourhood $H(\sigma)$ on this basis, proving feasibility,
-connectivity and the no-loss-of-improving-neighbours property under any
-admissible interval ranking operator. Five neighbourhood variants ($N_1$,
-$N_2$, $N_3$, $N_{\rm ext}$ and a new variant $N_8$) are formulated within
-this framework. The interval semantics are made operational: a lemma shows
-that the interval makespan computed by propagation is exactly the range of
-realizable makespans --- its bounds are the best- and worst-case makespans
---- so the LEX2 ranking corresponds to lexicographic worst-case (robust)
-optimisation, bridging the interval-ranking approach used in soft computing
-with the robust scheduling perspective of operations research. On the
-empirical side, the paper reports a $12{,}300$-run study on 82 benchmark
-instances of up to 1000 operations, organised in three phases: a
+the theoretical side, I formalise the notion of \emph{extreme critical
+paths}, defined as the paths that are critical in the best-case or worst-case
+scenario graph, and use them to define a neighbourhood $H(\sigma)$ for local
+search. I prove that $H(\sigma)$ satisfies feasibility, connectivity and the
+no-loss-of-improving-neighbours property under any admissible interval
+ranking operator, and formulate five neighbourhood variants ($N_1$, $N_2$,
+$N_3$, $N_{\rm ext}$ and a new variant $N_8$) within this framework. The
+interval semantics are made operational: a lemma shows that the interval
+makespan computed by propagation is exactly the range of realizable
+makespans, whose endpoints are the best- and worst-case makespans of the
+schedule. The LEX2 ranking therefore corresponds to lexicographic worst-case
+(robust) optimisation, which bridges the interval-ranking approach used in
+soft computing with the robust scheduling perspective of operations research.
+On the empirical side, the paper reports a $12{,}300$-run study on 82
+benchmark instances of up to 1000 operations, organised in three phases: a
 $5{\times}4$ comparison of four interval ranking operators (EV, LEX1, LEX2,
 YX), a head-to-head comparison of the five neighbourhoods after
-per-neighbourhood irace tuning of a tabu search metaheuristic, and a
-comparison against three published IJSP solvers (GA, \emph{fEABC}, ESABC).
-The irace-tuned tabu search with $N_2$ reduces mean relative error by
-$\approx$57\% over the previous best published solver on every one of the 82
-instances, and a float analysis explains structurally why LEX2 yields
-consistently narrower makespan intervals --- i.e., tighter uncertainty
-guarantees.
+per-neighbourhood irace tuning of the hybrid solver, and a comparison against
+three published IJSP solvers (GA, \emph{fEABC}, ESABC). The tuned hybrid with
+neighbourhood $N_2$ reduces mean relative error by $\approx$57\% over the
+previous best published solver on every one of the 82 instances. A float
+analysis further explains, in structural terms, why LEX2 yields consistently
+narrower makespan intervals and thus tighter uncertainty guarantees.
 
 In line with the journal's emphasis on reproducibility, all raw run logs,
 aggregated CSVs, irace tuning records, instance files and analysis scripts are
