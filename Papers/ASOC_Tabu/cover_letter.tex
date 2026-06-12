@@ -1,0 +1,92 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[top=2cm,bottom=2cm,left=2.2cm,right=2.2cm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 1pt minus 1pt}
+\pagenumbering{gobble}
+
+\begin{document}
+
+\begin{flushright}
+Hern\'an D\'iaz Rodr\'iguez\\
+University of Oviedo\\
+Department of Computer Science\\[2pt]
+June 12, 2026
+\end{flushright}
+
+\bigskip
+
+\noindent
+The Editors\\
+\emph{Applied Soft Computing}\\
+Elsevier
+
+\bigskip
+
+\noindent Dear Editor,
+
+I am pleased to submit my manuscript, ``\textbf{Neighbourhood Structures and
+Ranking Operators for the Interval Job Shop Scheduling Problem},'' for
+consideration as a regular research article in \emph{Applied Soft Computing}.
+The manuscript is transferred from \emph{Computers \& Operations Research},
+where the handling editor assessed the results as interesting but considered
+the topic a better fit for a venue closer to the soft computing community ---
+which is, indeed, where this work belongs: it extends a line of research on
+fuzzy and interval job shop scheduling developed largely in this journal and
+its sister venues, and its solver builds on artificial-bee-colony
+metaheuristics previously published in this field.
+
+The paper addresses the Interval JSP, where processing times are bounded but
+uncertain, and contributes on both theoretical and computational fronts. On
+the theoretical side, I formalise the notion of \emph{extreme critical paths}
+--- arcs critical in either the best- or worst-case scenario graph --- and
+define a neighbourhood $H(\sigma)$ on this basis, proving feasibility,
+connectivity and the no-loss-of-improving-neighbours property under any
+admissible interval ranking operator. Five neighbourhood variants ($N_1$,
+$N_2$, $N_3$, $N_{\rm ext}$ and a new variant $N_8$) are formulated within
+this framework. On the empirical side, the paper reports a $12{,}300$-run
+study on 82 benchmark instances of up to 1000 operations, organised in three
+phases: a $5{\times}4$ comparison of four interval ranking operators (EV,
+LEX1, LEX2, YX), a head-to-head comparison of the five neighbourhoods after
+per-neighbourhood irace tuning of a tabu search metaheuristic, and a
+comparison against three published IJSP solvers (GA, \emph{fEABC}, ESABC).
+The irace-tuned tabu search with $N_2$ reduces mean relative error by
+$\approx$57\% over the previous best published solver on every one of the 82
+instances.
+
+Relative to the version examined at \emph{Computers \& Operations Research},
+this revision makes the operational semantics of the interval makespan
+explicit: a new lemma shows that the interval computed by propagation is
+exactly the range of realizable makespans --- its bounds are the best- and
+worst-case makespans --- so the LEX2 ranking corresponds to lexicographic
+worst-case (robust) optimisation. A new related-work paragraph positions the
+approach with respect to the min--max regret literature on interval data and
+explains why regret-based criteria do not scale to job shop instances of this
+size.
+
+In line with the journal's emphasis on reproducibility, all raw run logs,
+aggregated CSVs, irace tuning records, instance files and analysis scripts are
+openly available on Zenodo (\texttt{10.5281/zenodo.20562888}), with per-instance
+results on the 70 Taillard instances in a separate supplementary document
+(\texttt{10.5281/zenodo.20562857}). I confirm that this manuscript has not been
+published previously, is not under consideration by any other journal, and
+that all listed contributors have approved the submission. I declare no
+competing financial interests or personal relationships that could have
+appeared to influence the work reported. Thank you for considering this
+submission.
+
+\bigskip
+
+\noindent Sincerely,
+
+\medskip
+
+\noindent
+Hern\'an D\'iaz Rodr\'iguez\\
+University of Oviedo\\
+Department of Computer Science\\
+\texttt{diazhernan@uniovi.es}
+
+\end{document}
