@@ -100,3 +100,11 @@ Papers/ASOC_Tabu/submission_ASOC_blind/
 Papers/ASOC_Tabu/IJSP_ASOC_submission_BLIND.zip
 Papers/ASOC_Tabu/main_blind.pdf
 Papers/ASOC_Tabu/title_page.pdf
+
+# ASOC Word conversion: derived artifacts (regenerate with mk_pandoc.py + pandoc)
+Papers/ASOC_Tabu/main_pandoc.tex
+Papers/ASOC_Tabu/*.docx
+Papers/ASOC_Tabu/submission_ASOC_word/
+Papers/ASOC_Tabu/IJSP_ASOC_submission_WORD.zip
+Papers/ASOC_Tabu/figures/*.png
+Papers/ASOC_Tabu/*.csl
