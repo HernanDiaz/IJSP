@@ -92,3 +92,7 @@ Papers/ASOC_Tabu/main.pdf
 Papers/ASOC_Tabu/supplementary/*.pdf
 Papers/ASOC_Tabu/supplementary/*.out
 Papers/ASOC_Tabu/main.out
+
+# ASOC submission bundle (derived; regenerate from Papers/ASOC_Tabu/ sources)
+Papers/ASOC_Tabu/submission_ASOC/
+Papers/ASOC_Tabu/IJSP_ASOC_submission.zip
