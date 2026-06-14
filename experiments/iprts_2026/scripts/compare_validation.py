@@ -53,8 +53,12 @@ def parse_results(results_dir):
     out = {}
     for path in sorted(glob.glob(os.path.join(results_dir, "*.csv"))):
         name = os.path.basename(path)
-        match = re.match(r"(F[\d.]+\.\w+)_\d{14}\.csv$", name)
-        if not match:  # skip Robustness/Sols/Scenarios companions
+        # Stem before the run timestamp: matches both selecta
+        # (F0.15.0.abz7_06_<ts>.csv) and Taillard
+        # (tai50_20_01.F.15_01_<ts>.csv) main outputs, while excluding the
+        # _Robustness/_Sols/_Scenarios companions (which do not end _<14d>.csv)
+        match = re.match(r"^(.+)_\d{14}\.csv$", name)
+        if not match:
             continue
         instance = match.group(1)
         entry = {}

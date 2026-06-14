@@ -88,7 +88,7 @@ def main():
     print("%-22s %9s %6s %10s %9s" % (
         "instance", "t_target", "reach", "E@N2rt", "N2_avg"))
     for path in sorted(glob.glob(os.path.join(RESULTS, "*.csv"))):
-        m = re.match(r"(F[\d.]+\.\w+)_\d{14}\.csv$", os.path.basename(path))
+        m = re.match(r"^(.+)_\d{14}\.csv$", os.path.basename(path))
         if not m or m.group(1) not in baseline:
             continue
         inst = m.group(1)
