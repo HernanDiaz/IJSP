@@ -1,0 +1,69 @@
+# IPRTS COLD cfg 187 + VÍA 1: PR walk capped (pr.max-steps 40) to test whether
+# unbounded path-relinking walks drown the tabu search on large x20 instances.
+# Quick directional test: 10 runs, 900 s, x20 classes only.
+
+# GENERIC
+algorithm = IPRTS
+seed = 1
+runs = 10
+
+# PROBLEM
+problem.hasbounds = no
+
+# OBJECTIVE
+objective = ijsp.makespan
+evaluation.interval.comparison = LEX2
+evaluation.interval.maximum = Component
+evaluation.lamarckism = yes
+
+# CODIFICATION
+codification = ijsp.job-order
+decodification = ijsp.job-order
+decode.sgs = insertion
+sgs.interval.comparison = LEX2
+
+# CREATION (pool seeding)
+creation = ijsp.random
+creation.sgs = insertion
+
+# ELITE POOL
+pool.size = 16
+pool.min-distance = 0.0325
+pool.restart-patience = 26
+pool.restart-perturbation = yes
+pool.perturbation-strength = 0.0993
+pool.seed-retries = 5
+
+# PATH RELINKING  <-- THE ONLY CHANGE vs Phase 2: walk capped at 40 steps
+pr.neighbourhood = ijsp.makespan.n1
+pr.max-steps = 40
+
+# STOPPING CRITERION
+noimprovement = 5000
+timelimit = 900
+
+# EVOLUTION REPORTING
+evolution.unit = time
+evolution.span = 1
+
+# STATISTICS
+statistics.1.metric = best
+statistics.1.value = ijsp.makespan
+statistics.2.metric = average
+statistics.2.value = ijsp.makespan
+
+# LOCAL SEARCH (irace-tuned TS-N2 kernel)
+localsearch = tabu-search
+localsearch.estimation-guide = no
+localsearch.filter = no
+localsearch.max-time = 2
+localsearch.neighbourhood = ijsp.makespan.n2
+neighbourhood.estimator = heads&tails
+localsearch.lamarckism = yes
+localsearch.bad-iterations = 255
+localsearch.tabu-size.min = 3
+localsearch.tabu-size.max = 10
+localsearch.max-rounds = 24
+
+# skip robustness analysis (makespan comparison only)
+postexecution = no
