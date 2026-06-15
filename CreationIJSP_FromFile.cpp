@@ -9,6 +9,7 @@
 #include <fstream>
 #include <sstream>
 #include "CreationIJSP_FromFile.h"
+#include "PathRelinkIJSP.h"
 #include "IJSPException.h"
 
 namespace IJSP {
@@ -26,8 +27,13 @@ void CreationFromFileSchedule::setup(FuzzyFW::ParameterDB *parameters) {
 		errorMsg += "' for the solutions-file creation strategy.";
 		throw IJSPException("Creation", errorMsg);
 	}
+	std::string sel = parameters->getStringLower(CREATION_SEED_SELECTION);
+	this->useMaxMin = (sel == "maxmin");
+
 	this->solutions.clear();
 	this->loaded = false;
+	this->maxminOrder.clear();
+	this->nextPick = 0;
 }
 
 
@@ -99,12 +105,22 @@ FuzzyFW::Individual * CreationFromFileSchedule::createIndividual(
 	if (this->shouldUseRandom(svars))
 		return CreationRandomSchedule::createIndividual(svars);
 
-	// Rank-biased pick: minimum of two uniform draws over the
-	// quality-sorted list makes better solutions linearly more likely
-	const int draw1 = svars->rng->getInteger(0, this->solutions.size() - 1);
-	const int draw2 = svars->rng->getInteger(0, this->solutions.size() - 1);
-	std::vector<int> order =
-		this->solutions[draw1 < draw2 ? draw1 : draw2].second;
+	int idx;
+	if (this->useMaxMin) {
+		// Hand out the stored solutions in greedy maximum-diversity order
+		if (this->maxminOrder.empty())
+			this->buildMaxMinOrder(svars);
+		idx = this->maxminOrder[this->nextPick % this->maxminOrder.size()];
+		this->nextPick++;
+	}
+	else {
+		// Rank-biased pick: minimum of two uniform draws over the
+		// quality-sorted list makes better solutions linearly more likely
+		const int draw1 = svars->rng->getInteger(0, this->solutions.size() - 1);
+		const int draw2 = svars->rng->getInteger(0, this->solutions.size() - 1);
+		idx = (draw1 < draw2 ? draw1 : draw2);
+	}
+	std::vector<int> order = this->solutions[idx].second;
 
 	this->sgs->buildSchedule(svars, order);
 	FuzzyFW::Individual *indiv = svars->encoder->encode(sgs->getSchedule(), svars);
@@ -113,12 +129,67 @@ FuzzyFW::Individual * CreationFromFileSchedule::createIndividual(
 }
 
 
+//-----  buildMaxMinOrder  ----------------------------------------------------
+void CreationFromFileSchedule::buildMaxMinOrder(
+	const FuzzyFW::SharedVarsEvolutionary *svars) const {
+
+	const int k = (int)this->solutions.size();
+
+	// Decode every stored solution once, keeping its schedule for distances
+	std::vector<ScheduleIJSP *> sched(k, NULL);
+	for (int i = 0; i < k; i++) {
+		std::vector<int> order = this->solutions[i].second;
+		this->sgs->buildSchedule(svars, order);
+		sched[i] = dynamic_cast<ScheduleIJSP *>(this->sgs->getSchedule()->clone());
+	}
+
+	// Greedy maximum-diversity (p-dispersion): start from the best-quality
+	// solution (index 0, the list is sorted), then repeatedly add the one
+	// farthest in disjunctive distance from those already chosen.
+	std::vector<char> chosen(k, 0);
+	std::vector<double> minDist(k, 1.0e300);
+	this->maxminOrder.clear();
+	this->maxminOrder.push_back(0);
+	chosen[0] = 1;
+	for (int j = 0; j < k; j++)
+		if (!chosen[j])
+			minDist[j] = PathRelinkIJSP::disagreement(sched[j], sched[0]);
+
+	for (int step = 1; step < k; step++) {
+		int best = -1;
+		double bestD = -1.0;
+		for (int j = 0; j < k; j++)
+			if (!chosen[j] && minDist[j] > bestD) {
+				bestD = minDist[j];
+				best = j;
+			}
+		if (best < 0)
+			break;
+		this->maxminOrder.push_back(best);
+		chosen[best] = 1;
+		for (int j = 0; j < k; j++)
+			if (!chosen[j]) {
+				double d = PathRelinkIJSP::disagreement(sched[j], sched[best]);
+				if (d < minDist[j])
+					minDist[j] = d;
+			}
+	}
+
+	for (int i = 0; i < k; i++)
+		delete sched[i];
+	this->nextPick = 0;
+}
+
+
 //-----  getName  -------------------------------------------------------------
 std::vector<std::string> CreationFromFileSchedule::getName() const {
 	std::vector<std::string> name;
 	std::vector<std::string> sgsName = this->sgs->getName();
 	name.push_back("Stored solutions (" + this->solutionsDir + ")");
-	name.push_back(";Sampling:;rank-biased (min of 2 draws)");
+	if (this->useMaxMin)
+		name.push_back(";Selection:;max-min diversity (greedy)");
+	else
+		name.push_back(";Selection:;rank-biased (min of 2 draws)");
 	for (size_t i = 0; i < sgsName.size(); i++)
 		name.push_back(";SGS:;" + sgsName[i]);
 	name.push_back(";Random ratio:;" + valueToString(this->randomRatio));
