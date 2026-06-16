@@ -40,6 +40,7 @@
 #include "DecoderFVRP.h"
 #include "DecoderIJSP.h"
 #include "CreationIJSP.h"
+#include "MutationIJSP_N8.h"
 
 
 
@@ -351,6 +352,7 @@ public:
 
 
 		// -----  MUTATION OPERATORS  -----------------------------------------
+		MutationMap[toUpper("ijsp.n8")] = &createMutationInstance<IJSP::MutationIJSP_N8>;
 
 		// -----  SELECTION OPERATORS  ----------------------------------------
 
