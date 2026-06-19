@@ -1,0 +1,75 @@
+# Published TS-N2 config (setup_N2_tuned.txt) with ONLY the mutation changed
+# to the N8 critical-block reinsertion mutation, k=3. Everything else is the
+# irace-tuned config from the paper, so the published TS-N2 results
+# (per_instance_stats.csv, mutation = insertion) are the matched control.
+
+# GENERIC
+algorithm = ABCPSO
+seed = 1
+runs = 30
+
+# PROBLEM
+problem.hasbounds = no
+
+# OBJECTIVE
+objective = ijsp.makespan
+evaluation.interval.comparison = LEX2
+evaluation.interval.maximum = Component
+evaluation.lamarckism = yes
+
+# CODIFICATION
+codification = ijsp.job-order
+decodification = ijsp.job-order
+decode.sgs = insertion
+sgs.interval.comparison = LEX2
+
+# CREATION
+creation = ijsp.random
+creation.sgs = insertion
+
+# CROSSOVER
+crossover = ijsp.jox
+crossover.probability = 0.9
+
+# MUTATION  <-- the only change vs setup_N2_tuned.txt
+mutation = ijsp.n8
+mutation.n8.moves = 3
+mutation.probability = 0.10
+
+# SELECTION / REPLACEMENT
+selection = shuffle
+replacement = parents
+replacement.allow-repeated = no
+
+# STOPPING CRITERION
+noimprovement = 20
+timelimit = 900
+
+# POPULATION
+population.size = 250
+maxnumtrials = 24
+elite.selection = 6
+elite.size = 50
+
+# STATISTICS
+statistics.1.metric = best
+statistics.1.value = ijsp.makespan
+statistics.2.metric = average
+statistics.2.value = ijsp.makespan
+
+# LOCAL SEARCH
+localsearch = tabu-search
+localsearch.estimation-guide = no
+localsearch.filter = yes
+localsearch.max-time = 2
+localsearch.neighbourhood = ijsp.makespan.n2
+neighbourhood.estimator = heads&tails
+localsearch.frequency = period
+localsearch.period = 1
+localsearch.target = 1.0
+localsearch.lamarckism = yes
+localsearch.bad-iterations = 20
+localsearch.tabu-size.min = 3
+
+# skip the robustness analysis (does NOT affect the makespan RE comparison)
+postexecution = no

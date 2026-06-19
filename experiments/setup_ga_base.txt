@@ -1,0 +1,46 @@
+# Pure GA (no local search) base setup. mutation = ijsp.n8 (k defaults to 1
+# unless a 'mutation.n8.moves = K' line is appended). Generational replacement
+# with elitism => mutations persist (unlike ABCPSO's greedy acceptance).
+algorithm = GA
+seed = 1
+runs = 5
+
+problem.hasbounds = no
+
+objective = ijsp.makespan
+evaluation.interval.comparison = LEX2
+evaluation.interval.maximum = Component
+evaluation.lamarckism = yes
+
+codification = ijsp.job-order
+decodification = ijsp.job-order
+decode.sgs = insertion
+sgs.interval.comparison = LEX2
+
+creation = ijsp.random
+creation.sgs = insertion
+
+crossover = ijsp.jox
+crossover.probability = 0.9
+
+mutation = ijsp.n8
+mutation.probability = 0.2
+
+selection = tournament
+replacement = elitism
+
+noimprovement = 100000
+timelimit = 60
+generations = 100000000
+
+population.size = 100
+
+statistics.1.metric = best
+statistics.1.value = ijsp.makespan
+statistics.2.metric = average
+statistics.2.value = ijsp.makespan
+
+evolution.unit = time
+evolution.span = 1
+
+postexecution = no

@@ -1,0 +1,8 @@
+# irace parameter space — GA with the N8 mutation (makespan, LEX2).
+# name    switch          type   range
+pop       "--pop "        i      (50, 400)
+cxpb      "--cxpb "       r      (0.60, 1.00)
+mutpb     "--mutpb "      r      (0.00, 0.50)
+tourn     "--tourn "      i      (2, 10)
+crossover "--crossover "  c      (ijsp.jox, ijsp.gox, ijsp.ppx)
+n8moves   "--n8moves "    i      (1, 6)

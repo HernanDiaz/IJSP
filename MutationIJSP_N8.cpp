@@ -5,13 +5,14 @@
  *
  * The critical-block identification and the reinsertion link surgery mirror
  * NB_ParallelN8_MakespanIJSP (NeighbourhoodIJSP_N8.cpp), but without the
- * improvement clipping and with a single random move.
+ * improvement clipping and with k random moves.
  *
  * @author hdiaz
  */
 
 #include "MutationIJSP_N8.h"
 #include "SharedVarsEvolutionary.h"
+#include "ParameterDB.h"
 #include "Decoder.h"
 #include "Encoder.h"
 #include "Individual.h"
@@ -191,6 +192,15 @@ bool recomputeHeads(ScheduleIJSP *s) {
 } // anonymous namespace
 
 
+//-----  setup  ---------------------------------------------------------------
+void MutationIJSP_N8::setup(FuzzyFW::ParameterDB *parameters) {
+	FuzzyFW::Mutation::setup(parameters);
+	this->kMoves = parameters->getInteger(MUTATION_N8_MOVES, 1);
+	if (this->kMoves < 1)
+		this->kMoves = 1;
+}
+
+
 //-----  apply  ---------------------------------------------------------------
 void MutationIJSP_N8::apply(FuzzyFW::Individual *individual,
 		const FuzzyFW::SharedVars *svars) const {
@@ -219,37 +229,46 @@ void MutationIJSP_N8::apply(FuzzyFW::Individual *individual,
 	ScheduleIJSP *work = dynamic_cast<ScheduleIJSP *>(base->clone());
 	if (work == NULL)
 		return;
-
 	if (!recomputeHeads(work)) { delete work; return; }
 
-	FuzzyFW::Interval mk = makespanOf(work);
-	std::vector<char> crit(work->taskInfo.size(), 0);
-	identifyCritical(work, mk, crit);
+	// Apply up to kMoves chained random reinsertions. The critical blocks are
+	// re-identified after each accepted move (the heads, hence the critical
+	// structure, change), so the moves form a perturbation chain.
+	int applied = 0;
+	for (int step = 0; step < this->kMoves; step++) {
+		FuzzyFW::Interval mk = makespanOf(work);
+		std::vector<char> crit(work->taskInfo.size(), 0);
+		identifyCritical(work, mk, crit);
 
-	std::vector<N8Move> moves;
-	collectMoves(work, crit, moves);
-	if (moves.empty()) { delete work; return; }
+		std::vector<N8Move> moves;
+		collectMoves(work, crit, moves);
+		if (moves.empty())
+			break;
 
-	// Random order; take the first move that yields a feasible schedule.
-	for (int i = (int)moves.size() - 1; i > 0; i--) {
-		int j = svars->rng->getInteger(0, i);
-		std::swap(moves[i], moves[j]);
-	}
-
-	bool applied = false;
-	for (size_t i = 0; i < moves.size() && !applied; i++) {
-		ScheduleIJSP *trial = dynamic_cast<ScheduleIJSP *>(work->clone());
-		if (trial == NULL) continue;
-		applyMove(trial, moves[i]);
-		if (recomputeHeads(trial)) {
-			delete work;
-			work = trial;
-			applied = true;
-		} else {
-			delete trial;
+		// Random order; take the first move that yields a feasible schedule.
+		for (int i = (int)moves.size() - 1; i > 0; i--) {
+			int j = svars->rng->getInteger(0, i);
+			std::swap(moves[i], moves[j]);
 		}
+
+		bool ok = false;
+		for (size_t i = 0; i < moves.size() && !ok; i++) {
+			ScheduleIJSP *trial = dynamic_cast<ScheduleIJSP *>(work->clone());
+			if (trial == NULL) continue;
+			applyMove(trial, moves[i]);
+			if (recomputeHeads(trial)) {
+				delete work;
+				work = trial;
+				ok = true;
+				applied++;
+			} else {
+				delete trial;
+			}
+		}
+		if (!ok)
+			break;	// no feasible move available at this step
 	}
-	if (!applied) { delete work; return; }
+	if (applied == 0) { delete work; return; }
 
 	// Re-encode the mutated schedule into the individual's genotype and store
 	// it as the (now consistent) phenotype. setSorted(false) forces the encoder

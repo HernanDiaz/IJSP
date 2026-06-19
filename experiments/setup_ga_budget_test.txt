@@ -1,0 +1,50 @@
+# Budget probe: does the pure GA actually use a 120s budget if configured to?
+algorithm = Genetic
+seed = 1
+runs = 1
+testMode = N
+
+problem.hasbounds = no
+
+objective = ijsp.makespan
+evaluation.lamarckism = yes
+evaluation.interval.comparison = LEX2
+evaluation.interval.maximum = Component
+
+codification = ijsp.JobOrder
+decodification = ijsp.JobOrder
+sgs.interval.comparison = Component
+decode.sgs = insertion
+sgs.append.maximum = Component
+
+creation = IJSP-Random
+creation.sgs = insertion
+
+crossover = ijsp.JOX
+crossover.probability = 0.9
+
+mutation = ijsp.n8
+mutation.n8.moves = 3
+mutation.probability = 0.30
+
+selection = Tournament
+selection.tournament-size = 3
+
+replacement = parents
+replacement.allow-repeated = no
+
+noImprovement = 5000
+timelimit = 120
+
+population.size = 400
+
+printPopulation = no
+statistics.1.metric = best
+statistics.1.value = ijsp.makespan
+statistics.2.metric = average
+statistics.2.value = ijsp.makespan
+
+evolution.unit = time
+evolution.span = 1
+
+postexecution = no

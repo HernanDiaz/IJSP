@@ -1,0 +1,21 @@
+# irace scenario — IJSP GA mutation-operator tuning (makespan, LEX2).
+# Run separately per mutation operator via run_irace_ga.sh.
+
+targetRunner       = "./target-runner.cmd"
+targetCmdline      = "{configurationID} {instanceID} {seed} {instance} {targetRunnerArgs}"
+parameterFile      = "./parameters.txt"
+trainInstancesFile = "./instances.txt"
+
+# Budget: 1000 experiments total per operator
+maxExperiments  = 1000
+
+# Parallelism
+parallel        = 24
+
+# Racing
+testType        = "friedman"
+minNbSurvival   = 3
+
+debugLevel      = 1
+logFile         = "irace.log"
+seed            = 42

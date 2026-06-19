@@ -1,0 +1,61 @@
+# Smoke: Memetic (GA + TS-N2 local search) with N8 mutation, k=3.
+# Generational replacement => mutations persist (unlike ABCPSO greedy accept).
+algorithm = MA
+seed = 1
+runs = 1
+
+problem.hasbounds = no
+
+objective = ijsp.makespan
+evaluation.interval.comparison = LEX2
+evaluation.interval.maximum = Component
+evaluation.lamarckism = yes
+
+codification = ijsp.job-order
+decodification = ijsp.job-order
+decode.sgs = insertion
+sgs.interval.comparison = LEX2
+
+creation = ijsp.random
+creation.sgs = insertion
+
+crossover = ijsp.jox
+crossover.probability = 0.9
+
+mutation = ijsp.n8
+mutation.n8.moves = 3
+mutation.probability = 0.3
+
+selection = tournament
+selection.tournament-size = 3
+replacement = parents
+replacement.allow-repeated = no
+
+noimprovement = -1
+timelimit = 15
+generations = 100000000
+
+population.size = 50
+
+statistics.1.metric = best
+statistics.1.value = ijsp.makespan
+statistics.2.metric = average
+statistics.2.value = ijsp.makespan
+
+evolution.unit = time
+evolution.span = 1
+
+localsearch = tabu-search
+localsearch.estimation-guide = no
+localsearch.filter = yes
+localsearch.max-time = 2
+localsearch.neighbourhood = ijsp.makespan.n2
+neighbourhood.estimator = heads&tails
+localsearch.frequency = period
+localsearch.period = 1
+localsearch.target = 1.0
+localsearch.lamarckism = yes
+localsearch.bad-iterations = 20
+localsearch.tabu-size.min = 3
+
+postexecution = no

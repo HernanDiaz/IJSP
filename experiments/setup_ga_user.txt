@@ -1,0 +1,59 @@
+# GA config from Hernan's old (working) tardiness setup, adapted to MAKESPAN.
+# Only the objective / due-dates / bounds changed; the GA machinery is his.
+algorithm = Genetic
+seed = 1
+runs = 5
+testMode = N
+
+# makespan: no bounds (due-dates line omitted -> default)
+problem.hasbounds = no
+
+objective = ijsp.makespan
+evaluation.lamarckism = yes
+evaluation.interval.comparison = LEX2
+evaluation.interval.maximum = Component
+
+codification = ijsp.JobOrder
+decodification = ijsp.JobOrder
+sgs.interval.comparison = Component
+decode.sgs = insertion
+sgs.append.maximum = Component
+
+creation = IJSP-Random
+creation.sgs = insertion
+
+crossover = ijsp.JOX
+crossover.probability = 1
+
+mutation = Swap
+mutation.probability = 0.05
+
+selection = Tournament
+selection.tournament-size = 3
+
+replacement = parents
+replacement.allow-repeated = no
+
+noImprovement = 25
+timelimit = 20
+
+population.size = 250
+
+printPopulation = no
+statistics.1.metric = best
+statistics.1.value = ijsp.makespan
+statistics.2.metric = average
+statistics.2.value = ijsp.makespan
+
+localsearch = Tabu
+localsearch.bad-iterations = 10
+localsearch.estimation-guide = no
+localsearch.filter = yes
+localsearch.neighbourhood = ijsp.makespan.n1
+neighbourhood.estimator = heads&tails
+localsearch.frequency = period
+localsearch.period = 1
+localsearch.target = 0.75
+localsearch.lamarckism = yes
+
+postexecution = no

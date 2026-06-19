@@ -1,0 +1,47 @@
+# irace GA base setup (makespan, LEX2 ranking). Pure GA (no local search).
+# Placeholders IRACE_* are replaced by target-runner.sh. The mutation operator
+# is hardcoded per irace run by run_irace_ga.sh.
+algorithm = Genetic
+seed = IRACE_SEED
+runs = 1
+testMode = N
+
+problem.hasbounds = no
+
+objective = ijsp.makespan
+evaluation.lamarckism = yes
+evaluation.interval.comparison = LEX2
+evaluation.interval.maximum = Component
+
+codification = ijsp.JobOrder
+decodification = ijsp.JobOrder
+sgs.interval.comparison = Component
+decode.sgs = insertion
+sgs.append.maximum = Component
+
+creation = IJSP-Random
+creation.sgs = insertion
+
+crossover = IRACE_CROSSOVER
+crossover.probability = IRACE_CXPB
+
+mutation = IRACE_MUTATION
+mutation.n8.moves = IRACE_N8MOVES
+mutation.probability = IRACE_MUTPB
+
+selection = Tournament
+selection.tournament-size = IRACE_TOURN
+
+replacement = parents
+replacement.allow-repeated = no
+
+noImprovement = 25
+timelimit = 120
+
+population.size = IRACE_POP
+
+printPopulation = no
+statistics.1.metric = best
+statistics.1.value = ijsp.makespan
+
+postexecution = no
