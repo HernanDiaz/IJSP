@@ -63,9 +63,15 @@
 
 \title{Neighbourhood Structures and Ranking Operators for the Interval Job Shop Scheduling Problem}
 
-\author{}
-%% Author, e-mail and affiliation withheld for double-anonymized review.
-%% Author identity is provided in the separate Title Page.
+\author[uo]{Hern\'an D\'{\i}az Rodr\'{\i}guez\corref{cor1}}
+\ead{diazhernan@uniovi.es}
+\cortext[cor1]{Corresponding author}
+
+\affiliation[uo]{organization={Department of Computing, University of Oviedo},
+            addressline={Campus de Gij\'on},
+            city={Gij\'on},
+            postcode={33204},
+            country={Spain}}
 
 %% Abstract
 \begin{abstract}
@@ -732,14 +738,24 @@ After per-neighbourhood irace-tuned tabu search, $N_2$ and $N_8$ emerge as the t
 These results provide actionable guidance for practitioners implementing local search for uncertain job shop scheduling: the choice of ranking operator can be used not only to optimise expected makespan but also to directly control solution uncertainty, and the choice of neighbourhood should account for the local-search strategy used.
 
 
-%% CRediT statement, competing-interest declaration and acknowledgements
-%% (which name the author and the funding grant) are withheld for
-%% double-anonymized review and provided in the separate Title Page.
+\section*{CRediT authorship contribution statement}
+
+\textbf{Hern\'an D\'{\i}az Rodr\'{\i}guez}: Conceptualization, Methodology, Software, Formal analysis, Investigation, Data curation, Visualization, Writing -- original draft, Writing -- review and editing.
+
+
+\section*{Declaration of competing interest}
+
+The author declares that there are no known competing financial interests or personal relationships that could have appeared to influence the work reported in this paper.
 
 
 \section*{Data availability}
 
-The raw experimental data underlying every figure and table in this article (run logs, aggregated CSVs, irace tuning records, instance files, and analysis scripts) are openly available in a public repository; the citation is withheld here to preserve anonymity and will be restored upon acceptance. Per-instance RE\,(\%) results for all 70 Taillard instances are provided as a separate supplementary document. The classical JSP benchmarks used to derive the interval instances are taken from the OR-Library and from \cite{TaillardBKS}.
+The raw experimental data underlying every figure and table in this article (run logs, aggregated CSVs, irace tuning records, instance files, and analysis scripts) are openly available on Zenodo~\cite{DiazData2026}. Per-instance RE\,(\%) results for all 70 Taillard instances are provided as a separate supplementary document~\cite{DiazSupp2026}. The classical JSP benchmarks used to derive the interval instances are taken from the OR-Library and from \cite{TaillardBKS}.
+
+
+\section*{Acknowledgements}
+
+This work was supported by the Spanish Ministry of Science, Innovation and Universities (MCIN/AEI/10.13039/501100011033) under grant PID2022-141746OB-I00.
 
 
 %% If you have bib database file and want bibtex to generate the
@@ -900,11 +916,18 @@ M.~L{\'o}pez-Ib{\'a}{\~n}ez, J.~Dubois-Lacoste, L.~P{\'e}rez~C{\'a}ceres, M.~Bir
 \newblock \href {https://doi.org/10.1016/j.orp.2016.09.002} {\path{doi:10.1016/j.orp.2016.09.002}}.
 
 \bibitem{DiazSupp2026}
-{[Authors withheld for double-anonymized review]}, Supplementary material: per-instance {RE}\,(\%) on {Taillard} {IJSP} instances ({TA1--TA70}), repository citation withheld to preserve anonymity; restored upon acceptance (2026).
+H.~D\'iaz~Rodr\'iguez, \href{https://doi.org/10.5281/zenodo.20562857}{Supplementary material: per-instance {RE}\,(\%) on {Taillard} {IJSP} instances ({TA1--TA70})} (2026).
+\newblock \href {https://doi.org/10.5281/zenodo.20562857} {\path{doi:10.5281/zenodo.20562857}}.
+\newline\urlprefix\url{https://doi.org/10.5281/zenodo.20562857}
 
 \bibitem{DiazIGPL2022}
 H.~D{\'i}az, J.~J. Palacios, I.~D{\'i}az, C.~R. Vela, I.~Gonz{\'a}lez-Rodr{\'\i}guez, Robust schedules for tardiness optimisation in job shop with interval uncertainty, Logic Journal of the {IGPL} 31~(2) (2022) 240--254.
 \newblock \href {https://doi.org/10.1093/jigpal/jzac016} {\path{doi:10.1093/jigpal/jzac016}}.
+
+\bibitem{DiazData2026}
+H.~D\'iaz~Rodr\'iguez, \href{https://doi.org/10.5281/zenodo.20562888}{Experimental dataset: Neighbourhood structures and ranking operators for the interval {JSP} (raw runs, configurations, instances, scripts)} (2026).
+\newblock \href {https://doi.org/10.5281/zenodo.20562888} {\path{doi:10.5281/zenodo.20562888}}.
+\newline\urlprefix\url{https://doi.org/10.5281/zenodo.20562888}
 
 \bibitem{TaillardBKS}
 {Optimizizer}, Best known solutions for the {Taillard} job shop instances, \url{http://optimizizer.com/TA.php}, accessed: May 2026 (2026).
