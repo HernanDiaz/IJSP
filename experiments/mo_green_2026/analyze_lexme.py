@@ -24,8 +24,13 @@ from validate_npe import decode_npe
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.normpath(os.path.join(HERE, "..", ".."))
-BASE_DIR = os.path.join(REPO, "experiments", "n2_worstcase_2026", "results", "N2Plus")
-LEX_DIR = os.path.join(HERE, "results", "LexME")
+# Baseline arm = the PUBLISHED N2 raw results (exp4, old clone). Override with
+# env BASE_DIR to compare against another arm (e.g. the unpublished N2Plus).
+BASE_DIR = os.environ.get("BASE_DIR",
+    r"C:\Users\diazhernan\CLionProjects\IJSP\experiments\results\exp4\N2_tuned"
+    if os.name == "nt" else
+    "/mnt/c/Users/diazhernan/CLionProjects/IJSP/experiments/results/exp4/N2_tuned")
+LEX_DIR = os.environ.get("LEX_DIR", os.path.join(HERE, "results", "LexME"))
 
 GROUPS = [
     ("Classical", re.compile(r"^F0\.15\.0\.")),

@@ -1,0 +1,253 @@
+% N2ME_theory.tex — working note (2026-07-04)
+% Bi-critical neighbourhood for the green interval JSP:
+% definitions, inherited results, and the bi-objective connectivity theorem
+% (what is proven, what is open). Companion to the ASOC tabu paper's
+% H(sigma) framework; notation follows that paper.
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=2.4cm]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[T1]{fontenc}
+\usepackage{microtype}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{proposition}{Proposition}
+\newtheorem{definition}{Definition}
+\newtheorem{remark}{Remark}
+\newtheorem{openq}{Open question}
+
+\newcommand{\Cmax}{C_{\max}}
+\newcommand{\NPE}{\mathrm{NPE}}
+\title{\textbf{A bi-critical neighbourhood for the green interval JSP}\\
+{\large Working note: definitions, inherited guarantees, and the
+bi-objective connectivity theorem}}
+\author{H.~D\'iaz}
+\date{July 2026 --- draft for discussion}
+
+\begin{document}
+\maketitle
+
+\section{Setting and notation}
+
+We consider the interval JSP as in the ASOC tabu paper. A processing order
+$\sigma\in\Sigma$ orients the disjunctive arcs $D(\sigma)$ of the solution
+graph $G(\sigma)$; the extreme graphs $G^{-}(\sigma)$ and $G^{+}(\sigma)$
+weight each arc $(x,y)$ with $p_x^{-}$ and $p_x^{+}$ respectively. For
+$i\in\{-,+\}$, the \emph{head} $r^i_v$ of a task $v$ is its earliest starting
+time in $G^{i}(\sigma)$ (semi-active timing, computed component-wise), i.e.
+\[
+r^i_v=\max\bigl\{\,r^i_{JP(v)}+p^i_{JP(v)},\; r^i_{MP_\sigma(v)}+p^i_{MP_\sigma(v)}\,\bigr\},
+\]
+with the convention that a missing predecessor contributes $0$. Here $JP(v)$
+and $MP_\sigma(v)$ denote the job and machine predecessors of $v$.
+
+\begin{definition}[Tight arc, sustaining chain]\label{def:tight}
+An arc $(x,y)$ of $G(\sigma)$ (conjunctive or disjunctive) is
+\emph{$i$-tight} if $r^i_y=r^i_x+p^i_x$. A \emph{sustaining chain of $v$ in
+component $i$}, written $\pi^i(v)$, is any chain
+$w_1\to w_2\to\cdots\to w_r=v$ of $i$-tight arcs with $r^i_{w_1}=0$.
+By construction of the heads, every task has at least one sustaining chain,
+and $r^i_v$ equals the length of any such chain.
+\end{definition}
+
+Sustaining chains generalise critical paths: a critical path of
+$G^{i}(\sigma)$ is precisely a sustaining chain of a task realising
+$C^i_{\max}$. All makespan-criticality notions of the ASOC paper are
+recovered as the special case $v\in\arg\max$.
+
+\section{Objectives}
+
+The primary objective is the interval makespan
+$\mathbf{C}_{\max}(\sigma)=[C^-_{\max},C^+_{\max}]$ ranked by LEX2. The
+secondary objective is the semi-active \emph{non-processing energy}. For a
+machine $k$ let $u_1^k\prec u_2^k\prec\cdots\prec u_{n_k}^k$ be its
+processing sequence under $\sigma$; the component-$i$ gap between
+consecutive tasks is
+$\gamma^i(u_j^k,u_{j+1}^k)=r^i_{u_{j+1}^k}-\bigl(r^i_{u_j^k}+p^i_{u_j^k}\bigr)\ge 0$,
+and
+\begin{equation}\label{eq:npe}
+\NPE^i(\sigma)\;=\;\sum_{k\in M} P_k \sum_{j<n_k}\gamma^i\bigl(u^k_j,u^k_{j+1}\bigr)
+\;=\;\sum_{k\in M} P_k\Bigl(\underbrace{r^i_{u^k_{n_k}}+p^i_{u^k_{n_k}}}_{=:~C^i(k)}
+-\underbrace{r^i_{u^k_1}}_{=:~S^i(k)}\Bigr)\;-\;\text{const},
+\end{equation}
+where $P_k$ is the passive power of machine $k$ and the constant is
+$\sum_k P_k\sum_{v\in k}p^i_v$, independent of $\sigma$. Identity
+\eqref{eq:npe} (``gap form'' = ``window form'' minus a constant) is the
+key structural tool below: NPE improves either by \emph{reducing a machine
+completion} $C^i(k)$ or by \emph{delaying a machine start} $S^i(k)$.
+
+\begin{remark}[Non-regularity]\label{rem:nonregular}
+$\NPE$ is not a regular measure: with free timing it can be reduced by
+right-shifting tasks at constant $\Cmax$. Throughout this note $\NPE$ is
+evaluated on the \emph{semi-active} schedule, which makes it a function of
+the order $\sigma$ alone. Consequently, no analogue of the ASOC
+Proposition~2 (``only critical reversals can improve'') can hold verbatim
+for free-timing NPE; the statements below are relative to semi-active
+timing, and the timing dimension is delegated to a separate right-shift
+operator.
+\end{remark}
+
+\section{The neighbourhood}
+
+Let $N_2(\sigma)$ denote the published makespan neighbourhood: reversals of
+boundary arcs of extreme critical blocks (arcs on critical paths of
+$G^{-}$ or $G^{+}$).
+
+\begin{definition}[Energy-critical arcs]\label{def:ecrit}
+For $i\in\{-,+\}$, let $\mathcal{V}^i(\sigma)$ contain (i) every task $v$
+that is the right endpoint of a positive gap
+($\gamma^i(u,v)>0$ for its machine predecessor $u$), and (ii) the last task
+$u^k_{n_k}$ of every machine $k$. The \emph{energy-critical arcs} are the
+disjunctive arcs lying on some sustaining chain of some $v\in
+\mathcal{V}^i(\sigma)$:
+\[
+E(\sigma)\;=\;\bigl\{(x,y)\in D(\sigma) : \exists\, i\in\{-,+\},\;
+\exists\, v\in\mathcal{V}^i(\sigma),\; (x,y)\in\pi^i(v)\bigr\}.
+\]
+\end{definition}
+
+\begin{definition}[Bi-critical neighbourhood]\label{def:n2me}
+$N_2^{ME}(\sigma)=\{\sigma_{(a)} : a\in N_2\text{-arcs}(\sigma)\cup
+E(\sigma)\}$. In \emph{lexicographic mode} the energy moves are accepted
+only if the resulting makespan is not LEX2-worse; in \emph{Pareto mode}
+all moves are offered to the acceptance criterion.
+\end{definition}
+
+The rationale for taking whole sustaining chains rather than only
+gap-adjacent arcs comes from the connectivity analysis (Lemma~\ref{lem:C}
+fails for the gap-adjacent subset).
+
+\section{Inherited guarantees}
+
+\begin{theorem}[Feasibility]\label{thm:feas}
+The reversal of any $i$-tight disjunctive arc yields a feasible order.
+In particular every neighbour in $N_2^{ME}(\sigma)$ is feasible.
+\end{theorem}
+
+\begin{proof}[Proof sketch]
+The ASOC feasibility proof (Theorem~1 there) uses only tightness: if a
+cycle appeared after reversing $(x,y)$, there would be a path $\pi$ from
+$x$ to $y$ in $G(\sigma)$ avoiding $(x,y)$, of length
+$\ell(\pi)>p^i_x$ in $G^i$; tightness $r^i_y=r^i_x+p^i_x$ then gives
+$r^i_y\ge r^i_x+\ell(\pi)>r^i_y$, a contradiction. Arcs of $N_2$ are tight
+because critical paths are sustaining chains; arcs of $E(\sigma)$ are tight
+by Definition~\ref{def:ecrit}.
+\end{proof}
+
+\begin{theorem}[Connectivity to the makespan-optimal set — inherited]
+\label{thm:inherited}
+$N_2^{ME}\supseteq N_2$, hence from every $\sigma$ there is a finite
+sequence of $N_2^{ME}$ moves reaching some makespan-optimal order
+(ASOC Theorem~2).
+\end{theorem}
+
+This is all that the superset argument yields. It says nothing about
+reaching the \emph{lexicographically} optimal order among the
+makespan-optimal ones, which is the object of the next section.
+
+\section{Bi-objective connectivity}
+
+Fix a lexicographic optimum $\sigma^{\star}$ (minimal
+$\mathbf{C}_{\max}$ under LEX2; among those, minimal
+$[\NPE^-,\NPE^+]$ under LEX2). Following the inversion-count scheme of
+ASOC Theorem~2, connectivity to $\sigma^{\star}$ reduces to a
+\emph{key lemma}: \textbf{every non-optimal $\lambda$ owns a disagreeing
+arc — $(x,y)\in D(\lambda)$, $(y,x)\in D(\sigma^{\star})$ — inside
+$N_2^{ME}(\lambda)$}. Reversing it decreases the inversion count
+$M(\lambda,\sigma^{\star})$, and induction finishes the proof. Three cases:
+
+\medskip\noindent\textbf{Case A (makespan deficit).}
+$\mathbf{C}_{\max}(\lambda)$ LEX2-worse than
+$\mathbf{C}_{\max}(\sigma^{\star})$. Covered verbatim by the ASOC key
+lemma: some extreme critical path of $\lambda$ carries a disagreeing arc,
+which belongs to the $N_2$ component. \hfill$\checkmark$
+
+\begin{lemma}[Case B: completion-side energy deficit]\label{lem:C}
+Suppose $\mathbf{C}_{\max}(\lambda)=\mathbf{C}_{\max}(\sigma^{\star})$ and
+there exist $i$ and a machine $k$ with $C^i(k)(\lambda)>C^i(k)(\sigma^{\star})$,
+where the machine sequences of $\lambda$ and $\sigma^\star$ on $k$ end in
+the same task\footnote{The general statement compares
+$\max_{v\in k}(r^i_v+p^i_v)$, which is order-independent as a set of
+candidate tasks; the footnoted condition is dispensable at the price of a
+longer case analysis.}. Then some sustaining chain
+$\pi^i\bigl(u^k_{n_k}\bigr)$ in $\lambda$ contains a disagreeing arc, and
+that arc lies in $E(\lambda)$.
+\end{lemma}
+
+\begin{proof}
+Let $\pi$ be a sustaining chain of $v=u^k_{n_k}$ in $\lambda$, of length
+$C^i(k)(\lambda)-p^i_v$ in $G^i(\lambda)$. If every disjunctive arc of
+$\pi$ agreed with $\sigma^{\star}$, then $\pi$ would be a path of
+$G^i(\sigma^{\star})$, whence
+$r^i_v(\sigma^{\star})\ge \ell(\pi)=r^i_v(\lambda)$ and
+$C^i(k)(\sigma^{\star})\ge C^i(k)(\lambda)$, contradicting the hypothesis.
+The disagreeing arc is on a sustaining chain of a machine-last task, hence
+in $E(\lambda)$ by Definition~\ref{def:ecrit}(ii).
+\end{proof}
+
+\medskip\noindent\textbf{Case C (start-side energy deficit) — OPEN.}
+The remaining possibility, by identity \eqref{eq:npe}, is
+$C^i(k)(\lambda)=C^i(k)(\sigma^{\star})$ for all $k,i$ while some machine
+start satisfies $S^i(k)(\lambda)<S^i(k)(\sigma^{\star})$: $\lambda$ switches
+machine $k$ on \emph{too early}. The chain argument does not transfer: a
+sustaining-chain of the first task of $k$ in $\lambda$ certifies a
+\emph{lower bound} that is already met, whereas the deficit asks why
+$\sigma^{\star}$ manages to start \emph{later}. The witness structure lives
+in $\sigma^{\star}$, not in $\lambda$, so it cannot by itself point to an
+arc of $E(\lambda)$. Two candidate resolutions, in decreasing order of
+elegance:
+\begin{enumerate}
+\item \textbf{Enlarge $E(\sigma)$ with delay moves.} Add, for every
+machine-first task $f$ preceding a positive gap, the reversal of
+$(f,MS_\sigma(f))$ — a swap that sends $f$ deeper into the sequence and can
+only delay the machine start. Conjecture: with these moves Case~C admits an
+exchange argument on the first disagreeing position of machine $k$'s
+sequence. \emph{Status: unproven.}
+\item \textbf{Weaken the theorem.} State connectivity to the set
+$\{\sigma:\mathbf{C}_{\max}\text{ optimal},\; C^i(k)\text{ minimal}\}$
+(Cases A+B, fully proven) and treat the start-side as heuristic
+intensification, validated empirically against exact CP-SAT fronts on
+small instances. This mirrors the pragmatic scope of the connectivity
+results in the group's energy-neighbourhood paper for the fuzzy flexible
+JSP, whose Theorem~1 likewise proves reachability with respect to the
+structures its moves control.
+\end{enumerate}
+
+\begin{openq}
+Does Definition~\ref{def:ecrit} augmented with the delay moves of
+resolution (1) satisfy the Case-C key lemma? Equivalently: can a
+makespan- and completion-optimal order with a strictly early machine start
+always be brought closer to $\sigma^{\star}$ by a single tight-arc reversal
+or first-task swap?
+\end{openq}
+
+\section{Remarks for the paper}
+
+\begin{remark}[Why not only gap-adjacent arcs]
+If $E(\sigma)$ contained only the arcs $(u,v)$ delimiting a positive gap,
+Lemma~\ref{lem:C} would fail: the disagreeing arc found in its proof lies
+anywhere along the sustaining chain, typically far upstream of the gap.
+This is the formal reason the neighbourhood must look at sustaining chains
+— the energy analogue of looking at whole critical paths rather than the
+last arc before $\Cmax$.
+\end{remark}
+
+\begin{remark}[Pareto mode]
+For dominance-based search the relevant notion is connectivity to
+\emph{each} Pareto-optimal order. Cases A and B apply unchanged to any
+non-dominated target $\sigma^{\star}$ (a dominated $\lambda$ has a deficit
+in some objective and component); Case C is open exactly as above. The
+lexicographic theorem is the extreme-point instance of this statement.
+\end{remark}
+
+\begin{remark}[Relation to the N2Plus result]
+Under pure single-objective LEX2, the worst-case sub-neighbourhood
+(G$^{+}$ only) suffices — the unpublished N2Plus experiment. As soon as the
+ranking involves a second criterion (lexicographic tie-break or Pareto
+dominance), the ranking-agnostic form of the connectivity argument is
+required again, over both extreme graphs and, per this note, over both
+objective structures. The bi-objective setting is thus precisely where the
+full bi-critical machinery earns its keep.
+\end{remark}
+
+\end{document}
