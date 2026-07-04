@@ -89,3 +89,7 @@ experiments/mo_green_2026/epsilon_probe.log
 
 # N2 worst-case experiment raw run CSVs (rule also on experiment/n2-worstcase)
 experiments/n2_worstcase_2026/results/
+
+# Python bytecode
+__pycache__/
+*.pyc
