@@ -22,6 +22,14 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from conflict_check import parse_instance, POWER_SEED
 from validate_npe import decode_npe
 
+# RS env var: "off" (default) | "heur" | "exact" — adds a right-shifted NPE
+# column (timing re-optimised post-hoc per order at fixed Cmax). "exact"
+# needs the OR-Tools venv; "heur" is the stdlib backward pass (near-optimal,
+# within ~1% of exact in validation).
+RS_MODE = os.environ.get("RS", "off")
+if RS_MODE != "off":
+    from rightshift import heuristic_rs_npe, exact_rs_npe
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.normpath(os.path.join(HERE, "..", ".."))
 # Baseline arm = the PUBLISHED N2 raw results (exp4, old clone). Override with
@@ -65,7 +73,7 @@ def load_sols_orders(directory):
 
 
 def eval_orders(stem, orders):
-    """[(cmax_mid, npe_mid) per run] for one instance."""
+    """[(cmax_mid, npe_mid[, npe_rs_mid]) per run] for one instance."""
     n, m, mach, dur = parse_instance(stem)
     rng = random.Random(POWER_SEED)
     pp = [rng.randint(2, 8) for _ in range(m)]
@@ -74,7 +82,14 @@ def eval_orders(stem, orders):
         if len(o) != n * m:
             continue
         cmax, npe = decode_npe(o, n, m, mach, dur, pp)
-        pts.append(((cmax[0] + cmax[1]) / 2, (npe[0] + npe[1]) / 2))
+        row = [(cmax[0] + cmax[1]) / 2, (npe[0] + npe[1]) / 2]
+        if RS_MODE == "heur":
+            row.append((heuristic_rs_npe(o, n, m, mach, dur, pp, 0)[0]
+                        + heuristic_rs_npe(o, n, m, mach, dur, pp, 1)[0]) / 2)
+        elif RS_MODE == "exact":
+            row.append((exact_rs_npe(o, n, m, mach, dur, pp, 0)[0]
+                        + exact_rs_npe(o, n, m, mach, dur, pp, 1)[0]) / 2)
+        pts.append(tuple(row))
     return pts
 
 
@@ -109,41 +124,61 @@ def main():
         print(f"No common instances yet. baseline={len(base)}  LexME={len(lex)}")
         return
 
-    print("=" * 96)
-    print("LexME (Cmax->NPE lexicographic) vs makespan-only N2Plus baseline — per-run means")
-    print("Same decoder, same powers. dCmax% ~ 0 expected; dNPE% < 0 = energy recovered for free.")
-    print("=" * 96)
-    print(f"{'Group':10} {'n':>3} | {'Cmax base':>10} {'Cmax lex':>10} {'dCmax%':>7} {'p':>6} | "
-          f"{'NPE base':>10} {'NPE lex':>10} {'dNPE%':>7} {'p':>6}")
-    print("-" * 96)
+    rs_on = RS_MODE != "off"
+    print("=" * (128 if rs_on else 96))
+    print("LexME (Cmax->NPE lexicographic) vs makespan-only N2 baseline — per-run means")
+    print("Same decoder, same powers. dCmax% ~ 0 expected; dNPE% < 0 = energy recovered for free."
+          + (f"  [RS={RS_MODE}: post-hoc timing]" if rs_on else ""))
+    print("=" * (128 if rs_on else 96))
+    hdr = (f"{'Group':10} {'n':>3} | {'Cmax base':>10} {'Cmax lex':>10} {'dCmax%':>7} {'p':>6} | "
+           f"{'NPE base':>10} {'NPE lex':>10} {'dNPE%':>7} {'p':>6}")
+    if rs_on:
+        hdr += f" | {'RS base':>9} {'RS lex':>9} {'dRS%':>7} {'p':>6}"
+    print(hdr)
+    print("-" * len(hdr))
 
-    g_cb, g_cl, g_nb, g_nl = [], [], [], []
+    g = defaultdict(list)
     for gname, rx in GROUPS:
         stems = [s for s in common if rx.match(s)]
         if not stems:
             continue
-        cb, cl, nb, nl = [], [], [], []
+        cb, cl, nb, nl, rb, rl = [], [], [], [], [], []
         for s in stems:
             pb, pl = eval_orders(s, base[s]), eval_orders(s, lex[s])
             if not pb or not pl:
                 continue
             cb.append(st.mean(p[0] for p in pb)); cl.append(st.mean(p[0] for p in pl))
             nb.append(st.mean(p[1] for p in pb)); nl.append(st.mean(p[1] for p in pl))
+            if rs_on:
+                rb.append(st.mean(p[2] for p in pb)); rl.append(st.mean(p[2] for p in pl))
         if not cb:
             continue
         dc = (st.mean(cl) - st.mean(cb)) / st.mean(cb) * 100
         dn = (st.mean(nl) - st.mean(nb)) / st.mean(nb) * 100
         pc, pn = wilcoxon(cl, cb), wilcoxon(nl, nb)
-        g_cb += cb; g_cl += cl; g_nb += nb; g_nl += nl
-        print(f"{gname:10} {len(cb):>3} | {st.mean(cb):10.1f} {st.mean(cl):10.1f} {dc:+7.2f} {pc:6.3f} | "
-              f"{st.mean(nb):10.0f} {st.mean(nl):10.0f} {dn:+7.1f} {pn:6.3f}")
+        for key, arr in (("cb", cb), ("cl", cl), ("nb", nb), ("nl", nl), ("rb", rb), ("rl", rl)):
+            g[key] += arr
+        line = (f"{gname:10} {len(cb):>3} | {st.mean(cb):10.1f} {st.mean(cl):10.1f} {dc:+7.2f} {pc:6.3f} | "
+                f"{st.mean(nb):10.0f} {st.mean(nl):10.0f} {dn:+7.1f} {pn:6.3f}")
+        if rs_on:
+            dr = (st.mean(rl) - st.mean(rb)) / st.mean(rb) * 100
+            line += f" | {st.mean(rb):9.0f} {st.mean(rl):9.0f} {dr:+7.1f} {wilcoxon(rl, rb):6.3f}"
+        print(line)
 
-    print("-" * 96)
-    dc = (st.mean(g_cl) - st.mean(g_cb)) / st.mean(g_cb) * 100
-    dn = (st.mean(g_nl) - st.mean(g_nb)) / st.mean(g_nb) * 100
-    print(f"{'GRAND':10} {len(g_cb):>3} | {st.mean(g_cb):10.1f} {st.mean(g_cl):10.1f} {dc:+7.2f} "
-          f"{wilcoxon(g_cl, g_cb):6.3f} | {st.mean(g_nb):10.0f} {st.mean(g_nl):10.0f} {dn:+7.1f} "
-          f"{wilcoxon(g_nl, g_nb):6.3f}")
+    print("-" * len(hdr))
+    dc = (st.mean(g['cl']) - st.mean(g['cb'])) / st.mean(g['cb']) * 100
+    dn = (st.mean(g['nl']) - st.mean(g['nb'])) / st.mean(g['nb']) * 100
+    line = (f"{'GRAND':10} {len(g['cb']):>3} | {st.mean(g['cb']):10.1f} {st.mean(g['cl']):10.1f} {dc:+7.2f} "
+            f"{wilcoxon(g['cl'], g['cb']):6.3f} | {st.mean(g['nb']):10.0f} {st.mean(g['nl']):10.0f} {dn:+7.1f} "
+            f"{wilcoxon(g['nl'], g['nb']):6.3f}")
+    if rs_on:
+        dr = (st.mean(g['rl']) - st.mean(g['rb'])) / st.mean(g['rb']) * 100
+        line += f" | {st.mean(g['rb']):9.0f} {st.mean(g['rl']):9.0f} {dr:+7.1f} {wilcoxon(g['rl'], g['rb']):6.3f}"
+    print(line)
+    if rs_on:
+        semi_vs_rs_b = (st.mean(g['rb']) - st.mean(g['nb'])) / st.mean(g['nb']) * 100
+        semi_vs_rs_l = (st.mean(g['rl']) - st.mean(g['nl'])) / st.mean(g['nl']) * 100
+        print(f"\nTiming value (RS vs semi-active NPE): baseline {semi_vs_rs_b:+.1f}%   LexME {semi_vs_rs_l:+.1f}%")
 
 
 if __name__ == "__main__":
