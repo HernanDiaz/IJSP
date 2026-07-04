@@ -6,6 +6,8 @@
 */
 
 #include "ArtificialBeeColonyPSO.h"
+#include "FitnessMO.h"
+#include "EvaluationIJSP_MakespanEnergy.h"
 #include <iostream>
 #include <set>
 
@@ -753,8 +755,33 @@ namespace FuzzyFW {
 		FullSolution optimised;
 		target = population->getIndividual(individualIdx);
 
+		// Lexicographic fitness (e.g. makespan-energy): the makespan local
+		// search operates on the primary component only; the full fitness is
+		// rebuilt from the optimised schedule afterwards.
+		FitnessLexicographic *lexFitness =
+			dynamic_cast<FitnessLexicographic *>(target->getFitness());
+		Fitness *lsFitness = lexFitness ?
+			lexFitness->getFitness(0) : target->getFitness();
+
 		optimised = this->localSearch->apply(
-			target->getPhenotype(), target->getFitness(), this->sharedVariables);
+			target->getPhenotype(), lsFitness, this->sharedVariables);
+
+		if (lexFitness != NULL) {
+			IJSP::EvaluationIJSP_MakespanEnergy *lexEvaluator =
+				dynamic_cast<IJSP::EvaluationIJSP_MakespanEnergy *>(this->evaluator);
+			IJSP::ScheduleIJSP *lsSchedule =
+				dynamic_cast<IJSP::ScheduleIJSP *>(optimised.first);
+			IJSP::ProblemIJSP *lexProblem =
+				dynamic_cast<IJSP::ProblemIJSP *>(this->sharedVariables->problem);
+			if (lexEvaluator == NULL || lsSchedule == NULL || lexProblem == NULL) {
+				std::string errorMsg = "Lexicographic fitness requires the ";
+				errorMsg += "ijsp.makespan-energy evaluation.";
+				throw FuzzyFWException("ABCPSO", errorMsg);
+			}
+			delete optimised.second;
+			optimised.second = lexEvaluator->evaluateSchedule(lsSchedule,
+				lexProblem);
+		}
 
 		this->evaluationsLS += this->localSearch->getEvaluations();
 		this->neighboursLS += this->localSearch->getNeighbours();

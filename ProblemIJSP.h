@@ -107,6 +107,13 @@ namespace IJSP {
 		std::vector< std::vector<unsigned int> > taskSequence;
 
 		/**
+		* Passive power of each machine (POTENCIA PASIVA section of the
+		* instance file). Empty if the section is absent; in that case every
+		* machine defaults to 1.0 and idle energy equals idle time.
+		*/
+		std::vector<double> passivePower;
+
+		/**
 		* The input file has bounds
 		*/
 		char withBounds;
@@ -235,6 +242,23 @@ namespace IJSP {
 			return this->dueDate.size();
 		}
 
+		/**
+		* Indicates if machine passive powers are present in the problem
+		*/
+		bool hasPassivePowers() const {
+			return this->passivePower.size() > 0;
+		}
+
+		/**
+		* Get the passive power of a machine (1.0 if no POTENCIA PASIVA
+		* section was present in the instance file)
+		*/
+		double getPassivePower(const unsigned int machine) const {
+			if (machine < this->passivePower.size())
+				return this->passivePower[machine];
+			return 1.0;
+		}
+
 
 
 		/**
@@ -296,6 +320,14 @@ namespace IJSP {
 		* The file reader must be pointing at the bounds section
 		*/
 		void loadBounds(std::ifstream &input);
+
+
+		/**
+		* Auxiliary method: Load the machine passive powers, if present.
+		* Scans the remaining lines for a POTENCIA heading, so it tolerates
+		* files without the section (passivePower is left empty).
+		*/
+		void loadPowers(std::ifstream &input);
 
 
 		/**

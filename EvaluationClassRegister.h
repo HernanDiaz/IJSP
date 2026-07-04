@@ -124,6 +124,8 @@ public:
 		EvaluationMap[toUpper("ijsp.makespan")] = &createEvaluationInstance<IJSP::EvaluationIJSP_Makespan>;
 		EvaluationMap[toUpper("ijsp.cmax")] = &createEvaluationInstance<IJSP::EvaluationIJSP_Makespan>;
 		EvaluationMap[toUpper("ijsp.tardiness")] = &createEvaluationInstance<IJSP::EvaluationIJSP_Tardiness>;
+		EvaluationMap[toUpper("ijsp.energy")] = &createEvaluationInstance<IJSP::EvaluationIJSP_Energy>;
+		EvaluationMap[toUpper("ijsp.makespan-energy")] = &createEvaluationInstance<IJSP::EvaluationIJSP_MakespanEnergy>;
 	
 		// -----  FVRP EVALUATION FUNCTIONS  ----------------------------------
 		EvaluationMap[toUpper("time")] = &createEvaluationInstance<FVRP::EvaluationFVRP_TimeCost>;

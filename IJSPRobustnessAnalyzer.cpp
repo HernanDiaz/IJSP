@@ -5,6 +5,7 @@
 *      Author: Hernan Diaz Rodriguez
 */
 #include "IJSPRobustnessAnalyzer.h"
+#include "FitnessMO.h"
 
 
 namespace PostExecution {
@@ -74,6 +75,13 @@ namespace PostExecution {
 	}
 
 	FuzzyFW::FitnessInterval * IJSPRobustnessAnalyzer::castFitness(FuzzyFW::Fitness* objective) {
+		// Lexicographic fitness (e.g. makespan-energy): the analysis targets
+		// the primary component
+		FuzzyFW::FitnessLexicographic * lexFitness =
+			dynamic_cast<FuzzyFW::FitnessLexicographic *>(objective);
+		if (lexFitness != NULL)
+			objective = lexFitness->getFitness(0);
+
 		FuzzyFW::FitnessInterval * fitness =
 			dynamic_cast<FuzzyFW::FitnessInterval *>(objective);
 		if (fitness == NULL) {

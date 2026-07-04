@@ -117,6 +117,9 @@ public:
 
 		SGSMap[toUpper("ijsp.tardiness")] = &createRobustnessInstance<IJSPRobustnessAnalyzerTardiness>;
 		SGSMap[toUpper("ijsp.makespan")] = &createRobustnessInstance<IJSPRobustnessAnalyzerMakespan>;
+		// Lexicographic makespan-energy: robustness targets the primary
+		// (makespan) component
+		SGSMap[toUpper("ijsp.makespan-energy")] = &createRobustnessInstance<IJSPRobustnessAnalyzerMakespan>;
 		SGSMap[toUpper("ijsp.makespan.makespanMR")] = &createRobustnessInstance<MakespanMRAnalyzer>;
 		SGSMap[toUpper("makespan")] = &createRobustnessInstance<FJSPRobustnessAnalyzerMakespan>;
 	}

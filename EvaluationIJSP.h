@@ -8,3 +8,5 @@
 
 #include "EvaluationIJSP_Makespan.h"
 #include "EvaluationIJSP_Tardiness.h"
+#include "EvaluationIJSP_Energy.h"
+#include "EvaluationIJSP_MakespanEnergy.h"

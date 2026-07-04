@@ -121,6 +121,7 @@ namespace IJSP {
 			this->dueDate.push_back(source.dueDate[t]->clone());
 
 		this->taskSequence = source.taskSequence;
+		this->passivePower = source.passivePower;
 	}
 
 
@@ -313,6 +314,9 @@ namespace IJSP {
 		// Load lower/upper bounds if they are present in the problem
 		this->loadBounds(input);
 
+		// Load machine passive powers if they are present in the problem
+		this->loadPowers(input);
+
 		input.close();
 
 		//Use this to save the input file to a starndard format
@@ -426,12 +430,38 @@ namespace IJSP {
 	}
 
 
+	//====  Load machine passive powers from file  ================================
+	void ProblemIJSP::loadPowers(std::ifstream &input) {
+		std::string reader;
+		double power;
+
+		// Scan the remaining lines for the POTENCIA heading (tolerates
+		// files without the section and any unread sections in between)
+		this->passivePower.clear();
+		while (getline(input, reader)) {
+			if (reader.find("POTENCIA") != std::string::npos) {
+				for (unsigned int k = 0; k < this->nMachines; k++) {
+					if (!(input >> power)) {
+						std::string errorMsg = "POTENCIA section found but ";
+						errorMsg += "it does not contain one value per machine.";
+						throw IJSPException("Loading problem", errorMsg);
+					}
+					this->passivePower.push_back(power);
+				}
+				return;
+			}
+		}
+		input.clear();	// Reached EOF without the section: leave powers empty
+	}
+
+
 	//====  Clear  ================================================================
 	void ProblemIJSP::clear() {
 		this->nJobs = this->nMachines = this->nTasks = 0;
 		this->lb_Makespan = 0.0;
 		this->ub_AImin = 1.0;
 		this->ub_AIavg = 1.0;
+		this->passivePower.clear();
 
 		for (size_t t = 0; t < this->task.size(); t++)
 			delete this->task[t];

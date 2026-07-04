@@ -80,3 +80,12 @@ Papers/COR_Tabu/IJSP_dataset_2026.zip.preBugfix2
 experiments/statistical_results_exp7/*.csv
 experiments/statistical_results_exp8/*.csv
 experiments/statistical_results_exp9/*.csv
+
+# MO green experiment: generated energy instances (deterministic via
+# extend_instances.py, seed 23) and raw run outputs
+SelectosYTaillardIntervalosEnergia/
+experiments/mo_green_2026/results/
+experiments/mo_green_2026/epsilon_probe.log
+
+# N2 worst-case experiment raw run CSVs (rule also on experiment/n2-worstcase)
+experiments/n2_worstcase_2026/results/

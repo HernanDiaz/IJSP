@@ -72,13 +72,35 @@ timing). Consecuencias de diseño:
   20×10 → la sonda exacta no escala; el frente de referencia en instancias
   medianas/grandes tendrá que ser aproximado (metaheurística), como en #17.
 
-## Siguiente (Fase 1)
+## Fase 1 — infraestructura HECHA (2026-07-04)
 
-1. Esquema definitivo de potencias Pp para las 82 instancias (leer el detalle
-   experimental de #12/#02; provisional U{2..8} seed 23).
-2. `EvaluationIJSP_Energy` en C++ (NPE intervalo por huecos, componente a
-   componente) + semántica de timing: ¿schedule semi-activo + right-shift
-   post-hoc (à la #17), o timing libre en la representación?
-3. Variante lexicográfica (Cmax→NPE) con `FitnessLexicographic` (casi gratis)
-   como primer experimento; luego maquinaria Pareto (dominancia + archivo +
-   NSGA-II-lite) — ver plan en la conversación 2026-07-04.
+1. **Potencias**: #02/#05/#12 no publican distribución (heredan de DPdata-energy)
+   → esquema propio documentado: Pp ~ U{2..8}, `random.Random(23)` POR instancia
+   (idéntico en conflict_check/epsilon_probe/extend_instances). `extend_instances.py`
+   genera `SelectosYTaillardIntervalosEnergia/` (92 copias + sección POTENCIA
+   PASIVA; regenerables, gitignored). Pa omitida: AE invariante en JSP.
+2. **C++** (compila limpio, smoke OK):
+   - `ProblemIJSP`: sección opcional POTENCIA PASIVA (`loadPowers`, tolerante;
+     default Pp=1 → NPE = tiempo idle), copiada en copy-ctor y limpiada en clear.
+   - `EvaluationIJSP_Energy` (`ijsp.energy`): NPE intervalo por huecos entre
+     tareas consecutivas por máquina, componente a componente, sobre el schedule
+     semi-activo del SGS. Timing: semi-activo en Fase 1; right-shift → Fase 2 (LS).
+   - `EvaluationIJSP_MakespanEnergy` (`ijsp.makespan-energy`): FitnessLexicographic
+     [Cmax, NPE], ambos FitnessInterval con el ranking global (LEX2).
+   - Frontera LS en `ArtificialBeeColonyPSO::applyLocalSearch`: si el fitness es
+     lexicográfico, la TS de makespan recibe la componente 0 y el fitness completo
+     se reconstruye del schedule optimizado (evaluateSchedule).
+   - Post-ejecución: `castFitness` desenvuelve lexicográfico (componente primaria);
+     registro `ijsp.makespan-energy` → analizador de makespan.
+3. **Smoke VERIFICADO** (ft10, runs=1, tl=10, N2Plus): makespan 940 (= referencia
+   N2Plus), NPE=(7528,8241); `validate_npe.py` recomputa en Python y da **MATCH
+   exacto**. (Coherencia con sonda: NPE semi-activo 7885 mid > óptimo free-timing
+   4467 en Cmax≈940, como cabe esperar.)
+
+## Siguiente (Fase 2)
+
+- Experimento lexicográfico a escala (Cmax→NPE vs makespan-only en las 82;
+  medir cuánta energía recupera "gratis" el desempate lexicográfico).
+- Right-shift / optimización de timing como operador (la sonda demuestra que
+  ahí vive la mitad del NPE) — plantilla: heurística HER del #17 + LP post.
+- Maquinaria Pareto (dominancia intervalo-consciente + archivo + NSGA-II-lite).
