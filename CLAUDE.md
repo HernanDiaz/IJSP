@@ -114,12 +114,16 @@ and PPX call it at the start of `applyJobPermutation()` to avoid the repeated
 
 ## Verification after refactoring
 
+`verify_refactor.sh` and its exp7 baseline were removed in the pre-ASOC
+cleanup. The current light regression gate is:
+
 ```bash
-bash experiments/verify_refactor.sh
+bash experiments/mo_green_2026/regression_smokes.sh   # run via WSL
 ```
-Runs 6 instances × 5 configs (30 parallel jobs) against baseline in
-`experiments/statistical_results_exp7/runs_data.csv`. Exit 0 = all match.
-**Always run before committing changes to operators or their registration.**
+Smoke-runs both instance formats (headered ft10 / headerless la29), a
+Taillard instance, and both objectives (makespan-only and lexicographic
+makespan-energy); ft10 must report best = 940 (FT10 reference).
+**Run before committing changes to operators, evaluations or ProblemIJSP.**
 
 ---
 
