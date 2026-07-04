@@ -80,3 +80,7 @@ Papers/COR_Tabu/IJSP_dataset_2026.zip.preBugfix2
 experiments/statistical_results_exp7/*.csv
 experiments/statistical_results_exp8/*.csv
 experiments/statistical_results_exp9/*.csv
+
+# N2 worst-case experiment raw run CSVs (2.5 GB; regenerable via run_n2_worstcase.sh,
+# aggregated verdict kept in RESULTS_SUMMARY.txt). Pipeline files stay tracked.
+experiments/n2_worstcase_2026/results/

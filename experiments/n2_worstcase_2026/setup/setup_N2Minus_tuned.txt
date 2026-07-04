@@ -1,0 +1,74 @@
+# N2Minus (best-case only, CONTROL) — identical to cor_tabu_2026
+# setup_N2_tuned.txt EXCEPT localsearch.neighbourhood = ijsp.makespan.n2minus.
+# N2Minus restricts arc reversals to the critical path of the interval LOWER
+# bound (G-, comp=1) only. It is the mirror of N2Plus and serves as the
+# control: under LEX2 (upper-bound-first) it is expected to underperform,
+# confirming the effect is specific to the worst case, not to using a single
+# component. Hyperparameters are the irace-tuned N2 config (NOT re-tuned).
+
+# GENERIC
+algorithm = ABCPSO
+seed = 1
+runs = 30
+
+# PROBLEM
+problem.hasbounds = no
+
+# OBJECTIVE
+objective = ijsp.makespan
+evaluation.interval.comparison = LEX2
+evaluation.interval.maximum = Component
+evaluation.lamarckism = yes
+
+# CODIFICATION
+codification = ijsp.job-order
+decodification = ijsp.job-order
+decode.sgs = insertion
+sgs.interval.comparison = LEX2
+
+# CREATION
+creation = ijsp.random
+creation.sgs = insertion
+
+# CROSSOVER
+crossover = ijsp.jox
+crossover.probability = 0.9
+
+# MUTATION
+mutation = insertion
+mutation.probability = 0.10
+
+# SELECTION / REPLACEMENT
+selection = shuffle
+replacement = parents
+replacement.allow-repeated = no
+
+# STOPPING CRITERION
+noimprovement = 20
+timelimit = 900
+
+# POPULATION
+population.size = 250
+maxnumtrials = 24
+elite.selection = 6
+elite.size = 50
+
+# STATISTICS
+statistics.1.metric = best
+statistics.1.value = ijsp.makespan
+statistics.2.metric = average
+statistics.2.value = ijsp.makespan
+
+# LOCAL SEARCH
+localsearch = tabu-search
+localsearch.estimation-guide = no
+localsearch.filter = yes
+localsearch.max-time = 2
+localsearch.neighbourhood = ijsp.makespan.n2minus
+neighbourhood.estimator = heads&tails
+localsearch.frequency = period
+localsearch.period = 1
+localsearch.target = 1.0
+localsearch.lamarckism = yes
+localsearch.bad-iterations = 20
+localsearch.tabu-size.min = 3
