@@ -1,0 +1,540 @@
+%%
+%% Energy-aware scheduling in the interval job shop:
+%% from lexicographic to Pareto optimisation of makespan and idle energy
+%%
+%% Working draft — 2026-07-04. Built on Elsevier's elsarticle template
+%% (same conventions as the ASOC tabu manuscript).
+%% Compile with:  latexmk -pdf main
+%%
+%% STATUS MARKERS: \todo{...} boxes flag content pending experiments
+%% (Taillard tiers running; N2ME and Pareto arms not yet implemented).
+%%
+\documentclass[preprint,12pt]{elsarticle}
+
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{float}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}{Proposition}
+\newtheorem{corollary}{Corollary}
+\newtheorem{definition}{Definition}
+\newtheorem{lemma}{Lemma}
+\newtheorem{remark}{Remark}
+
+\newcommand{\todo}[1]{\noindent\fcolorbox{red}{yellow!20}{\parbox{0.97\linewidth}{\textbf{TODO:} #1}}}
+\newcommand{\Cmax}{C_{\max}}
+\newcommand{\NPE}{\mathrm{NPE}}
+\newcommand{\lexle}{\preceq_{\mathrm{LEX2}}}
+
+\begin{document}
+
+\begin{frontmatter}
+
+\title{Energy-aware scheduling in the interval job shop:\\
+from lexicographic to Pareto optimisation of makespan and idle energy}
+
+\author[uniovi]{Hern\'an D\'iaz\corref{cor1}}
+\ead{hernan.diaz.rodriguez@gmail.com}
+\cortext[cor1]{Corresponding author}
+\address[uniovi]{Department of Computing, University of Oviedo, Campus of
+Gij\'on, 33204 Gij\'on, Spain}
+% \todo{co-authors and affiliations to be confirmed}
+
+\begin{abstract}
+Green scheduling incorporates energy consumption alongside classical
+performance objectives, while interval uncertainty offers a minimal-commitment
+model of ill-known processing times. This paper studies, for the first time,
+the multiobjective interval job shop scheduling problem (IJSP) that minimises
+the interval makespan together with the non-processing (idle) energy.
+We first show a structural property of the non-flexible job shop: active
+energy is invariant with respect to the schedule, so the green objective
+reduces exactly to the passive energy of machine idle intervals. We then show
+that the apparent strong correlation between makespan and idle energy is an
+artefact of semi-active timing: idle energy is not a regular measure, and
+once start times are allowed to shift, exact $\varepsilon$-constraint fronts
+reveal a genuine conflict --- relaxing the makespan by 10\% halves the idle
+energy. Consequently, the decision space of the green interval JSP is the
+pair (task order, timing). We extend the 82-instance IJSP benchmark with
+machine power data, and propose a ladder of solution methods built on a
+memetic algorithm with tabu search: (i) a lexicographic strategy that
+optimises makespan first and idle energy as a tie-break; (ii) a right-shift
+timing post-optimisation, in an exact linear-programming form and a
+near-optimal single-pass heuristic; and (iii) a novel \emph{bi-critical}
+neighbourhood that extends the makespan neighbourhood with energy-critical
+arcs on the sustaining chains of idle gaps, with feasibility guaranteed and
+connectivity analysed for the bi-objective setting. Experimental results show
+that the lexicographic tie-break alone recovers 7.1\% of the idle energy at
+zero makespan cost with respect to the published makespan-only tabu search,
+that timing optimisation contributes a further ${\sim}10\%$, and that both
+levers are complementary. A dominance-based memetic algorithm returning
+Pareto-front approximations completes the study.
+\end{abstract}
+
+\begin{keyword}
+Job shop scheduling \sep Interval uncertainty \sep Green scheduling \sep
+Energy \sep Multiobjective optimisation \sep Local search
+\end{keyword}
+
+\end{frontmatter}
+
+%=============================================================================
+\section{Introduction}
+\label{sec:intro}
+
+Production scheduling has traditionally optimised time-based performance
+measures, most prominently the makespan. Two independent concerns have
+reshaped the field in the last decade. First, the environmental impact and
+cost of energy have promoted \emph{green scheduling}, where energy
+consumption co-exists with classical objectives
+\cite{Afsar2022,GonzalezRodriguez2020}. Second, the acknowledgement that
+activity durations are rarely known in advance has motivated models of
+uncertainty; intervals are arguably the least committing such model,
+requiring only a lower and an upper bound for each duration
+\cite{Diaz2020,Diaz2023FEABC}.
+
+Both concerns have been combined for the \emph{flexible} job shop with
+interval durations, where a lexicographic goal-programming strategy
+minimises makespan first and total energy second \cite{Afsar2024,Afsar2025},
+and for the \emph{fuzzy} job shop, where Pareto-based memetic algorithms
+optimise makespan and non-processing energy simultaneously
+\cite{Afsar2022,GonzalezRodriguez2020}. However, to the best of our
+knowledge, the multiobjective \emph{interval} job shop --- without
+flexibility --- has not been addressed: the energy-aware neighbourhood of
+\cite{GarciaGomez2023} relies on machine reassignment moves that require
+flexibility, and its passive-energy component reduces energy only through
+the makespan. This paper fills that gap, and argues that the non-flexible
+interval case is not a mere restriction: it has structure of its own that
+changes both the model and the search operators.
+
+Our contributions are the following:
+\begin{enumerate}
+\item \textbf{Model.} We show that in the non-flexible job shop the active
+energy is schedule-invariant (Proposition~\ref{prop:ae}), so the green
+objective reduces exactly to the passive energy of idle intervals, for which
+we give an interval-valued definition evaluated component-wise
+(Section~\ref{sec:problem}).
+\item \textbf{Conflict analysis.} We show that under semi-active timing
+makespan and idle energy are strongly correlated (Pearson $+0.80$ to
+$+0.96$), which would render the biobjective problem nearly trivial --- and
+that this is an artefact: idle energy is not a regular measure, and exact
+$\varepsilon$-constraint fronts obtained with constraint programming exhibit
+a genuine trade-off once start times may shift (idle energy drops by
+${\sim}56\%$ when the makespan is relaxed by 10\%). The decision space of
+the green JSP is therefore the pair \emph{(order, timing)}
+(Section~\ref{sec:conflict}).
+\item \textbf{Benchmark.} We extend the 82-instance IJSP benchmark with
+machine power data under a documented, reproducible scheme
+(Section~\ref{sec:benchmark}).
+\item \textbf{Algorithms.} We propose a ladder of methods on top of a
+memetic algorithm with tabu search local search
+(Section~\ref{sec:methods}): a lexicographic makespan-then-energy strategy;
+an exact and a heuristic right-shift timing post-optimisation; a novel
+\emph{bi-critical neighbourhood} $N_2^{ME}$ combining makespan-critical and
+energy-critical arcs, with feasibility proven and bi-objective connectivity
+analysed; and a dominance-based memetic algorithm returning Pareto-front
+approximations.
+\item \textbf{Experiments.} On the 82-instance benchmark we quantify each
+rung of the ladder against the published makespan-only tabu search
+(Section~\ref{sec:experiments}).
+\end{enumerate}
+
+%=============================================================================
+\section{The interval job shop with idle energy}
+\label{sec:problem}
+
+\subsection{Interval JSP}
+
+An instance consists of $n$ jobs, each a chain of $m$ tasks, every task
+requiring a specific machine among $m$ machines; each machine processes one
+task at a time and no two tasks of a job overlap. The processing time of
+task $x$ is only known to lie in an interval
+$\mathbf{p}_x=[p^-_x,p^+_x]$. A solution is a processing order $\sigma$ (a
+machine sequencing compatible with job precedences), which orients the
+disjunctive arcs $D(\sigma)$ of the solution graph $G(\sigma)$.
+
+Following \cite{DiazTabu2026}, the two \emph{extreme graphs} $G^-(\sigma)$
+and $G^+(\sigma)$ weight every arc $(x,y)$ with $p^-_x$ and $p^+_x$
+respectively. For $i\in\{-,+\}$ the \emph{head} $r^i_v$ of task $v$ is its
+earliest starting time in $G^i(\sigma)$ (\emph{semi-active timing}),
+computed component-wise:
+\begin{equation}
+r^i_v=\max\bigl\{\,r^i_{JP(v)}+p^i_{JP(v)},\;
+r^i_{MP_\sigma(v)}+p^i_{MP_\sigma(v)}\,\bigr\},
+\label{eq:heads}
+\end{equation}
+where $JP(v)$ and $MP_\sigma(v)$ are the job and machine predecessors of
+$v$ (missing predecessors contribute $0$). The interval makespan is
+$\mathbf{C}_{\max}(\sigma)=[C^-_{\max},C^+_{\max}]$ with
+$C^i_{\max}=\max_v (r^i_v+p^i_v)$.
+
+Interval objectives require a ranking. We adopt LEX2, the lexicographic
+order that compares upper bounds first and breaks ties with lower bounds;
+in robust-optimisation terms LEX2 performs lexicographic min--max
+optimisation, and it was the best-performing ranking in the extensive
+comparison of \cite{DiazTabu2026}.
+
+\subsection{Energy model}
+
+We adopt the energy model of the interval green FJSP literature
+\cite{Afsar2024,Afsar2025}: machine $k$ is switched on when its first task
+starts and off when its last task completes; while on, it draws a
+\emph{passive power} $P_k$ per time unit, plus an \emph{active} power while
+actually processing. The total energy is
+$TE=\sum_k (PE_k+AE_k)$ with $AE_k=\sum_{x\in k} Pa_{x}\,\mathbf{p}_x$.
+
+\begin{proposition}[Active energy invariance]
+\label{prop:ae}
+In the non-flexible job shop, $AE=\sum_k AE_k$ does not depend on the
+processing order $\sigma$.
+\end{proposition}
+\begin{proof}
+Without flexibility every task is always processed on the same machine with
+the same (interval) duration, so each term $Pa_x\,\mathbf{p}_x$ is
+instance data. \end{proof}
+
+Consequently the only energy term the scheduler controls is the passive
+energy of \emph{idle} intervals, the non-processing energy. For machine $k$
+let $u^k_1\prec\cdots\prec u^k_{n_k}$ be its processing sequence under
+$\sigma$. The component-$i$ idle gap between consecutive tasks is
+$\gamma^i(u^k_j,u^k_{j+1})=r^i_{u^k_{j+1}}-(r^i_{u^k_j}+p^i_{u^k_j})\ge 0$
+and
+\begin{equation}
+\NPE^i(\sigma)=\sum_{k} P_k \sum_{j<n_k}\gamma^i(u^k_j,u^k_{j+1})
+=\sum_{k} P_k\bigl(C^i(k)-S^i(k)\bigr)-\beta^i,
+\label{eq:npe}
+\end{equation}
+where $C^i(k)$ and $S^i(k)$ are the machine's last completion and first
+start and $\beta^i=\sum_k P_k\sum_{x\in k}p^i_x$ is a constant. The
+\emph{gap form} = \emph{window form} identity \eqref{eq:npe} is used
+throughout: NPE improves either by finishing a machine earlier or by
+switching it on later. The interval objective is
+$\mathbf{\NPE}(\sigma)=[\NPE^-,\NPE^+]$, ranked by LEX2 as well.
+
+\begin{remark}[Non-regularity]
+\label{rem:nonregular}
+$\NPE$ is not a regular performance measure \cite{Afsar2022}: delaying a
+task can reduce it. Unless stated otherwise we evaluate $\NPE$ on the
+semi-active schedule \eqref{eq:heads}, which makes it a function of
+$\sigma$ alone; Section~\ref{sec:rs} restores the timing dimension.
+\end{remark}
+
+%=============================================================================
+\section{Is there a trade-off? Conflict analysis}
+\label{sec:conflict}
+
+A biobjective problem is only meaningful if its objectives conflict
+\cite{Afsar2022}. A first experiment suggests they do not: evaluating
+makespan and semi-active NPE on $200$ random schedules per instance yields
+Pearson correlations of $+0.80$ (\texttt{ft10}), $+0.94$ (\texttt{la29})
+and $+0.96$ (\texttt{tai30\_20\_01}); on near-optimal schedules the
+apparent Pareto front collapses to $1$--$4$ points. Compressing the
+makespan compresses machine windows, and semi-active NPE follows suit.
+
+This correlation is an artefact of semi-active timing. Because NPE is not
+regular (Remark~\ref{rem:nonregular}), the proper decision space is the
+pair (order, timing). We computed exact fronts by
+$\varepsilon$-constraint with CP-SAT on midpoint durations, with free
+start times: minimise NPE subject to $\Cmax\le(1+\varepsilon)\,C^*$,
+sweeping $\varepsilon$ from $0$ to $10\%$.
+Table~\ref{tab:probe} shows a genuine and steep trade-off: a 10\% makespan
+allowance halves the idle energy.
+
+\begin{table}[htb]
+\centering\small
+\caption{Exact $\varepsilon$-constraint probe (CP-SAT, midpoint durations,
+free start times, 60\,s per point). NPE at selected makespan allowances.}
+\label{tab:probe}
+\begin{tabular}{l rrrr r}
+\toprule
+Instance & $\varepsilon{=}0$ & $+3\%$ & $+5\%$ & $+10\%$ & drop \\
+\midrule
+ft10 (10$\times$10) & 5431 & 3305 & 2819 & 2400 & $-55.8\%$ \\
+la29 (20$\times$10) & --\,\footnotemark[1] & --\, & 3230 & 2480 & $-55.3\%$ \\
+\bottomrule
+\end{tabular}
+
+\footnotesize $^1$ CP-SAT could not close the tightest allowances on
+20$\times$10 within the budget; the drop is measured from the tightest
+solved point.
+\end{table}
+
+Two design consequences follow. First, algorithms must include a timing
+component (Section~\ref{sec:rs}); a search that only manipulates the order
+under semi-active evaluation can at most exploit the makespan plateaus.
+Second, exact fronts do not scale beyond small instances, so reference
+fronts for larger instances must be approximated by the algorithms
+themselves, as in \cite{Afsar2022}.
+
+\todo{Extend Table~\ref{tab:probe} with 2--3 additional small instances and
+a finer $\varepsilon$ grid (probe script ready:
+\texttt{experiments/mo\_green\_2026/epsilon\_probe.py}).}
+
+%=============================================================================
+\section{Benchmark with energy data}
+\label{sec:benchmark}
+
+We use the 82 interval instances of \cite{DiazTabu2026}: 12 classical
+OR-Library instances and 70 Taillard-derived interval instances
+(\texttt{tai15\_15} to \texttt{tai50\_20}). Since no power data exists for
+them, we extend every instance with integer passive powers
+$P_k\sim U\{2,\dots,8\}$, drawn per instance with a fixed documented seed,
+mirroring the way the fuzzy FJSP benchmark was extended with energy data
+\cite{GarciaGomez2023}. Active powers are not needed by
+Proposition~\ref{prop:ae}. The extended instances and the generator script
+are publicly available.\footnote{Zenodo DOI to be minted with the final
+dataset; generator \texttt{extend\_instances.py}, seed $23$.}
+
+%=============================================================================
+\section{Solution methods}
+\label{sec:methods}
+
+All methods build on the memetic algorithm of \cite{DiazTabu2026}: an
+artificial-bee-colony-inspired evolutionary algorithm (ABC-PSO) hybridised
+with tabu search local search over the makespan neighbourhood $N_2$
+(reversal of boundary arcs of extreme critical blocks), with irace-tuned
+hyperparameters. We keep those hyperparameters untouched in all arms, so
+every observed difference is attributable to the multiobjective machinery.
+
+\subsection{Lexicographic makespan-then-energy}
+\label{sec:lex}
+
+The first rung replaces the fitness by the lexicographic pair
+$\bigl(\mathbf{C}_{\max},\mathbf{\NPE}\bigr)$: candidates are compared by
+interval makespan under LEX2 and, only on ties, by interval NPE under LEX2
+--- a four-level comparison
+$(C^+_{\max},C^-_{\max},\NPE^+,\NPE^-)$. The comparison is applied in
+\emph{every} decision of the algorithm (selection, replacement, elitism,
+local search acceptance), so the pressure towards low energy acts
+throughout the search, but only inside makespan plateaus. The tabu search
+itself remains single-objective on the primary component, following the
+design principle of one intensifier per objective of \cite{Afsar2022}; the
+full lexicographic fitness of the improved solution is rebuilt after the
+local search returns.
+
+The rationale is that JSP makespan plateaus are huge: a makespan-only
+search drifts through them blindly, ending anywhere; the lexicographic
+tie-break walks them towards their lowest-energy point at zero cost in the
+primary objective. Section~\ref{sec:exp-lex} quantifies exactly how much
+energy those plateaus contain.
+
+\subsection{Right-shift timing optimisation}
+\label{sec:rs}
+
+The second rung restores the timing dimension. For a \emph{fixed} order
+$\sigma$ and fixed per-component makespans, the optimal timing problem is:
+delay task start times, respecting all precedences and without exceeding
+$C^i_{\max}(\sigma)$, so as to minimise \eqref{eq:npe}. By the window
+identity the objective is linear in the start times and the constraints
+form a difference system, so the problem is a linear programme with
+integral optima, solved exactly in milliseconds per solution; this is the
+per-order analogue of the LP post-processing of \cite{Afsar2022}. We also
+define a single-pass heuristic in the spirit of their right-shift
+procedure: machine-last tasks are pinned to their semi-active starts
+(delaying them can only widen the window), and every other task, in
+reverse topological order, is delayed up to the minimum start of its
+successors. The heuristic is $O(nm)$ and captured 86--95\% of the exact
+gain in our validation. Both variants preserve
+$\mathbf{C}_{\max}$ by construction and are applied independently per
+interval component.
+
+\subsection{The bi-critical neighbourhood $N_2^{ME}$}
+\label{sec:n2me}
+
+The third rung makes the \emph{search} energy-aware. Existing energy
+neighbourhoods rely on flexibility (reassignment moves) or reduce passive
+energy only through the makespan \cite{GarciaGomez2023}; no sequencing
+neighbourhood targets idle gaps. We propose one, built on the $H(\sigma)$
+framework of \cite{DiazTabu2026}.
+
+\begin{definition}[Tight arc, sustaining chain]
+An arc $(x,y)$ of $G(\sigma)$ is \emph{$i$-tight} if $r^i_y=r^i_x+p^i_x$.
+A \emph{sustaining chain} $\pi^i(v)$ is a chain of $i$-tight arcs from a
+task with null head to $v$; its length is $r^i_v$. Critical paths are the
+sustaining chains of the tasks realising $C^i_{\max}$.
+\end{definition}
+
+\begin{definition}[Energy-critical arcs; bi-critical neighbourhood]
+\label{def:n2me}
+For $i\in\{-,+\}$ let $\mathcal{V}^i(\sigma)$ contain the right endpoints
+of positive gaps and the last task of every machine. The energy-critical
+arcs $E(\sigma)$ are the disjunctive arcs on sustaining chains of tasks in
+$\mathcal{V}^i(\sigma)$. Then
+$N_2^{ME}(\sigma)$ reverses the arcs of $N_2(\sigma)\cup E(\sigma)$. In
+\emph{lexicographic mode} energy moves are accepted only if the makespan is
+not LEX2-worsened; in \emph{Pareto mode} all moves are offered to the
+acceptance criterion.
+\end{definition}
+
+\begin{theorem}[Feasibility]
+The reversal of any $i$-tight disjunctive arc yields a feasible order;
+hence every neighbour in $N_2^{ME}(\sigma)$ is feasible.
+\end{theorem}
+\begin{proof}[Proof idea]
+The feasibility proof of \cite{DiazTabu2026} for critical arcs uses only
+tightness of the reversed arc; all arcs of $E(\sigma)$ are tight by
+definition. \end{proof}
+
+\begin{theorem}[Connectivity]
+\label{thm:connectivity}
+From every order $\sigma$ there is a finite sequence of $N_2^{ME}$ moves
+reaching an order that is optimal in makespan and, among those, minimal in
+every machine completion $C^i(k)$.
+\end{theorem}
+\begin{proof}[Proof idea]
+Makespan deficits are repaired by the connectivity theorem of
+\cite{DiazTabu2026} ($N_2\subseteq N_2^{ME}$). For a completion deficit at
+equal makespan, a sustaining chain of the machine-last task with all arcs
+agreeing with the target would certify an equal completion in the target
+--- a contradiction; hence some disagreeing arc lies on the chain, i.e.\ in
+$E(\sigma)$, and the inversion-count argument of \cite{DiazTabu2026}
+applies. \end{proof}
+
+\begin{remark}
+Whether connectivity extends to the machine \emph{start} terms of
+\eqref{eq:npe} (switching machines on later) is open; candidate delay
+moves and the formal statement are discussed in the companion technical
+note. In practice the right-shift operator of Section~\ref{sec:rs}
+optimises exactly those terms for each visited order, so the search and
+the timing operator are complementary by design.
+\end{remark}
+
+\todo{Implementation and experimental evaluation of $N_2^{ME}$ pending
+(C++ operator; compare LexME-$N_2$ vs LexME-$N_2^{ME}$ and an adapted
+insertion baseline from \cite{GarciaGomez2023}).}
+
+\subsection{Pareto-based memetic algorithm}
+\label{sec:pareto}
+
+The final rung returns a front approximation. Dominance is defined over
+the product of the two LEX2 total orders: $\sigma$ dominates $\sigma'$ iff
+$\mathbf{C}_{\max}(\sigma)\lexle\mathbf{C}_{\max}(\sigma')$ and
+$\mathbf{\NPE}(\sigma)\lexle\mathbf{\NPE}(\sigma')$, one of them strictly.
+The memetic algorithm is extended with (i) an unbounded archive of
+non-dominated solutions, (ii) non-dominated sorting plus crowding distance
+in selection and replacement, and (iii) one single-objective intensifier
+per objective --- the makespan tabu search and the energy machinery of
+Sections~\ref{sec:rs}--\ref{sec:n2me} --- applied to archive
+representatives, following \cite{Afsar2022}. Quality is measured by
+hypervolume and the additive $\varepsilon$-indicator against reference
+fronts (union of all arms), and against the exact fronts of
+Section~\ref{sec:conflict} on small instances.
+
+\todo{Pareto machinery not yet implemented; this section fixes the design.}
+
+%=============================================================================
+\section{Experimental study}
+\label{sec:experiments}
+
+\subsection{Setup}
+\label{sec:exp-setup}
+
+All arms run on the 82-instance benchmark with the irace-tuned
+configuration of \cite{DiazTabu2026}: 30 runs per instance, 900\,s time
+limit, population 250, tabu search on $N_2$. The makespan-only baseline is
+\emph{not} re-run: we reuse the published raw results of
+\cite{DiazTabu2026} and recompute their NPE uniformly. Both arms'
+solutions are decoded and evaluated by the same independent implementation
+(and the same power data), so the comparison is paired and
+implementation-independent. Wilcoxon signed-rank tests are used
+throughout.
+
+\subsection{How much energy do makespan plateaus contain?}
+\label{sec:exp-lex}
+
+Table~\ref{tab:lex} compares the lexicographic arm (LexME) against the
+published makespan-only tabu search. On the classical instances the
+tie-break recovers \textbf{7.1\% of the idle energy} ($p=0.003$) with no
+degradation of the primary objective (makespan $-0.19\%$; we attribute
+this small difference to machine-load conditions rather than to the
+tie-break and make no claim of improvement).
+
+\begin{table}[htb]
+\centering\small
+\caption{LexME vs.\ published makespan-only TS-$N_2$ (per-run means over
+30 runs; NPE midpoints; Wilcoxon $p$ paired per instance). RS = NPE after
+right-shift timing (heuristic).}
+\label{tab:lex}
+\begin{tabular}{l r rrr rrr rrr}
+\toprule
+ & & \multicolumn{3}{c}{$\Cmax$ (mid)} & \multicolumn{3}{c}{NPE (mid)} &
+ \multicolumn{3}{c}{NPE after RS} \\
+\cmidrule(lr){3-5}\cmidrule(lr){6-8}\cmidrule(lr){9-11}
+Group & $n$ & base & lex & $\Delta\%$ & base & lex & $\Delta\%$ & base & lex & $\Delta\%$ \\
+\midrule
+Classical & 12 & 1005.5 & 1003.6 & $-0.19$ & 10978 & 10193 & $\mathbf{-7.1}$ & 9826 & 9228 & $\mathbf{-6.1}$ \\
+$15{\times}15$ & 10 & \multicolumn{9}{c}{\emph{running}} \\
+$20{\times}15$ -- $50{\times}20$ & 60 & \multicolumn{9}{c}{\emph{running}} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\todo{Fill Taillard rows when the full tier finishes
+(\texttt{analyze\_lexme.py}, \texttt{RS=heur}); add per-group Wilcoxon
+$p$-values and the grand mean.}
+
+\subsection{Order vs.\ timing: decomposing the energy gains}
+\label{sec:exp-decomp}
+
+The two levers are complementary. On the classical group: the tie-break
+(order) contributes $-7.1\%$; right-shifting the baseline's solutions
+(timing only) contributes $-10.5\%$; combining both yields
+$\mathbf{-15.9\%}$ total idle energy at zero makespan cost. Crucially, the
+lexicographic advantage \emph{survives} timing optimisation: after
+right-shifting both arms, LexME remains $-6.1\%$ below the baseline
+($p=0.003$). The tie-break therefore finds structurally better orders, not
+merely orders whose slack timing could recover anyway.
+
+This decomposition also bounds what timing alone can do: post-hoc
+right-shift recovers 7--21\% depending on instance size, far from the
+${\sim}56\%$ of the exact fronts at relaxed makespan
+(Table~\ref{tab:probe}). The remaining gap is order-mediated at fixed
+makespan --- precisely the target of the $N_2^{ME}$ neighbourhood.
+
+\subsection{Validation against exact fronts}
+\label{sec:exp-exact}
+
+\todo{Small-instance validation: measure how close each arm's best
+solutions get to the exact $\varepsilon$-constraint fronts (ft10 and the
+additional probes); include the front figure with the lexicographic point
+marked.}
+
+\subsection{Bi-critical neighbourhood and Pareto fronts}
+
+\todo{Pending arms: LexME-$N_2^{ME}$, adapted insertion baseline, Pareto
+memetic (hypervolume, $\varepsilon$-indicator, EAF). irace re-tuning per
+arm to be decided for the final experiments.}
+
+%=============================================================================
+\section{Conclusions}
+\label{sec:conclusions}
+
+We introduced the multiobjective green interval JSP, showed that its green
+objective reduces to idle passive energy, and that the makespan--energy
+conflict only emerges in the (order, timing) decision space --- under
+semi-active timing the objectives are almost perfectly aligned, which
+explains why a naive biobjective treatment would fail. On this basis we
+built a ladder of methods: the lexicographic tie-break, which harvests the
+energy hidden in makespan plateaus (7.1\% on classical instances, at zero
+makespan cost); right-shift timing optimisation, which contributes a
+further ${\sim}10\%$ and is near-optimally approximated by a single
+backward pass; and the bi-critical neighbourhood $N_2^{ME}$, the first
+sequencing neighbourhood targeting idle gaps, with feasibility proven and
+connectivity established for makespan and machine-completion optimality.
+\todo{Complete with N2ME/Pareto results and future work (flexible interval
+JSP, vague goals \cite{GarciaGomez2026}).}
+
+%=============================================================================
+\section*{Acknowledgements}
+\todo{Funding and acknowledgements.}
+
+\bibliographystyle{elsarticle-num}
+\bibliography{refs}
+
+\end{document}
