@@ -54,8 +54,45 @@ Tiers (staged by size to control compute): `smoke` (ft10 only) → `classical`
 
 Raw per-run CSVs land in `results/N2Plus/` and `results/N2Minus/`.
 
-## Analysis (TODO once outputs exist)
+## Analysis
 
-Aggregate the raw CSVs into the same `config,neigh,comp,instance,run,lower,upper,
-midpoint` schema as the baseline, then paired Wilcoxon N2Plus-vs-N2 and
-N2Minus-vs-N2 per instance and overall (mirror `cor_tabu_2026/scripts/`).
+Run `python3 analyze.py` (pure stdlib): dedups raw CSVs by latest timestamp,
+computes RE(%) per size class, paired Wilcoxon vs the published N2, and the
+runtime comparison. Aggregated verdict snapshot: `RESULTS_SUMMARY.txt`.
+
+## Outcome (2026-07-04, full 82 instances) — hypothesis CONFIRMED
+
+- **N2Plus ≡ N2 in quality**: grand mean RE 3.48 vs 3.47, Wilcoxon p = 0.58,
+  indistinguishable in all 8 size groups — at equal-or-lower runtime
+  (−22.6% on 50×20; −18.4% vs N2Minus overall, faster on 71/82, p < 0.0001).
+- **N2Minus (control) significantly worse AND slower**: p < 0.05 in the 6
+  non-trivial groups (grand mean RE 3.82), +18% slower than N2Plus.
+
+## Note — theoretical justification (why this does not contradict the paper)
+
+The paper's connectivity theorem (Thm 2) requires arcs from BOTH extreme
+critical paths, but that requirement buys *ranking-agnosticism*: it is proved
+for any admissible ranking R. LEX2 is not generic — it is lexicographic
+min–max — and specialising the theorem to it collapses the requirement:
+
+1. **Primary objective.** The key-lemma argument applied to G⁺ alone shows
+   N2Plus is connectivity-complete for C⁺: any C⁺ deficit is repairable via a
+   G⁺-critical boundary arc. By Prop. 2 applied to G⁺, arcs critical only in
+   G⁻ can never reduce C⁺ — they can at most improve the tie-break C⁻.
+2. **Tie-break.** The only gap is a C⁻-only improving arc on a G⁻ path that
+   diverges from G⁺ while C⁺ is already optimal. Phase A's structural finding
+   ("LEX2 concentrates criticality in G⁺") makes this rare, hence the
+   empirical equivalence. Exact limit: if interval widths are relatively
+   uniform (p⁺ = c·p⁻), the G⁻/G⁺ critical structures coincide and
+   N2Plus ≡ N2 ≡ N2Minus with full LEX2-completeness. General sufficient
+   condition: criticality containment H⁻(σ) ⊆ H⁺(σ).
+3. **The control measures the deviation.** N2Minus is complete only for the
+   secondary criterion, blind to C⁺ — its per-group quality gap is an
+   empirical metric of G⁻/G⁺ critical-structure divergence.
+
+Takeaway: *the neighbourhood must align with the ranking operator*. "Both
+paths" is the price of ranking-agnosticism; once LEX2 is fixed, G⁺ suffices
+(symmetrically, LEX1 → G⁻). Candidate follow-up contribution: proposition
+"under lexicographic min–max ranking, the G⁺ sub-neighbourhood preserves
+connectivity for the primary objective, and full LEX2-completeness holds
+under criticality containment", with N2Minus as the experimental falsifier.
