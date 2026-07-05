@@ -69,12 +69,14 @@ timing post-optimisation, in an exact linear-programming form and a
 near-optimal single-pass heuristic; and (iii) a novel \emph{bi-critical}
 neighbourhood that extends the makespan neighbourhood with energy-critical
 arcs on the sustaining chains of idle gaps, with feasibility guaranteed and
-connectivity analysed for the bi-objective setting. Experimental results show
-that the lexicographic tie-break alone recovers 7.1\% of the idle energy at
-zero makespan cost with respect to the published makespan-only tabu search,
-that timing optimisation contributes a further ${\sim}10\%$, and that both
-levers are complementary. A dominance-based memetic algorithm returning
-Pareto-front approximations completes the study.
+connectivity analysed for the bi-objective setting. Experimental results on the full 82-instance benchmark show that the
+lexicographic tie-break alone recovers 7.9\% of the idle energy on average
+--- and up to 26.5\% on the largest job/machine-ratio instances --- at zero
+makespan cost with respect to the published makespan-only tabu search;
+that timing optimisation contributes a further ${\sim}8\%$; and that both
+levers are complementary, for a combined 15\% energy reduction. A
+dominance-based memetic algorithm returning Pareto-front approximations
+completes the study.
 \end{abstract}
 
 \begin{keyword}
@@ -449,11 +451,23 @@ throughout.
 \label{sec:exp-lex}
 
 Table~\ref{tab:lex} compares the lexicographic arm (LexME) against the
-published makespan-only tabu search. On the classical instances the
-tie-break recovers \textbf{7.1\% of the idle energy} ($p=0.003$) with no
-degradation of the primary objective (makespan $-0.19\%$; we attribute
-this small difference to machine-load conditions rather than to the
-tie-break and make no claim of improvement).
+published makespan-only tabu search over the full benchmark. The
+tie-break recovers \textbf{7.9\% of the idle energy on average}
+($p<0.001$), with every size group individually significant, and with no
+degradation of the primary objective (makespan differences between
+$-0.11\%$ and $-0.55\%$ in LexME's favour; we attribute this small,
+consistent difference at least partly to machine-load conditions between
+the two experimental campaigns and make no claim of makespan improvement
+--- the relevant observation is that the tie-break costs nothing).
+
+The recovery grows markedly with instance size and with the job/machine
+ratio: from $3.2\%$ on $15{\times}15$ up to $\mathbf{26.5\%}$ on
+$50{\times}15$ and $12.6\%$ on $50{\times}20$. The pattern has a clean
+explanation: on large instances with a high job/machine ratio the makespan
+is comparatively easy to attain (cf.\ the near-zero makespan gaps reported
+for $50{\times}15$ in \cite{DiazTabu2026}), so its plateaus are wide, and
+wide plateaus are precisely where a blind makespan-only search leaves the
+most energy on the table.
 
 \begin{table}[htb]
 \centering\small
@@ -469,27 +483,37 @@ right-shift timing (heuristic).}
 Group & $n$ & base & lex & $\Delta\%$ & base & lex & $\Delta\%$ & base & lex & $\Delta\%$ \\
 \midrule
 Classical & 12 & 1005.5 & 1003.6 & $-0.19$ & 10978 & 10193 & $\mathbf{-7.1}$ & 9826 & 9228 & $\mathbf{-6.1}$ \\
-$15{\times}15$ & 10 & \multicolumn{9}{c}{\emph{running}} \\
-$20{\times}15$ -- $50{\times}20$ & 60 & \multicolumn{9}{c}{\emph{running}} \\
+$15{\times}15$ & 10 & 1254.2 & 1249.9 & $-0.34$ & 26965 & 26102 & $-3.2$ & 24656 & 24128 & $-2.1$ \\
+$20{\times}15$ & 10 & 1411.6 & 1407.9 & $-0.26$ & 23330 & 21803 & $-6.5$ & 21105 & 19882 & $-5.8$ \\
+$20{\times}20$ & 10 & 1672.3 & 1668.1 & $-0.25$ & 50388 & 48677 & $-3.4$ & 47130 & 45623 & $-3.2$ \\
+$30{\times}15$ & 10 & 1851.6 & 1848.0 & $-0.19$ & 18617 & 16690 & $-10.3$ & 16775 & 15128 & $-9.8$ \\
+$30{\times}20$ & 10 & 2061.1 & 2054.6 & $-0.31$ & 41629 & 39248 & $-5.7$ & 38437 & 36436 & $-5.2$ \\
+$50{\times}15$ & 10 & 2782.6 & 2779.4 & $-0.11$ & 15847 & 11646 & $\mathbf{-26.5}$ & 14252 & 10380 & $\mathbf{-27.2}$ \\
+$50{\times}20$ & 10 & 2901.4 & 2885.3 & $-0.55$ & 31214 & 27290 & $-12.6$ & 28852 & 25253 & $-12.5$ \\
+\midrule
+\emph{Grand mean} & 82 & 1846.5 & 1841.2 & $-0.29$ & 26971 & 24840 & $\mathbf{-7.9}$ & 24756 & 22915 & $\mathbf{-7.4}$ \\
 \bottomrule
 \end{tabular}
-\end{table}
 
-\todo{Fill Taillard rows when the full tier finishes
-(\texttt{analyze\_lexme.py}, \texttt{RS=heur}); add per-group Wilcoxon
-$p$-values and the grand mean.}
+\medskip
+\footnotesize All differences are Wilcoxon-significant: $p\le 0.017$ for
+$\Cmax$ per group and $p\le 0.008$ for both NPE columns per group;
+$p<0.001$ for all grand means.
+\end{table}
 
 \subsection{Order vs.\ timing: decomposing the energy gains}
 \label{sec:exp-decomp}
 
-The two levers are complementary. On the classical group: the tie-break
-(order) contributes $-7.1\%$; right-shifting the baseline's solutions
-(timing only) contributes $-10.5\%$; combining both yields
-$\mathbf{-15.9\%}$ total idle energy at zero makespan cost. Crucially, the
-lexicographic advantage \emph{survives} timing optimisation: after
-right-shifting both arms, LexME remains $-6.1\%$ below the baseline
-($p=0.003$). The tie-break therefore finds structurally better orders, not
-merely orders whose slack timing could recover anyway.
+The two levers are complementary. Over the 82 instances: the tie-break
+(order) contributes $-7.9\%$; right-shifting the baseline's solutions
+(timing only) contributes $-8.2\%$; combining both yields
+$\mathbf{-15.0\%}$ total idle energy at zero makespan cost (on the
+classical group, $-15.9\%$). Crucially, the lexicographic advantage
+\emph{survives} timing optimisation: after right-shifting both arms, LexME
+remains $-7.4\%$ below the baseline ($p<0.001$; every group individually
+significant, up to $-27.2\%$ on $50{\times}15$). The tie-break therefore
+finds structurally better orders, not merely orders whose slack timing
+could recover anyway.
 
 This decomposition also bounds what timing alone can do: post-hoc
 right-shift recovers 7--21\% depending on instance size, far from the
@@ -521,10 +545,11 @@ conflict only emerges in the (order, timing) decision space --- under
 semi-active timing the objectives are almost perfectly aligned, which
 explains why a naive biobjective treatment would fail. On this basis we
 built a ladder of methods: the lexicographic tie-break, which harvests the
-energy hidden in makespan plateaus (7.1\% on classical instances, at zero
-makespan cost); right-shift timing optimisation, which contributes a
-further ${\sim}10\%$ and is near-optimally approximated by a single
-backward pass; and the bi-critical neighbourhood $N_2^{ME}$, the first
+energy hidden in makespan plateaus (7.9\% on average over 82 instances, up
+to 26.5\% on $50{\times}15$, always at zero makespan cost); right-shift
+timing optimisation, which contributes a further ${\sim}8\%$ and is
+near-optimally approximated by a single backward pass; and the bi-critical
+neighbourhood $N_2^{ME}$, the first
 sequencing neighbourhood targeting idle gaps, with feasibility proven and
 connectivity established for makespan and machine-completion optimality.
 \todo{Complete with N2ME/Pareto results and future work (flexible interval
