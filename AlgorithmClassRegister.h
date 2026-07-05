@@ -20,6 +20,7 @@
 #include "ArtificialBeeColony.h"
 #include "ArtificialBeeColonyThread.h"
 #include "ArtificialBeeColonyPSO.h"
+#include "ABCPSOPareto.h"
 #include "ArtificialBeeColonyCell.h"
 #include "RandomPopulation.h"
 
@@ -57,6 +58,7 @@ public:
 		AlgorithmMap[toUpper("ABC")]      = &createInstance<ArtificialBeeColony>;
 		AlgorithmMap[toUpper("ABCT")]     = &createInstance<ArtificialBeeColonyThread>;
 		AlgorithmMap[toUpper("ABCPSO")]   = &createInstance<ArtificialBeeColonyPSO>;
+		AlgorithmMap[toUpper("ABCPSO-PARETO")] = &createInstance<ABCPSOPareto>;
 		AlgorithmMap[toUpper("ABCCELL")]  = &createInstance<ArtificialBeeColonyCell>;
 	}
 };
