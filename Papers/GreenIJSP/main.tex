@@ -527,7 +527,11 @@ makespan --- precisely the target of the $N_2^{ME}$ neighbourhood.
 \todo{Small-instance validation: measure how close each arm's best
 solutions get to the exact $\varepsilon$-constraint fronts (ft10 and the
 additional probes); include the front figure with the lexicographic point
-marked.}
+marked. NOTE: current probe fronts are computed on the midpoint scenario
+(crisp proxy) — either state this explicitly or upgrade the probe to the
+exact interval model (shared sequencing booleans + two timing copies for
+$p^-/p^+$ with LEX2 objectives, as in the multi-component MILP of
+\cite{Afsar2022}); upgrade planned for the validation instances only.}
 
 \subsection{Bi-critical neighbourhood and Pareto fronts}
 

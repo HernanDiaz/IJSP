@@ -103,6 +103,13 @@ bash experiments/mo_green_2026/exp2_fronts.sh
 - **Exp. 3:** N2ME C++ (con teorema débil basta; def. en N2ME_theory.tex).
 - **Exp. 4:** Pareto (dominancia sobre producto de órdenes LEX2 + archivo +
   NDS/crowding + intensificador por objetivo).
+- **Sonda bi-componente (pendiente, anotado 2026-07-05):** los frentes del
+  Exp. 2 usan duraciones midpoint (proxy crisp; válido para el análisis de
+  conflicto, declararlo en el paper). Para la validación fina de §6.4:
+  actualizar `epsilon_probe.py` al modelo intervalo EXACTO — booleanos de
+  secuenciación compartidos + dos copias de timing (p⁻/p⁺) + objetivos LEX2
+  sobre (C⁺,C⁻)/(NPE⁺,NPE⁻), à la MILP multi-componente del #17. Solo para
+  las 2-3 instancias de la validación (el modelo dobla tamaño).
 - **Teoría:** Caso C de conectividad (arranques de máquina) — abierto.
 - **Paper:** TODOs marcados en main.tex (coautores, refs TODO-VERIFY,
   agradecimientos); decidir irace por brazo para el experimento final.
