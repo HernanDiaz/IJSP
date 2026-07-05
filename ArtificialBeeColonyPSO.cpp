@@ -8,6 +8,7 @@
 #include "ArtificialBeeColonyPSO.h"
 #include "FitnessMO.h"
 #include "EvaluationIJSP_MakespanEnergy.h"
+#include "NeighbourhoodIJSP_N2ME.h"
 #include <iostream>
 #include <set>
 
@@ -755,18 +756,22 @@ namespace FuzzyFW {
 		FullSolution optimised;
 		target = population->getIndividual(individualIdx);
 
-		// Lexicographic fitness (e.g. makespan-energy): the makespan local
-		// search operates on the primary component only; the full fitness is
-		// rebuilt from the optimised schedule afterwards.
+		// Lexicographic fitness (e.g. makespan-energy): a lexicographic-aware
+		// neighbourhood (N2ME) receives the full fitness and returns a
+		// lexicographic result; otherwise the makespan local search operates
+		// on the primary component only and the full fitness is rebuilt from
+		// the optimised schedule afterwards.
 		FitnessLexicographic *lexFitness =
 			dynamic_cast<FitnessLexicographic *>(target->getFitness());
-		Fitness *lsFitness = lexFitness ?
+		bool lexAwareNB = dynamic_cast<IJSP::NB_ParallelN2ME_MakespanEnergyIJSP *>(
+			this->neighbourhood) != NULL;
+		Fitness *lsFitness = (lexFitness && !lexAwareNB) ?
 			lexFitness->getFitness(0) : target->getFitness();
 
 		optimised = this->localSearch->apply(
 			target->getPhenotype(), lsFitness, this->sharedVariables);
 
-		if (lexFitness != NULL) {
+		if (lexFitness != NULL && !lexAwareNB) {
 			IJSP::EvaluationIJSP_MakespanEnergy *lexEvaluator =
 				dynamic_cast<IJSP::EvaluationIJSP_MakespanEnergy *>(this->evaluator);
 			IJSP::ScheduleIJSP *lsSchedule =

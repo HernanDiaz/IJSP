@@ -35,6 +35,7 @@
 #include "NeighbourhoodFJSP_Cmax.h"
 #include "NeighbourhoodIJSP_Cmax.h"
 #include "NeighbourhoodIJSP_N8.h"
+#include "NeighbourhoodIJSP_N2ME.h"
 #include "NeighbourhoodFJSP_AI.h"
 #include "NeighbourhoodFJSP_ESD.h"
 #include "LocalSearchAmicoFJSP.h"
@@ -182,6 +183,8 @@ public:
 			&createNeighbourhoodInstance<IJSP::NB_ParallelN2Minus_MakespanIJSP>;
 		NeighbourhoodMap[toUpper("ijsp.makespan.n2plus")] =
 			&createNeighbourhoodInstance<IJSP::NB_ParallelN2Plus_MakespanIJSP>;
+		NeighbourhoodMap[toUpper("ijsp.makespan-energy.n2me")] =
+			&createNeighbourhoodInstance<IJSP::NB_ParallelN2ME_MakespanEnergyIJSP>;
 		NeighbourhoodMap[toUpper("ijsp.makespan.n8")] =
 			&createNeighbourhoodInstance<IJSP::NB_ParallelN8_MakespanIJSP>;
 	}
