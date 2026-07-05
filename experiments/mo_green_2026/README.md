@@ -102,7 +102,19 @@ bash experiments/mo_green_2026/exp2_fronts.sh
   LexME / LexME+RS vs frente exacto en ε=0) + figura del frente con el punto
   lexicográfico → §6.4 y Fig. del paper. Cuantifica el margen de N2ME.
 - **Exp. 3:** N2ME C++ (con teorema débil basta; def. en N2ME_theory.tex).
-- **Exp. 4 (EN CURSO, fundaciones commiteadas):** `ParetoArchive` HECHO
+- **Exp. 4 — MAQUINARIA COMPLETA (commits `1611698`+`1557d60`+`3749d61`):**
+  ParetoArchive + ReplacementNSGA2 ('nsga2') + ABCPSO-Pareto (dump
+  `_Front.csv` por run). HALLAZGO: el motor ABCPSO no llama al replacement
+  (supervivencia por trials) → archivo alimentado desde applyLocalSearch;
+  nsga2 queda listo para motores GA/MA. Smoke ft10: frente de 5 puntos.
+  `front_metrics.py` (HV ratio + eps+ vs frente exacto): smoke 10s = HV
+  0.31, eps+ 0.74 — baseline pobre esperable (motor lexicográfico no visita
+  Cmax relajado). DECISIÓN PENDIENTE con Hernán: motor para el experimento
+  a escala (ABC archive-based vs GA/MA con supervivencia NSGA-II real).
+  Nota paper: NPE⁻ puede superar NPE⁺ (par de escenarios, no intervalo
+  ordenado; footnote). PENDIENTE runs a escala (tras Exp. 3; no lanzar en
+  paralelo con él — 14 cores ocupados).
+- **(histórico) Exp. 4 fundaciones:** `ParetoArchive` HECHO
   (dominancia sobre producto LEX2 con bounds explícitos, cap+crowding en
   plano de midpoints, dump CSV `cmax_lo;cmax_hi;npe_lo;npe_hi;solution`;
   compila). **Plan de wiring pendiente** (diseñado, no escrito):
