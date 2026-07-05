@@ -102,8 +102,24 @@ bash experiments/mo_green_2026/exp2_fronts.sh
   LexME / LexME+RS vs frente exacto en ε=0) + figura del frente con el punto
   lexicográfico → §6.4 y Fig. del paper. Cuantifica el margen de N2ME.
 - **Exp. 3:** N2ME C++ (con teorema débil basta; def. en N2ME_theory.tex).
-- **Exp. 4:** Pareto (dominancia sobre producto de órdenes LEX2 + archivo +
-  NDS/crowding + intensificador por objetivo).
+- **Exp. 4 (EN CURSO, fundaciones commiteadas):** `ParetoArchive` HECHO
+  (dominancia sobre producto LEX2 con bounds explícitos, cap+crowding en
+  plano de midpoints, dump CSV `cmax_lo;cmax_hi;npe_lo;npe_hi;solution`;
+  compila). **Plan de wiring pendiente** (diseñado, no escrito):
+  1. `Replacement_NSGA2`: en `apply(old,new,svars)` — NDS+crowding sobre
+     old∪new escribiendo supervivientes en `new` (¡OJO ownership de
+     Population/replaceIndividual: los punteros se intercambian entre
+     poblaciones, revisar ReplacementParents::applyRepeat como modelo!);
+     método const → archivo `mutable` o en el algoritmo. Registrar "nsga2".
+  2. `ABCPSOPareto : ArtificialBeeColonyPSO`: override `run(...)` — llama
+     al padre, vuelca el archivo a `<logFolder>/<signature>_Front.csv`
+     (firma en EvoLauncher.cpp:94), resetea archivo. Registrar en
+     AlgorithmClassRegister ("ABCPSO-Pareto").
+  3. Hook de inserciones al archivo: en el Replacement (ve padres+hijos
+     cada generación, choke point único) o en evaluatePopulation.
+  4. Smoke ft10 contra frente exacto (fronts_dat) + métricas HV/ε Python.
+  Individual fitness sigue FitnessLexicographic (N2ME LS y estadísticas
+  intactas): híbrido "explotación lexicográfica + supervivencia Pareto".
 - **Sonda bi-componente (pendiente, anotado 2026-07-05):** los frentes del
   Exp. 2 usan duraciones midpoint (proxy crisp; válido para el análisis de
   conflicto, declararlo en el paper). Para la validación fina de §6.4:
