@@ -31,7 +31,7 @@ Dos propiedades estructurales guían todo:
 | **Exp. 1** | **LexME vs N2 publicado, 82/82 (30 runs, 900 s)** | ✅ 2026-07-05 | `1b51795` |
 | Paper | Borrador completo elsarticle con Exp. 1 dentro | ✅ | `3abed4c`, `1b51795` |
 | Exp. 2 | Frentes exactos ampliados (6 instancias × 11 ε) + distancia-al-frente | 🟡 lanzado | `7134358` |
-| Exp. 3 | N2ME en C++; LexME-N2ME vs LexME-N2 | ⬜ implementando | — |
+| Exp. 3 | N2ME en C++ (`ijsp.makespan-energy.n2me`): TS lexicográfica-consciente; smoke ft10 VERIFICADO (makespan 940, NPE (4881,5899) vs (7528,8241) del desempate solo ≈ **−32%**; MATCH vs Python); regresión 5/5 | 🟡 implementado, runs pendientes (`run_n2me.sh`) | `efd0616` |
 | Exp. 4 | Maquinaria Pareto (dominancia sobre producto LEX2, archivo, NDS+crowding) + frentes | ⬜ | — |
 
 ## Resultado Exp. 1 (titular del paper)
