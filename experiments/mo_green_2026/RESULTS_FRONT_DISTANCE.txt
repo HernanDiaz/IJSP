@@ -1,0 +1,13 @@
+======================================================================================
+Distance to the exact (midpoint-proxy) front — mean over 30 runs per arm
+gap% = (NPE / front(Cmax) - 1) * 100   |   lower is better; 0 = on the front
+======================================================================================
+Instance                       N2-pub         LexME      LexME+RS
+F0.15.0.ft10_10                 47.3%         39.2%         30.2%
+F0.15.0.la21_04                 40.6%         23.1%         14.6%
+F0.15.0.la24_03                 66.7%         48.5%         23.5%
+F0.15.0.la25_04                 69.7%         58.5%         34.5%
+F0.15.0.la29_03                    --            --            --
+tai15_15_01.F.15_01             25.6%         23.6%         14.3%
+
+.dat files for pgfplots written to results/fronts_dat/
