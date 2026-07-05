@@ -1,5 +1,9 @@
 # Fase 0 — Notas de estudio: IJSP verde multiobjetivo
 
+> **NOTA:** este fichero es el registro detallado de las Fases 0-1
+> (2026-07-04). El diario vivo de la línea, con la cronología completa,
+> resultados y estado, es [README.md](README.md).
+
 ## Modelo de energía (de Afşar 2024 IWINAC #05 / 2025 NatComp #02, FJSP-intervalo)
 
 - Máquina k encendida desde el inicio de su primera tarea hasta el fin de la última:
