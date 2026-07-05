@@ -20,6 +20,8 @@
 \usepackage{algorithm}
 \usepackage{algpseudocode}
 \usepackage{float}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.15}
 
 \newtheorem{theorem}{Theorem}
 \newtheorem{proposition}{Proposition}
@@ -524,14 +526,83 @@ makespan --- precisely the target of the $N_2^{ME}$ neighbourhood.
 \subsection{Validation against exact fronts}
 \label{sec:exp-exact}
 
-\todo{Small-instance validation: measure how close each arm's best
-solutions get to the exact $\varepsilon$-constraint fronts (ft10 and the
-additional probes); include the front figure with the lexicographic point
-marked. NOTE: current probe fronts are computed on the midpoint scenario
-(crisp proxy) — either state this explicitly or upgrade the probe to the
-exact interval model (shared sequencing booleans + two timing copies for
-$p^-/p^+$ with LEX2 objectives, as in the multi-component MILP of
-\cite{Afsar2022}); upgrade planned for the validation instances only.}
+The $\varepsilon$-constraint probes of Section~\ref{sec:conflict} provide,
+on six small and medium instances, exact reference fronts against which
+the arms can be positioned. Table~\ref{tab:front} reports the mean gap of
+each arm's 30 per-run solutions to the lower envelope of the front,
+$\text{gap}\%=(\NPE/\text{front}(\Cmax)-1)\times 100$, where
+$\text{front}(\Cmax)$ is the envelope value at the largest probed makespan
+allowance not exceeding the solution's makespan. Two caveats apply: the
+fronts are exact for the \emph{midpoint scenario} (a crisp proxy of the
+interval instance; the mid-point of the interval makespan upper-bounds the
+crisp-midpoint makespan by convexity of the longest path, so the lookup is
+well defined), and time-limited CP-SAT points are non-monotone, hence the
+envelope. Gaps are therefore indicative rather than certificates.
+
+\begin{table}[htb]
+\centering\small
+\caption{Mean gap to the exact (midpoint-proxy) front, per arm
+(30 runs per instance). Lower is better; $0\%$ = on the front. On
+\texttt{la29} CP-SAT could not close the tightest allowances and the
+envelope starts above the arms' makespan.}
+\label{tab:front}
+\begin{tabular}{l rrr}
+\toprule
+Instance & TS-$N_2$ (published) & LexME & LexME+RS \\
+\midrule
+ft10 & 47.3\% & 39.2\% & 30.2\% \\
+la21 & 40.6\% & 23.1\% & 14.6\% \\
+la24 & 66.7\% & 48.5\% & 23.5\% \\
+la25 & 69.7\% & 58.5\% & 34.5\% \\
+tai15\_01 & 25.6\% & 23.6\% & 14.3\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Every rung of the ladder closes part of the distance: the tie-break
+removes roughly a quarter of the baseline's excess idle energy and the
+right-shift another quarter to a half, leaving the arms within
+$14$--$35\%$ of the exact front. That residual gap is order-mediated at
+fixed makespan --- precisely the target of the $N_2^{ME}$ neighbourhood
+(Section~\ref{sec:n2me}). Figure~\ref{fig:front} illustrates the geometry
+on \texttt{la24}: the arms move straight down in the objective space
+(constant makespan, decreasing energy) towards the front.
+
+\begin{figure}[htb]
+\centering
+\begin{tikzpicture}
+\begin{axis}[width=0.72\linewidth, height=0.5\linewidth,
+  xlabel={$\Cmax$ (midpoint)}, ylabel={NPE (midpoint)},
+  legend pos=north east, legend style={font=\footnotesize},
+  grid=major, grid style={dotted}]
+\addplot[blue, thick, mark=*, mark size=1.6pt]
+  table {figures/la24_front.dat};
+\addlegendentry{exact front (envelope)}
+\addplot[red, only marks, mark=square*, mark size=2.4pt]
+  coordinates {(947.8, 6017.9)};
+\addlegendentry{TS-$N_2$ (published)}
+\addplot[orange, only marks, mark=triangle*, mark size=3pt]
+  coordinates {(947.0, 5325.2)};
+\addlegendentry{LexME}
+\addplot[teal, only marks, mark=diamond*, mark size=3pt]
+  coordinates {(947.0, 4422.5)};
+\addlegendentry{LexME+RS}
+\end{axis}
+\end{tikzpicture}
+\caption{Exact $\varepsilon$-constraint front (midpoint proxy, lower
+envelope) and mean arm positions on \texttt{la24}. Each lever moves the
+solution vertically towards the front at essentially constant makespan;
+the remaining vertical gap is the target of the energy-aware
+neighbourhood. A single lexicographic solution occupies one extreme of
+the trade-off; the Pareto method of Section~\ref{sec:pareto} will return
+the whole curve.}
+\label{fig:front}
+\end{figure}
+
+\todo{Add the $N_2^{ME}$ arm point when Exp.~3 finishes. Planned upgrade
+(noted): recompute the validation fronts with the exact interval model
+(shared sequencing booleans, two timing copies for $p^-/p^+$, LEX2
+objectives, as in the multi-component MILP of \cite{Afsar2022}).}
 
 \subsection{Bi-critical neighbourhood and Pareto fronts}
 
