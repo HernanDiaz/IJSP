@@ -28,6 +28,7 @@
 #include "Mutation.h"
 #include "Selection.h"
 #include "Replacement.h"
+#include "ReplacementNSGA2.h"
 // ****************************************************************************
 //
 // ADD HERE ALL THE HEADER FILES OF THE OPERATORS YOU HAVE CREATED
@@ -263,6 +264,7 @@ public:
 		ReplacementMap[toUpper("elitism")] = &createReplacementInstance<ReplacementElitist>;
 		ReplacementMap[toUpper("parents")] = &createReplacementInstance<ReplacementParents>;
 		ReplacementMap[toUpper("tournament")] = &createReplacementInstance<ReplacementParents>;
+		ReplacementMap[toUpper("nsga2")] = &createReplacementInstance<ReplacementNSGA2>;
 
 
 
