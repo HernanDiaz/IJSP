@@ -17,16 +17,32 @@ min NPE s.t. Cmax <= eps. A substantially decreasing NPE(eps) curve
 
 Run inside the OR-Tools venv:  ~/ortools-venv/bin/python3 epsilon_probe.py
 """
-import random, sys, time, os
+import csv, random, sys, time, os
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from conflict_check import parse_instance  # dual-format instance parser
 
 from ortools.sat.python import cp_model
 
-TIME_PER_SOLVE = 60          # seconds per epsilon point
+# Configurable via env: PROBE_TIME (s per point), PROBE_CSV (output file).
+TIME_PER_SOLVE = int(os.environ.get("PROBE_TIME", "60"))
 POWER_SEED = 23
-EPS_STEPS = list(range(0, 11))   # % relaxation over C*
+# permil relaxation over C*: fine grid near the makespan-optimal end
+EPS_PERMIL = [0, 5, 10, 15, 20, 30, 40, 50, 60, 80, 100]
+CSV_PATH = os.environ.get("PROBE_CSV",
+    os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                 "results", "fronts.csv"))
+
+
+def dump_csv(row):
+    new = not os.path.exists(CSV_PATH)
+    os.makedirs(os.path.dirname(CSV_PATH), exist_ok=True)
+    with open(CSV_PATH, "a", newline="") as fh:
+        w = csv.writer(fh)
+        if new:
+            w.writerow(["instance", "eps_permil", "cmax_cap_x2", "npe_x2",
+                        "status", "time_s"])
+        w.writerow(row)
 
 
 def build(n, m, mach, dur):
@@ -96,10 +112,10 @@ def analyse(stem):
           f"{solver.WallTime():.1f}s)", flush=True)
 
     # Step 2: epsilon sweep on NPE
-    print(f"{'eps(%)':>7} {'Cmax<=':>9} {'NPE*':>9} {'status':>9} {'t(s)':>6}")
+    print(f"{'eps(pm)':>7} {'Cmax<=':>9} {'NPE*':>9} {'status':>9} {'t(s)':>6}")
     front = []
-    for k in EPS_STEPS:
-        eps = cstar * (100 + k) // 100
+    for k in EPS_PERMIL:
+        eps = cstar * (1000 + k) // 1000
         mdl, cmax, npe, _ = build(n, m, mach, dur)
         mdl.Add(cmax <= eps)
         mdl.Minimize(npe)
@@ -110,8 +126,10 @@ def analyse(stem):
         st = solver.Solve(mdl)
         val = int(solver.Value(npe)) if st in (cp_model.OPTIMAL, cp_model.FEASIBLE) else -1
         front.append((k, eps, val))
+        elapsed = time.time() - t0
         print(f"{k:>7} {eps/2:>9.1f} {val/2:>9.1f} "
-              f"{solver.StatusName(st):>9} {time.time()-t0:>6.1f}", flush=True)
+              f"{solver.StatusName(st):>9} {elapsed:>6.1f}", flush=True)
+        dump_csv([stem, k, eps, val, solver.StatusName(st), round(elapsed, 1)])
 
     # Verdict
     vals = [v for _, _, v in front if v >= 0]
