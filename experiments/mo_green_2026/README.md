@@ -30,7 +30,8 @@ Dos propiedades estructurales guían todo:
 | 2b | Right-shift: exacto (LP/CP-SAT ms) + heurístico (86-95% del exacto); validación PASS | ✅ | `4e262e4` |
 | **Exp. 1** | **LexME vs N2 publicado, 82/82 (30 runs, 900 s)** | ✅ 2026-07-05 | `1b51795` |
 | Paper | Borrador completo elsarticle con Exp. 1 dentro | ✅ | `3abed4c`, `1b51795` |
-| Exp. 2 | Frentes exactos ampliados (6 instancias × 11 ε) + distancia-al-frente | 🟡 lanzado | `7134358` |
+| Exp. 2 | Frentes exactos (6 instancias × 11 ε, proxy midpoint): conflicto confirmado en TODAS (−23%..−56% NPE a +10% Cmax). Distancia al frente (media): N2-pub ~50%, LexME ~38%, LexME+RS ~23% → hueco restante = objetivo N2ME. `.dat` pgfplots en `results/fronts_dat/`; la29 sin envolvente en caps tensos (CP-SAT no cierra) | ✅ 2026-07-05 | `07da3c7` |
+| Exp. 3 runs | LexME-N2ME full 82 (30 runs/900s, 14 paralelo) | 🟡 lanzado 2026-07-05 15:38 (`run_n2me_full.log`) | — |
 | Exp. 3 | N2ME en C++ (`ijsp.makespan-energy.n2me`): TS lexicográfica-consciente; smoke ft10 VERIFICADO (makespan 940, NPE (4881,5899) vs (7528,8241) del desempate solo ≈ **−32%**; MATCH vs Python); regresión 5/5 | 🟡 implementado, runs pendientes (`run_n2me.sh`) | `efd0616` |
 | Exp. 4 | Maquinaria Pareto (dominancia sobre producto LEX2, archivo, NDS+crowding) + frentes | ⬜ | — |
 
