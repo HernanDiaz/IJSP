@@ -114,6 +114,19 @@ bash experiments/mo_green_2026/exp2_fronts.sh
   Nota paper: NPE⁻ puede superar NPE⁺ (par de escenarios, no intervalo
   ordenado; footnote). PENDIENTE runs a escala (tras Exp. 3; no lanzar en
   paralelo con él — 14 cores ocupados).
+  **DISEÑO Exp. 4 ACORDADO 2026-07-06 (decisión final tras Exp. 3):**
+  - Ablación **Pareto±N2ME** (2 brazos): en modo Pareto el caso de N2ME es
+    más fuerte — sus arcos de energía son el único operador que empuja A LO
+    LARGO del frente (N2 solo hacia min-makespan); métrica = cobertura
+    (HV/ε+), no punto extremo.
+  - **Tuning irace por brazo escalarizado con HIPERVOLUMEN**: evaluación =
+    run → `_Front.csv` → HV contra punto de referencia FIJO por instancia
+    (1.1× nadir empírico de los runs de Exps. 1+3, ya disponibles) con
+    normalización por instancia → coste −HV. Target-runner = patrón del
+    paper de tabu + `front_metrics.py`. Entrenamiento ~20/82 estratificado
+    (protocolo Fase B), held-out para evaluar. Presupuesto reducido por
+    evaluación (150-300 s), validación final con el completo. Descartado:
+    ε-indicator (exige frente de referencia por instancia de entrenamiento).
 - **(histórico) Exp. 4 fundaciones:** `ParetoArchive` HECHO
   (dominancia sobre producto LEX2 con bounds explícitos, cap+crowding en
   plano de midpoints, dump CSV `cmax_lo;cmax_hi;npe_lo;npe_hi;solution`;
