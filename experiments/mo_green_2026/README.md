@@ -31,7 +31,9 @@ Dos propiedades estructurales guían todo:
 | **Exp. 1** | **LexME vs N2 publicado, 82/82 (30 runs, 900 s)** | ✅ 2026-07-05 | `1b51795` |
 | Paper | Borrador completo elsarticle con Exp. 1 dentro | ✅ | `3abed4c`, `1b51795` |
 | Exp. 2 | Frentes exactos (6 instancias × 11 ε, proxy midpoint): conflicto confirmado en TODAS (−23%..−56% NPE a +10% Cmax). Distancia al frente (media): N2-pub ~50%, LexME ~38%, LexME+RS ~23% → hueco restante = objetivo N2ME. `.dat` pgfplots en `results/fronts_dat/`; la29 sin envolvente en caps tensos (CP-SAT no cierra) | ✅ 2026-07-05 | `07da3c7` |
-| Exp. 3 runs | LexME-N2ME full 82 (30 runs/900s, 14 paralelo) | 🟡 lanzado 2026-07-05 15:38 (`run_n2me_full.log`) | — |
+| Exp. 3 runs | LexME-N2ME full 82 (30 runs/900s, 14 paralelo; binario ORIGINAL homogéneo — rebuilds posteriores al último launch) | 🟡 72/82 a 2026-07-07 00:40 | — |
+| Exp. 3 preview | **N2ME original NO escala**: bien en ≤20×20 (NPE −1..−3%) pero colapso en grandes (hasta +10% Cmax, +92% NPE vs LexME-N2). Causas: E(σ) explota + computeNPE O(nm) por vecino evaluado | ⚠ diagnóstico | — |
+| N2ME v2 | **E restringido** (≤2 arcos/máquina/comp; param `neighbourhood.energy-restricted`) + **NPE perezoso** (solo si makespan empata-o-mejora; centinela recomputado en accept). Smoke solo-restringido: mejora pero insuficiente (2861/17775 vs 2760/8171 del desempate puro a 300s); smoke con lazy corriendo | 🟡 v2 en prueba | `5be99f2` |
 | Exp. 3 | N2ME en C++ (`ijsp.makespan-energy.n2me`): TS lexicográfica-consciente; smoke ft10 VERIFICADO (makespan 940, NPE (4881,5899) vs (7528,8241) del desempate solo ≈ **−32%**; MATCH vs Python); regresión 5/5 | 🟡 implementado, runs pendientes (`run_n2me.sh`) | `efd0616` |
 | Exp. 4 | Maquinaria Pareto (dominancia sobre producto LEX2, archivo, NDS+crowding) + frentes | ⬜ | — |
 
