@@ -60,6 +60,15 @@ protected:
 	const ProblemIJSP *problem;
 
 	/*
+	* Restricted energy-arc generation (default). The full sustaining-chain
+	* set does not scale to large instances; the restricted variant seeds
+	* only the machine-last task and the largest-gap successor per machine
+	* and adds one tight machine arc per seed. Disable with
+	* neighbourhood.energy-restricted = no
+	*/
+	bool restrictedE;
+
+	/*
 	* Lexicographic wrappers of the per-neighbour estimations, rebuilt on
 	* demand (owned here; base estimations stay owned by the neighbours)
 	*/
@@ -71,7 +80,7 @@ protected:
 public:
 	NB_ParallelN2ME_MakespanEnergyIJSP(FuzzyFW::ParameterDB *parameters = NULL)
 		: NB_ParallelN2_MakespanIJSP(parameters),
-		currentLexFitness(NULL), problem(NULL) { }
+		currentLexFitness(NULL), problem(NULL), restrictedE(true) { }
 
 	NB_ParallelN2ME_MakespanEnergyIJSP(
 		const NB_ParallelN2ME_MakespanEnergyIJSP & source)
@@ -79,7 +88,9 @@ public:
 		currentLexFitness(source.currentLexFitness == NULL ? NULL :
 			dynamic_cast<FuzzyFW::FitnessLexicographic *>(
 				source.currentLexFitness->clone())),
-		problem(source.problem) { }
+		problem(source.problem), restrictedE(source.restrictedE) { }
+
+	virtual void setup(FuzzyFW::ParameterDB *parameters);
 
 	virtual ~NB_ParallelN2ME_MakespanEnergyIJSP() {
 		if (this->currentLexFitness != NULL)
