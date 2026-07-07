@@ -69,6 +69,24 @@ protected:
 	bool restrictedE;
 
 	/*
+	* Optional makespan goal cap (SweepPareto phase B): when set, the
+	* primary component of every neighbour fitness is clamped to
+	* max(Cmax, cap) per interval component, so all under-cap solutions
+	* tie on makespan and the tie-break (NPE) drives the search.
+	*/
+	bool hasGoalCap;
+	FuzzyFW::Interval goalCap;
+
+public:
+	void setGoalCap(const FuzzyFW::Interval &cap) {
+		this->hasGoalCap = true;
+		this->goalCap = cap;
+	}
+	void clearGoalCap() { this->hasGoalCap = false; }
+
+protected:
+
+	/*
 	* Lexicographic wrappers of the per-neighbour estimations, rebuilt on
 	* demand (owned here; base estimations stay owned by the neighbours)
 	*/
@@ -80,7 +98,8 @@ protected:
 public:
 	NB_ParallelN2ME_MakespanEnergyIJSP(FuzzyFW::ParameterDB *parameters = NULL)
 		: NB_ParallelN2_MakespanIJSP(parameters),
-		currentLexFitness(NULL), problem(NULL), restrictedE(true) { }
+		currentLexFitness(NULL), problem(NULL), restrictedE(true),
+		hasGoalCap(false), goalCap(0, 0) { }
 
 	NB_ParallelN2ME_MakespanEnergyIJSP(
 		const NB_ParallelN2ME_MakespanEnergyIJSP & source)
@@ -88,7 +107,8 @@ public:
 		currentLexFitness(source.currentLexFitness == NULL ? NULL :
 			dynamic_cast<FuzzyFW::FitnessLexicographic *>(
 				source.currentLexFitness->clone())),
-		problem(source.problem), restrictedE(source.restrictedE) { }
+		problem(source.problem), restrictedE(source.restrictedE),
+		hasGoalCap(source.hasGoalCap), goalCap(source.goalCap) { }
 
 	virtual void setup(FuzzyFW::ParameterDB *parameters);
 

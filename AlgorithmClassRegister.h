@@ -22,6 +22,7 @@
 #include "ArtificialBeeColonyPSO.h"
 #include "ABCPSOPareto.h"
 #include "MemeticPareto.h"
+#include "SweepPareto.h"
 #include "ArtificialBeeColonyCell.h"
 #include "RandomPopulation.h"
 
@@ -61,6 +62,7 @@ public:
 		AlgorithmMap[toUpper("ABCPSO")]   = &createInstance<ArtificialBeeColonyPSO>;
 		AlgorithmMap[toUpper("ABCPSO-PARETO")] = &createInstance<ABCPSOPareto>;
 		AlgorithmMap[toUpper("MEMETIC-PARETO")] = &createInstance<MemeticPareto>;
+		AlgorithmMap[toUpper("SWEEP-PARETO")] = &createInstance<SweepPareto>;
 		AlgorithmMap[toUpper("ABCCELL")]  = &createInstance<ArtificialBeeColonyCell>;
 	}
 };

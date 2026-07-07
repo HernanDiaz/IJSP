@@ -306,7 +306,14 @@ FuzzyFW::Fitness *NB_ParallelN2ME_MakespanEnergyIJSP::evaluateNeighbour(
 	// so a sentinel is stored instead; acceptNeighbour recomputes the real
 	// value if such a neighbour is ever accepted.
 	FuzzyFW::FitnessLexicographic *lex = new FuzzyFW::FitnessLexicographic();
-	lex->addFitness(makespan->clone());
+	if (this->hasGoalCap) {
+		FuzzyFW::Interval mk = makespan->getValue();
+		lex->addFitness(new FuzzyFW::FitnessInterval(FuzzyFW::Interval(
+			std::max(mk.a, this->goalCap.a),
+			std::max(mk.b, this->goalCap.b)), false));
+	}
+	else
+		lex->addFitness(makespan->clone());
 	if (this->currentFitness->isBetterThan(makespan))
 		lex->addFitness(new FuzzyFW::FitnessInterval(
 			FuzzyFW::Interval(N2ME_LAZY_NPE, N2ME_LAZY_NPE), false));

@@ -22,7 +22,7 @@ def main():
         for p in glob.glob(os.path.join(PILOT, "abc", "*_Front.csv"))))
     for inst in insts:
         exact = load_exact(inst)
-        for eng in ("abc", "ma"):
+        for eng in os.environ.get("ENGINES", "abc,ma").split(","):
             files = glob.glob(os.path.join(PILOT, eng, inst + "*_Front.csv"))
             if not files:
                 print(f"{inst:22} {eng:>4}  -- missing")
