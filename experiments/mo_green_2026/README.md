@@ -141,6 +141,15 @@ amortizadas del Exp. 1.
 por tamaño, irace-sobre-HV sí/no, y si ABC/MA libres quedan como brazos de
 comparación.
 
+## EXP4 listo para lanzar (2026-07-07 noche)
+
+Protocolo en EXP4_DESIGN.md (autocontenido, todo aleatorio, 900s). Smoke
+del pipeline LADDER PASADO: ancla C*=(882,989) en 400s + 8 niveles
+encadenados con frentes de 6-14 puntos, NPE 6302→4037. Runners:
+`run_exp4_ladder.sh <tier> 14` y `run_exp4_baselines.sh <tier> 14`
+(reanudables; lanzar por tandas, un brazo cada vez). Falta:
+exp4_metrics.py (referencia unión + HV/ε+ + Wilcoxon) antes del análisis.
+
 ## Pendiente
 
 - **Exp. 2 (corriendo):** al acabar → análisis distancia-al-frente (N2 /
