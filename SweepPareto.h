@@ -44,7 +44,7 @@ public:
 
 		static const int PERMIL[] = { 5, 10, 15, 20, 30, 40, 50, 60, 80, 100 };
 		static const int LEVELS = 10;
-		static const int STALL_ROUNDS = 4;
+		static const int STALL_ROUNDS = 12;
 
 		this->archive.clear();
 
@@ -70,12 +70,16 @@ public:
 			bestLex->getFitness(0))->getValue();
 
 		// ---- Phase B: capped ladder, warm-started ----
+		bool wasRestricted = nb->isEnergyRestricted();
+		nb->setEnergyRestricted(false);	// full E: here it IS the engine
 		Solution *sigma = best.first->clone();
 		for (int k = 0; k < LEVELS; k++) {
 			Interval cap(cstar.a * (1000.0 + PERMIL[k]) / 1000.0,
 				cstar.b * (1000.0 + PERMIL[k]) / 1000.0);
 			nb->setGoalCap(cap);
 
+			double npe0 = -1, npe1 = -1;
+			int adopted = 0;
 			for (int r = 0; r < STALL_ROUNDS; r++) {
 				// Clamped fitness of the current seed
 				IJSP::ScheduleIJSP *sch =
@@ -87,22 +91,40 @@ public:
 				Interval mk = c0->getValue();
 				c0->setValue(Interval(std::max(mk.a, cap.a),
 					std::max(mk.b, cap.b)));
+				if (r == 0)
+					npe0 = dynamic_cast<FitnessInterval *>(
+						cur->getFitness(1))->getValue().b;
 
 				FullSolution out = this->localSearch->apply(sigma, cur,
 					this->sharedVariables);
-				bool improved = out.second->isBetterThan(cur);
+				bool strictly = out.second->isBetterThan(cur);
+				bool notWorse = !cur->isBetterThan(out.second);
 				delete cur;
-				if (improved) {
+				if (notWorse) {	// adopt ties too: plateau drift
 					delete sigma;
 					sigma = out.first;
 					delete out.second;
+					adopted++;
 				}
 				else {
 					delete out.first;
 					delete out.second;
-					break;
 				}
+				if (!strictly)
+					break;
 			}
+			{
+				IJSP::ScheduleIJSP *sch =
+					dynamic_cast<IJSP::ScheduleIJSP *>(sigma);
+				FitnessLexicographic *fin = dynamic_cast<
+					FitnessLexicographic *>(ev->evaluateSchedule(sch, prob));
+				npe1 = dynamic_cast<FitnessInterval *>(
+					fin->getFitness(1))->getValue().b;
+				delete fin;
+			}
+			fprintf(stderr, "[SWEEP] level=+%dpm cap=(%.0f,%.0f) "
+				"npe_hi %.0f -> %.0f (adopted %d)\n",
+				PERMIL[k], cap.a, cap.b, npe0, npe1, adopted);
 			// Archive the REAL (unclamped) point of this level
 			IJSP::ScheduleIJSP *sch =
 				dynamic_cast<IJSP::ScheduleIJSP *>(sigma);
@@ -112,6 +134,7 @@ public:
 			delete real;
 		}
 		nb->clearGoalCap();
+		nb->setEnergyRestricted(wasRestricted);
 		delete sigma;
 
 		if (logFolder.length() > 0)

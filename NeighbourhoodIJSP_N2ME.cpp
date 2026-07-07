@@ -272,6 +272,38 @@ unsigned int NB_ParallelN2ME_MakespanEnergyIJSP::findNewNeighbours(
 				}
 			}
 		}
+		//---  Pass 3 (goal mode only): Case-C delay/repack arcs  -------------
+		// Under a makespan cap, descending in energy requires moves that
+		// trade makespan (within the cap) for window compaction: reversing
+		// gap-adjacent arcs (u,v) re-packs v before the gap, and reversing
+		// the machine-first arc delays the machine start. These arcs are
+		// NOT tight, so feasibility is not guaranteed by the tightness
+		// theorem: the inherited SPFA cycle guard in evaluateNeighbour
+		// rejects the infeasible ones (returns NULL, skipped by the LS).
+		if (this->hasGoalCap) {
+			for (size_t i = 0; i < this->schedule->lastTaskMachine.size(); i++) {
+				int last = this->schedule->lastTaskMachine[i];
+				if (last < 0)
+					continue;
+				int t = last, first = last;
+				while (this->schedule->taskInfo[t].mp != -1) {
+					int pred = this->schedule->taskInfo[t].mp;
+					const ScheduledTaskInfo &ti = this->schedule->taskInfo[t];
+					const ScheduledTaskInfo &pi = this->schedule->taskInfo[pred];
+					double gap = (comp == 1)
+						? ti.head.a - (pi.head.a + pi.task->p.a)
+						: ti.head.b - (pi.head.b + pi.task->p.b);
+					if (gap > 0 && pred != ti.task->jp)
+						addArc(pred, t);
+					first = pred;
+					t = pred;
+				}
+				// Delay the machine start: reverse (first, ms(first))
+				int ms = this->schedule->taskInfo[first].ms;
+				if (ms != -1 && ms != this->schedule->taskInfo[first].task->js)
+					addArc(first, ms);
+			}
+		}
 	}
 	return this->numNeighbours;
 }

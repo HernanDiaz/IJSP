@@ -84,6 +84,15 @@ public:
 	}
 	void clearGoalCap() { this->hasGoalCap = false; }
 
+	/*
+	* Phase-B override: with the makespan capped, the energy arcs are the
+	* engine of the search and the full sustaining-chain set may pay off
+	*/
+	void setEnergyRestricted(const bool restricted) {
+		this->restrictedE = restricted;
+	}
+	bool isEnergyRestricted() const { return this->restrictedE; }
+
 protected:
 
 	/*
