@@ -409,9 +409,16 @@ optimises exactly those terms for each visited order, so the search and
 the timing operator are complementary by design.
 \end{remark}
 
-\todo{Implementation and experimental evaluation of $N_2^{ME}$ pending
-(C++ operator; compare LexME-$N_2$ vs LexME-$N_2^{ME}$ and an adapted
-insertion baseline from \cite{GarciaGomez2023}).}
+\begin{remark}[Scale behaviour]
+\label{rem:n2me-scale}
+The experimental ablation (Section~\ref{sec:exp-n2me}) shows that making
+the tabu search energy-aware pays off only up to medium-sized instances:
+on large instances the energy moves crowd out the makespan-worsening
+moves the tabu search needs for diversification, and quality degrades in
+both objectives. Candidate-set restriction and lazy energy evaluation
+mitigate but do not remove the effect; gating the energy arcs to
+incumbent-makespan plateaus is left as an open design.
+\end{remark}
 
 \subsection{Pareto-based memetic algorithm}
 \label{sec:pareto}
@@ -604,11 +611,30 @@ the whole curve.}
 (shared sequencing booleans, two timing copies for $p^-/p^+$, LEX2
 objectives, as in the multi-component MILP of \cite{Afsar2022}).}
 
-\subsection{Bi-critical neighbourhood and Pareto fronts}
+\subsection{The bi-critical neighbourhood: a scoped result}
+\label{sec:exp-n2me}
 
-\todo{Pending arms: LexME-$N_2^{ME}$, adapted insertion baseline, Pareto
-memetic (hypervolume, $\varepsilon$-indicator, EAF). irace re-tuning per
-arm to be decided for the final experiments.}
+The LexME-$N_2^{ME}$ arm (identical protocol, energy-aware tabu search)
+exhibits a sharp size threshold against LexME-$N_2$. Up to $20{\times}20$
+it delivers a further $0.8$--$2.7\%$ NPE reduction (all groups
+significant) at a $0.1$--$0.3\%$ makespan cost; from $30{\times}15$
+upwards it degrades \emph{both} objectives, up to $+10.3\%$ makespan and
+$+91.8\%$ NPE on the $50{\times}$ groups, and triples the arm's total
+runtime. Candidate restriction and lazy energy evaluation (each isolated
+in dedicated probes) recover part of the loss but do not change the
+verdict; the residual mechanism is a search-dynamics one --- energy moves
+displace the worsening moves tabu search relies on for diversification,
+trapping it on mediocre plateaus. The practical reading is clear and, we
+believe, valuable: \emph{the cheap lexicographic tie-break is the robust
+winner; specialised energy moves help only where makespan plateaus are
+already near-optimal}. Their proper role is re-examined in the
+Pareto setting, where covering the front (not protecting the makespan
+extreme) is the goal.
+
+\todo{Pareto arms pending (hypervolume, $\varepsilon$-indicator vs
+reference and exact fronts); engine choice and irace re-tuning per arm
+(scalarised on hypervolume with fixed per-instance reference points) to
+be decided.}
 
 %=============================================================================
 \section{Conclusions}
