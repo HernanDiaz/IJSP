@@ -122,7 +122,23 @@ public:
 
 		FitnessLexicographic *fin =
 			dynamic_cast<FitnessLexicographic *>(target->getFitness());
-		if (fin != NULL && target->isPhenotypeUpdated())
+		if (fin == NULL || !target->isPhenotypeUpdated())
+			return;
+		// Offer REAL (unclamped) values under a goal cap
+		IJSP::EvaluationIJSP_MakespanEnergy *ev2 = dynamic_cast<
+			IJSP::EvaluationIJSP_MakespanEnergy *>(this->evaluator);
+		IJSP::ScheduleIJSP *sch2 = dynamic_cast<IJSP::ScheduleIJSP *>(
+			target->getPhenotype());
+		IJSP::ProblemIJSP *prob2 = dynamic_cast<IJSP::ProblemIJSP *>(
+			this->sharedVariables->problem);
+		if (ev2 != NULL && sch2 != NULL && prob2 != NULL) {
+			FitnessLexicographic *real = dynamic_cast<
+				FitnessLexicographic *>(ev2->evaluateSchedule(sch2,
+					prob2, true));
+			this->archive.offer(sch2->toString(), real);
+			delete real;
+		}
+		else
 			this->archive.offer(target->getPhenotype()->toString(), fin);
 	}
 };

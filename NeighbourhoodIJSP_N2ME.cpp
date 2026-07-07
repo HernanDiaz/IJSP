@@ -23,6 +23,15 @@ void NB_ParallelN2ME_MakespanEnergyIJSP::setup(
 		parameters->getStringLower("neighbourhood.energy-restricted");
 	this->restrictedE = !(value.compare("no") == 0
 		|| value.compare("full") == 0);
+
+	// Optional makespan goal cap from parameters (epsilon-sweep phase B):
+	// same keys as the makespan-energy evaluation, so the whole engine
+	// (population comparisons AND the tabu search) sees the clamped primary
+	std::string lo = parameters->getString("energy.goal-cmax-lo");
+	std::string hi = parameters->getString("energy.goal-cmax-hi");
+	if (lo.length() > 0 && hi.length() > 0)
+		this->setGoalCap(FuzzyFW::Interval(atof(lo.c_str()),
+			atof(hi.c_str())));
 }
 
 

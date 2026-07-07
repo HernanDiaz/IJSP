@@ -45,6 +45,15 @@ protected:
 	*/
 	FuzzyFW::Interval::Maximum intervalMaximum;
 
+	/*
+	* Optional makespan goal cap (population-based epsilon-sweep): when the
+	* parameters energy.goal-cmax-lo / energy.goal-cmax-hi are present, the
+	* primary component is clamped to max(Cmax, cap) so all under-cap
+	* solutions tie on makespan and the NPE tie-break drives the search.
+	*/
+	bool hasGoalCap;
+	double goalLo, goalHi;
+
 	//=============================================================================
 	//		CONSTRUCTORS / INITIALIZERS / DESTRUCTOR
 	//=============================================================================
@@ -75,7 +84,7 @@ public:
 	* @return A FitnessLexicographic [makespan, NPE] (caller owns it)
 	*/
 	FuzzyFW::Fitness * evaluateSchedule(const ScheduleIJSP *schedule,
-		const ProblemIJSP *problem) const;
+		const ProblemIJSP *problem, const bool raw = false) const;
 
 	virtual FuzzyFW::Objective * getObjectiveFunction(
 		const FuzzyFW::SharedVarsEvolutionary * const svars,

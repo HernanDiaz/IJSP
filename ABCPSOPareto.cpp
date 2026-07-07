@@ -32,7 +32,24 @@ void ABCPSOPareto::applyLocalSearch(Population *population,
 	Individual *target = population->getIndividual(individualIdx);
 	const FitnessLexicographic *fitness =
 		dynamic_cast<const FitnessLexicographic *>(target->getFitness());
-	if (fitness != NULL && target->isPhenotypeUpdated())
+	if (fitness == NULL || !target->isPhenotypeUpdated())
+		return;
+
+	// Offer REAL (unclamped) values to the archive: under a goal cap the
+	// individual fitness carries the clamped primary
+	IJSP::EvaluationIJSP_MakespanEnergy *ev = dynamic_cast<
+		IJSP::EvaluationIJSP_MakespanEnergy *>(this->evaluator);
+	IJSP::ScheduleIJSP *sch = dynamic_cast<IJSP::ScheduleIJSP *>(
+		target->getPhenotype());
+	IJSP::ProblemIJSP *prob = dynamic_cast<IJSP::ProblemIJSP *>(
+		this->sharedVariables->problem);
+	if (ev != NULL && sch != NULL && prob != NULL) {
+		FitnessLexicographic *real = dynamic_cast<FitnessLexicographic *>(
+			ev->evaluateSchedule(sch, prob, true));
+		this->archive.offer(sch->toString(), real);
+		delete real;
+	}
+	else
 		this->archive.offer(target->getPhenotype()->toString(), fitness);
 }
 

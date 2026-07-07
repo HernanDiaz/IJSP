@@ -15,14 +15,17 @@ namespace IJSP {
 //=============================================================================
 EvaluationIJSP_MakespanEnergy::EvaluationIJSP_MakespanEnergy()
 	: maximumLabel(IJSP_EVALUATION_MAXIMUM),
-	intervalMaximum(FuzzyFW::Interval::Maximum::M_COMPONENT) {
+	intervalMaximum(FuzzyFW::Interval::Maximum::M_COMPONENT),
+	hasGoalCap(false), goalLo(0), goalHi(0) {
 }
 
 
 EvaluationIJSP_MakespanEnergy::EvaluationIJSP_MakespanEnergy(
 	const EvaluationIJSP_MakespanEnergy &source)
 	: FuzzyFW::Evaluation(source), maximumLabel(source.maximumLabel),
-	intervalMaximum(source.intervalMaximum) {
+	intervalMaximum(source.intervalMaximum),
+	hasGoalCap(source.hasGoalCap), goalLo(source.goalLo),
+	goalHi(source.goalHi) {
 }
 
 
@@ -44,6 +47,15 @@ void EvaluationIJSP_MakespanEnergy::setup(FuzzyFW::ParameterDB *parameters) {
 		errorMsg += maxName + "\'";
 		throw IJSPException("Evaluation", errorMsg);
 	}
+
+	// Optional makespan goal cap (epsilon-sweep phase B)
+	std::string lo = parameters->getString("energy.goal-cmax-lo");
+	std::string hi = parameters->getString("energy.goal-cmax-hi");
+	if (lo.length() > 0 && hi.length() > 0) {
+		this->hasGoalCap = true;
+		this->goalLo = atof(lo.c_str());
+		this->goalHi = atof(hi.c_str());
+	}
 }
 
 
@@ -52,12 +64,17 @@ void EvaluationIJSP_MakespanEnergy::setup(FuzzyFW::ParameterDB *parameters) {
 //=============================================================================
 //----- Lexicographic fitness of an already-built schedule  -------------------
 FuzzyFW::Fitness * EvaluationIJSP_MakespanEnergy::evaluateSchedule(
-	const ScheduleIJSP *schedule, const ProblemIJSP *problem) const {
+	const ScheduleIJSP *schedule, const ProblemIJSP *problem,
+	const bool raw) const {
 
 	FuzzyFW::Interval makespan(0, 0);
 	for (unsigned int i = 0; i < problem->getNumberJobs(); i++)
 		makespan = maximum(makespan, schedule->getCTJob(i),
 			this->intervalMaximum);
+	if (this->hasGoalCap && !raw) {
+		makespan.a = std::max(makespan.a, this->goalLo);
+		makespan.b = std::max(makespan.b, this->goalHi);
+	}
 
 	FuzzyFW::FitnessLexicographic *fitness =
 		new FuzzyFW::FitnessLexicographic();
