@@ -41,6 +41,7 @@
 #include "DecoderFVRP.h"
 #include "DecoderIJSP.h"
 #include "CreationIJSP.h"
+#include "CreationIJSP_FromFile.h"
 
 
 
@@ -331,8 +332,10 @@ public:
 		DecoderMap[toUpper("ijsp.joborder")] = &createDecoderInstance<IJSP::DecoderIJSP_JobOrder>;
 
 		// -----  CREATION OPERATORS  -----------------------------------------
-    	CreationMap[toUpper("ijsp-random")] = &createCreationInstance<IJSP::CreationRandomSchedule>;
+    	CreationMap[toUpper("ijsp.random")] = &createCreationInstance<IJSP::CreationRandomSchedule>;
+		CreationMap[toUpper("ijsp.solutions-file")] = &createCreationInstance<IJSP::CreationFromFileSchedule>;
 		CreationMap[toUpper("ijsp.random")] = &createCreationInstance<IJSP::CreationRandomSchedule>;
+		CreationMap[toUpper("ijsp.solutions-file")] = &createCreationInstance<IJSP::CreationFromFileSchedule>;
 		CreationMap[toUpper("ijsp.SRT.makespan")] = &createCreationInstance<IJSP::CreationSRTIntervalMkSchedule>;
 		CreationMap[toUpper("ijsp.SNTF.makespan")] = &createCreationInstance<IJSP::CreationSNTFIntervalMkSchedule>;
 		
