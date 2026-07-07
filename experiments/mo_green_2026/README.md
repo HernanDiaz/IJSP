@@ -115,6 +115,32 @@ clamp poblacional (variante b): VALIDADO** — ABC-Pareto con
 clampeado). 6. `pilot_ladder.sh`: escalera de 6 niveles × 90s × 8
 instancias corriendo; `merge_ladder.py` listo.
 
+## ★ ESCALERA v2 (warm-seeded) — VALIDADA EN TODO EL RANGO (2026-07-07)
+
+`RESULTS_LADDER2_PILOT.txt`. Niveles clampeados de 90 s sembrados
+(L1 ← 30 anclas LexME; Lk ← frente de Lk−1 + anclas, maxmin):
+
+| Instancia | Frente | vs todo lo anterior |
+|---|---|---|
+| ft10 | 11 p., NPE→3138, HV 0.788 | ≈récord v1 (0.796); libre era 0.66 |
+| tai20_20 | 8 p., NPE→47545 | mejor que todos (48450) |
+| tai30_15 | 6 p., 1781/9850 | **domina todo** (mejor Cmax Y NPE) |
+| tai30_20 | 5 p., 2094/36946 | **domina todo** |
+| **tai50_15** | 2760-2762, **NPE 5767** | LexME best 6630, libre 7711 — **aplasta** |
+| **tai50_20** | 2882-2890, NPE→19528 | mejor que el best-of-30 de LexME |
+
+**Por primera vez hay frentes reales en las instancias grandes, con puntos
+que además baten el mejor NPE conocido a makespan de ancla.** Único flojo:
+tai15 (HV 0.35 — cobertura estrecha de Cmax; nota de tuning: los niveles
+altos no añaden — investigar si el archivo satura o los caps altos
+necesitan menos siembra de ancla). Presupuesto: 6×90 s + anclas
+amortizadas del Exp. 1.
+
+**→ Diseño del brazo Pareto del Exp. 4: escalera clampeada warm-seeded
+(variante b + FromFile).** Decisiones para Hernán: niveles/presupuestos
+por tamaño, irace-sobre-HV sí/no, y si ABC/MA libres quedan como brazos de
+comparación.
+
 ## Pendiente
 
 - **Exp. 2 (corriendo):** al acabar → análisis distancia-al-frente (N2 /
