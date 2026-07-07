@@ -250,4 +250,125 @@ objective structures. The bi-objective setting is thus precisely where the
 full bi-critical machinery earns its keep.
 \end{remark}
 
+%=============================================================================
+\section{The capped ladder: formal foundations}
+\label{sec:ladder}
+
+This section provides the theoretical backing of the front generator
+validated experimentally on 2026-07-07 (``warm-seeded clamped ladder''):
+a sequence of single-objective searches, one per makespan allowance
+$\kappa$, each ranking solutions by the \emph{clamped pair}
+\[
+\Phi_\kappa(\sigma)\;=\;\bigl(M_\kappa(\sigma),\,\mathbf{\NPE}(\sigma)\bigr),
+\qquad
+M_\kappa(\sigma)=\bigl[\max(C^-_{\max},\kappa^-),\,\max(C^+_{\max},\kappa^+)\bigr],
+\]
+compared lexicographically with LEX2 inside each component pair. We write
+$\Sigma_\kappa=\{\sigma: C^-_{\max}(\sigma)\le\kappa^-\wedge
+C^+_{\max}(\sigma)\le\kappa^+\}$ for the (component-wise) cap-feasible set,
+and use the product-order dominance of the Pareto sections: $\sigma$
+dominates $\sigma'$ iff it is LEX2-better-or-equal in both objectives and
+strictly better in one.
+
+\begin{proposition}[Goal-programming form]\label{prop:goal}
+Ordering solutions by $\Phi_\kappa$ coincides with the lexicographic
+goal-programming order with target $\kappa$: deviation
+$D_\kappa(\sigma)=[\max(0,C^--\kappa^-),\max(0,C^+-\kappa^+)]$ first,
+energy second.
+\end{proposition}
+\begin{proof}
+Component-wise, $\max(C,\kappa)=\kappa+\max(0,C-\kappa)$. Adding the
+constant $\kappa^-$ (resp.\ $\kappa^+$) to the lower (resp.\ upper)
+component of every solution preserves all LEX2 comparisons, which are
+made component against component. Hence the order induced by $M_\kappa$
+equals the order induced by $D_\kappa$, and the pairs coincide
+lexicographically.
+\end{proof}
+
+Proposition~\ref{prop:goal} places every ladder level in the
+lexicographic goal-programming framework used for the interval green
+FJSP, with the cap playing the role of the production goal --- the ladder
+is that methodology turned into a front generator by sweeping the goal.
+
+\begin{proposition}[$\varepsilon$-constraint soundness and completeness]
+\label{prop:eps}
+Assume $\Sigma_\kappa\neq\emptyset$ and let the level order be the
+lexicographic triple $(D_\kappa,\mathbf{\NPE},\mathbf{C}_{\max})$
+(the third key resolves ties among equal-energy solutions). Then:
+\begin{enumerate}
+\item[(i)] every optimum $\sigma^{\star}_\kappa$ of the level order
+satisfies $\sigma^{\star}_\kappa\in\Sigma_\kappa$, minimises
+$\mathbf{\NPE}$ (LEX2) over $\Sigma_\kappa$, and is non-dominated
+\emph{within} $\Sigma_\kappa$;
+\item[(ii)] (completeness) every Pareto-optimal order $\sigma^{\circ}$
+is a level optimum for the cap
+$\kappa=\bigl(C^-_{\max}(\sigma^{\circ}),C^+_{\max}(\sigma^{\circ})\bigr)$.
+Consequently the ideal ladder over a cap grid $\Gamma$ returns exactly
+the Pareto front restricted to caps in $\Gamma$, and grid refinement
+recovers the whole front.
+\end{enumerate}
+\end{proposition}
+\begin{proof}
+(i) Any $\sigma\in\Sigma_\kappa$ has $D_\kappa(\sigma)=[0,0]$, the
+minimum, while any violator has a strictly positive component, hence is
+LEX2-worse in the first key; so optima are cap-feasible and, the first
+key being tied on $\Sigma_\kappa$, they LEX2-minimise $\mathbf{\NPE}$
+there. If some $\sigma'\in\Sigma_\kappa$ dominated
+$\sigma^{\star}_\kappa$, it would have LEX2-$\le$ energy — hence equal,
+by minimality — and LEX2-strictly-better makespan, contradicting the
+third key. (ii) Let $\sigma\in\Sigma_\kappa$ with
+$\mathbf{\NPE}(\sigma)$ LEX2-better than $\mathbf{\NPE}(\sigma^{\circ})$.
+Cap-feasibility at $\sigma^{\circ}$'s own makespan means
+$C^i_{\max}(\sigma)\le C^i_{\max}(\sigma^{\circ})$ component-wise, which
+implies $\mathbf{C}_{\max}(\sigma)$ LEX2-$\le$
+$\mathbf{C}_{\max}(\sigma^{\circ})$; together with the strictly better
+energy, $\sigma$ would dominate $\sigma^{\circ}$ — contradiction. Ties in
+energy with strictly better makespan are excluded the same way.
+\end{proof}
+
+\begin{remark}[Why ``within $\Sigma_\kappa$'' — and why it suffices]
+\label{rem:soundness-scope}
+Global non-dominance of a level optimum can fail through an interval
+subtlety: a solution outside $\Sigma_\kappa$ (upper bound within the cap,
+lower bound above it) can be LEX2-better in makespan and still be
+clamped-worse. The implementation neutralises this: the archive stores
+\emph{unclamped} objective values and applies the dominance filter across
+all levels, so every reported front point is globally non-dominated among
+all solutions ever archived — soundness is restored by construction at
+the archive, while Proposition~\ref{prop:eps}(ii) guarantees no Pareto
+point is out of the ladder's reach.
+\end{remark}
+
+\begin{theorem}[Connectivity under a cap]\label{thm:capped-conn}
+Fix a cap $\kappa$ with $\Sigma_\kappa\neq\emptyset$ and a target
+$\sigma^{\circ}\in\Sigma_\kappa$. From every order $\sigma$ there is a
+finite sequence of $N_2^{ME}$ moves reaching a cap-feasible order; from
+every cap-feasible order, the machine-completion deficits with respect to
+$\sigma^{\circ}$ are repairable within $E(\sigma)$
+(Lemma~\ref{lem:C}). The machine-start (Case-C) deficits remain the open
+case, addressed heuristically by the goal-gated delay arcs.
+\end{theorem}
+\begin{proof}[Proof idea]
+While $\sigma\notin\Sigma_\kappa$, some component satisfies
+$C^i_{\max}(\sigma)>\kappa^i\ge C^i_{\max}(\sigma^{\circ})$, so the ASOC
+key lemma applies verbatim with $\sigma^{\circ}$ as target: an extreme
+critical path of $G^i(\sigma)$ carries a disagreeing arc, its reversal is
+feasible and decreases the inversion count $M(\sigma,\sigma^{\circ})$,
+and the count bounds the number of steps. Once cap-feasible,
+Lemma~\ref{lem:C} covers the completion side unchanged (its hypothesis
+compares completions, not makespans). \end{proof}
+
+\begin{remark}[Division of labour, empirically grounded]
+The ladder's remaining gap — reaching energy-deep \emph{basins} rather
+than optima within a basin — is provably out of reach for any single-move
+trajectory: an exhaustive one-move landscape probe from a converged
+anchor (all $89$ feasible reversals and $561$ feasible insertions on
+\texttt{ft10}) found at most two energy-improving moves, against an
+exact-front improvement potential of ${\sim}60\%$. Basin crossing is
+performed by recombination in the population engine, and
+Theorem~\ref{thm:capped-conn} covers refinement within the reached
+basin. This is a landscape-analysis argument rather than a theorem, and
+is reported as such.
+\end{remark}
+
 \end{document}
