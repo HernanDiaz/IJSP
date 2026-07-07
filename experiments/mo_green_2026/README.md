@@ -98,6 +98,23 @@ RS=heur python3 experiments/mo_green_2026/analyze_lexme.py
 bash experiments/mo_green_2026/exp2_fronts.sh
 ```
 
+## Cadena de diagnóstico fase B (2026-07-07) — mecanismo identificado
+
+1. Sweep v0 (TS por niveles): plano (6302→6243). 2. +E completo, +Caso C,
++presupuesto: plano igual. 3. **`neighbourhood_probe.py` (decisivo)**:
+paisaje exhaustivo de 1 movimiento desde el ancla — de 89 inversiones y
+561 inserciones factibles, solo 1-2 mejoran NPE incluso con cap +10%
+(techo 6243 vs exacto 2400-4400) → **ninguna búsqueda de trayectoria
+puede llegar; el mecanismo de cruce es población+recombinación**
+(pilotos evolutivos llegaron a 3862-4038; JOX está en TODOS los motores —
+la diferencia entre ABC y MA es la RETENCIÓN, no el cruce). 4. **Test del
+clamp poblacional (variante b): VALIDADO** — ABC-Pareto con
+`energy.goal-cmax-lo/hi` (evaluación + vecindario clampeados) en ft10 a
++5%: NPE ~4087 en 900s (~4485 en 30s!) con makespan ≤ cap garantizado.
+5. Fix: los offers al archivo re-evalúan con raw=true (Cmax real, no
+clampeado). 6. `pilot_ladder.sh`: escalera de 6 niveles × 90s × 8
+instancias corriendo; `merge_ladder.py` listo.
+
 ## Pendiente
 
 - **Exp. 2 (corriendo):** al acabar → análisis distancia-al-frente (N2 /
