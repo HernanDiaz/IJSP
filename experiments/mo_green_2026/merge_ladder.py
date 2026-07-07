@@ -7,7 +7,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from front_metrics import load_exact, hypervolume, nondominated
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-LAD = os.path.join(HERE, "results", "pilot_ladder")
+LAD = os.environ.get("LADDER_DIR", os.path.join(HERE, "results", "pilot_ladder"))
 MERGED = os.path.join(LAD, "merged")
 os.makedirs(MERGED, exist_ok=True)
 
