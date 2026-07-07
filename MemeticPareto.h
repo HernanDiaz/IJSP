@@ -9,6 +9,9 @@
 #include "MemeticAlgorithm.h"
 #include "ParetoArchive.h"
 #include "ReplacementNSGA2.h"
+#include "FitnessMO.h"
+#include "EvaluationIJSP_MakespanEnergy.h"
+#include "NeighbourhoodIJSP_N2ME.h"
 
 namespace FuzzyFW {
 
@@ -61,6 +64,66 @@ public:
 		if (logFolder.length() > 0)
 			this->archive.dump(logFolder + signature + "_Front.csv");
 		return best;
+	}
+
+	/**
+	* Lexicographic boundary for the local search (same pattern as the
+	* ABC-PSO engine): a makespan-only neighbourhood receives the primary
+	* component and the full fitness is rebuilt from the optimised
+	* schedule; a lexicographic-aware neighbourhood (N2ME) receives the
+	* full fitness. The improved individual is offered to the archive.
+	*/
+	virtual void applyLocalSearch(Population *population,
+		const unsigned int individualIdx) {
+
+		Individual *target = population->getIndividual(individualIdx);
+		FitnessLexicographic *lexFitness =
+			dynamic_cast<FitnessLexicographic *>(target->getFitness());
+		bool lexAwareNB = dynamic_cast<
+			IJSP::NB_ParallelN2ME_MakespanEnergyIJSP *>(this->neighbourhood)
+			!= NULL;
+		Fitness *lsFitness = (lexFitness != NULL && !lexAwareNB) ?
+			lexFitness->getFitness(0) : target->getFitness();
+
+		FullSolution optimised = this->localSearch->apply(
+			target->getPhenotype(), lsFitness, this->sharedVariables);
+
+		this->evaluationsLS += this->localSearch->getEvaluations();
+		this->neighboursLS += this->localSearch->getNeighbours();
+		this->iterationsLS += this->localSearch->getIterations();
+		this->callsLS++;
+
+		if (lexFitness != NULL && !lexAwareNB) {
+			IJSP::EvaluationIJSP_MakespanEnergy *lexEvaluator =
+				dynamic_cast<IJSP::EvaluationIJSP_MakespanEnergy *>(
+					this->evaluator);
+			IJSP::ScheduleIJSP *lsSchedule =
+				dynamic_cast<IJSP::ScheduleIJSP *>(optimised.first);
+			IJSP::ProblemIJSP *lexProblem =
+				dynamic_cast<IJSP::ProblemIJSP *>(
+					this->sharedVariables->problem);
+			if (lexEvaluator == NULL || lsSchedule == NULL
+				|| lexProblem == NULL) {
+				std::string errorMsg = "Lexicographic fitness requires the ";
+				errorMsg += "ijsp.makespan-energy evaluation.";
+				throw FuzzyFWException("MemeticPareto", errorMsg);
+			}
+			delete optimised.second;
+			optimised.second = lexEvaluator->evaluateSchedule(lsSchedule,
+				lexProblem);
+		}
+
+		if (this->lsLamarckism)
+			this->sharedVariables->encoder->encode(optimised.first,
+				target, this->sharedVariables);
+		target->updatePhenotype(optimised.first);
+		target->updateFitness(optimised.second);
+		population->setSorted(false);
+
+		FitnessLexicographic *fin =
+			dynamic_cast<FitnessLexicographic *>(target->getFitness());
+		if (fin != NULL && target->isPhenotypeUpdated())
+			this->archive.offer(target->getPhenotype()->toString(), fin);
 	}
 };
 

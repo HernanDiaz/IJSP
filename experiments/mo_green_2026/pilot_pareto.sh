@@ -6,10 +6,10 @@ set -u
 REPO=/mnt/c/Users/diazhernan/CLionProjects/Fable/IJSP
 EXE=/mnt/c/Users/diazhernan/CLionProjects/Fable/FuzzyFW
 cd "$REPO"
-OUT="$REPO/experiments/mo_green_2026/results/pilot_pareto"
+OUT="$REPO/experiments/mo_green_2026/results/pilot_pareto_n2"
 mkdir -p "$OUT/abc" "$OUT/ma" "$OUT/logs"
 
-BASE=experiments/mo_green_2026/setup/setup_LexME_N2ME_tuned.txt
+BASE=experiments/mo_green_2026/setup/setup_LexME_N2_tuned.txt
 sed -e 's/^algorithm = .*/algorithm = ABCPSO-Pareto/' \
     -e 's/^replacement = .*/replacement = nsga2/' \
     -e 's/^runs = .*/runs = 1/' "$BASE" > "$OUT/s_abc.txt"
