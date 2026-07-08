@@ -1,8 +1,8 @@
 # irace scenario — LADDER arm tuning (maximise hypervolume => cost = -HV)
-targetRunner       = "./target-runner.sh"
+targetRunner       = "./target-runner.cmd"
+targetCmdline      = "{configurationID} {instanceID} {seed} {instance} {targetRunnerArgs}"
 parameterFile      = "./parameters.txt"
 trainInstancesFile = "./instances.txt"
-forbiddenFile      = "./parameters.txt"
 
 # Full-budget evaluations (each = one complete ladder pipeline).
 maxExperiments  = 1000
