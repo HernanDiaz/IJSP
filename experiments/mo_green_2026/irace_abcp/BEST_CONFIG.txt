@@ -1,0 +1,8 @@
+# irace winner — ABC-P baseline (config #118), 1000 evals, 135 configs
+elite_size = 39
+elite_sel  = 2
+maxtrials  = 16
+ls_target  = 0.323
+tabu_iter  = 23
+crossover  = ijsp.jox
+mutation   = insertion
