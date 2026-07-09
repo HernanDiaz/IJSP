@@ -1,0 +1,4 @@
+# These are executed by WSL bash via a Windows .cmd wrapper — must stay LF.
+*.sh   text eol=lf
+*.py   text eol=lf
+*.txt  text eol=lf

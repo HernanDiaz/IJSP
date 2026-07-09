@@ -1,0 +1,12 @@
+# irace scenario — map baseline tuning (cost = -HV)
+targetRunner       = "./target-runner.cmd"
+targetCmdline      = "{configurationID} {instanceID} {seed} {instance} {targetRunnerArgs}"
+parameterFile      = "./parameters.txt"
+trainInstancesFile = "./instances.txt"
+maxExperiments  = 1000
+parallel        = 14
+testType        = "friedman"
+minNbSurvival   = 3
+debugLevel      = 1
+logFile         = "irace.log"
+seed            = 42

@@ -1,0 +1,11 @@
+# irace winner — LADDER arm (config #70), 1000 evals, 127 configs, 11.7h
+elite_size = 40
+elite_sel  = 4
+maxtrials  = 11
+ls_target  = 0.6891
+tabu_iter  = 16
+crossover  = ijsp.gox
+mutation   = swap
+# Notable vs inherited ASOC config: GOX (not JOX), swap (not insertion),
+# lower maxtrials (11 vs 24), ls_target 0.69 -> less per-individual
+# intensification, more exploration/diversity for front coverage.
