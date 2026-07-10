@@ -9,10 +9,13 @@ REPO=/mnt/c/Users/diazhernan/CLionProjects/Fable/IJSP
 EXE=/mnt/c/Users/diazhernan/CLionProjects/Fable/FuzzyFW
 cd "$REPO"
 EXP="$REPO/experiments/mo_green_2026"
-OUT="$EXP/results/EXP4/LADDER"
+# Env-overridable so the tuned re-run writes to a separate tree with its own
+# base setup, leaving the inherited-config EXP4 data untouched.
+OUT="${OUT_DIR:-$EXP/results/EXP4/LADDER}"
+BASESETUP="${BASE_SETUP:-$EXP/setup/setup_LexME_N2ME_tuned.txt}"
 BASELINE_CSV="$REPO/experiments/cor_tabu_2026/statistical_results/runs_data.csv"
 TIER="${1:-smoke}"; MAX="${2:-14}"
-LOG="$EXP/run_exp4_ladder.log"
+LOG="${LOG_FILE:-$EXP/run_exp4_ladder.log}"
 mkdir -p "$OUT"
 
 budget() {  # echo "<anchor_s> <level_s> <permil list>"
@@ -36,7 +39,7 @@ run_pipeline() {  # stem run
       -e 's/^runs = .*/runs = 1/' \
       -e "s/^timelimit = .*/timelimit = $ta/" \
       -e "s/^seed = .*/seed = $run/" \
-    "$EXP/setup/setup_LexME_N2ME_tuned.txt" > "$d/s_anchor.txt"
+    "$BASESETUP" > "$d/s_anchor.txt"
   timeout $((ta*3)) "$EXE" "$d/s_anchor.txt" \
     "SelectosYTaillardIntervalosEnergia/$stem.txt" "$d/anchor/" \
     > "$d/anchor.log" 2>&1 || { echo "FAIL anchor $stem r$run"; return 1; }
@@ -65,7 +68,7 @@ run_pipeline() {  # stem run
         -e "s/^timelimit = .*/timelimit = $tl/" \
         -e "s/^seed = .*/seed = $((run*1000+pm))/" \
         -e 's|^creation = .*|creation = ijsp.solutions-file|' \
-      "$EXP/setup/setup_LexME_N2ME_tuned.txt" > "$ld/s.txt"
+      "$BASESETUP" > "$ld/s.txt"
     printf '\ncreation.solutions-dir = %s\ncreation.seed-selection = maxmin\nenergy.goal-cmax-lo = %d\nenergy.goal-cmax-hi = %d\n' \
       "$d/seeds" $(( cstar_lo * (1000 + pm) / 1000 )) \
       $(( cstar_hi * (1000 + pm) / 1000 )) >> "$ld/s.txt"
