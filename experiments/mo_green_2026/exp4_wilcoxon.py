@@ -18,7 +18,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from front_metrics import load_front, load_exact, hypervolume, nondominated
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-BASE = os.path.join(HERE, "results", "EXP4")
+BASE = os.environ.get("EXP4_BASE", os.path.join(HERE, "results", "EXP4"))
 ARMS = ["LADDER", "ABC-P", "MA-P"]
 STEMS = ["F0.15.0.abz7_06", "F0.15.0.abz8_05", "F0.15.0.abz9_10",
          "F0.15.0.ft10_10", "F0.15.0.ft20_05", "F0.15.0.la21_04",
