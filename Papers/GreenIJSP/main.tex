@@ -420,24 +420,68 @@ mitigate but do not remove the effect; gating the energy arcs to
 incumbent-makespan plateaus is left as an open design.
 \end{remark}
 
-\subsection{Pareto-based memetic algorithm}
+\subsection{Front generation: dominance-based baselines}
+\label{sec:pareto-baselines}
+
+The natural way to return a front is a dominance-based multiobjective
+evolutionary algorithm. Dominance is defined over the product of the two
+LEX2 total orders: $\sigma$ dominates $\sigma'$ iff
+$\mathbf{C}_{\max}(\sigma)\lexle\mathbf{C}_{\max}(\sigma')$ and
+$\mathbf{\NPE}(\sigma)\lexle\mathbf{\NPE}(\sigma')$, one of them strictly
+(the interval-objective adaptation of standard dominance). We instantiate
+two such baselines, both sharing the makespan-energy evaluation and the
+$N_2^{ME}$ local search: \textbf{ABC-P}, the ABC-PSO engine of
+\cite{DiazTabu2026} with a bounded non-dominated archive fed each
+generation; and \textbf{MA-P}, a memetic engine with true NSGA-II survival
+(non-dominated sorting plus crowding distance in the replacement),
+following the fuzzy-JSP design of \cite{Afsar2022}. The archive stores the
+non-dominated solutions found; capacity is controlled by crowding distance.
+
+\subsection{Front generation: the capped $\varepsilon$-ladder}
 \label{sec:pareto}
 
-The final rung returns a front approximation. Dominance is defined over
-the product of the two LEX2 total orders: $\sigma$ dominates $\sigma'$ iff
-$\mathbf{C}_{\max}(\sigma)\lexle\mathbf{C}_{\max}(\sigma')$ and
-$\mathbf{\NPE}(\sigma)\lexle\mathbf{\NPE}(\sigma')$, one of them strictly.
-The memetic algorithm is extended with (i) an unbounded archive of
-non-dominated solutions, (ii) non-dominated sorting plus crowding distance
-in selection and replacement, and (iii) one single-objective intensifier
-per objective --- the makespan tabu search and the energy machinery of
-Sections~\ref{sec:rs}--\ref{sec:n2me} --- applied to archive
-representatives, following \cite{Afsar2022}. Quality is measured by
-hypervolume and the additive $\varepsilon$-indicator against reference
-fronts (union of all arms), and against the exact fronts of
-Section~\ref{sec:conflict} on small instances.
+Our proposed method exploits a structural observation, made precise by the
+one-move landscape analysis of Section~\ref{sec:exp-exact}: from a
+makespan-optimal anchor, the energy-deep region of the front is not
+reachable by single-move local search --- it lies behind makespan valleys
+that only recombination crosses. Rather than ask one population to cover
+the whole front at once, the ladder decomposes it into single-objective
+levels and concentrates the search on one level at a time.
 
-\todo{Pareto machinery not yet implemented; this section fixes the design.}
+\begin{algorithm}[H]
+\caption{Capped $\varepsilon$-ladder (per run).}
+\begin{algorithmic}[1]
+\State \textbf{Anchor:} run the (random-initialised) engine minimising
+$\mathbf{C}_{\max}$ lexicographically; let $C^{*}$ be its makespan and seed
+the archive with its solutions.
+\For{$\varepsilon$ in an increasing grid}
+  \State $\kappa \gets (1+\varepsilon)\,C^{*}$ \Comment{makespan cap}
+  \State run the engine ranking by the \emph{clamped pair}
+  $\bigl(\max(\mathbf{C}_{\max},\kappa),\mathbf{\NPE}\bigr)$, warm-started
+  from the previous level's front $+$ the anchor
+  \State add the level's non-dominated solutions (unclamped) to the archive
+\EndFor
+\State right-shift (Section~\ref{sec:rs}) every archived solution; return
+the archive
+\end{algorithmic}
+\end{algorithm}
+
+Clamping the makespan to the cap makes all cap-feasible solutions tie on
+the primary objective, so the entire evolutionary pressure --- selection,
+survival, and the $N_2^{ME}$ tabu search alike --- is redirected onto
+energy, without changing any operator (Proposition~\ref{prop:goal}: each
+level is a lexicographic goal-programming problem with the cap as target).
+Warm seeding is essential rather than cosmetic: on medium and large
+instances a from-scratch level spends its whole budget merely re-reaching
+the cap region. Section~\ref{sec:ladder} gives the theoretical backing:
+level optima are exactly the Pareto points at their cap
+(Proposition~\ref{prop:eps}), and $N_2^{ME}$ retains connectivity under a
+cap for the makespan and machine-completion terms (Theorem~\ref{thm:capped-conn}).
+
+Quality is measured by hypervolume ratio and the additive
+$\varepsilon$-indicator against a per-instance reference front (the
+non-dominated union of all arms), and against the exact fronts of
+Section~\ref{sec:conflict} on small instances.
 
 %=============================================================================
 \section{Experimental study}
@@ -631,10 +675,87 @@ already near-optimal}. Their proper role is re-examined in the
 Pareto setting, where covering the front (not protecting the makespan
 extreme) is the goal.
 
-\todo{Pareto arms pending (hypervolume, $\varepsilon$-indicator vs
-reference and exact fronts); engine choice and irace re-tuning per arm
-(scalarised on hypervolume with fixed per-instance reference points) to
-be decided.}
+\subsection{Front-generation methods: parameter tuning}
+\label{sec:exp-tuning}
+
+To compare the three front generators fairly, each is tuned separately
+with irace~\cite{Lopez2016}, over the same seven engine parameters used to
+tune the tabu search in \cite{DiazTabu2026} (elite size and selection,
+max-trials, LS target fraction, tabu bad-iterations, crossover and
+mutation operators); the ladder's budget split and cap grid are fixed by
+design. Each irace evaluation runs the full method (for the ladder, the
+whole anchor-plus-levels pipeline) and returns the negated hypervolume of
+its front against a fixed per-instance reference point, over the same
+stratified 20-instance training subset used in \cite{DiazTabu2026}. The
+winning configurations differ markedly across arms
+(Table~\ref{tab:tuned-mo}), confirming that per-arm tuning is warranted:
+the ladder favours GOX crossover, the more disruptive \emph{swap}
+mutation, and lighter per-individual intensification --- consistent with
+its need for diversity to spread along the front --- whereas the baselines
+retain insertion-based operators.
+
+\begin{table}[htb]
+\centering\small
+\caption{irace-tuned configurations of the three front generators.}
+\label{tab:tuned-mo}
+\begin{tabular}{l cccccc}
+\toprule
+Arm & elite (size/sel) & max-trials & LS target & tabu-iter & crossover & mutation \\
+\midrule
+LADDER & 40 / 4 & 11 & 0.69 & 16 & GOX & swap \\
+ABC-P  & 39 / 2 & 16 & 0.32 & 23 & JOX & insertion \\
+MA-P   & 42 / 2 & 24 & 0.86 &  9 & GOX & insertion \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Front quality: the capped ladder vs.\ dominance baselines}
+\label{sec:exp-pareto}
+
+Table~\ref{tab:mo} compares the three tuned arms on the classical
+instances (30 runs each). Against a per-instance reference front (the
+non-dominated union of all arms), the ladder attains the highest
+hypervolume ratio on $10$ of $12$ instances (mean $0.875$, vs.\ $0.663$
+for MA-P and $0.640$ for ABC-P). Per-run paired Wilcoxon tests confirm the
+advantage: the ladder is significantly better than each baseline on
+$8$ of $12$ instances, and is significantly beaten on only one
+(\texttt{abz9}, by ABC-P). Tuning narrows but does not close the gap ---
+ABC-P improves from a mean ratio of $0.54$ (inherited configuration) to
+$0.64$ --- so the ladder's advantage is a property of the method, not of a
+favourable parameterisation.
+
+\begin{table}[htb]
+\centering\small
+\caption{Front hypervolume ratio (vs.\ the per-instance union reference;
+higher is better) of the three tuned arms on the classical instances,
+30 runs, best-over-runs front. Bold: best per row.}
+\label{tab:mo}
+\begin{tabular}{l ccc}
+\toprule
+Instance & LADDER & ABC-P & MA-P \\
+\midrule
+ABZ7 & \textbf{0.969} & 0.531 & 0.698 \\
+ABZ8 & \textbf{0.947} & 0.607 & 0.537 \\
+ABZ9 & 0.936 & \textbf{0.983} & 0.792 \\
+FT10 & \textbf{0.816} & 0.667 & 0.760 \\
+FT20 & 0.996 & \textbf{0.997} & 0.924 \\
+la21 & \textbf{0.904} & 0.687 & 0.888 \\
+la24 & \textbf{0.662} & 0.506 & 0.574 \\
+la25 & \textbf{0.696} & 0.261 & 0.313 \\
+la27 & \textbf{0.993} & 0.565 & 0.760 \\
+la29 & \textbf{0.625} & 0.374 & 0.310 \\
+la38 & \textbf{0.955} & 0.934 & 0.815 \\
+la40 & \textbf{1.000} & 0.564 & 0.586 \\
+\midrule
+\textit{Mean} & \textbf{0.875} & 0.640 & 0.663 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\todo{Extend Table~\ref{tab:mo} to the 70 Taillard instances (tuned runs
+launched); add HV/$\varepsilon$-indicator vs.\ the exact fronts on the
+probed instances and a front figure. Report the tuning-gain analysis
+(tuned vs.\ inherited) as a secondary table.}
 
 %=============================================================================
 \section{Conclusions}
@@ -649,12 +770,21 @@ built a ladder of methods: the lexicographic tie-break, which harvests the
 energy hidden in makespan plateaus (7.9\% on average over 82 instances, up
 to 26.5\% on $50{\times}15$, always at zero makespan cost); right-shift
 timing optimisation, which contributes a further ${\sim}8\%$ and is
-near-optimally approximated by a single backward pass; and the bi-critical
-neighbourhood $N_2^{ME}$, the first
-sequencing neighbourhood targeting idle gaps, with feasibility proven and
-connectivity established for makespan and machine-completion optimality.
-\todo{Complete with N2ME/Pareto results and future work (flexible interval
-JSP, vague goals \cite{GarciaGomez2026}).}
+near-optimally approximated by a single backward pass; the bi-critical
+neighbourhood $N_2^{ME}$, the first sequencing neighbourhood targeting
+idle gaps, with feasibility proven and connectivity established for
+makespan and machine-completion optimality; and a capped
+$\varepsilon$-ladder that generates the full Pareto front by concentrating
+recombination-driven search on one makespan level at a time. Tuned
+separately with irace, the ladder attains higher hypervolume than both a
+plain Pareto-archive engine and an NSGA-II memetic (significantly on
+$8/12$ classical instances), showing that decomposing the biobjective
+problem into warm-started single-objective levels outperforms covering the
+whole front at once. The design is backed throughout by either proof
+(goal-programming and $\varepsilon$-constraint equivalence, capped
+connectivity) or measurement (the one-move landscape analysis motivating
+recombination). Future work: the flexible interval JSP, and vague-goal
+green scheduling~\cite{GarciaGomez2026}.
 
 %=============================================================================
 \section*{Acknowledgements}
