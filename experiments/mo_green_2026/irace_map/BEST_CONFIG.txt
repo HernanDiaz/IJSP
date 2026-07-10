@@ -1,0 +1,8 @@
+# irace winner — MA-P baseline (config #125), 999 evals, 126 configs
+elite_size = 42
+elite_sel  = 2
+maxtrials  = 24
+ls_target  = 0.8644
+tabu_iter  = 9
+crossover  = ijsp.gox
+mutation   = insertion
