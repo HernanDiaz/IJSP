@@ -2,12 +2,14 @@
 %% Energy-aware scheduling in the interval job shop:
 %% from lexicographic to Pareto optimisation of makespan and idle energy
 %%
-%% Working draft — 2026-07-04. Built on Elsevier's elsarticle template
+%% Working draft — rev. 2026-07-13. Built on Elsevier's elsarticle template
 %% (same conventions as the ASOC tabu manuscript).
 %% Compile with:  latexmk -pdf main
 %%
-%% STATUS MARKERS: \todo{...} boxes flag content pending experiments
-%% (Taillard tiers running; N2ME and Pareto arms not yet implemented).
+%% STATUS: all four experiments complete on the full 82-instance benchmark
+%% (lexicographic, right-shift, N2ME, capped ladder vs. dominance controls).
+%% Remaining \todo{...} boxes flag only a front figure, the epsilon-indicator
+%% vs. exact fronts, the tuning-gain supplement, and acknowledgements.
 %%
 \documentclass[preprint,12pt]{elsarticle}
 
@@ -64,21 +66,34 @@ once start times are allowed to shift, exact $\varepsilon$-constraint fronts
 reveal a genuine conflict --- relaxing the makespan by 10\% halves the idle
 energy. Consequently, the decision space of the green interval JSP is the
 pair (task order, timing). We extend the 82-instance IJSP benchmark with
-machine power data, and propose a ladder of solution methods built on a
-memetic algorithm with tabu search: (i) a lexicographic strategy that
+machine power data and develop two complementary treatments on top of a
+memetic algorithm with tabu search. For the single-solution setting we
+propose a progression of methods: (i) a lexicographic strategy that
 optimises makespan first and idle energy as a tie-break; (ii) a right-shift
 timing post-optimisation, in an exact linear-programming form and a
 near-optimal single-pass heuristic; and (iii) a novel \emph{bi-critical}
 neighbourhood that extends the makespan neighbourhood with energy-critical
 arcs on the sustaining chains of idle gaps, with feasibility guaranteed and
-connectivity analysed for the bi-objective setting. Experimental results on the full 82-instance benchmark show that the
-lexicographic tie-break alone recovers 7.9\% of the idle energy on average
---- and up to 26.5\% on the largest job/machine-ratio instances --- at zero
-makespan cost with respect to the published makespan-only tabu search;
-that timing optimisation contributes a further ${\sim}8\%$; and that both
-levers are complementary, for a combined 15\% energy reduction. A
-dominance-based memetic algorithm returning Pareto-front approximations
-completes the study.
+connectivity analysed for the bi-objective setting. For the Pareto setting we
+propose a \emph{capped $\varepsilon$-ladder}: rather than covering the front
+with a single population, it decomposes the front into makespan-capped
+single-objective energy problems, solved by the same tabu machinery and
+chained by warm-starting --- turning an existing single-objective
+interval-JSP solver into a front generator, with soundness and
+capped connectivity established analytically.
+Experimentally, on the full 82-instance benchmark the lexicographic tie-break
+alone recovers 7.9\% of the idle energy on average --- up to 26.5\% on the
+largest job/machine-ratio instances --- at no makespan cost with respect to
+the published makespan-only tabu search; timing optimisation contributes a
+further ${\sim}8\%$; and the two levers are complementary (combined
+${\sim}15\%$). For the front, standard multiobjective evolutionary algorithms
+--- an NSGA-II memetic and a Pareto-archive ABC --- serve as controls rather
+than rivals: they show that a good front does not come for free, and that
+decomposition exploits a fixed budget better than dominance-based search
+across most of the instance space (highest hypervolume on 55 of 82 instances,
+dominant up to $20{\times}20$), while we also delineate the regime where the
+scalar anchor loses traction on the largest high-ratio instances and
+dominance-based search becomes competitive again.
 \end{abstract}
 
 \begin{keyword}
@@ -136,18 +151,37 @@ the green JSP is therefore the pair \emph{(order, timing)}
 \item \textbf{Benchmark.} We extend the 82-instance IJSP benchmark with
 machine power data under a documented, reproducible scheme
 (Section~\ref{sec:benchmark}).
-\item \textbf{Algorithms.} We propose a ladder of methods on top of a
+\item \textbf{Methods.} We propose a family of methods on top of a
 memetic algorithm with tabu search local search
-(Section~\ref{sec:methods}): a lexicographic makespan-then-energy strategy;
-an exact and a heuristic right-shift timing post-optimisation; a novel
-\emph{bi-critical neighbourhood} $N_2^{ME}$ combining makespan-critical and
-energy-critical arcs, with feasibility proven and bi-objective connectivity
-analysed; and a dominance-based memetic algorithm returning Pareto-front
-approximations.
-\item \textbf{Experiments.} On the 82-instance benchmark we quantify each
-rung of the ladder against the published makespan-only tabu search
+(Section~\ref{sec:methods}): for a single compromise solution, a
+lexicographic makespan-then-energy strategy, an exact and a heuristic
+right-shift timing post-optimisation, and a novel \emph{bi-critical
+neighbourhood} $N_2^{ME}$ combining makespan-critical and energy-critical
+arcs, with feasibility proven and bi-objective connectivity analysed; and,
+for the whole front, a \emph{capped $\varepsilon$-ladder} that reuses the
+strong single-objective interval-JSP tabu search --- unchanged --- as a
+Pareto front generator, by decomposing the front into warm-started,
+makespan-capped energy problems. The design is backed by proof
+(goal-programming and $\varepsilon$-constraint equivalence, capped
+connectivity) rather than assembled ad hoc.
+\item \textbf{When decomposition beats dominance, and why.} Rather than
+crown a ``best'' multiobjective metaheuristic, we use two off-the-shelf
+dominance-based algorithms (an NSGA-II memetic and a Pareto-archive ABC) as
+\emph{controls} to test whether the front comes for free, and we characterise
+the outcome: on the 82-instance benchmark decomposition dominates on small
+and medium instances and in aggregate, while a landscape analysis explains
+both why (energy-deep regions lie behind makespan valleys that dominance
+cannot cross) and where it breaks down (large high-ratio instances, where the
+scalar anchor loses traction and dominance recovers)
 (Section~\ref{sec:experiments}).
 \end{enumerate}
+
+Taken together, the contribution is not another multiobjective solver that
+edges out its predecessors: it is a new problem, a method that recycles an
+existing single-objective solver into a Pareto front generator with
+guarantees, and a mechanism-level account of when that strategy is the right
+one. The dominance-based algorithms are the yardstick that makes the last two
+claims credible, not the object of a horse race.
 
 %=============================================================================
 \section{The interval job shop with idle energy}
@@ -420,12 +454,20 @@ mitigate but do not remove the effect; gating the energy arcs to
 incumbent-makespan plateaus is left as an open design.
 \end{remark}
 
-\subsection{Front generation: dominance-based baselines}
+\subsection{Front generation: dominance-based baselines as controls}
 \label{sec:pareto-baselines}
 
-The natural way to return a front is a dominance-based multiobjective
-evolutionary algorithm. Dominance is defined over the product of the two
-LEX2 total orders: $\sigma$ dominates $\sigma'$ iff
+The natural, off-the-shelf way to return a front is a dominance-based
+multiobjective evolutionary algorithm, and this is exactly what a
+practitioner would reach for. We therefore use two such algorithms not as
+competitors to be defeated but as \emph{controls}: they measure how much of
+the front a standard dominance-based search recovers on this problem, and
+hence whether the proposed decomposition is needed at all. To keep the
+comparison about the front-generation \emph{strategy} and nothing else, both
+baselines share the makespan-energy evaluation, the $N_2^{ME}$ local search,
+the time budget, and the per-arm irace tuning of the proposed method; only
+the way the front is assembled differs. Dominance is defined over the product
+of the two LEX2 total orders: $\sigma$ dominates $\sigma'$ iff
 $\mathbf{C}_{\max}(\sigma)\lexle\mathbf{C}_{\max}(\sigma')$ and
 $\mathbf{\NPE}(\sigma)\lexle\mathbf{\NPE}(\sigma')$, one of them strictly
 (the interval-objective adaptation of standard dominance). We instantiate
@@ -482,6 +524,72 @@ Quality is measured by hypervolume ratio and the additive
 $\varepsilon$-indicator against a per-instance reference front (the
 non-dominated union of all arms), and against the exact fronts of
 Section~\ref{sec:conflict} on small instances.
+
+\subsection{Theoretical guarantees of the ladder}
+\label{sec:ladder}
+
+Write $\kappa=(1+\varepsilon)C^{*}$ for a level's makespan cap, applied
+component-wise to the interval, $\kappa=(\kappa^-,\kappa^+)$, and
+$\Sigma_\kappa=\{\sigma: C^-_{\max}(\sigma)\le\kappa^-\wedge
+C^+_{\max}(\sigma)\le\kappa^+\}$ for its cap-feasible set. A level ranks
+solutions by the clamped pair
+$\Phi_\kappa(\sigma)=\bigl(\max(\mathbf{C}_{\max},\kappa),\mathbf{\NPE}\bigr)$,
+compared with LEX2 inside each component. Three results, whose full proofs are
+given in the supplementary technical note and sketched here, justify the
+construction.
+
+\begin{proposition}[Goal-programming form]\label{prop:goal}
+Ordering by $\Phi_\kappa$ coincides with the lexicographic goal-programming
+order with target $\kappa$: makespan deviation
+$D_\kappa=[\max(0,C^--\kappa^-),\max(0,C^+-\kappa^+)]$ first, energy second.
+\end{proposition}
+\noindent Component-wise $\max(C,\kappa)=\kappa+\max(0,C-\kappa)$, and adding
+the constant $\kappa$ preserves every LEX2 comparison; each level is thus the
+interval green-FJSP goal program with the cap as the production goal, and the
+ladder is that methodology turned into a front generator by sweeping the goal.
+
+\begin{proposition}[$\varepsilon$-constraint soundness and completeness]
+\label{prop:eps}
+With the level order refined to the lexicographic triple
+$(D_\kappa,\mathbf{\NPE},\mathbf{C}_{\max})$ and $\Sigma_\kappa\neq\emptyset$:
+(i) every level optimum lies in $\Sigma_\kappa$, LEX2-minimises $\mathbf{\NPE}$
+over it, and is non-dominated within $\Sigma_\kappa$; and (ii) every
+Pareto-optimal order is the level optimum for the cap equal to its own
+makespan, so the ideal ladder over a cap grid $\Gamma$ returns exactly the
+Pareto front restricted to $\Gamma$, and grid refinement recovers the whole
+front.
+\end{proposition}
+
+\begin{remark}[Interval soundness, restored at the archive]
+\label{rem:soundness}
+Non-dominance ``within $\Sigma_\kappa$'' can fail globally through an interval
+subtlety --- a solution whose upper makespan is within the cap but whose lower
+is not can be LEX2-better yet clamped-worse. The archive neutralises this by
+storing \emph{unclamped} objective values and applying the dominance filter
+across all levels, so every reported front point is globally non-dominated;
+Proposition~\ref{prop:eps}(ii) then guarantees that no Pareto point is out of
+the ladder's reach.
+\end{remark}
+
+\begin{theorem}[Connectivity under a cap]\label{thm:capped-conn}
+Fix a cap $\kappa$ with $\Sigma_\kappa\neq\emptyset$ and a target
+$\sigma^{\circ}\in\Sigma_\kappa$. From any order, finitely many $N_2^{ME}$
+moves reach $\Sigma_\kappa$; and from any cap-feasible order, the
+machine-completion energy deficits with respect to $\sigma^{\circ}$ are
+repairable within $N_2^{ME}$. Machine-start deficits are the one open case,
+addressed heuristically by goal-gated delay arcs.
+\end{theorem}
+\noindent While $\sigma\notin\Sigma_\kappa$, some component has
+$C^i_{\max}(\sigma)>\kappa^i\ge C^i_{\max}(\sigma^{\circ})$, so the
+makespan-connectivity key lemma of \cite{DiazTabu2026} applies verbatim with
+$\sigma^{\circ}$ as target; the completion side is covered unchanged, as it
+compares completions rather than makespans. A landscape argument delimits what
+connectivity can achieve: an exhaustive one-move probe from a converged
+\texttt{ft10} anchor ($89$ reversals, $561$ insertions) found at most two
+energy-improving moves against a ${\sim}60\%$ exact-front potential, so
+crossing into energy-deep \emph{basins} is the work of recombination in the
+population engine, while Theorem~\ref{thm:capped-conn} governs refinement
+within the basin already reached.
 
 %=============================================================================
 \section{Experimental study}
@@ -709,26 +817,138 @@ MA-P   & 42 / 2 & 24 & 0.86 &  9 & GOX & insertion \\
 \end{tabular}
 \end{table}
 
-\subsection{Front quality: the capped ladder vs.\ dominance baselines}
+\subsection{Front quality: decomposition vs.\ dominance across the benchmark}
 \label{sec:exp-pareto}
 
-Table~\ref{tab:mo} compares the three tuned arms on the classical
-instances (30 runs each). Against a per-instance reference front (the
-non-dominated union of all arms), the ladder attains the highest
-hypervolume ratio on $10$ of $12$ instances (mean $0.875$, vs.\ $0.663$
-for MA-P and $0.640$ for ABC-P). Per-run paired Wilcoxon tests confirm the
-advantage: the ladder is significantly better than each baseline on
-$8$ of $12$ instances, and is significantly beaten on only one
-(\texttt{abz9}, by ABC-P). Tuning narrows but does not close the gap ---
-ABC-P improves from a mean ratio of $0.54$ (inherited configuration) to
-$0.64$ --- so the ladder's advantage is a property of the method, not of a
+We now put the capped ladder against the two dominance-based controls on the
+full 82-instance benchmark (30 runs each, all three arms irace-tuned).
+Per instance, we build each arm's global (best-over-runs) front and score it
+by hypervolume ratio against a per-instance reference (the non-dominated
+union of the three arms plus, where available, the exact front of
+Section~\ref{sec:conflict}); we also run per-run paired Wilcoxon tests.
+Table~\ref{tab:mo-full} reports the group-level picture and
+Table~\ref{tab:mo} the classical instances in detail.
+
+The headline is that decomposition is the better use of the budget in
+aggregate: the ladder attains the highest hypervolume on \textbf{55 of 82}
+instances and the best mean ratio overall (\textbf{0.890}, vs.\ $0.749$ for
+MA-P and $0.703$ for ABC-P), and per-run Wilcoxon tests find it significantly
+better than ABC-P on $48/82$ and than MA-P on $24/82$ instances. On the
+classical, $15{\times}15$, $20{\times}15$ and $20{\times}20$ groups the
+dominance controls are not close (ladder mean $0.875$--$0.965$, winning
+$9$--$10$ of every $10$ instances): a standard NSGA-II or Pareto-archive
+search leaves a large part of the front unrecovered, which is precisely the
+evidence that the front does not come for free and that the decomposition is
+doing real work.
+
+The picture is deliberately not a clean sweep, and the exceptions are the
+most informative part. On the two largest, machine-heavy groups the ladder's
+advantage first vanishes and then reverses: on $30{\times}20$ ABC-P dominates
+outright ($0.923$ vs.\ $0.785$, ladder $0/10$), and on the $50{\times}$ groups
+MA-P becomes competitive and edges ahead on $50{\times}20$ ($0.854$ vs.\
+$0.828$). This boundary has a single, verifiable cause, and it is the same
+one that governs the makespan extreme of the ladder. The ladder caps the
+whole front at $\kappa=(1+\varepsilon)C^{*}$, where $C^{*}$ is the makespan
+of its anchor; a per-run comparison of that anchor against the dedicated
+makespan-only tabu search of \cite{DiazTabu2026} shows the two are
+statistically equivalent within a $2\%$ margin (two one-sided tests,
+$p<10^{-21}$), but with a small median gap of $1.2\%$ that grows with size
+and machine count and peaks exactly on the $\times 20$ large groups
+($+1.8\%$ on $30{\times}20$, up to $+2.8\%$ on $50{\times}20$). Wherever the
+anchor lands above the makespan the free engines can reach, the entire ladder
+is confined to higher makespan and cannot populate the low-makespan corner of
+the front; the dominance controls, unconstrained, capture that corner and the
+hypervolume that comes with it. The diagnosis is direct (Figure~\ref{fig:fronts}):
+on \texttt{tai30\_20} instances ABC-P reaches makespans of $2102$/$1992$ against
+the ladder anchor's $2137$/$2009$, whereas on \texttt{ft10} the ladder spreads a
+deep front the controls never approach. The practical consequence is a sharp
+prescription rather than a caveat: \emph{decomposition is the method of choice
+whenever a strong makespan anchor is attainable, which is the entire small-
+and medium-instance range; on the largest high-ratio instances, either the
+anchor must be strengthened} (more anchor budget, or a makespan-specialised
+anchor configuration) \emph{or a dominance-based search should be preferred}.
+Tuning narrows but does not close the baselines' gap in the ladder's regime
+(ABC-P improves from a mean ratio of $0.54$ under the inherited configuration
+to $0.70$), so the ordering there is a property of the strategy, not of a
 favourable parameterisation.
 
 \begin{table}[htb]
 \centering\small
 \caption{Front hypervolume ratio (vs.\ the per-instance union reference;
-higher is better) of the three tuned arms on the classical instances,
-30 runs, best-over-runs front. Bold: best per row.}
+higher is better) by size group, three tuned arms, 30 runs, best-over-runs
+front. ``Wins'' counts instances where the arm attains the highest ratio;
+the last block reports per-run paired-Wilcoxon significant wins of the ladder
+($\alpha=0.05$). Bold: best group mean.}
+\label{tab:mo-full}
+\begin{tabular}{l r ccc c cc}
+\toprule
+ & & \multicolumn{3}{c}{mean HV ratio} & wins & \multicolumn{2}{c}{L $>$ (Wilcoxon)} \\
+\cmidrule(lr){3-5}\cmidrule(lr){7-8}
+Group & \# & LADDER & ABC-P & MA-P & L/A/M & ABC-P & MA-P \\
+\midrule
+classical      & 12 & \textbf{0.875} & 0.640 & 0.663 & 10/2/0 & 9 & 8 \\
+tai $15{\times}15$ & 10 & \textbf{0.960} & 0.750 & 0.756 & 10/0/0 & 8 & 6 \\
+tai $20{\times}15$ & 10 & \textbf{0.945} & 0.734 & 0.768 & 9/1/0  & 6 & 4 \\
+tai $20{\times}20$ & 10 & \textbf{0.965} & 0.769 & 0.752 & 10/0/0 & 8 & 2 \\
+tai $30{\times}15$ & 10 & \textbf{0.888} & 0.721 & 0.705 & 8/1/1  & 4 & 2 \\
+tai $30{\times}20$ & 10 & 0.785 & \textbf{0.923} & 0.693 & 0/9/1  & 1 & 0 \\
+tai $50{\times}15$ & 10 & \textbf{0.876} & 0.522 & 0.818 & 5/1/4  & 3 & 1 \\
+tai $50{\times}20$ & 10 & 0.828 & 0.579 & \textbf{0.854} & 3/2/5 & 9 & 1 \\
+\midrule
+\textit{All 82} & 82 & \textbf{0.890} & 0.703 & 0.749 & 55/16/11 & 48 & 24 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[htb]
+\centering
+\begin{tikzpicture}
+\begin{axis}[width=0.5\linewidth, height=0.44\linewidth,
+  xlabel={$C_{\max}$ (midpoint)}, ylabel={NPE (midpoint)},
+  title={(a) \texttt{ft10}, $10{\times}10$},
+  legend style={font=\scriptsize, at={(0.98,0.98)}, anchor=north east},
+  label style={font=\small}, title style={font=\small},
+  tick label style={font=\scriptsize}]
+\addplot[blue, thick, mark=*, mark size=1.3pt]
+  table[x=cmax, y=npe] {figures/ft10_LADDER.dat};
+\addplot[red, mark=square*, mark size=1.7pt]
+  table[x=cmax, y=npe] {figures/ft10_ABCP.dat};
+\addplot[orange!85!black, mark=triangle*, mark size=2pt]
+  table[x=cmax, y=npe] {figures/ft10_MAP.dat};
+\legend{LADDER, ABC-P, MA-P}
+\end{axis}
+\end{tikzpicture}\hfill
+\begin{tikzpicture}
+\begin{axis}[width=0.5\linewidth, height=0.44\linewidth,
+  xlabel={$C_{\max}$ (midpoint)},
+  title={(b) \texttt{tai30\_20\_01}, $30{\times}20$},
+  label style={font=\small}, title style={font=\small},
+  tick label style={font=\scriptsize}, scaled x ticks=false,
+  x tick label style={/pgf/number format/1000 sep={}}]
+\addplot[blue, thick, mark=*, mark size=1.3pt]
+  table[x=cmax, y=npe] {figures/tai30_20_01_LADDER.dat};
+\addplot[red, mark=square*, mark size=1.7pt]
+  table[x=cmax, y=npe] {figures/tai30_20_01_ABCP.dat};
+\addplot[orange!85!black, mark=triangle*, mark size=2pt]
+  table[x=cmax, y=npe] {figures/tai30_20_01_MAP.dat};
+\end{axis}
+\end{tikzpicture}
+\caption{Best-over-runs fronts of the three tuned arms (lower-left is better).
+\textbf{(a)} On \texttt{ft10} the ladder spreads a deep front that dominates
+both controls, reaching low-energy solutions they never approach.
+\textbf{(b)} On the large $30{\times}20$ instance the ladder is confined by
+its anchor to a narrow high-makespan band ($C_{\max}\!\in[2137,2140]$), while
+ABC-P reaches down to $C_{\max}=2102$ and captures the low-makespan corner ---
+the mechanism behind the ladder's only systematic regression.}
+\label{fig:fronts}
+\end{figure}
+
+\begin{table}[htb]
+\centering\small
+\caption{Per-instance detail of the classical block of
+Table~\ref{tab:mo-full}: front hypervolume ratio (vs.\ the per-instance union
+reference; higher is better) of the three tuned arms, 30 runs, best-over-runs
+front. Bold: best per row.}
 \label{tab:mo}
 \begin{tabular}{l ccc}
 \toprule
@@ -752,10 +972,10 @@ la40 & \textbf{1.000} & 0.564 & 0.586 \\
 \end{tabular}
 \end{table}
 
-\todo{Extend Table~\ref{tab:mo} to the 70 Taillard instances (tuned runs
-launched); add HV/$\varepsilon$-indicator vs.\ the exact fronts on the
-probed instances and a front figure. Report the tuning-gain analysis
-(tuned vs.\ inherited) as a secondary table.}
+\todo{Still to add: a representative front figure (ladder vs.\ the two
+controls on one small and one large instance), the additive
+$\varepsilon$-indicator against the exact fronts on the probed instances, and
+the full tuned-vs-inherited tuning-gain table as supplementary material.}
 
 %=============================================================================
 \section{Conclusions}
@@ -766,25 +986,37 @@ objective reduces to idle passive energy, and that the makespan--energy
 conflict only emerges in the (order, timing) decision space --- under
 semi-active timing the objectives are almost perfectly aligned, which
 explains why a naive biobjective treatment would fail. On this basis we
-built a ladder of methods: the lexicographic tie-break, which harvests the
-energy hidden in makespan plateaus (7.9\% on average over 82 instances, up
-to 26.5\% on $50{\times}15$, always at zero makespan cost); right-shift
-timing optimisation, which contributes a further ${\sim}8\%$ and is
-near-optimally approximated by a single backward pass; the bi-critical
-neighbourhood $N_2^{ME}$, the first sequencing neighbourhood targeting
-idle gaps, with feasibility proven and connectivity established for
-makespan and machine-completion optimality; and a capped
-$\varepsilon$-ladder that generates the full Pareto front by concentrating
-recombination-driven search on one makespan level at a time. Tuned
-separately with irace, the ladder attains higher hypervolume than both a
-plain Pareto-archive engine and an NSGA-II memetic (significantly on
-$8/12$ classical instances), showing that decomposing the biobjective
-problem into warm-started single-objective levels outperforms covering the
-whole front at once. The design is backed throughout by either proof
+developed, for a single compromise solution, the lexicographic tie-break,
+which harvests the energy hidden in makespan plateaus (7.9\% on average over
+82 instances, up to 26.5\% on $50{\times}15$, always at zero makespan cost);
+right-shift timing optimisation, which contributes a further ${\sim}8\%$ and
+is near-optimally approximated by a single backward pass; and the bi-critical
+neighbourhood $N_2^{ME}$, the first sequencing neighbourhood targeting idle
+gaps, with feasibility proven and connectivity established for makespan and
+machine-completion optimality.
+
+For the Pareto front, our central methodological claim is not that we beat
+NSGA-II, but that an existing single-objective interval-JSP solver can be
+recycled, unchanged, into a strong front generator by decomposing the front
+into warm-started, makespan-capped energy problems. With two off-the-shelf
+dominance-based algorithms as controls, this capped $\varepsilon$-ladder
+attains the highest hypervolume on $55$ of $82$ instances and dominates
+throughout the small- and medium-instance range, which is the evidence that a
+good front does not come for free on this problem. Just as informative is the
+boundary of that advantage: on the largest, machine-heavy instances the
+scalar anchor loses a small but decisive amount of makespan quality
+(statistically equivalent to the dedicated solver within $2\%$, but enough to
+cap the front above the low-makespan corner), and there dominance-based search
+becomes competitive again. This yields a mechanism-level prescription for
+practice --- decomposition when a strong anchor is attainable, a stronger
+anchor or a dominance-based method otherwise --- rather than a single
+universal winner. The design is backed throughout by either proof
 (goal-programming and $\varepsilon$-constraint equivalence, capped
 connectivity) or measurement (the one-move landscape analysis motivating
-recombination). Future work: the flexible interval JSP, and vague-goal
-green scheduling~\cite{GarciaGomez2026}.
+recombination). Future work follows directly from the boundary we identified:
+a makespan-specialised or adaptively-budgeted anchor for large high-ratio
+instances, and, more broadly, the flexible interval JSP and vague-goal green
+scheduling~\cite{GarciaGomez2026}.
 
 %=============================================================================
 \section*{Acknowledgements}
