@@ -161,9 +161,13 @@ arcs, with feasibility proven and bi-objective connectivity analysed; and,
 for the whole front, a \emph{capped $\varepsilon$-ladder} that reuses the
 strong single-objective interval-JSP tabu search --- unchanged --- as a
 Pareto front generator, by decomposing the front into warm-started,
-makespan-capped energy problems. The design is backed by proof
+makespan-capped energy problems. The decomposition itself is not new: the
+ladder is the classical $\varepsilon$-constraint method~\cite{Haimes1971},
+in the decomposition spirit of MOEA/D~\cite{ZhangLi2007}, specialised to this
+problem. What is ours is the instantiation --- recycling the tuned solver
+unchanged through a clamped-LEX2 fitness --- and the guarantees it carries
 (goal-programming and $\varepsilon$-constraint equivalence, capped
-connectivity) rather than assembled ad hoc.
+connectivity), rather than yet another operator assembled ad hoc.
 \item \textbf{When decomposition beats dominance, and why.} Rather than
 crown a ``best'' multiobjective metaheuristic, we use two off-the-shelf
 dominance-based algorithms (an NSGA-II memetic and a Pareto-archive ABC) as
@@ -475,8 +479,8 @@ two such baselines, both sharing the makespan-energy evaluation and the
 $N_2^{ME}$ local search: \textbf{ABC-P}, the ABC-PSO engine of
 \cite{DiazTabu2026} with a bounded non-dominated archive fed each
 generation; and \textbf{MA-P}, a memetic engine with true NSGA-II survival
-(non-dominated sorting plus crowding distance in the replacement),
-following the fuzzy-JSP design of \cite{Afsar2022}. The archive stores the
+\cite{Deb2002} (non-dominated sorting plus crowding distance in the
+replacement), following the fuzzy-JSP design of \cite{Afsar2022}. The archive stores the
 non-dominated solutions found; capacity is controlled by crowding distance.
 
 \subsection{Front generation: the capped $\varepsilon$-ladder}
@@ -489,6 +493,20 @@ reachable by single-move local search --- it lies behind makespan valleys
 that only recombination crosses. Rather than ask one population to cover
 the whole front at once, the ladder decomposes it into single-objective
 levels and concentrates the search on one level at a time.
+
+Methodologically this is the classical $\varepsilon$-constraint
+method~\cite{Haimes1971}, and shares the decompose-into-scalar-subproblems
+philosophy of MOEA/D~\cite{ZhangLi2007} and of the lexicographic
+goal-programming used for the interval green FJSP~\cite{Afsar2024,Afsar2025};
+we make no claim to the decomposition idea itself. Our specific contribution
+is a realisation tailored to the interval JSP: the makespan bound is imposed
+not as a hard constraint but as a \emph{clamped} objective (below), so that
+the tuned single-objective tabu search --- operators, pruning, and $N_2^{ME}$
+neighbourhood alike --- is reused verbatim; the interval nature of the
+objectives introduces a soundness subtlety absent from the scalar case, which
+we resolve at the archive (Remark~\ref{rem:soundness}); and the neighbourhood
+retains a connectivity guarantee under the cap
+(Theorem~\ref{thm:capped-conn}).
 
 \begin{algorithm}[H]
 \caption{Capped $\varepsilon$-ladder (per run).}
@@ -995,10 +1013,12 @@ neighbourhood $N_2^{ME}$, the first sequencing neighbourhood targeting idle
 gaps, with feasibility proven and connectivity established for makespan and
 machine-completion optimality.
 
-For the Pareto front, our central methodological claim is not that we beat
-NSGA-II, but that an existing single-objective interval-JSP solver can be
-recycled, unchanged, into a strong front generator by decomposing the front
-into warm-started, makespan-capped energy problems. With two off-the-shelf
+For the Pareto front, our central methodological claim is not the
+decomposition idea --- the ladder is the classical $\varepsilon$-constraint
+method~\cite{Haimes1971} --- nor that we beat NSGA-II, but that an existing
+single-objective interval-JSP solver can be recycled, unchanged, into a strong
+front generator by casting each $\varepsilon$-level as a makespan-capped energy
+problem and chaining them by warm-starting. With two off-the-shelf
 dominance-based algorithms as controls, this capped $\varepsilon$-ladder
 attains the highest hypervolume on $55$ of $82$ instances and dominates
 throughout the small- and medium-instance range, which is the evidence that a
