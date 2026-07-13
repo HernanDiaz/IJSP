@@ -1,0 +1,23 @@
+# Normalise line endings so the WSL git and the Windows git stop disagreeing.
+# The repo stores LF; the working tree is LF on checkout (the build is WSL/make).
+* text=auto eol=lf
+
+# Scripts and sources that must be LF regardless of platform
+*.sh   text eol=lf
+*.cpp  text eol=lf
+*.h    text eol=lf
+*.py   text eol=lf
+*.tex  text eol=lf
+*.txt  text eol=lf
+*.csv  text eol=lf
+*.dat  text eol=lf
+*.cmd  text eol=crlf
+
+# Binary assets — never touch
+*.pdf  binary
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.gz   binary
+*.zip  binary
+*.Rdata binary
