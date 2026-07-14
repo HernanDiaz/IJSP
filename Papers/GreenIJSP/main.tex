@@ -140,7 +140,7 @@ $+0.96$), which would render the biobjective problem nearly trivial --- and
 that this is an artefact: idle energy is not a regular measure, and exact
 $\varepsilon$-constraint fronts obtained with constraint programming exhibit
 a genuine trade-off once start times may shift, on every one of nine probed
-instances (envelope drops of $5$--$100\%$, median ${\sim}34\%$, for a 10\%
+instances (envelope drops of $11$--$100\%$, median ${\sim}34\%$, for a 10\%
 makespan allowance --- several of them lower bounds). The decision space of
 the green JSP is therefore the pair \emph{(order, timing)}
 (Section~\ref{sec:conflict}).
@@ -303,7 +303,7 @@ start times: minimise NPE subject to $\Cmax\le(1+\varepsilon)\,C^*$,
 sweeping $\varepsilon$ from $0$ to $10\%$, on nine instances spanning
 $10{\times}10$ to $20{\times}15$ and job/machine ratios from $1$ to $4$.
 Table~\ref{tab:probe} shows a genuine trade-off on \emph{every} probed
-instance: the envelope drops by $5$--$100\%$ (median ${\sim}34\%$) over a
+instance: the envelope drops by $11$--$100\%$ (median ${\sim}34\%$) over a
 10\% makespan allowance, and on the instances where CP-SAT explores the
 tight-cap region best the allowance halves the idle energy or better
 (\texttt{ft10} $-56\%$, \texttt{la29} $-59\%$); on the high-ratio
@@ -330,7 +330,7 @@ la25 (15$\times$10)  & 6163 & 5501 & 5501 & 5501 & $-10.7\%$ \\
 la29 (20$\times$10)  & --   & 5651 & 3490 & 2311 & $-59.1\%$ \\
 abz7 (20$\times$15)  & --   & --   & --   & 7319 & $-12.5\%$ \\
 tai15\_01 (15$\times$15) & 22665 & 21189 & 21082 & 17370 & $-23.4\%$ \\
-tai15\_02 (15$\times$15) & --  & 23504 & 23504 & 23504 & $-5.1\%$ \\
+tai15\_02 (15$\times$15) & --  & 23504 & 22664 & 21697 & $-12.4\%$ \\
 \bottomrule
 \end{tabular}
 \end{table}
