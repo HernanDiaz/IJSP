@@ -8,8 +8,10 @@
 %%
 %% STATUS: all four experiments complete on the full 82-instance benchmark
 %% (lexicographic, right-shift, N2ME, capped ladder vs. dominance controls).
-%% Remaining \todo{...} boxes flag only a front figure, the epsilon-indicator
-%% vs. exact fronts, the tuning-gain supplement, and acknowledgements.
+%% Author, funding and figures are in place. Remaining \todo{...} boxes are
+%% all OPTIONAL/pending-a-decision: a Zenodo data deposit (DOI), and two
+%% supplementary items (epsilon-indicator vs. exact fronts, tuning-gain table)
+%% plus optional strengthening of the conflict probe and validation fronts.
 %%
 \documentclass[preprint,12pt]{elsarticle}
 
@@ -775,10 +777,11 @@ the whole curve.}
 \label{fig:front}
 \end{figure}
 
-\todo{Add the $N_2^{ME}$ arm point when Exp.~3 finishes. Planned upgrade
-(noted): recompute the validation fronts with the exact interval model
-(shared sequencing booleans, two timing copies for $p^-/p^+$, LEX2
-objectives, as in the multi-component MILP of \cite{Afsar2022}).}
+\todo{Optional upgrade (noted as a limitation): recompute the validation
+fronts with the exact interval model (shared sequencing booleans, two timing
+copies for $p^-/p^+$, LEX2 objectives, as in the multi-component MILP of
+\cite{Afsar2022}) rather than the midpoint proxy. The $N_2^{ME}$ outcome on
+this instance is reported in Section~\ref{sec:exp-n2me}.}
 
 \subsection{The bi-critical neighbourhood: a scoped result}
 \label{sec:exp-n2me}
@@ -989,10 +992,9 @@ la40 & \textbf{1.000} & 0.564 & 0.586 \\
 \end{tabular}
 \end{table}
 
-\todo{Still to add: a representative front figure (ladder vs.\ the two
-controls on one small and one large instance), the additive
-$\varepsilon$-indicator against the exact fronts on the probed instances, and
-the full tuned-vs-inherited tuning-gain table as supplementary material.}
+\todo{Optional supplementary material: the additive $\varepsilon$-indicator
+against the exact fronts on the probed instances, and the full
+tuned-vs-inherited tuning-gain table.}
 
 %=============================================================================
 \section{Conclusions}
