@@ -44,12 +44,14 @@ print("EPSILON-INDICATOR aditivo (vs frente union; menor es mejor)")
 print("=" * 70)
 eps_g = {g: {a: [] for a in ARMS} for g in ORDER}
 for stem in stems:
-    union = nondominated([p for a in ARMS for p in G[stem][a]]
-                         + (EX[stem] or []))
+    allp = [p for a in ARMS for p in G[stem][a]] + (EX[stem] or [])
+    union = nondominated(allp)
     if not union:
         continue
-    cs = [p[0] for p in union]; es = [p[1] for p in union]
-    ranges = (max(max(cs) - min(cs), 1e-9), max(max(es) - min(es), 1e-9))
+    # normalise by the spread of ALL arms' points (the union alone can
+    # degenerate to a single point on instances one arm fully dominates)
+    cs = [p[0] for p in allp]; es = [p[1] for p in allp]
+    ranges = (max(max(cs) - min(cs), 1.0), max(max(es) - min(es), 1.0))
     for a in ARMS:
         if G[stem][a]:
             eps_g[group_of(stem)][a].append(

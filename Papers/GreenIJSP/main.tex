@@ -139,8 +139,9 @@ makespan and idle energy are strongly correlated (Pearson $+0.80$ to
 $+0.96$), which would render the biobjective problem nearly trivial --- and
 that this is an artefact: idle energy is not a regular measure, and exact
 $\varepsilon$-constraint fronts obtained with constraint programming exhibit
-a genuine trade-off once start times may shift (idle energy drops by
-${\sim}56\%$ when the makespan is relaxed by 10\%). The decision space of
+a genuine trade-off once start times may shift, on every one of nine probed
+instances (envelope drops of $5$--$100\%$, median ${\sim}34\%$, for a 10\%
+makespan allowance --- several of them lower bounds). The decision space of
 the green JSP is therefore the pair \emph{(order, timing)}
 (Section~\ref{sec:conflict}).
 \item \textbf{Benchmark.} We extend the 82-instance IJSP benchmark with
@@ -299,27 +300,39 @@ regular (Remark~\ref{rem:nonregular}), the proper decision space is the
 pair (order, timing). We computed exact fronts by
 $\varepsilon$-constraint with CP-SAT on midpoint durations, with free
 start times: minimise NPE subject to $\Cmax\le(1+\varepsilon)\,C^*$,
-sweeping $\varepsilon$ from $0$ to $10\%$.
-Table~\ref{tab:probe} shows a genuine and steep trade-off: a 10\% makespan
-allowance halves the idle energy.
+sweeping $\varepsilon$ from $0$ to $10\%$, on nine instances spanning
+$10{\times}10$ to $20{\times}15$ and job/machine ratios from $1$ to $4$.
+Table~\ref{tab:probe} shows a genuine trade-off on \emph{every} probed
+instance: the envelope drops by $5$--$100\%$ (median ${\sim}34\%$) over a
+10\% makespan allowance, and on the instances where CP-SAT explores the
+tight-cap region best the allowance halves the idle energy or better
+(\texttt{ft10} $-56\%$, \texttt{la29} $-59\%$); on the high-ratio
+\texttt{ft20} it removes it entirely. Where the solver leaves points
+unclosed, the reported drop is a \emph{lower bound} on the true conflict.
 
 \begin{table}[htb]
 \centering\small
 \caption{Exact $\varepsilon$-constraint probe (CP-SAT, midpoint durations,
-free start times, 60\,s per point). NPE at selected makespan allowances.}
+free start times, 120--180\,s per point). Lower-envelope NPE at selected
+makespan allowances; ``--'' = not solved within the budget at that
+allowance; drop measured from the tightest solved point (a lower bound
+when early points are unsolved).}
 \label{tab:probe}
 \begin{tabular}{l rrrr r}
 \toprule
 Instance & $\varepsilon{=}0$ & $+3\%$ & $+5\%$ & $+10\%$ & drop \\
 \midrule
-ft10 (10$\times$10) & 5431 & 3305 & 2819 & 2400 & $-55.8\%$ \\
-la29 (20$\times$10) & --\,\footnotemark[1] & --\, & 3230 & 2480 & $-55.3\%$ \\
+ft10 (10$\times$10)  & 5431 & 3571 & 2819 & 2400 & $-55.8\%$ \\
+ft20 (20$\times$5)   & 76   & 0    & 0    & 0    & $-100\%$ \\
+la21 (15$\times$10)  & 7422 & 5632 & 5373 & 4924 & $-33.7\%$ \\
+la24 (15$\times$10)  & 4373 & 3414 & 3087 & 2554 & $-41.6\%$ \\
+la25 (15$\times$10)  & 6163 & 5501 & 5501 & 5501 & $-10.7\%$ \\
+la29 (20$\times$10)  & --   & 5651 & 3490 & 2311 & $-59.1\%$ \\
+abz7 (20$\times$15)  & --   & --   & --   & 7319 & $-12.5\%$ \\
+tai15\_01 (15$\times$15) & 22665 & 21189 & 21082 & 17370 & $-23.4\%$ \\
+tai15\_02 (15$\times$15) & --  & 23504 & 23504 & 23504 & $-5.1\%$ \\
 \bottomrule
 \end{tabular}
-
-\footnotesize $^1$ CP-SAT could not close the tightest allowances on
-20$\times$10 within the budget; the drop is measured from the tightest
-solved point.
 \end{table}
 
 Two design consequences follow. First, algorithms must include a timing
@@ -328,10 +341,6 @@ under semi-active evaluation can at most exploit the makespan plateaus.
 Second, exact fronts do not scale beyond small instances, so reference
 fronts for larger instances must be approximated by the algorithms
 themselves, as in \cite{Afsar2022}.
-
-\todo{Extend Table~\ref{tab:probe} with 2--3 additional small instances and
-a finer $\varepsilon$ grid (probe script ready:
-\texttt{experiments/mo\_green\_2026/epsilon\_probe.py}).}
 
 %=============================================================================
 \section{Benchmark with energy data}
@@ -733,7 +742,7 @@ could recover anyway.
 
 This decomposition also bounds what timing alone can do: post-hoc
 right-shift recovers 7--21\% depending on instance size, far from the
-${\sim}56\%$ of the exact fronts at relaxed makespan
+$34$--$59\%$ typical of the exact fronts at relaxed makespan
 (Table~\ref{tab:probe}). The remaining gap is order-mediated at fixed
 makespan --- precisely the target of the $N_2^{ME}$ neighbourhood.
 
@@ -917,7 +926,12 @@ dominance controls are not close (ladder mean $0.875$--$0.965$, winning
 $9$--$10$ of every $10$ instances): a standard NSGA-II or Pareto-archive
 search leaves a large part of the front unrecovered, which is precisely the
 evidence that the front does not come for free and that the decomposition is
-doing real work.
+doing real work. The additive $\varepsilon$-indicator \cite{Zitzler2003}
+(range-normalised, vs.\ the union reference; lower is better) corroborates
+the hypervolume picture with an independent geometry: global mean $0.227$
+for the ladder against $0.423$ (ABC-P) and $0.422$ (MA-P), best in every
+size group except $30{\times}20$, where ABC-P leads ($0.139$ vs.\ $0.431$)
+--- the same regime boundary discussed below.
 
 The statistics also reveal \emph{where} the ladder's advantage lives, and
 it is worth being precise. On the per-run view --- the expected quality of
@@ -963,6 +977,19 @@ Tuning narrows but does not close the baselines' gap in the ladder's regime
 (ABC-P improves from a mean ratio of $0.54$ under the inherited configuration
 to $0.70$), so the ordering there is a property of the strategy, not of a
 favourable parameterisation.
+
+Because the union reference is built from the compared arms themselves, we
+check the two ways it could mislead. First, \emph{sensitivity to the
+reference point}: recomputing every ratio with nadir factors $1.01$, $1.10$
+and $1.20$ instead of $1.05$ leaves the ordering untouched (ladder mean
+$0.840$--$0.939$, always first; wins $52$--$56$ of $82$; ABC-P and MA-P
+swap third and second place only at the smallest factor). Second,
+\emph{an external yardstick}: on the six instances with exact
+(midpoint-proxy) fronts from Section~\ref{sec:conflict}, scoring each arm
+against the exact front instead of the union preserves the same ranking on
+every instance, with the ladder reaching $0.66$--$0.92$ of the exact
+hypervolume (ABC-P $0.26$--$0.70$, MA-P $0.31$--$0.90$). The union
+reference is therefore a convenience, not a distortion.
 
 A word on the shared local search: all three arms use the $N_2^{ME}$
 neighbourhood, whose lexicographic-mode pathology on large instances was
