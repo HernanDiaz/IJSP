@@ -53,53 +53,32 @@ from lexicographic to Pareto optimisation of makespan and idle energy}
 of Gij\'on, 33204 Gij\'on, Spain}
 
 \begin{abstract}
-Green scheduling incorporates energy consumption alongside classical
-performance objectives, while interval uncertainty offers a minimal-commitment
-model of ill-known processing times. This paper studies, for the first time,
-the multiobjective interval job shop scheduling problem (IJSP) that minimises
-the interval makespan together with the non-processing (idle) energy.
-We first show a structural property of the non-flexible job shop: active
-energy is invariant with respect to the schedule, so the green objective
-reduces exactly to the passive energy of machine idle intervals. We then show
-that the apparent strong correlation between makespan and idle energy is an
-artefact of semi-active timing: idle energy is not a regular measure, and
-once start times are allowed to shift, exact $\varepsilon$-constraint fronts
-reveal a genuine conflict --- relaxing the makespan by 10\% halves the idle
-energy. Consequently, the decision space of the green interval JSP is the
-pair (task order, timing). We extend the 82-instance IJSP benchmark with
-machine power data and develop two complementary treatments on top of a
-memetic algorithm with tabu search. For the single-solution setting we
-propose a progression of methods: (i) a lexicographic strategy that
-optimises makespan first and idle energy as a tie-break; (ii) a right-shift
-timing post-optimisation, in an exact linear-programming form and a
-near-optimal single-pass heuristic; and (iii) a novel \emph{bi-critical}
-neighbourhood that extends the makespan neighbourhood with energy-critical
-arcs on the sustaining chains of idle gaps, with feasibility guaranteed and
-connectivity analysed for the bi-objective setting. For the Pareto setting we
-propose a \emph{capped $\varepsilon$-ladder}: rather than covering the front
-with a single population, it decomposes the front into makespan-capped
-single-objective energy problems, solved by the same tabu machinery and
-chained by warm-starting --- turning an existing single-objective
-interval-JSP solver into a front generator, with soundness and
-capped connectivity established analytically.
-Experimentally, on the full 82-instance benchmark the lexicographic tie-break
-alone recovers 7.9\% of the idle energy on average --- up to 26.5\% on the
-largest job/machine-ratio instances --- at no makespan cost with respect to
-the published makespan-only tabu search; timing optimisation contributes a
-further ${\sim}8\%$; and the two levers are complementary (combined
-${\sim}15\%$). For the front, standard multiobjective evolutionary algorithms
---- an NSGA-II memetic and a Pareto-archive ABC --- serve as controls rather
-than rivals: they show that a good front does not come for free, and that
-decomposition exploits a fixed budget better than dominance-based search
-across most of the instance space (highest hypervolume on 55 of 82 instances,
-dominant up to $20{\times}20$), while we also delineate the regime where the
-scalar anchor loses traction on the largest high-ratio instances and
-dominance-based search becomes competitive again.
+We study, for the first time, the multiobjective interval job shop problem
+minimising interval makespan and non-processing (idle) energy. In the
+non-flexible job shop, active energy is schedule-invariant, so the green
+objective reduces exactly to idle passive energy; moreover, the apparent
+makespan--energy correlation is an artefact of semi-active timing --- idle
+energy is not regular, and exact $\varepsilon$-constraint fronts reveal a
+steep conflict once start times may shift. The decision space is therefore
+the pair (order, timing). On a benchmark of 82 instances extended with power
+data, we develop: a lexicographic tie-break that harvests the energy hidden
+in makespan plateaus (7.9\% mean idle-energy reduction, up to 26.5\%, at no
+makespan cost); an exact and a near-optimal heuristic right-shift timing
+post-optimisation (a further ${\sim}8\%$, complementary); a novel
+bi-critical neighbourhood targeting idle gaps, with feasibility and
+connectivity results; and, for the Pareto front, a capped
+$\varepsilon$-ladder that recycles the single-objective tabu solver,
+unchanged, into a front generator. Against irace-tuned NSGA-II and
+Pareto-archive controls, the ladder attains the highest hypervolume on 55 of
+82 instances and dominates up to size $20{\times}20$; we delineate --- and
+explain mechanistically --- the large-instance regime where the scalar
+anchor loses traction and dominance-based search becomes competitive again.
 \end{abstract}
 
 \begin{keyword}
 Job shop scheduling \sep Interval uncertainty \sep Green scheduling \sep
-Energy \sep Multiobjective optimisation \sep Local search
+Multiobjective optimisation \sep $\varepsilon$-constraint \sep
+Pareto front \sep Local search
 \end{keyword}
 
 \end{frontmatter}
@@ -119,26 +98,41 @@ uncertainty; intervals are arguably the least committing such model,
 requiring only a lower and an upper bound for each duration
 \cite{Diaz2020,Diaz2023FEABC}.
 
-Both concerns have been combined for the \emph{flexible} job shop with
-interval durations, where a lexicographic goal-programming strategy
-minimises makespan first and total energy second \cite{Afsar2024,Afsar2025},
-and for the \emph{fuzzy} job shop, where Pareto-based memetic algorithms
-optimise makespan and non-processing energy simultaneously
-\cite{Afsar2022,GonzalezRodriguez2020}. However, to the best of our
-knowledge, the multiobjective \emph{interval} job shop --- without
-flexibility --- has not been addressed: the energy-aware neighbourhood of
-\cite{GarciaGomez2023} relies on machine reassignment moves that require
-flexibility, and its passive-energy component reduces energy only through
-the makespan. This paper fills that gap, and argues that the non-flexible
-interval case is not a mere restriction: it has structure of its own that
-changes both the model and the search operators.
+Energy-aware machine scheduling is by now a mature field: the survey of
+\cite{Gahm2016} organises it by energy lever (idle reduction, speed
+scaling, on/off policies) and observes that idle energy is the lever most
+amenable to pure sequencing decisions. For the deterministic job shop,
+multiobjective genetic algorithms trading production objectives against
+energy are well established \cite{May2015,ZhangChiong2016}. Under
+uncertainty, both concerns have been combined for the \emph{flexible} job
+shop with interval durations, where a lexicographic goal-programming
+strategy minimises makespan first and total energy second
+\cite{Afsar2024,Afsar2025}, and for the \emph{fuzzy} job shop, where
+Pareto-based memetic algorithms optimise makespan and non-processing
+energy simultaneously \cite{Afsar2022,GonzalezRodriguez2020}. However, to
+the best of our knowledge, the multiobjective \emph{interval} job shop ---
+without flexibility --- has not been addressed: the energy-aware
+neighbourhood of \cite{GarciaGomez2023} relies on machine reassignment
+moves that require flexibility, and its passive-energy component reduces
+energy only through the makespan. This paper fills that gap, and argues
+that the non-flexible interval case is not a mere restriction: it has
+structure of its own that changes both the model and the search operators.
+
+On the methodological side, the two classical routes to a Pareto front are
+dominance-based evolutionary search, epitomised by NSGA-II \cite{Deb2002},
+and scalarising decompositions --- the $\varepsilon$-constraint method
+\cite{Haimes1971,Miettinen1999} and, in the evolutionary setting, MOEA/D
+\cite{ZhangLi2007}. Our front generator belongs squarely to the second
+family; front quality is assessed with the hypervolume and the additive
+$\varepsilon$-indicator, following the recommendations of
+\cite{Zitzler2003}.
 
 Our contributions are the following:
 \begin{enumerate}
 \item \textbf{Model.} We show that in the non-flexible job shop the active
 energy is schedule-invariant (Proposition~\ref{prop:ae}), so the green
 objective reduces exactly to the passive energy of idle intervals, for which
-we give an interval-valued definition evaluated component-wise
+we give an extreme-scenario definition evaluated component-wise
 (Section~\ref{sec:problem}).
 \item \textbf{Conflict analysis.} We show that under semi-active timing
 makespan and idle energy are strongly correlated (Pearson $+0.80$ to
@@ -166,9 +160,11 @@ makespan-capped energy problems. The decomposition itself is not new: the
 ladder is the classical $\varepsilon$-constraint method~\cite{Haimes1971},
 in the decomposition spirit of MOEA/D~\cite{ZhangLi2007}, specialised to this
 problem. What is ours is the instantiation --- recycling the tuned solver
-unchanged through a clamped-LEX2 fitness --- and the guarantees it carries
-(goal-programming and $\varepsilon$-constraint equivalence, capped
-connectivity), rather than yet another operator assembled ad hoc.
+unchanged through a clamped-LEX2 fitness --- and the structural guarantees
+it carries for the idealised (exact-per-level) ladder: goal-programming and
+$\varepsilon$-constraint equivalence, plus capped connectivity of the
+neighbourhood; the metaheuristic realisation inherits the structure, not an
+approximation bound.
 \item \textbf{When decomposition beats dominance, and why.} Rather than
 crown a ``best'' multiobjective metaheuristic, we use two off-the-shelf
 dominance-based algorithms (an NSGA-II memetic and a Pareto-archive ABC) as
@@ -257,8 +253,26 @@ where $C^i(k)$ and $S^i(k)$ are the machine's last completion and first
 start and $\beta^i=\sum_k P_k\sum_{x\in k}p^i_x$ is a constant. The
 \emph{gap form} = \emph{window form} identity \eqref{eq:npe} is used
 throughout: NPE improves either by finishing a machine earlier or by
-switching it on later. The interval objective is
-$\mathbf{\NPE}(\sigma)=[\NPE^-,\NPE^+]$, ranked by LEX2 as well.
+switching it on later. The energy objective is the pair of extreme-scenario
+evaluations $\mathbf{\NPE}(\sigma)=(\NPE^-,\NPE^+)$, ranked by LEX2 as well
+(upper scenario first, lower on ties).
+
+\begin{remark}[$\mathbf{\NPE}$ is a scenario pair, not an ordered interval]
+\label{rem:npe-pair}
+Unlike the makespan, whose components satisfy $C^-_{\max}\le C^+_{\max}$
+because the longest path is monotone in the durations, the idle gaps are
+\emph{not} monotone, and $\NPE^->\NPE^+$ is possible. A two-machine example:
+let machine $k$ process $a$ then $b$, where $a$ starts at $0$ with
+$\mathbf{p}_a=[2,9]$ and $b$ waits for its job predecessor $c$ (on the other
+machine, starting at $0$) with crisp $\mathbf{p}_c=[10,10]$. The gap before
+$b$ is $\max(0,\,p^i_c-p^i_a)$: $8$ in the lower scenario but $1$ in the
+upper. We therefore write $\mathbf{\NPE}$ as a pair $(\NPE^-,\NPE^+)$ ---
+each component is the exact idle energy of one extreme scenario --- and rank
+pairs lexicographically by LEX2, which retains its min--max reading
+(optimise the worst-case scenario first). None of the results in this paper
+require $\NPE^-\le\NPE^+$; dominance and the archive operate on the pair
+order directly.
+\end{remark}
 
 \begin{remark}[Non-regularity]
 \label{rem:nonregular}
@@ -350,7 +364,8 @@ every observed difference is attributable to the multiobjective machinery.
 
 The first rung replaces the fitness by the lexicographic pair
 $\bigl(\mathbf{C}_{\max},\mathbf{\NPE}\bigr)$: candidates are compared by
-interval makespan under LEX2 and, only on ties, by interval NPE under LEX2
+interval makespan under LEX2 and, only on ties, by the NPE scenario pair
+under LEX2
 --- a four-level comparison
 $(C^+_{\max},C^-_{\max},\NPE^+,\NPE^-)$. The comparison is applied in
 \emph{every} decision of the algorithm (selection, replacement, elitism,
@@ -392,9 +407,9 @@ interval component.
 
 The third rung makes the \emph{search} energy-aware. Existing energy
 neighbourhoods rely on flexibility (reassignment moves) or reduce passive
-energy only through the makespan \cite{GarciaGomez2023}; no sequencing
-neighbourhood targets idle gaps. We propose one, built on the $H(\sigma)$
-framework of \cite{DiazTabu2026}.
+energy only through the makespan \cite{GarciaGomez2023}; to the best of our
+knowledge, no sequencing neighbourhood targets idle gaps. We propose one,
+built on the $H(\sigma)$ framework of \cite{DiazTabu2026}.
 
 \begin{definition}[Tight arc, sustaining chain]
 An arc $(x,y)$ of $G(\sigma)$ is \emph{$i$-tight} if $r^i_y=r^i_x+p^i_x$.
@@ -534,7 +549,12 @@ energy, without changing any operator (Proposition~\ref{prop:goal}: each
 level is a lexicographic goal-programming problem with the cap as target).
 Warm seeding is essential rather than cosmetic: on medium and large
 instances a from-scratch level spends its whole budget merely re-reaching
-the cap region. Section~\ref{sec:ladder} gives the theoretical backing:
+the cap region. The per-run budget is size-adaptive but always within the
+same ${\sim}900$\,s total granted to each baseline run: anchor
+$400/500/600$\,s plus $8/6/5$ levels of $60$--$65$\,s on
+classical-and-small/$30{\times}$/$50{\times}$ instances respectively, so no
+arm receives more compute. Section~\ref{sec:ladder} gives the theoretical
+backing:
 level optima are exactly the Pareto points at their cap
 (Proposition~\ref{prop:eps}), and $N_2^{ME}$ retains connectivity under a
 cap for the makespan and machine-completion terms (Theorem~\ref{thm:capped-conn}).
@@ -608,7 +628,9 @@ connectivity can achieve: an exhaustive one-move probe from a converged
 energy-improving moves against a ${\sim}60\%$ exact-front potential, so
 crossing into energy-deep \emph{basins} is the work of recombination in the
 population engine, while Theorem~\ref{thm:capped-conn} governs refinement
-within the basin already reached.
+within the basin already reached. (The probe is a single-instance
+motivation, not a general claim; the ladder's design does not depend on
+it.)
 
 %=============================================================================
 \section{Experimental study}
@@ -621,11 +643,23 @@ All arms run on the 82-instance benchmark with the irace-tuned
 configuration of \cite{DiazTabu2026}: 30 runs per instance, 900\,s time
 limit, population 250, tabu search on $N_2$. The makespan-only baseline is
 \emph{not} re-run: we reuse the published raw results of
-\cite{DiazTabu2026} and recompute their NPE uniformly. Both arms'
+\cite{DiazTabu2026} and recompute their NPE uniformly. Both experiments'
 solutions are decoded and evaluated by the same independent implementation
-(and the same power data), so the comparison is paired and
-implementation-independent. Wilcoxon signed-rank tests are used
-throughout.
+(and the same power data), so the energy comparison is
+implementation-independent; the limitation is that the baseline's raw
+solutions come from a different experimental campaign, so small makespan
+differences between campaigns cannot be attributed to the algorithms ---
+we therefore never claim a makespan improvement, only the absence of
+evidence of a makespan cost.
+
+For Experiment~1 (one value per instance and arm), comparisons use
+Wilcoxon signed-rank tests paired by instance. For the three-arm front
+comparison of Section~\ref{sec:exp-pareto}, we use a Friedman omnibus test
+over the 82 instances followed by pairwise signed-rank post-hoc tests
+(paired by instance) with Holm correction; per-instance comparisons of the
+30-run hypervolume distributions use unpaired Mann--Whitney $U$ tests
+--- runs of different engines are independent, so a per-run pairing would
+not be defensible --- Holm-corrected across the 82 instances.
 
 \subsection{How much energy do makespan plateaus contain?}
 \label{sec:exp-lex}
@@ -653,7 +687,9 @@ most energy on the table.
 \centering\small
 \caption{LexME vs.\ published makespan-only TS-$N_2$ (per-run means over
 30 runs; NPE midpoints; Wilcoxon $p$ paired per instance). RS = NPE after
-right-shift timing (heuristic).}
+right-shift timing (heuristic). The spread of the grand mean is best read
+from the group rows, which range from $-3.2\%$ to $-26.5\%$; every group is
+individually significant.}
 \label{tab:lex}
 \begin{tabular}{l r rrr rrr rrr}
 \toprule
@@ -812,9 +848,25 @@ tune the tabu search in \cite{DiazTabu2026} (elite size and selection,
 max-trials, LS target fraction, tabu bad-iterations, crossover and
 mutation operators); the ladder's budget split and cap grid are fixed by
 design. Each irace evaluation runs the full method (for the ladder, the
-whole anchor-plus-levels pipeline) and returns the negated hypervolume of
-its front against a fixed per-instance reference point, over the same
-stratified 20-instance training subset used in \cite{DiazTabu2026}. The
+whole anchor-plus-levels pipeline) at the full 900\,s budget and returns the
+negated hypervolume of its front against a fixed per-instance reference
+point, over the same stratified 20-instance training subset used in
+\cite{DiazTabu2026}; each racing run uses a budget of $1\,000$ evaluations
+with Friedman-test elimination.
+
+Two design choices deserve justification. First, the tuning subset is
+\emph{not} held out from the final evaluation: this is classical parameter
+configuration of a randomised heuristic, not supervised learning --- the
+tuned object is a handful of engine parameters, not a model of the
+instances --- and, decisively, all three arms are tuned on the \emph{same}
+subset with the same budget and protocol, so any residual optimistic bias is
+shared and cannot alter their comparison; the subset is size-stratified
+precisely so that the configuration generalises across the benchmark, and
+the group-level results on the remaining 62 instances
+(Table~\ref{tab:mo-full}) show no discontinuity between tuning and
+non-tuning instances. Second, the per-arm (rather than shared) tuning is
+what makes the comparison conservative: each control gets its own best
+configuration rather than inheriting ours. The
 winning configurations differ markedly across arms
 (Table~\ref{tab:tuned-mo}), confirming that per-arm tuning is warranted:
 the ladder favours GOX crossover, the more disruptive \emph{swap}
@@ -845,21 +897,41 @@ full 82-instance benchmark (30 runs each, all three arms irace-tuned).
 Per instance, we build each arm's global (best-over-runs) front and score it
 by hypervolume ratio against a per-instance reference (the non-dominated
 union of the three arms plus, where available, the exact front of
-Section~\ref{sec:conflict}); we also run per-run paired Wilcoxon tests.
+Section~\ref{sec:conflict}); statistical testing follows the protocol of
+Section~\ref{sec:exp-setup} (Friedman omnibus, Holm-corrected post-hoc,
+per-instance Mann--Whitney with Holm).
 Table~\ref{tab:mo-full} reports the group-level picture and
 Table~\ref{tab:mo} the classical instances in detail.
 
 The headline is that decomposition is the better use of the budget in
 aggregate: the ladder attains the highest hypervolume on \textbf{55 of 82}
 instances and the best mean ratio overall (\textbf{0.890}, vs.\ $0.749$ for
-MA-P and $0.703$ for ABC-P), and per-run Wilcoxon tests find it significantly
-better than ABC-P on $48/82$ and than MA-P on $24/82$ instances. On the
+MA-P and $0.703$ for ABC-P). The Friedman omnibus over per-instance median
+per-run HV rejects equality of the three arms
+($\chi^2_F=44.8$, $p<10^{-9}$); Holm-corrected post-hoc tests find the
+ladder and MA-P each significantly better than ABC-P, and the per-instance
+Mann--Whitney counts (Holm-corrected) are $32/82$ ladder-over-ABC-P,
+$12/82$ ladder-over-MA-P, with $7$ losses. On the
 classical, $15{\times}15$, $20{\times}15$ and $20{\times}20$ groups the
 dominance controls are not close (ladder mean $0.875$--$0.965$, winning
 $9$--$10$ of every $10$ instances): a standard NSGA-II or Pareto-archive
 search leaves a large part of the front unrecovered, which is precisely the
 evidence that the front does not come for free and that the decomposition is
 doing real work.
+
+The statistics also reveal \emph{where} the ladder's advantage lives, and
+it is worth being precise. On the per-run view --- the expected quality of
+a \emph{single} 900\,s run --- the ladder and MA-P are globally comparable
+(post-hoc $p=0.73$; pooled per-run medians $0.427$ vs.\ $0.410$), both well
+above ABC-P ($0.279$). The decisive difference appears in the
+\emph{best-over-30-runs} front that a practitioner actually reports: ladder
+runs anchor at different makespans and sweep different cap grids, so their
+fronts are complementary and their union grows far beyond any single run
+($0.890$), whereas MA-P runs converge to similar regions and their union
+adds little ($0.749$). Both arms receive identical run budgets and the
+union is taken identically, so this is a property of the strategies:
+decomposition converts run-to-run variance into coverage; dominance-based
+search does not.
 
 The picture is deliberately not a clean sweep, and the exceptions are the
 most informative part. On the two largest, machine-heavy groups the ladder's
@@ -892,30 +964,41 @@ Tuning narrows but does not close the baselines' gap in the ladder's regime
 to $0.70$), so the ordering there is a property of the strategy, not of a
 favourable parameterisation.
 
+A word on the shared local search: all three arms use the $N_2^{ME}$
+neighbourhood, whose lexicographic-mode pathology on large instances was
+documented in Section~\ref{sec:exp-n2me}. Because the component is shared,
+it cannot favour one front-generation strategy over another, and in Pareto
+mode its energy moves serve front coverage rather than protecting the
+makespan extreme; still, an interaction with instance size cannot be
+excluded a priori, and a neighbourhood ablation ($N_2$ vs.\ $N_2^{ME}$
+inside one arm on the large $\times 20$ groups) is a natural robustness
+check for the regime boundary reported here.
+
 \begin{table}[htb]
 \centering\small
 \caption{Front hypervolume ratio (vs.\ the per-instance union reference;
 higher is better) by size group, three tuned arms, 30 runs, best-over-runs
 front. ``Wins'' counts instances where the arm attains the highest ratio;
-the last block reports per-run paired-Wilcoxon significant wins of the ladder
-($\alpha=0.05$). Bold: best group mean.}
+the last block reports per-instance Mann--Whitney significant wins of the
+ladder on the 30-run HV distributions, Holm-corrected across the 82
+instances ($\alpha=0.05$). Bold: best group mean.}
 \label{tab:mo-full}
 \begin{tabular}{l r ccc c cc}
 \toprule
- & & \multicolumn{3}{c}{mean HV ratio} & wins & \multicolumn{2}{c}{L $>$ (Wilcoxon)} \\
+ & & \multicolumn{3}{c}{mean HV ratio} & wins & \multicolumn{2}{c}{L $>$ (MWU+Holm)} \\
 \cmidrule(lr){3-5}\cmidrule(lr){7-8}
 Group & \# & LADDER & ABC-P & MA-P & L/A/M & ABC-P & MA-P \\
 \midrule
-classical      & 12 & \textbf{0.875} & 0.640 & 0.663 & 10/2/0 & 9 & 8 \\
-tai $15{\times}15$ & 10 & \textbf{0.960} & 0.750 & 0.756 & 10/0/0 & 8 & 6 \\
-tai $20{\times}15$ & 10 & \textbf{0.945} & 0.734 & 0.768 & 9/1/0  & 6 & 4 \\
-tai $20{\times}20$ & 10 & \textbf{0.965} & 0.769 & 0.752 & 10/0/0 & 8 & 2 \\
-tai $30{\times}15$ & 10 & \textbf{0.888} & 0.721 & 0.705 & 8/1/1  & 4 & 2 \\
-tai $30{\times}20$ & 10 & 0.785 & \textbf{0.923} & 0.693 & 0/9/1  & 1 & 0 \\
-tai $50{\times}15$ & 10 & \textbf{0.876} & 0.522 & 0.818 & 5/1/4  & 3 & 1 \\
-tai $50{\times}20$ & 10 & 0.828 & 0.579 & \textbf{0.854} & 3/2/5 & 9 & 1 \\
+classical      & 12 & \textbf{0.875} & 0.640 & 0.663 & 10/2/0 & 6 & 3 \\
+tai $15{\times}15$ & 10 & \textbf{0.960} & 0.750 & 0.756 & 10/0/0 & 7 & 3 \\
+tai $20{\times}15$ & 10 & \textbf{0.945} & 0.734 & 0.768 & 9/1/0  & 5 & 3 \\
+tai $20{\times}20$ & 10 & \textbf{0.965} & 0.769 & 0.752 & 10/0/0 & 4 & 2 \\
+tai $30{\times}15$ & 10 & \textbf{0.888} & 0.721 & 0.705 & 8/1/1  & 2 & 1 \\
+tai $30{\times}20$ & 10 & 0.785 & \textbf{0.923} & 0.693 & 0/9/1  & 0 & 0 \\
+tai $50{\times}15$ & 10 & \textbf{0.876} & 0.522 & 0.818 & 5/1/4  & 3 & 0 \\
+tai $50{\times}20$ & 10 & 0.828 & 0.579 & \textbf{0.854} & 3/2/5 & 5 & 0 \\
 \midrule
-\textit{All 82} & 82 & \textbf{0.890} & 0.703 & 0.749 & 55/16/11 & 48 & 24 \\
+\textit{All 82} & 82 & \textbf{0.890} & 0.703 & 0.749 & 55/16/11 & 32 & 12 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -945,11 +1028,11 @@ tai $50{\times}20$ & 10 & 0.828 & 0.579 & \textbf{0.854} & 3/2/5 & 9 & 1 \\
   label style={font=\small}, title style={font=\small},
   tick label style={font=\scriptsize}, scaled x ticks=false,
   x tick label style={/pgf/number format/1000 sep={}}]
-\addplot[blue, thick, mark=*, mark size=1.3pt]
+\addplot[blue, only marks, mark=*, mark size=2pt]
   table[x=cmax, y=npe] {figures/tai30_20_01_LADDER.dat};
-\addplot[red, mark=square*, mark size=1.7pt]
+\addplot[red, only marks, mark=square*, mark size=2.2pt]
   table[x=cmax, y=npe] {figures/tai30_20_01_ABCP.dat};
-\addplot[orange!85!black, mark=triangle*, mark size=2pt]
+\addplot[orange!85!black, only marks, mark=triangle*, mark size=2.6pt]
   table[x=cmax, y=npe] {figures/tai30_20_01_MAP.dat};
 \end{axis}
 \end{tikzpicture}

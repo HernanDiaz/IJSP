@@ -1,0 +1,43 @@
+========================================================================
+TABLA HV-ratio (frente global best-of-30) por GRUPO — media por arm
+========================================================================
+grupo          # |  LADDER   ABC-P    MA-P |  victorias LADDER/ABC/MA
+classical     12 |   0.875   0.640   0.663 |       10/2/0
+tai15_15      10 |   0.960   0.750   0.756 |       10/0/0
+tai20_15      10 |   0.945   0.734   0.768 |        9/1/0
+tai20_20      10 |   0.965   0.769   0.752 |       10/0/0
+tai30_15      10 |   0.888   0.721   0.705 |        8/1/1
+tai30_20      10 |   0.785   0.923   0.693 |        0/9/1
+tai50_15      10 |   0.876   0.522   0.818 |        5/1/4
+tai50_20      10 |   0.828   0.579   0.854 |        3/2/5
+------------------------------------------------------------------------
+GLOBAL 82     82 |   0.890   0.703   0.749 |       55/16/11
+
+========================================================================
+FRIEDMAN (n=82 bloques, k=3 brazos, sobre mediana HV por-run)
+========================================================================
+chi2_F = 44.84  p = 1.837e-10
+rangos medios: LADDER=2.311  ABC-P=1.396  MA-P=2.293
+
+post-hoc pareado por instancia (signed-rank sobre medianas, Holm sobre las 3 comparaciones):
+  LADDER vs ABC-P: p = 6.789e-09  SIGNIFICATIVO
+  LADDER vs MA-P: p = 7.340e-01  n.s.
+  ABC-P vs MA-P: p = 8.755e-09  SIGNIFICATIVO
+
+========================================================================
+POR INSTANCIA: Mann-Whitney U no pareado (30 vs 30 HV por-run),
+Holm sobre las 82 instancias por comparacion (alpha=0.05)
+========================================================================
+grupo          # |  L>ABC-P   L>MA-P  derrotas L
+classical     12 |        6        3           1
+tai15_15      10 |        7        3           0
+tai20_15      10 |        5        3           0
+tai20_20      10 |        4        2           0
+tai30_15      10 |        2        1           1
+tai30_20      10 |        0        0           1
+tai50_15      10 |        3        0           3
+tai50_20      10 |        5        0           1
+------------------------------------------------
+GLOBAL 82     82 |       32       12           7
+
+Mediana HV por-run (pooled 82x30): LADDER=0.427  ABC-P=0.279  MA-P=0.410
