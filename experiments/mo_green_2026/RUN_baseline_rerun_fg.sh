@@ -21,6 +21,14 @@ mkdir -p "$OUT/logs"
 SETUP="$PWD/experiments/cor_tabu_2026/setup/setup_N2_tuned.txt"
 tr -d '\r' < "$SETUP" > "$OUT/s_n2.txt"
 
+# Disk janitor: delete FuzzyFW's unused ~20-30 MB _Scenarios.csv dumps every
+# 90 s so they never fill the disk (unstoppable without recompiling). Dies
+# with this script. Critical here: 82 instances x 30 runs would otherwise be
+# hundreds of GB of Scenarios.
+( while :; do find "$OUT" -name '*_Scenarios.csv' -delete 2>/dev/null; sleep 90; done ) &
+JANITOR=$!
+trap 'kill $JANITOR 2>/dev/null; find "$OUT" -name "*_Scenarios.csv" -delete 2>/dev/null' EXIT
+
 mapfile -t INSTS < <(ls SelectosYTaillardIntervalosEnergia/*.txt \
   | sed 's|.*/||; s|\.txt$||')
 echo "BASELINE re-run insts=${#INSTS[@]} par=$PAR $(date)" | tee "$LOG"

@@ -24,6 +24,13 @@ tr -d '\r' < "$D/setup/setup_ABCP_irace.txt" \
         -e 's/^localsearch.neighbourhood = .*/localsearch.neighbourhood = ijsp.makespan.n2/' \
   > "$OUT/s_abcp_n2.txt"
 
+# Disk janitor: delete FuzzyFW's unused ~20-30 MB _Scenarios.csv dumps every
+# 90 s so they never fill the disk (unstoppable without recompiling). Dies
+# with this script.
+( while :; do find "$OUT" -name '*_Scenarios.csv' -delete 2>/dev/null; sleep 90; done ) &
+JANITOR=$!
+trap 'kill $JANITOR 2>/dev/null; find "$OUT" -name "*_Scenarios.csv" -delete 2>/dev/null' EXIT
+
 mapfile -t INSTS < <(ls SelectosYTaillardIntervalosEnergia/tai30_20_*.txt \
   SelectosYTaillardIntervalosEnergia/tai50_20_*.txt | sed 's|.*/||; s|\.txt$||')
 echo "ABLATION ABC-P/N2 insts=${#INSTS[@]} par=$PAR $(date)" | tee "$LOG"

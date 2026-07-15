@@ -24,9 +24,17 @@ tr -d '\r' < "$D/run_exp4_ladder.sh" \
 # guard: derivation must produce a runner that contains the new tier
 grep -q 'large20)' /tmp/exp4l_strong.sh || { echo "sed derivation failed"; exit 1; }
 bash -n /tmp/exp4l_strong.sh || { echo "patched runner fails syntax"; exit 1; }
+# Disk janitor: FuzzyFW always dumps a ~20-30 MB _Scenarios.csv per run/level
+# (post-execution robustness, unused here and unstoppable without recompiling).
+# Delete them every 90 s so they never accumulate. Dies with this script.
+JDIR="$PWD/$D/results/EXP4_TUNED_STRONGANCHOR"
+( while :; do find "$JDIR" -name '*_Scenarios.csv' -delete 2>/dev/null; sleep 90; done ) &
+JANITOR=$!
+trap 'kill $JANITOR 2>/dev/null' EXIT
 OUT_DIR="$PWD/$D/results/EXP4_TUNED_STRONGANCHOR/LADDER" \
 BASE_SETUP="$PWD/$D/setup/setup_LADDER_irace.txt" \
 LOG_FILE="$PWD/$D/ladder_stronganchor.log" \
   bash /tmp/exp4l_strong.sh large20 "$PAR" \
   > "$D/ladder_stronganchor.out" 2>&1
+find "$JDIR" -name '*_Scenarios.csv' -delete 2>/dev/null
 echo "FINISHED rc=$?" >> "$D/ladder_stronganchor.out"
