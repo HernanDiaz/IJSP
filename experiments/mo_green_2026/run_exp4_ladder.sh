@@ -13,6 +13,9 @@ EXP="$REPO/experiments/mo_green_2026"
 # base setup, leaving the inherited-config EXP4 data untouched.
 OUT="${OUT_DIR:-$EXP/results/EXP4/LADDER}"
 BASESETUP="${BASE_SETUP:-$EXP/setup/setup_LexME_N2ME_tuned.txt}"
+# Anchor phase may use a different (makespan-strong) config; default = same as
+# the levels, so absent ANCHOR_SETUP the behaviour is byte-identical to before.
+ANCHORSETUP="${ANCHOR_SETUP:-$BASESETUP}"
 BASELINE_CSV="$REPO/experiments/cor_tabu_2026/statistical_results/runs_data.csv"
 TIER="${1:-smoke}"; MAX="${2:-14}"
 LOG="${LOG_FILE:-$EXP/run_exp4_ladder.log}"
@@ -39,7 +42,7 @@ run_pipeline() {  # stem run
       -e 's/^runs = .*/runs = 1/' \
       -e "s/^timelimit = .*/timelimit = $ta/" \
       -e "s/^seed = .*/seed = $run/" \
-    "$BASESETUP" > "$d/s_anchor.txt"
+    "$ANCHORSETUP" > "$d/s_anchor.txt"
   timeout $((ta*3)) "$EXE" "$d/s_anchor.txt" \
     "SelectosYTaillardIntervalosEnergia/$stem.txt" "$d/anchor/" \
     > "$d/anchor.log" 2>&1 || { echo "FAIL anchor $stem r$run"; return 1; }
