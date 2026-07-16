@@ -1220,8 +1220,15 @@ decomposition contributes the front, the borrowed solver contributes the
 anchor. The design is backed throughout by either proof (goal-programming and
 $\varepsilon$-constraint equivalence, capped connectivity) or measurement (the
 one-move landscape analysis motivating recombination, and the anchor
-experiment closing the regime boundary). Future work: the flexible interval
-JSP, and vague-goal green scheduling~\cite{GarciaGomez2026}.
+experiment closing the regime boundary). Two directions follow naturally.
+First, the search evaluates idle energy on the semi-active schedule, so
+orders that excel only \emph{after} right-shifting are invisible to it;
+evaluating candidates under the cheap near-optimal right-shift heuristic
+would expose the timing-optimal landscape to the search, and only then do
+the machine-start ``delay'' moves left open by
+Theorem~\ref{thm:capped-conn} become meaningful --- a principled route to
+the energy-deep regions that remain out of reach. Second, the flexible
+interval JSP and vague-goal green scheduling~\cite{GarciaGomez2026}.
 
 %=============================================================================
 \section*{CRediT authorship contribution statement}
