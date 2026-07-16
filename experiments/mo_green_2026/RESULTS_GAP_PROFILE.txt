@@ -1,0 +1,52 @@
+
+== F0.15.0.ft10_10 ==
+   pos  Cmax_ex   NPE_ex  NPE_lad    gap%
+ tight      930     5431       --  (ladder no llega a este Cmax)
+   1/8      939     4467     5431   +21.6
+   2/8      944     4281     5390   +25.9
+   3/8      948     4171     5106   +22.4
+   4/8      958     3571     3922    +9.8
+   5/8      967     3096     3505   +13.2
+   6/8      976     2819     3472   +23.2
+   7/8     1004     2601     3132   +20.4
+  deep     1023     2400     3114   +29.7
+
+== F0.15.0.la21_04 ==
+   pos  Cmax_ex   NPE_ex  NPE_lad    gap%
+ tight     1046     7422       --  (ladder no llega a este Cmax)
+ tight     1051     6670       --  (ladder no llega a este Cmax)
+   2/6     1062     5956     6664   +11.9
+   3/6     1066     5632     6282   +11.5
+   4/6     1098     5373     5326    -0.9
+   5/6     1108     5271     5326    +1.0
+  deep     1130     4924     5262    +6.9
+
+== F0.15.0.la24_03 ==
+   pos  Cmax_ex   NPE_ex  NPE_lad    gap%
+ tight      935     4373       --  (ladder no llega a este Cmax)
+ tight      940     3734       --  (ladder no llega a este Cmax)
+   2/5      949     3414     4652   +36.2
+   3/5      972     3205     3990   +24.5
+   4/5      982     3087     3926   +27.2
+  deep     1010     2554     3710   +45.3
+
+== F0.15.0.la25_04 ==
+   pos  Cmax_ex   NPE_ex  NPE_lad    gap%
+ tight      977     6163       --  (ladder no llega a este Cmax)
+ tight      982     5987       --  (ladder no llega a este Cmax)
+   2/4      992     5966     8260   +38.5
+   3/4      996     5785     7462   +29.0
+  deep     1006     5501     6986   +27.0
+
+== F0.15.0.la29_03 ==
+   pos  Cmax_ex   NPE_ex  NPE_lad    gap%
+ tight     1225     1344     4163  +209.7
+
+== tai15_15_01.F.15_01 ==
+   pos  Cmax_ex   NPE_ex  NPE_lad    gap%
+ tight     1231    22665       --  (ladder no llega a este Cmax)
+ tight     1237    22429       --  (ladder no llega a este Cmax)
+ tight     1243    21189       --  (ladder no llega a este Cmax)
+   3/5     1292    21082    22374    +6.1
+   4/5     1329    20871    20098    -3.7
+  deep     1354    17370    20098   +15.7
