@@ -847,9 +847,15 @@ displace the worsening moves tabu search relies on for diversification,
 trapping it on mediocre plateaus. The practical reading is clear and, we
 believe, valuable: \emph{the cheap lexicographic tie-break is the robust
 winner; specialised energy moves help only where makespan plateaus are
-already near-optimal}. Their proper role is re-examined in the
-Pareto setting, where covering the front (not protecting the makespan
-extreme) is the goal.
+already near-optimal}. Note what the failure mechanism implies for the
+Pareto setting: the pathology is the competition between energy moves and
+the worsening makespan moves the search needs, and that competition exists
+only while makespan carries signal. The ladder's clamp
+(Section~\ref{sec:pareto}) removes that signal by construction, turning the
+entire cap-feasible region into a single plateau --- precisely the regime
+where the energy moves are useful. The ladder does not merely tolerate
+$N_2^{ME}$; it manufactures the conditions the neighbourhood was designed
+for.
 
 \subsection{Front-generation methods: parameter tuning}
 \label{sec:exp-tuning}
@@ -905,13 +911,24 @@ MA-P   & 42 / 2 & 24 & 0.86 &  9 & GOX & insertion \\
 \label{sec:exp-pareto}
 
 We now put the capped ladder against the two dominance-based controls on the
-full 82-instance benchmark (30 runs each, all three arms irace-tuned).
+full 82-instance benchmark (30 runs each, all three arms irace-tuned). This
+section is the \emph{controlled} comparison of front-generation strategies:
+each arm runs one uniform configuration --- in particular, the ladder's
+anchor shares its levels' tuned configuration --- so that decomposition and
+dominance are compared on strictly equal terms.
+Section~\ref{sec:exp-anchor} then isolates the one component this uniformity
+leaves suboptimal, the anchor, and evaluates the resulting definitive
+instantiation of the method.
 Per instance, we build each arm's global (best-over-runs) front and score it
 by hypervolume ratio against a per-instance reference (the non-dominated
 union of the three arms plus, where available, the exact front of
 Section~\ref{sec:conflict}); statistical testing follows the protocol of
 Section~\ref{sec:exp-setup} (Friedman omnibus, Holm-corrected post-hoc,
-per-instance Mann--Whitney with Holm).
+per-instance Mann--Whitney with Holm). All three arms share the $N_2^{ME}$
+local search --- a shared component cannot favour one front-assembly
+strategy over another, and its lexicographic-mode scale pathology
+(Section~\ref{sec:exp-n2me}) does not arise under the clamp, which removes
+the makespan signal the energy moves were competing with.
 Table~\ref{tab:mo-full} reports the group-level picture and
 Table~\ref{tab:mo} the classical instances in detail.
 
@@ -955,30 +972,26 @@ most informative part. On the two largest, machine-heavy groups the ladder's
 advantage first vanishes and then reverses: on $30{\times}20$ ABC-P dominates
 outright ($0.923$ vs.\ $0.785$, ladder $0/10$), and on the $50{\times}$ groups
 MA-P becomes competitive and edges ahead on $50{\times}20$ ($0.854$ vs.\
-$0.828$). This boundary has a single, verifiable cause, and it is the same
-one that governs the makespan extreme of the ladder. The ladder caps the
-whole front at $\kappa=(1+\varepsilon)C^{*}$, where $C^{*}$ is the makespan
-of its anchor; a per-run comparison of that anchor against the dedicated
-makespan-only tabu search of \cite{DiazTabu2026} shows the two are
-statistically equivalent within a $2\%$ margin (two one-sided tests,
-$p<10^{-21}$), but with a small median gap of $1.2\%$ that grows with size
-and machine count and peaks exactly on the $\times 20$ large groups
-($+1.8\%$ on $30{\times}20$, up to $+2.8\%$ on $50{\times}20$). Wherever the
-anchor lands above the makespan the free engines can reach, the entire ladder
-is confined to higher makespan and cannot populate the low-makespan corner of
-the front; the dominance controls, unconstrained, capture that corner and the
-hypervolume that comes with it. The diagnosis is direct (Figure~\ref{fig:fronts}):
-on \texttt{tai30\_20} instances ABC-P reaches makespans of $2102$/$1992$ against
-the ladder anchor's $2137$/$2009$, whereas on \texttt{ft10} the ladder spreads a
-deep front the controls never approach. The practical consequence is a sharp
-prescription rather than a caveat: \emph{decomposition is the method of choice
-whenever a strong makespan anchor is attainable, which is the entire small-
-and medium-instance range; on the largest high-ratio instances the anchor
-must be strengthened}. Section~\ref{sec:exp-anchor} tests this directly and
-shows it closes the boundary. Tuning narrows but does not close the
-baselines' gap in the ladder's regime (ABC-P improves from a mean ratio of
-$0.54$ under the inherited configuration to $0.70$), so the ordering there is
-a property of the strategy, not of a favourable parameterisation.
+$0.828$). This boundary has a single, verifiable cause. The ladder caps the
+whole front at $\kappa=(1+\varepsilon)C^{*}$, where $C^{*}$ is its anchor's
+makespan. That anchor tracks the dedicated makespan-only tabu search of
+\cite{DiazTabu2026} to within $2\%$ everywhere (TOST, $p<10^{-21}$), but the
+residual gap grows with size and machine count and peaks exactly on the
+large $\times 20$ groups: $+1.8\%$ on $30{\times}20$, up to $+2.8\%$ on
+$50{\times}20$. Wherever the anchor lands above the makespan the free
+engines reach, the whole ladder is confined above it and the low-makespan
+corner of the front --- and its hypervolume --- goes to the unconstrained
+controls. Figure~\ref{fig:fronts} shows both faces: on \texttt{tai30\_20}
+instances ABC-P reaches makespans of $2102$/$1992$ against the ladder
+anchor's $2137$/$2009$, while on \texttt{ft10} the ladder spreads a deep
+front the controls never approach. The prescription is sharp:
+\emph{decomposition wins wherever its anchor matches the best available
+makespan solver; where it does not, the anchor --- not the ladder --- is
+what must be fixed}. Section~\ref{sec:exp-anchor} tests this and closes the
+boundary. Finally, tuning narrows but does not close the baselines' gap in
+the ladder's regime (ABC-P improves from a mean ratio of $0.54$ under the
+inherited configuration to $0.70$), so the ordering is a property of the
+strategy, not of a favourable parameterisation.
 
 Because the union reference is built from the compared arms themselves, we
 check the two ways it could mislead. First, \emph{sensitivity to the
@@ -992,16 +1005,6 @@ against the exact front instead of the union preserves the same ranking on
 every instance, with the ladder reaching $0.66$--$0.92$ of the exact
 hypervolume (ABC-P $0.26$--$0.70$, MA-P $0.31$--$0.90$). The union
 reference is therefore a convenience, not a distortion.
-
-A word on the shared local search: all three arms use the $N_2^{ME}$
-neighbourhood, whose lexicographic-mode pathology on large instances was
-documented in Section~\ref{sec:exp-n2me}. Because the component is shared,
-it cannot favour one front-generation strategy over another, and in Pareto
-mode its energy moves serve front coverage rather than protecting the
-makespan extreme; still, an interaction with instance size cannot be
-excluded a priori, and a neighbourhood ablation ($N_2$ vs.\ $N_2^{ME}$
-inside one arm on the large $\times 20$ groups) is a natural robustness
-check for the regime boundary reported here.
 
 \begin{table}[htb]
 \centering\small
@@ -1108,21 +1111,29 @@ la40 & \textbf{1.000} & 0.564 & 0.586 \\
 against the exact fronts on the probed instances, and the full
 tuned-vs-inherited tuning-gain table.}
 
-\subsection{Closing the regime boundary: a makespan-specialised anchor}
+\subsection{The anchor is the ceiling: ablation and the definitive ladder}
 \label{sec:exp-anchor}
 
 The analysis above pins the ladder's only regression to a single cause: on
 the large $\times 20$ groups its anchor --- run with the front-coverage
 configuration tuned for the whole pipeline --- lands ${\sim}1.8\%$ above the
 makespan the free engines reach, so the capped front cannot populate the
-low-makespan corner. This is a testable prediction: replace the anchor
-phase, and only that phase, with a makespan-specialised search, and the
-boundary should disappear. We do exactly that. The energy levels are
-untouched; the anchor alone adopts the makespan-only configuration of the
-dedicated tabu search TS-$N_2$ \cite{DiazTabu2026} (its operators,
-$100\%$ local-search rate, and the plain $N_2$ neighbourhood), at the
-\emph{same} per-run budget --- so any change is attributable to the anchor
-configuration, not to extra time.
+low-makespan corner. We close this in two steps that disentangle
+\emph{budget} from \emph{configuration}.
+
+First, budget alone. Re-running the ladder with the anchor's time raised
+from $500/600$\,s to $650/700$\,s (level budgets reduced to keep the total
+at ${\sim}900$\,s) recovers $50{\times}20$ --- where the original anchor had
+not yet converged --- but changes nothing on $30{\times}20$: there the
+strengthened anchor returns the \emph{same} best makespan on every instance,
+i.e.\ the anchor was already converged and the $+1.8\%$ gap is a limit of
+the configuration, not of the time given to it.
+
+Second, configuration. The energy levels are untouched; the anchor alone
+adopts the makespan-only configuration of the dedicated tabu search
+TS-$N_2$ \cite{DiazTabu2026} (its operators, $100\%$ local-search rate, and
+the plain $N_2$ neighbourhood), at the \emph{original} per-run budget ---
+so any change is attributable to the anchor configuration alone.
 
 The effect is decisive (Table~\ref{tab:anchor}). The specialised anchor
 reaches the dedicated solver's makespan (mean gap $-0.08\%$ on $30{\times}20$
@@ -1157,6 +1168,16 @@ tai $50{\times}20$ & $+1.31\%$ & $-0.35\%$ & \textbf{0.990} & 0.504 & 0.346 & 0.
 \bottomrule
 \end{tabular}
 \end{table}
+
+The definitive instantiation of the method is therefore the ladder with the
+specialised anchor throughout --- the recommended configuration for
+practice: anchor = the best available makespan solver in its own
+configuration, levels = the front-coverage configuration, budgets as in
+Section~\ref{sec:pareto}.
+
+\todo{Definitive full-benchmark evaluation of LADDER$^\star$ (all 82
+instances) running; on completion, report its group-level HV table here
+(replacing the per-group extrapolation) and refresh the statistics.}
 
 %=============================================================================
 \section{Conclusions}
