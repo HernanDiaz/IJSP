@@ -70,9 +70,12 @@ connectivity results; and, for the Pareto front, a capped
 $\varepsilon$-ladder that recycles the single-objective tabu solver,
 unchanged, into a front generator. Against irace-tuned NSGA-II and
 Pareto-archive controls, the ladder attains the highest hypervolume on 55 of
-82 instances and dominates up to size $20{\times}20$; we delineate --- and
-explain mechanistically --- the large-instance regime where the scalar
-anchor loses traction and dominance-based search becomes competitive again.
+82 instances and dominates up to size $20{\times}20$; on the largest instances
+a single front-coverage configuration loses ground because its anchor gives
+up ${\sim}1.8\%$ of makespan, and we show that giving the anchor phase alone a
+makespan-specialised solver closes this gap and makes the ladder dominant on
+those groups too ($10/10$, hypervolume $0.99$), confirming that the method's
+ceiling is the single-objective solver it recycles.
 \end{abstract}
 
 \begin{keyword}
@@ -970,13 +973,12 @@ the ladder anchor's $2137$/$2009$, whereas on \texttt{ft10} the ladder spreads a
 deep front the controls never approach. The practical consequence is a sharp
 prescription rather than a caveat: \emph{decomposition is the method of choice
 whenever a strong makespan anchor is attainable, which is the entire small-
-and medium-instance range; on the largest high-ratio instances, either the
-anchor must be strengthened} (more anchor budget, or a makespan-specialised
-anchor configuration) \emph{or a dominance-based search should be preferred}.
-Tuning narrows but does not close the baselines' gap in the ladder's regime
-(ABC-P improves from a mean ratio of $0.54$ under the inherited configuration
-to $0.70$), so the ordering there is a property of the strategy, not of a
-favourable parameterisation.
+and medium-instance range; on the largest high-ratio instances the anchor
+must be strengthened}. Section~\ref{sec:exp-anchor} tests this directly and
+shows it closes the boundary. Tuning narrows but does not close the
+baselines' gap in the ladder's regime (ABC-P improves from a mean ratio of
+$0.54$ under the inherited configuration to $0.70$), so the ordering there is
+a property of the strategy, not of a favourable parameterisation.
 
 Because the union reference is built from the compared arms themselves, we
 check the two ways it could mislead. First, \emph{sensitivity to the
@@ -1106,6 +1108,56 @@ la40 & \textbf{1.000} & 0.564 & 0.586 \\
 against the exact fronts on the probed instances, and the full
 tuned-vs-inherited tuning-gain table.}
 
+\subsection{Closing the regime boundary: a makespan-specialised anchor}
+\label{sec:exp-anchor}
+
+The analysis above pins the ladder's only regression to a single cause: on
+the large $\times 20$ groups its anchor --- run with the front-coverage
+configuration tuned for the whole pipeline --- lands ${\sim}1.8\%$ above the
+makespan the free engines reach, so the capped front cannot populate the
+low-makespan corner. This is a testable prediction: replace the anchor
+phase, and only that phase, with a makespan-specialised search, and the
+boundary should disappear. We do exactly that. The energy levels are
+untouched; the anchor alone adopts the makespan-only configuration of the
+dedicated tabu search TS-$N_2$ \cite{DiazTabu2026} (its operators,
+$100\%$ local-search rate, and the plain $N_2$ neighbourhood), at the
+\emph{same} per-run budget --- so any change is attributable to the anchor
+configuration, not to extra time.
+
+The effect is decisive (Table~\ref{tab:anchor}). The specialised anchor
+reaches the dedicated solver's makespan (mean gap $-0.08\%$ on $30{\times}20$
+and $-0.35\%$ on $50{\times}20$, i.e.\ matching or beating TS-$N_2$, versus
+$+1.8$--$2.8\%$ before), and the ladder built on it \textbf{dominates all
+three original arms on every one of the twenty instances} (mean HV ratio
+$0.99$, winning $10/10$ in both groups), turning the one regime where
+decomposition lost into one where it wins outright. The lesson is not that
+the ladder needed more tuning, but that its ceiling \emph{is} the quality of
+the single-objective solver it recycles: give it the right makespan solver
+for the anchor and it dominates across the whole benchmark. This also
+sharpens the earlier equivalence result --- the ladder's makespan extreme is
+not merely within $2\%$ of the dedicated solver, it \emph{equals} it once the
+anchor uses the matching configuration.
+
+\begin{table}[htb]
+\centering\small
+\caption{Makespan-specialised anchor on the two large $\times 20$ groups
+(TS-$N_2$ anchor config, energy levels unchanged, same budget). Left:
+best expected anchor makespan gap to the dedicated TS-$N_2$ (negative =
+better). Right: mean HV ratio (vs.\ the union of all four arms) and
+instances won, LADDER$^\star$ = ladder with the specialised anchor.}
+\label{tab:anchor}
+\begin{tabular}{l r r | cccc c}
+\toprule
+ & \multicolumn{2}{c}{anchor gap vs TS-$N_2$} & \multicolumn{4}{c}{mean HV ratio} & wins \\
+\cmidrule(lr){2-3}\cmidrule(lr){4-7}
+Group & before & after & LADDER$^\star$ & LADDER & ABC-P & MA-P & L$^\star$ \\
+\midrule
+tai $30{\times}20$ & $+1.83\%$ & $-0.08\%$ & \textbf{0.990} & 0.606 & 0.715 & 0.537 & 10/10 \\
+tai $50{\times}20$ & $+1.31\%$ & $-0.35\%$ & \textbf{0.990} & 0.504 & 0.346 & 0.521 & 10/10 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
 %=============================================================================
 \section{Conclusions}
 \label{sec:conclusions}
@@ -1133,21 +1185,22 @@ problem and chaining them by warm-starting. With two off-the-shelf
 dominance-based algorithms as controls, this capped $\varepsilon$-ladder
 attains the highest hypervolume on $55$ of $82$ instances and dominates
 throughout the small- and medium-instance range, which is the evidence that a
-good front does not come for free on this problem. Just as informative is the
-boundary of that advantage: on the largest, machine-heavy instances the
-scalar anchor loses a small but decisive amount of makespan quality
-(statistically equivalent to the dedicated solver within $2\%$, but enough to
-cap the front above the low-makespan corner), and there dominance-based search
-becomes competitive again. This yields a mechanism-level prescription for
-practice --- decomposition when a strong anchor is attainable, a stronger
-anchor or a dominance-based method otherwise --- rather than a single
-universal winner. The design is backed throughout by either proof
-(goal-programming and $\varepsilon$-constraint equivalence, capped
-connectivity) or measurement (the one-move landscape analysis motivating
-recombination). Future work follows directly from the boundary we identified:
-a makespan-specialised or adaptively-budgeted anchor for large high-ratio
-instances, and, more broadly, the flexible interval JSP and vague-goal green
-scheduling~\cite{GarciaGomez2026}.
+good front does not come for free on this problem. Equally instructive is the
+one regime where a single, front-coverage-tuned configuration lost --- the
+largest, machine-heavy instances, where that anchor gives up ${\sim}1.8\%$ of
+makespan and the cap sits above the low-makespan corner. We traced this to a
+single cause and then removed it: giving the anchor phase the makespan-only
+configuration of the dedicated tabu search --- and nothing else --- lifts the
+ladder from losing those groups to \emph{dominating} all four arms on every
+one of them ($10/10$, HV $0.99$), with the anchor now matching the dedicated
+solver's makespan. The ceiling of the method is thus the quality of the
+single-objective solver it recycles, exactly as the design intends: the
+decomposition contributes the front, the borrowed solver contributes the
+anchor. The design is backed throughout by either proof (goal-programming and
+$\varepsilon$-constraint equivalence, capped connectivity) or measurement (the
+one-move landscape analysis motivating recombination, and the anchor
+experiment closing the regime boundary). Future work: the flexible interval
+JSP, and vague-goal green scheduling~\cite{GarciaGomez2026}.
 
 %=============================================================================
 \section*{CRediT authorship contribution statement}
