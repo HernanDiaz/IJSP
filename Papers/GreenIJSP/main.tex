@@ -339,6 +339,47 @@ tai15\_02 (15$\times$15) & --  & 23504 & 22664 & 21697 & $-12.4\%$ \\
 \end{tabular}
 \end{table}
 
+\begin{figure}[htb]
+\centering
+\begin{tikzpicture}
+\begin{axis}[width=0.78\linewidth, height=0.5\linewidth,
+  xlabel={makespan allowance $\varepsilon$ (\%)},
+  ylabel={idle energy, relative},
+  xmin=0, xmax=10, ymin=0, ymax=1.02,
+  legend style={font=\scriptsize, at={(1.02,0.5)}, anchor=west},
+  grid=major, grid style={dotted},
+  tick label style={font=\scriptsize}, label style={font=\small}]
+\addplot[blue, thick, mark=*, mark size=1.2pt]
+  table[x=eps, y=npe_rel] {figures/probe_ft10.dat};
+\addplot[red, thick, mark=square*, mark size=1.2pt]
+  table[x=eps, y=npe_rel] {figures/probe_ft20.dat};
+\addplot[orange!85!black, thick, mark=triangle*, mark size=1.5pt]
+  table[x=eps, y=npe_rel] {figures/probe_la21.dat};
+\addplot[teal, thick, mark=diamond*, mark size=1.5pt]
+  table[x=eps, y=npe_rel] {figures/probe_la24.dat};
+\addplot[violet, thick, mark=pentagon*, mark size=1.4pt]
+  table[x=eps, y=npe_rel] {figures/probe_la25.dat};
+\addplot[brown, thick, mark=o, mark size=1.4pt]
+  table[x=eps, y=npe_rel] {figures/probe_la29.dat};
+\addplot[gray, thick, mark=x, mark size=1.7pt]
+  table[x=eps, y=npe_rel] {figures/probe_abz7.dat};
+\addplot[green!55!black, thick, mark=+, mark size=1.7pt]
+  table[x=eps, y=npe_rel] {figures/probe_tai15a.dat};
+\addplot[cyan!70!black, thick, mark=star, mark size=1.6pt]
+  table[x=eps, y=npe_rel] {figures/probe_tai15b.dat};
+\legend{ft10, ft20, la21, la24, la25, la29, abz7, tai15\_01, tai15\_02}
+\end{axis}
+\end{tikzpicture}
+\caption{Exact conflict probe (Table~\ref{tab:probe}) as curves:
+lower-envelope idle energy, normalised to the tightest solved allowance, as
+the makespan cap is relaxed from $0$ to $10\%$. Every instance trades
+makespan for energy; \texttt{ft20} reaches zero idle energy, and curves
+starting at $\varepsilon>0$ (\texttt{la29}, \texttt{abz7},
+\texttt{tai15\_02}) reflect allowances CP-SAT could not solve, so their
+drops are lower bounds.}
+\label{fig:probe}
+\end{figure}
+
 Two design consequences follow. First, algorithms must include a timing
 component (Section~\ref{sec:rs}); a search that only manipulates the order
 under semi-active evaluation can at most exploit the makespan plateaus.
@@ -555,7 +596,48 @@ the archive
 \end{algorithmic}
 \end{algorithm}
 
-Clamping the makespan to the cap makes all cap-feasible solutions tie on
+\begin{figure}[htb]
+\centering
+\begin{tikzpicture}[scale=0.95, >=stealth]
+\draw[->] (0,0) -- (8.2,0) node[below left, font=\small] {$\mathbf{C}_{\max}$};
+\draw[->] (0,0) -- (0,4.6);
+\node[rotate=90, font=\small] at (-0.4,2.3) {$\mathbf{\NPE}$};
+\fill[black] (1.1,4.0) circle (2.2pt);
+\node[above right, font=\scriptsize] at (0.95,4.05) {anchor $(C^{*})$};
+\foreach \x/\name in {1.9/{\kappa_1}, 3.1/{\kappa_2}, 4.7/{\kappa_3},
+                      6.7/{\kappa_4}} {
+  \draw[dashed, gray] (\x,0) -- (\x,4.3);
+  \node[above, font=\scriptsize] at (\x,4.3) {$\name$};
+}
+\draw[very thick, blue] plot[smooth]
+  coordinates {(1.15,3.9) (1.5,3.35) (1.85,3.05)};
+\draw[very thick, blue] plot[smooth]
+  coordinates {(2.0,2.95) (2.5,2.5) (3.05,2.25)};
+\draw[very thick, blue] plot[smooth]
+  coordinates {(3.2,2.15) (3.9,1.75) (4.65,1.55)};
+\draw[very thick, blue] plot[smooth]
+  coordinates {(4.85,1.45) (5.7,1.15) (6.65,1.0)};
+\node[blue, font=\scriptsize] at (1.4,2.9)  {$L_1$};
+\node[blue, font=\scriptsize] at (2.5,2.1)  {$L_2$};
+\node[blue, font=\scriptsize] at (3.85,1.4) {$L_3$};
+\node[blue, font=\scriptsize] at (5.65,0.8) {$L_4$};
+\draw[->, red!75!black, thick] (1.1,4.0)   to[bend left=20] (1.35,3.6);
+\draw[->, red!75!black, thick] (1.85,3.05) to[bend left=25] (2.05,2.93);
+\draw[->, red!75!black, thick] (3.05,2.25) to[bend left=25] (3.25,2.13);
+\draw[->, red!75!black, thick] (4.65,1.55) to[bend left=25] (4.9,1.43);
+\node[red!75!black, font=\scriptsize] at (3.1,3.4) {warm start};
+\end{tikzpicture}
+\caption{The capped $\varepsilon$-ladder, schematically. The anchor fixes
+$C^{*}$; each level $L_k$ minimises energy under the clamped pair with cap
+$\kappa_k=(1+\varepsilon_k)C^{*}$ (dashed), warm-started from the previous
+level's front and the anchor (red arrows). The archive keeps the
+non-dominated union of all levels (unclamped values) and every archived
+solution is right-shifted at the end.}
+\label{fig:ladder}
+\end{figure}
+
+Clamping the makespan to the cap (Figure~\ref{fig:ladder}) makes all
+cap-feasible solutions tie on
 the primary objective, so the entire evolutionary pressure --- selection,
 survival, and the $N_2^{ME}$ tabu search alike --- is redirected onto
 energy, without changing any operator (Proposition~\ref{prop:goal}: each
@@ -688,8 +770,8 @@ the two experimental campaigns and make no claim of makespan improvement
 --- the relevant observation is that the tie-break costs nothing).
 
 The recovery grows markedly with instance size and with the job/machine
-ratio: from $3.2\%$ on $15{\times}15$ up to $\mathbf{26.5\%}$ on
-$50{\times}15$ and $12.6\%$ on $50{\times}20$. The pattern has a clean
+ratio (Figure~\ref{fig:lexbars}): from $3.2\%$ on $15{\times}15$ up to
+$\mathbf{26.5\%}$ on $50{\times}15$ and $12.6\%$ on $50{\times}20$. The pattern has a clean
 explanation: on large instances with a high job/machine ratio the makespan
 is comparatively easy to attain (cf.\ the near-zero makespan gaps reported
 for $50{\times}15$ in \cite{DiazTabu2026}), so its plateaus are wide, and
@@ -732,6 +814,36 @@ $50{\times}20$ & 10 & 2901.4 & 2885.3 & $-0.55$ & 31214 & 27290 & $-12.6$ & 2885
 $\Cmax$ per group and $p\le 0.008$ for both NPE columns per group;
 $p<0.001$ for all grand means.
 \end{table}
+
+\begin{figure}[htb]
+\centering
+\begin{tikzpicture}
+\begin{axis}[width=0.82\linewidth, height=0.46\linewidth, ybar,
+  bar width=5.5pt, ymin=0, ymax=30,
+  ylabel={NPE reduction vs.\ baseline (\%)},
+  symbolic x coords={cls,$15{\times}15$,$20{\times}15$,$20{\times}20$,
+    $30{\times}15$,$30{\times}20$,$50{\times}15$,$50{\times}20$},
+  xtick=data, x tick label style={font=\scriptsize, rotate=30, anchor=east},
+  tick label style={font=\scriptsize}, label style={font=\small},
+  legend style={font=\scriptsize, at={(0.02,0.98)}, anchor=north west},
+  grid=major, grid style={dotted}]
+\addplot[fill=blue!55] coordinates {(cls,7.1) ($15{\times}15$,3.2)
+  ($20{\times}15$,6.5) ($20{\times}20$,3.4) ($30{\times}15$,10.3)
+  ($30{\times}20$,5.7) ($50{\times}15$,26.5) ($50{\times}20$,12.6)};
+\addplot[fill=teal!60] coordinates {(cls,6.1) ($15{\times}15$,2.1)
+  ($20{\times}15$,5.8) ($20{\times}20$,3.2) ($30{\times}15$,9.8)
+  ($30{\times}20$,5.2) ($50{\times}15$,27.2) ($50{\times}20$,12.5)};
+\legend{tie-break (semi-active), tie-break advantage after RS}
+\end{axis}
+\end{tikzpicture}
+\caption{Idle-energy recovery of the lexicographic tie-break by size group
+(Table~\ref{tab:lex}): reduction vs.\ the makespan-only baseline under
+semi-active evaluation, and the advantage that remains after right-shifting
+\emph{both} arms. The recovery grows with size and job/machine ratio ---
+wide makespan plateaus are where a blind search leaves the most energy ---
+and survives timing optimisation almost intact.}
+\label{fig:lexbars}
+\end{figure}
 
 \subsection{Order vs.\ timing: decomposing the energy gains}
 \label{sec:exp-decomp}
@@ -1061,6 +1173,7 @@ tai $50{\times}20$ & 10 & 0.828 & 0.579 & \textbf{0.854} & 3/2/5 & 5 & 0 \\
 \begin{axis}[width=0.5\linewidth, height=0.44\linewidth,
   xlabel={$C_{\max}$ (midpoint)},
   title={(b) \texttt{tai30\_20\_01}, $30{\times}20$},
+  legend style={font=\scriptsize, at={(0.98,0.98)}, anchor=north east},
   label style={font=\small}, title style={font=\small},
   tick label style={font=\scriptsize}, scaled x ticks=false,
   x tick label style={/pgf/number format/1000 sep={}}]
@@ -1070,15 +1183,22 @@ tai $50{\times}20$ & 10 & 0.828 & 0.579 & \textbf{0.854} & 3/2/5 & 5 & 0 \\
   table[x=cmax, y=npe] {figures/tai30_20_01_ABCP.dat};
 \addplot[orange!85!black, only marks, mark=triangle*, mark size=2.6pt]
   table[x=cmax, y=npe] {figures/tai30_20_01_MAP.dat};
+\addplot[teal, thick, mark=diamond*, mark size=2.4pt]
+  table[x=cmax, y=npe] {figures/tai30_20_01_LADDERSTAR.dat};
+\legend{LADDER, ABC-P, MA-P, LADDER$^\star$}
 \end{axis}
 \end{tikzpicture}
-\caption{Best-over-runs fronts of the three tuned arms (lower-left is better).
+\caption{Best-over-runs fronts (lower-left is better).
 \textbf{(a)} On \texttt{ft10} the ladder spreads a deep front that dominates
 both controls, reaching low-energy solutions they never approach.
-\textbf{(b)} On the large $30{\times}20$ instance the ladder is confined by
-its anchor to a narrow high-makespan band ($C_{\max}\!\in[2137,2140]$), while
-ABC-P reaches down to $C_{\max}=2102$ and captures the low-makespan corner ---
-the mechanism behind the ladder's only systematic regression.}
+\textbf{(b)} On the large $30{\times}20$ instance the uniform-configuration
+ladder is confined by its anchor to a narrow high-makespan band
+($C_{\max}\!\in[2137,2140]$) and ABC-P captures the low-makespan corner
+(down to $C_{\max}=2102$) --- the mechanism behind the regime boundary of
+Section~\ref{sec:exp-pareto}. The definitive ladder LADDER$^\star$
+(Section~\ref{sec:exp-anchor}), whose anchor is makespan-specialised,
+reaches further left than ABC-P ($C_{\max}=2092$) at lower energy,
+dominating all three arms on this instance.}
 \label{fig:fronts}
 \end{figure}
 
