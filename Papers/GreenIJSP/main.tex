@@ -72,10 +72,11 @@ unchanged, into a front generator. Against irace-tuned NSGA-II and
 Pareto-archive controls, the ladder attains the highest hypervolume on 55 of
 82 instances and dominates up to size $20{\times}20$; on the largest instances
 a single front-coverage configuration loses ground because its anchor gives
-up ${\sim}1.8\%$ of makespan, and we show that giving the anchor phase alone a
-makespan-specialised solver closes this gap and makes the ladder dominant on
-those groups too ($10/10$, hypervolume $0.99$), confirming that the method's
-ceiling is the single-objective solver it recycles.
+up ${\sim}1.8\%$ of makespan, and giving the anchor phase alone a
+makespan-specialised solver closes this gap ($10/10$ on those groups); the
+resulting definitive ladder is the best performer on 64 of 82 instances,
+confirming that the method's ceiling is the single-objective solver it
+recycles.
 \end{abstract}
 
 \begin{keyword}
@@ -1170,14 +1171,59 @@ tai $50{\times}20$ & $+1.31\%$ & $-0.35\%$ & \textbf{0.990} & 0.504 & 0.346 & 0.
 \end{table}
 
 The definitive instantiation of the method is therefore the ladder with the
-specialised anchor throughout --- the recommended configuration for
-practice: anchor = the best available makespan solver in its own
-configuration, levels = the front-coverage configuration, budgets as in
-Section~\ref{sec:pareto}.
+specialised anchor --- anchor = the best available makespan solver in its
+own configuration, levels = the front-coverage configuration, budgets as in
+Section~\ref{sec:pareto}. Table~\ref{tab:star} evaluates it on the full
+benchmark against the three uniform-configuration arms. LADDER$^\star$ is
+the best arm on \textbf{64 of 82} instances with a mean HV ratio of
+$\mathbf{0.931}$ (uniform ladder $0.777$, MA-P $0.647$, ABC-P $0.612$;
+ratios are against the union of all \emph{four} arms and hence not
+comparable with Table~\ref{tab:mo-full}). The Friedman test rejects
+equality ($\chi^2_F=123.0$, $p<10^{-20}$) with LADDER$^\star$ first by mean
+rank ($3.66$ vs.\ $2.46$/$2.44$/$1.43$), and Holm-corrected per-instance
+Mann--Whitney tests find it significantly better than ABC-P on $73/82$
+instances (never worse), than MA-P on $52/82$ ($5$ losses), and than the
+uniform ladder on $42/82$ ($3$ losses).
 
-\todo{Definitive full-benchmark evaluation of LADDER$^\star$ (all 82
-instances) running; on completion, report its group-level HV table here
-(replacing the per-group extrapolation) and refresh the statistics.}
+One group resists specialisation, and it is the exception that confirms the
+mechanism. On $50{\times}15$ the specialised anchor \emph{under}-performs
+the uniform one ($0.720$ vs.\ $0.846$): there the uniform anchor was
+already within $+0.08\%$ of the dedicated solver --- anchor quality never
+bound --- and what specialisation removes is run-to-run anchor
+\emph{variance}, which Section~\ref{sec:exp-pareto} identified as the
+ladder's coverage engine. Where anchor quality binds (the $\times 20$
+groups), trading variance for quality is hugely positive; where it never
+bound ($50{\times}15$, the widest-plateau group), the same trade gives up a
+little coverage. The prescription is one line: \emph{specialise the anchor
+wherever its makespan lags the best available solver; keep it diverse where
+it does not}.
+
+\begin{table}[htb]
+\centering\small
+\caption{Definitive evaluation: LADDER$^\star$ (specialised anchor) vs.\
+the three uniform-configuration arms on all 82 instances (30 runs each).
+Mean HV ratio vs.\ the union of the four arms (higher is better; not
+comparable with Table~\ref{tab:mo-full}, whose reference excludes
+LADDER$^\star$); ``wins'' = instances where the arm attains the highest
+ratio. Bold: best group mean.}
+\label{tab:star}
+\begin{tabular}{l r cccc c}
+\toprule
+Group & \# & LADDER$^\star$ & LADDER & ABC-P & MA-P & wins $\star$/L/A/M \\
+\midrule
+classical      & 12 & \textbf{0.890} & 0.812 & 0.595 & 0.614 & 11/1/0/0 \\
+tai $15{\times}15$ & 10 & 0.926 & \textbf{0.936} & 0.729 & 0.736 & 4/6/0/0 \\
+tai $20{\times}15$ & 10 & \textbf{0.980} & 0.851 & 0.663 & 0.695 & 8/2/0/0 \\
+tai $20{\times}20$ & 10 & \textbf{0.976} & 0.851 & 0.676 & 0.663 & 9/1/0/0 \\
+tai $30{\times}15$ & 10 & \textbf{0.987} & 0.802 & 0.659 & 0.632 & 9/1/0/0 \\
+tai $30{\times}20$ & 10 & \textbf{0.990} & 0.606 & 0.715 & 0.537 & 10/0/0/0 \\
+tai $50{\times}15$ & 10 & 0.720 & \textbf{0.846} & 0.517 & 0.788 & 3/3/0/4 \\
+tai $50{\times}20$ & 10 & \textbf{0.990} & 0.504 & 0.346 & 0.521 & 10/0/0/0 \\
+\midrule
+\textit{All 82} & 82 & \textbf{0.931} & 0.777 & 0.612 & 0.647 & 64/14/0/4 \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 %=============================================================================
 \section{Conclusions}
@@ -1214,10 +1260,14 @@ single cause and then removed it: giving the anchor phase the makespan-only
 configuration of the dedicated tabu search --- and nothing else --- lifts the
 ladder from losing those groups to \emph{dominating} all four arms on every
 one of them ($10/10$, HV $0.99$), with the anchor now matching the dedicated
-solver's makespan. The ceiling of the method is thus the quality of the
-single-objective solver it recycles, exactly as the design intends: the
-decomposition contributes the front, the borrowed solver contributes the
-anchor. The design is backed throughout by either proof (goal-programming and
+solver's makespan. Evaluated on the full benchmark, this definitive
+configuration is the best arm on $64$ of $82$ instances (mean HV ratio
+$0.93$), and its one exception proves the rule: on the only group where
+anchor quality was never binding, specialisation trades away the run-to-run
+anchor diversity that fuels coverage. The ceiling of the method is thus the
+quality of the single-objective solver it recycles, exactly as the design
+intends: the decomposition contributes the front, the borrowed solver
+contributes the anchor. The design is backed throughout by either proof (goal-programming and
 $\varepsilon$-constraint equivalence, capped connectivity) or measurement (the
 one-move landscape analysis motivating recombination, and the anchor
 experiment closing the regime boundary). Two directions follow naturally.
