@@ -201,7 +201,10 @@ task at a time and no two tasks of a job overlap. The processing time of
 task $x$ is only known to lie in an interval
 $\mathbf{p}_x=[p^-_x,p^+_x]$. A solution is a processing order $\sigma$ (a
 machine sequencing compatible with job precedences), which orients the
-disjunctive arcs $D(\sigma)$ of the solution graph $G(\sigma)$.
+disjunctive arcs $D(\sigma)$ of the solution graph $G(\sigma)$ --- the
+directed graph with one node per task, the fixed job-precedence arcs, and
+one arc between each pair of consecutive tasks on a machine as sequenced by
+$\sigma$.
 
 Following \cite{DiazTabu2026}, the two \emph{extreme graphs} $G^-(\sigma)$
 and $G^+(\sigma)$ weight every arc $(x,y)$ with $p^-_x$ and $p^+_x$
@@ -231,7 +234,13 @@ We adopt the energy model of the interval green FJSP literature
 starts and off when its last task completes; while on, it draws a
 \emph{passive power} $P_k$ per time unit, plus an \emph{active} power while
 actually processing. The total energy is
-$TE=\sum_k (PE_k+AE_k)$ with $AE_k=\sum_{x\in k} Pa_{x}\,\mathbf{p}_x$.
+$TE=\sum_k (PE_k+AE_k)$, where $PE_k$ is the passive energy ($P_k$ times
+the on-window length) and $AE_k=\sum_{x\in k} Pa_{x}\,\mathbf{p}_x$ the
+active energy of the tasks $x$ processed on $k$. The model deliberately
+excludes intermediate on/off switching, which in many environments is
+impractical (warm-up times, thermal stress, process constraints);
+scheduling explicit switch-off decisions is a complementary energy lever
+surveyed in \cite{Gahm2016}.
 
 \begin{proposition}[Active energy invariance]
 \label{prop:ae}
@@ -243,8 +252,13 @@ Without flexibility every task is always processed on the same machine with
 the same (interval) duration, so each term $Pa_x\,\mathbf{p}_x$ is
 instance data. \end{proof}
 
-Consequently the only energy term the scheduler controls is the passive
-energy of \emph{idle} intervals, the non-processing energy. For machine $k$
+The passive term decomposes further: the on-window of machine $k$ consists
+of processing time and idle gaps, and the processing part contributes the
+constant $P_k\sum_{x\in k}\mathbf{p}_x$ regardless of $\sigma$. Together
+with Proposition~\ref{prop:ae}, every schedule-dependent joule therefore
+sits in the passive energy of the \emph{idle} intervals --- the
+non-processing energy, NPE --- which is the green objective we optimise.
+For machine $k$
 let $u^k_1\prec\cdots\prec u^k_{n_k}$ be its processing sequence under
 $\sigma$. The component-$i$ idle gap between consecutive tasks is
 $\gamma^i(u^k_j,u^k_{j+1})=r^i_{u^k_{j+1}}-(r^i_{u^k_j}+p^i_{u^k_j})\ge 0$
@@ -266,11 +280,13 @@ evaluations $\mathbf{\NPE}(\sigma)=(\NPE^-,\NPE^+)$, ranked by LEX2 as well
 \label{rem:npe-pair}
 Unlike the makespan, whose components satisfy $C^-_{\max}\le C^+_{\max}$
 because the longest path is monotone in the durations, the idle gaps are
-\emph{not} monotone, and $\NPE^->\NPE^+$ is possible. A two-machine example:
-let machine $k$ process $a$ then $b$, where $a$ starts at $0$ with
-$\mathbf{p}_a=[2,9]$ and $b$ waits for its job predecessor $c$ (on the other
-machine, starting at $0$) with crisp $\mathbf{p}_c=[10,10]$. The gap before
-$b$ is $\max(0,\,p^i_c-p^i_a)$: $8$ in the lower scenario but $1$ in the
+\emph{not} monotone, and $\NPE^->\NPE^+$ is possible. A minimal example:
+two jobs $J_1=\langle a\rangle$ and $J_2=\langle c,b\rangle$, with $a$ and
+$b$ on machine $k$ (sequenced $a$ before $b$ by $\sigma$) and $c$ on the
+other machine; $\mathbf{p}_a=[2,9]$, $\mathbf{p}_c=[10,10]$. Both $a$ and
+$c$ start at $0$, and $b$ starts at
+$\max(p^i_a,p^i_c)$ by \eqref{eq:heads}, so the idle gap on $k$ is
+$\max(0,\,p^i_c-p^i_a)$: $8$ in the lower scenario but only $1$ in the
 upper. We therefore write $\mathbf{\NPE}$ as a pair $(\NPE^-,\NPE^+)$ ---
 each component is the exact idle energy of one extreme scenario --- and rank
 pairs lexicographically by LEX2, which retains its min--max reading
@@ -454,7 +470,9 @@ reverse topological order, is delayed up to the minimum start of its
 successors. The heuristic is $O(nm)$ and captured 86--95\% of the exact
 gain in our validation. Both variants preserve
 $\mathbf{C}_{\max}$ by construction and are applied independently per
-interval component.
+component, consistently with the scenario-pair reading of
+Remark~\ref{rem:npe-pair}: each component of $\mathbf{\NPE}$ is the idle
+energy of one extreme scenario, timed optimally for that scenario.
 
 \subsection{The bi-critical neighbourhood $N_2^{ME}$}
 \label{sec:n2me}
@@ -463,7 +481,8 @@ The third rung makes the \emph{search} energy-aware. Existing energy
 neighbourhoods rely on flexibility (reassignment moves) or reduce passive
 energy only through the makespan \cite{GarciaGomez2023}; to the best of our
 knowledge, no sequencing neighbourhood targets idle gaps. We propose one,
-built on the $H(\sigma)$ framework of \cite{DiazTabu2026}.
+built on the same head-based machinery that underpins the makespan
+neighbourhoods of \cite{DiazTabu2026}.
 
 \begin{definition}[Tight arc, sustaining chain]
 An arc $(x,y)$ of $G(\sigma)$ is \emph{$i$-tight} if $r^i_y=r^i_x+p^i_x$.
@@ -474,11 +493,15 @@ sustaining chains of the tasks realising $C^i_{\max}$.
 
 \begin{definition}[Energy-critical arcs; bi-critical neighbourhood]
 \label{def:n2me}
-For $i\in\{-,+\}$ let $\mathcal{V}^i(\sigma)$ contain the right endpoints
-of positive gaps and the last task of every machine. The energy-critical
-arcs $E(\sigma)$ are the disjunctive arcs on sustaining chains of tasks in
-$\mathcal{V}^i(\sigma)$. Then
-$N_2^{ME}(\sigma)$ reverses the arcs of $N_2(\sigma)\cup E(\sigma)$. In
+For $i\in\{-,+\}$ let $\mathcal{V}^i(\sigma)$ contain the tasks that start
+immediately after a positive idle gap (the $u^k_{j+1}$ with
+$\gamma^i(u^k_j,u^k_{j+1})>0$ in \eqref{eq:npe}) and the last task of every
+machine. The energy-critical
+arcs $E(\sigma)$ are the disjunctive arcs lying on sustaining chains of
+tasks in $\mathcal{V}^i(\sigma)$. Writing $B(\sigma)$ for the arcs that
+$N_2$ reverses (the boundary arcs of extreme critical blocks),
+$N_2^{ME}(\sigma)$ contains every order obtained by reversing one arc of
+$B(\sigma)\cup E(\sigma)$; thus $N_2\subseteq N_2^{ME}$. In
 \emph{lexicographic mode} energy moves are accepted only if the makespan is
 not LEX2-worsened; in \emph{Pareto mode} all moves are offered to the
 acceptance criterion.
@@ -648,7 +671,13 @@ the cap region. The per-run budget is size-adaptive but always within the
 same ${\sim}900$\,s total granted to each baseline run: anchor
 $400/500/600$\,s plus $8/6/5$ levels of $60$--$65$\,s on
 classical-and-small/$30{\times}$/$50{\times}$ instances respectively, so no
-arm receives more compute. Section~\ref{sec:ladder} gives the theoretical
+arm receives more compute. The corresponding $\varepsilon$ grids are
+$\{0.2,0.5,1,1.5,2,3,5,7\}\%$, $\{0.5,1,2,3,5,10\}\%$ and
+$\{0.5,1,2,5,10\}\%$, denser near the makespan-optimal end where the front
+is steepest. Each level's population is seeded from a pool holding the
+previous level's front and the anchor's solutions --- selected for maximin
+diversity in the order space --- with the remainder initialised at random.
+Section~\ref{sec:ladder} gives the theoretical
 backing:
 level optima are exactly the Pareto points at their cap
 (Proposition~\ref{prop:eps}), and $N_2^{ME}$ retains connectivity under a
@@ -669,13 +698,14 @@ C^+_{\max}(\sigma)\le\kappa^+\}$ for its cap-feasible set. A level ranks
 solutions by the clamped pair
 $\Phi_\kappa(\sigma)=\bigl(\max(\mathbf{C}_{\max},\kappa),\mathbf{\NPE}\bigr)$,
 compared with LEX2 inside each component. Three results, whose full proofs are
-given in the supplementary technical note and sketched here, justify the
+given in the supplementary material and sketched here, justify the
 construction.
 
 \begin{proposition}[Goal-programming form]\label{prop:goal}
 Ordering by $\Phi_\kappa$ coincides with the lexicographic goal-programming
-order with target $\kappa$: makespan deviation
-$D_\kappa=[\max(0,C^--\kappa^-),\max(0,C^+-\kappa^+)]$ first, energy second.
+order with target $\kappa$: makespan deviation pair
+$D_\kappa=\bigl(\max(0,C^--\kappa^-),\max(0,C^+-\kappa^+)\bigr)$ first,
+energy second.
 \end{proposition}
 \noindent Component-wise $\max(C,\kappa)=\kappa+\max(0,C-\kappa)$, and adding
 the constant $\kappa$ preserves every LEX2 comparison; each level is thus the
@@ -734,7 +764,8 @@ it.)
 \subsection{Setup}
 \label{sec:exp-setup}
 
-All arms run on the 82-instance benchmark with the irace-tuned
+All \emph{arms} --- our term for each compared algorithm configuration ---
+run on the 82-instance benchmark with the irace-tuned
 configuration of \cite{DiazTabu2026}: 30 runs per instance, 900\,s time
 limit, population 250, tabu search on $N_2$. The makespan-only baseline is
 \emph{not} re-run: we reuse the published raw results of
@@ -936,7 +967,7 @@ envelope) and mean arm positions on \texttt{la24}. Each lever moves the
 solution vertically towards the front at essentially constant makespan;
 the remaining vertical gap is the target of the energy-aware
 neighbourhood. A single lexicographic solution occupies one extreme of
-the trade-off; the Pareto method of Section~\ref{sec:pareto} will return
+the trade-off; the ladder of Section~\ref{sec:pareto} returns
 the whole curve.}
 \label{fig:front}
 \end{figure}
@@ -1362,7 +1393,8 @@ which harvests the energy hidden in makespan plateaus (7.9\% on average over
 82 instances, up to 26.5\% on $50{\times}15$, always at zero makespan cost);
 right-shift timing optimisation, which contributes a further ${\sim}8\%$ and
 is near-optimally approximated by a single backward pass; and the bi-critical
-neighbourhood $N_2^{ME}$, the first sequencing neighbourhood targeting idle
+neighbourhood $N_2^{ME}$, to our knowledge the first sequencing
+neighbourhood targeting idle
 gaps, with feasibility proven and connectivity established for makespan and
 machine-completion optimality.
 
