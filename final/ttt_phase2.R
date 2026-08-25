@@ -1,3 +1,11 @@
+# AVISO: la metrica B de este script promedia SOLO sobre las instancias en que
+# el brazo alcanza el objetivo, que es precisamente el sesgo que el articulo
+# denuncia (acreditar a MOR un 71% del presupuesto usando el 15% de instancias
+# donde llega). Se conserva porque es la fuente de la METRICA A y del
+# contraejemplo del 71%. El analisis autoritativo de la metrica B es
+# final/ttt_paired.R, emparejado por instancia y con los no alcanzadores
+# incluidos. No usar la metrica B de aqui para conclusiones.
+#
 # Velocidad de convergencia en la Fase 2, con las DOS metricas acordadas:
 #  (A) t_meseta = tiempo hasta <=1% del valor final PROPIO del brazo
 #  (B) t_objA0  = tiempo hasta la calidad final del CONTROL A0 (objetivo comun,

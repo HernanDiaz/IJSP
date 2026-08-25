@@ -1058,44 +1058,49 @@ median computed only over successes is meaningless without it.
 \begin{table}[t]
 \centering
 \caption{Time to reach the unseeded control's final quality ($+0.5\%$),
-analysed as time to event with the instance as unit. Time is the fraction
-of the per-instance budget; instances on which the arm never reaches the
-target are right-censored at $1.0$ rather than discarded. ``Reach'' is the
-percentage of the 61 instances on which the target is attained; ``n.r.''
-means the Kaplan--Meier median is not reached, i.e.\ more than half the
-instances are censored. The last column is a log-rank test against the
-control, Holm-corrected over the six seeded arms of each solver. Three
+paired by instance. Time is the fraction of the per-instance budget, and an
+arm that never reaches the target within the budget is recorded at $1.0$.
+``Reach'' is the percentage of the 61 instances on which the target is
+attained. ``Earlier/later'' counts the instances on which the arm reaches
+it before or after its own paired control, ties excluded; the sign test on
+those counts is the \emph{primary} contrast, because recording a
+non-reacher at $1.0$ can never flip its sign --- such an arm always
+registers as later. $\Delta$RMTT, the paired difference in restricted mean
+time, is reported second: that same recording understates a non-reacher's
+true time and therefore flatters the seeded arm. Both are Holm-corrected
+over the six seeded arms of each solver. The control reaches its own target
+on all 61 instances by construction, so no test is reported for it. Three
 representative arms per solver are shown; the full table is released with
 the data.}
 \label{tab:ttt}
 \small
-\begin{tabular}{llcccc}
+\begin{tabular}{llccccc}
 \toprule
-Solver & Arm & Reach & Median KM & 95\% CI & log-rank \\
+Solver & Arm & Reach & Earlier/later & $p$ (sign) & RMTT & $\Delta$RMTT [95\% CI] \\
 \midrule
 \multirow{4}{*}{GA}
- & A0  & 100\% & 0.98 & [0.96,\,1.00] & --- \\
- & V2  & 34\%  & n.r. & --- & $<0.001$ \\
- & MOR & 15\%  & n.r. & --- & $<0.001$ \\
- & MIX & 51\%  & 0.97 & --- & $<0.001$ \\
+ & A0  & 100\% & ---   & ---      & 0.96 & --- \\
+ & V2  & 34\%  & 16/28 & 0.48     & 0.86 & $-0.10$ $[-0.16,-0.04]$ \\
+ & MOR & 15\%  & 8/34  & $<0.001$ & 0.95 & $0.00$ $[-0.04,+0.03]$ \\
+ & MIX & 51\%  & 25/24 & 1.00     & 0.82 & $-0.14$ $[-0.22,-0.07]$ \\
 \midrule
 \multirow{4}{*}{ABCE3}
- & A0  & 100\% & 0.82 & [0.80,\,0.91] & --- \\
- & V2  & 92\%  & 0.19 & [0.09,\,0.40] & $<0.001$ \\
- & MOR & 61\%  & 0.91 & --- & 0.005 \\
- & MIX & 89\%  & \textbf{0.09} & [0.00,\,0.30] & $<0.001$ \\
+ & A0  & 100\% & ---   & ---      & 0.83 & --- \\
+ & V2  & 92\%  & 55/5  & $<0.001$ & 0.30 & $-0.53$ $[-0.61,-0.44]$ \\
+ & MOR & 61\%  & 25/27 & 0.89     & 0.78 & $-0.05$ $[-0.12,+0.02]$ \\
+ & MIX & 89\%  & 52/6  & $<0.001$ & \textbf{0.29} & $\mathbf{-0.54}$ $[-0.63,-0.45]$ \\
 \midrule
 \multirow{4}{*}{fEABCLS}
- & A0  & 100\% & 0.96 & [0.92,\,0.98] & --- \\
- & V2  & 52\%  & 0.92 & --- & 0.005 \\
- & MOR & 15\%  & n.r. & --- & $<0.001$ \\
- & MIX & 54\%  & 0.92 & --- & 0.010 \\
+ & A0  & 100\% & ---   & ---      & 0.90 & --- \\
+ & V2  & 52\%  & 28/22 & 0.48     & 0.78 & $-0.12$ $[-0.19,-0.06]$ \\
+ & MOR & 15\%  & 6/41  & $<0.001$ & 0.96 & $+0.05$ $[+0.02,+0.09]$ \\
+ & MIX & 54\%  & 33/20 & 0.30     & 0.74 & $-0.16$ $[-0.23,-0.09]$ \\
 \midrule
 \multirow{4}{*}{TSN2}
- & A0  & 100\% & 0.91 & [0.89,\,0.94] & --- \\
- & V2  & 46\%  & n.r. & --- & $<0.001$ \\
- & MOR & 31\%  & n.r. & --- & $<0.001$ \\
- & MIX & 66\%  & 0.73 & [0.67,\,0.97] & 0.178 \\
+ & A0  & 100\% & ---   & ---      & 0.87 & --- \\
+ & V2  & 46\%  & 24/33 & 0.87     & 0.82 & $-0.05$ $[-0.11,+0.01]$ \\
+ & MOR & 31\%  & 18/37 & 0.072    & 0.83 & $-0.04$ $[-0.10,+0.02]$ \\
+ & MIX & 66\%  & 38/18 & 0.063    & 0.71 & $-0.16$ $[-0.23,-0.09]$ \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -1110,34 +1115,60 @@ that it should not be used alone, and do not tabulate it further.
 
 Metric B needs care of a different kind. An arm that never reaches the
 target on an instance has no time-to-target there, and dropping such
-instances would compute a median only over the successes --- precisely
-discarding the cases where the arm does worst. We therefore treat the
-metric as a time-to-event quantity: instances where the target is not
-reached within the budget are right-censored at $1.0$, and we report
-Kaplan--Meier medians with log-rank tests against the control. This also
-makes the reach rate part of the estimator rather than a caveat attached to
-it: when more than half the instances are censored the median is simply not
-reached, which is the honest summary.
+instances would summarise only the successes --- precisely discarding the
+cases where the arm does worst. The reach rate and the times must therefore
+enter the analysis together.
 
-Under this treatment ABCE3 stands out. Its mixed pool attains the control's
-\emph{final} quality after $9\%$ of the budget against the control's
-$82\%$, on $89\%$ of instances, with $p<10^{-3}$; V2 achieves $19\%$ on
-$92\%$ of instances. These are unambiguous ``same quality, sooner''
-results, and they agree with the converged-quality finding for that solver.
+Two properties of the design constrain how. First, the arms are paired:
+each seeded arm and its control share the instance, the budget and the
+target, so a comparison that treats them as independent groups is not
+available. Second, and more restrictive, the target on an instance is the
+control's own endpoint, so the control attains it on all 61 instances by
+construction. Its sample cannot be censored, whereas the seeded samples
+can. A log-rank test against such a reference contrasts a censored sample
+with one that is uncensorable by definition, and we therefore do not report
+one.
 
-The other three solvers are weaker than a naive reading would suggest.
-On fEABCLS and TSN2 the mixed pool reaches the target on only $54\%$ and
-$66\%$ of instances, and although the log-rank test is significant for
-fEABCLS ($p=0.010$) it is not for TSN2 ($p=0.18$) --- consistent with
-Section~\ref{sec:res-ic}, where the same arm fails to reach significance on
-converged quality. On the GA every seeded arm is significantly
-\emph{slower} to the control's quality, MOR reaching it on 15\% of
-instances and MIX on 51\%.
+What survives both constraints is a paired analysis of the recorded times,
+with non-reachers recorded at the budget, $T=1.0$. That recording
+understates a non-reacher's true time, and since only seeded arms are ever
+non-reachers, the understatement runs in favour of seeding. It biases the
+mean but not the sign: an arm recorded at $1.0$ has $T\ge T_{A0}$ and is
+always counted as later. We accordingly take the sign test on the paired
+earlier/later counts as the primary contrast, and report the paired
+difference in restricted mean time ($\Delta$RMTT, with a bootstrap interval
+over instances) as a secondary quantity whose bias is known and runs in one
+direction.
 
-The contrast with the earlier tally is instructive. Computing medians over
-successes alone would have credited MOR on the GA with reaching the target
-at 71\% of budget, a figure derived from the 15\% of instances where it
-succeeds at all. Censoring removes that possibility by construction.
+Under this treatment ABCE3 stands alone. Its mixed pool reaches the
+control's \emph{final} quality earlier on 52 of the 58 instances that are
+not ties, cutting restricted mean time from $0.83$ to $0.29$ of the budget;
+V2 does almost as well, and five of the six seeded arms are significant on
+both contrasts. These are unambiguous ``same quality, sooner'' results, and
+they agree with the converged-quality finding for that solver.
+
+No other solver supports that claim. On the GA the mixed pool is earlier on
+25 instances and later on 24 --- a coin flip. On fEABCLS and TSN2 no arm
+clears the sign test after correction, TSN2's mixed pool coming closest at
+$p=0.063$. The two contrasts disagree on exactly these three solvers:
+$\Delta$RMTT is negative and significant for four GA arms, three fEABCLS
+arms and two TSN2 arms whose sign tests are not. That pattern has a
+definite reading. A mean is pulled down by a minority of instances on which
+the arm arrives much earlier, while the majority do not improve at all; the
+sign test is what separates a general acceleration from one concentrated in
+a subset. Outside ABCE3, seeding buys the second, and the distinction
+matters to a practitioner choosing whether to seed a given run.
+
+Three arms are significantly \emph{slower} to the target than their
+control: MOR on the GA (8 earlier, 34 later), and MOR (6/41, $\Delta$RMTT
+$+0.05$) and GT (10/38) on fEABCLS. MOR is the weakest generator on the
+quality ladder of Section~\ref{sec:res-seedqual}, so this is the one place
+where seed quality and outcome move together.
+
+The contrast with a success-only tally is instructive. Computing medians
+over successes alone would have credited MOR on the GA with reaching the
+target at 71\% of budget, a figure derived from the 15\% of instances where
+it succeeds at all.
 
 \subsection{Initial-population quality: the mixed pool does not start
 better}\label{sec:res-seedqual}
@@ -1290,12 +1321,16 @@ experiment. Reporting their fate is part of the point of specifying them.
 wins, 0 losses out of 61, with no seeded arm except MOR failing to help.
 
 \emph{(ii) For solvers with strong local search the final quality
-saturates but metric-A acceleration remains} --- \textbf{half confirmed}.
-Saturation holds: fEABCLS is statistically unchanged. The acceleration does
-not appear under metric A, which we found separates nothing once curves are
-made monotone (Section~\ref{sec:res-ttt}); it appears clearly under metric
-B and under the budget-fraction table, so the substance survives but the
-metric that was supposed to show it does not.
+saturates but metric-A acceleration remains} --- \textbf{saturation
+confirmed, acceleration refuted}. Saturation holds: fEABCLS is
+statistically unchanged at the budget. The acceleration does not survive
+either time-to-target metric. Metric A separates nothing once curves are
+made monotone, and under metric B no fEABCLS arm clears the paired sign
+test: its mixed pool is earlier on 33 instances and later on 20
+(Section~\ref{sec:res-ttt}). What remains is the budget-fraction table,
+where fEABCLS improves from $15.87\%$ to $9.38\%$ at a tenth of the budget.
+The gain at short budgets is therefore real, but it is not the general
+acceleration the pilot predicted.
 
 \emph{(iii) For the plain GA the apparent gain is an artefact} ---
 \textbf{confirmed at the pilot's budgets, but incomplete}. The gain does
