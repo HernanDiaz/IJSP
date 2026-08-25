@@ -53,7 +53,8 @@ genetic algorithm, although every single-generator pool does. On the
 strongest solver the improvement is small, concentrated in one size class,
 and short of significance under an instance-weighted test; we report it as
 such. What matters more is the budget: at a tenth of ours, seeding cuts the
-deviation by 37\% to 53\% on all four solvers.
+excess over the lower bound by 37\% to 53\% on all four solvers, equivalent
+to 4\% to 11\% of makespan.
 
 Two observations constrain the mechanism. The mixed pool draws on exactly
 the solutions that feed the single-generator arms and starts from a worse
@@ -976,8 +977,9 @@ tables cannot show: \emph{at short budgets seeding is a large win for every
 solver in the portfolio}. At 10\% of budget MIX cuts mean RPD from
 $26.90\%$ to $12.76\%$ on ABCE3, from $24.36\%$ to $13.03\%$ on the GA,
 from $15.87\%$ to $9.38\%$ on fEABCLS and from $12.52\%$ to $7.90\%$ on
-TSN2 --- reductions of 53\%, 46\%, 41\% and 37\%. The margins narrow but do
-not vanish: at the budget limit MIX still leads on all four. The practical
+TSN2 --- reductions of 53\%, 46\%, 41\% and 37\% in the excess over the
+lower bound, equivalent to 11\%, 9\%, 6\% and 4\% of makespan. The margins
+narrow but do not vanish: at the budget limit MIX still leads on all four. The practical
 reading is that the question ``does seeding help?'' is ill-posed unless the
 budget is specified, and that the shorter the budget the less the answer
 depends on which solver is being seeded.
