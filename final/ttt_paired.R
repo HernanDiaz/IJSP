@@ -78,8 +78,13 @@ for (al in names(algos)) {
   d <- merge(d, lb, by = "inst"); d$rpd <- 100 * (d$bestcmax - d$lb) / d$lb
   insts <- Reduce(intersect, lapply(arms, function(a) unique(d$inst[d$arm == a])))
 
-  # objetivo por instancia: endpoint del control +0.5%
-  fin <- function(a, i) { s <- d[d$inst == i & d$arm == a, ]; s$rpd[which.max(s$t)] }
+  # Objetivo por instancia: el endpoint del control mas un 0.5%, EN MAKESPAN.
+  # Aplicar el 1.005 al RPD no es equivalente y es mucho mas estricto:
+  #   RPD_s <= 1.005*RPD_A0   <=>   C_s <= 1.005*C_A0 - 0.005*LB
+  # es decir, en RPD el objetivo correcto es 1.005*RPD_A0 + 0.5. Con RPD del
+  # orden del 10%, multiplicar el RPD da un umbral de 10.05% donde el declarado
+  # es 10.55%: una tolerancia veinte veces menor. Se usa el makespan crudo.
+  fin <- function(a, i) { s <- d[d$inst == i & d$arm == a, ]; s$bestcmax[which.max(s$t)] }
   ctl <- sapply(insts, function(i) fin("A0", i)); names(ctl) <- insts
 
   # T por (brazo, instancia), restringido en 1.0
@@ -89,7 +94,7 @@ for (al in names(algos)) {
   for (a in arms) for (i in insts) {
     s <- d[d$inst == i & d$arm == a, ]; s <- s[order(s$t), ]
     if (nrow(s) < 3) next
-    Tmax <- max(s$t); j <- which(s$rpd <= ctl[[i]] * 1.005)
+    Tmax <- max(s$t); j <- which(s$bestcmax <= ctl[[i]] * 1.005)
     if (length(j)) { Tm[i, a] <- s$t[j[1]] / Tmax; Rm[i, a] <- 1 }
     else           { Tm[i, a] <- 1.0;              Rm[i, a] <- 0 }
   }

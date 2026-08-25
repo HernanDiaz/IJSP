@@ -1110,39 +1110,43 @@ the data.}
 Solver & Arm & Reach & Earlier/later & $p$ (sign) & RMTT & $\Delta$RMTT [95\% CI] \\
 \midrule
 \multirow{4}{*}{GA}
- & A0  & 100\% & ---   & ---      & 0.94 & --- \\
- & V2  & 38\%  & 20/32 & 0.38     & 0.86 & $-0.08$ $[-0.14,-0.02]$ \\
- & MOR & 2\%   & 1/48  & $<0.001$ & 0.99 & $+0.05$ $[+0.03,+0.08]$ \\
- & MIX & 46\%  & 24/28 & 0.68     & 0.83 & $-0.12$ $[-0.18,-0.06]$ \\
+ & A0  & 100\% & ---   & ---      & 0.62 & --- \\
+ & V2  & 56\%  & 6/49  & $<0.001$ & 0.77 & $+0.16$ $[+0.12,+0.20]$ \\
+ & MOR & 5\%   & 0/59  & $<0.001$ & 0.99 & $+0.37$ $[+0.31,+0.44]$ \\
+ & MIX & 77\%  & 18/37 & 0.015    & 0.70 & $+0.09$ $[+0.04,+0.13]$ \\
 \midrule
 \multirow{4}{*}{ABCE3}
- & A0  & 100\% & ---   & ---      & 0.67 & --- \\
- & V2  & 90\%  & 54/4  & $<0.001$ & 0.29 & $-0.38$ $[-0.45,-0.30]$ \\
- & MOR & 38\%  & 19/37 & 0.045    & 0.81 & $+0.14$ $[+0.06,+0.23]$ \\
- & MIX & 95\%  & 57/3  & $<0.001$ & \textbf{0.20} & $\mathbf{-0.47}$ $[-0.54,-0.40]$ \\
+ & A0  & 100\% & ---   & ---      & 0.38 & --- \\
+ & V2  & 100\% & 54/2  & $<0.001$ & 0.16 & $-0.22$ $[-0.28,-0.16]$ \\
+ & MOR & 70\%  & 13/40 & $<0.001$ & 0.60 & $+0.22$ $[+0.14,+0.30]$ \\
+ & MIX & 100\% & 57/2  & $<0.001$ & \textbf{0.12} & $\mathbf{-0.26}$ $[-0.31,-0.21]$ \\
 \midrule
 \multirow{4}{*}{fEABCLS}
- & A0  & 100\% & ---   & ---      & 0.90 & --- \\
- & V2  & 56\%  & 32/19 & 0.32     & 0.75 & $-0.15$ $[-0.22,-0.08]$ \\
- & MOR & 5\%   & 1/43  & $<0.001$ & 0.99 & $+0.09$ $[+0.06,+0.11]$ \\
- & MIX & 48\%  & 29/20 & 0.32     & 0.76 & $-0.14$ $[-0.22,-0.07]$ \\
+ & A0  & 100\% & ---   & ---      & 0.44 & --- \\
+ & V2  & 89\%  & 24/25 & 1.00     & 0.50 & $+0.06$ $[+0.01,+0.11]$ \\
+ & MOR & 11\%  & 0/59  & $<0.001$ & 0.94 & $+0.49$ $[+0.43,+0.56]$ \\
+ & MIX & 89\%  & 28/26 & 1.00     & 0.50 & $+0.06$ $[+0.01,+0.12]$ \\
 \midrule
 \multirow{4}{*}{TSN2}
- & A0  & 100\% & ---   & ---      & 0.86 & --- \\
- & V2  & 49\%  & 24/34 & 0.71     & 0.83 & $-0.03$ $[-0.09,+0.03]$ \\
- & MOR & 23\%  & 14/43 & $<0.001$ & 0.88 & $+0.02$ $[-0.04,+0.08]$ \\
- & MIX & 66\%  & 39/19 & 0.048    & 0.72 & $-0.14$ $[-0.21,-0.07]$ \\
+ & A0  & 100\% & ---   & ---      & 0.52 & --- \\
+ & V2  & 90\%  & 35/24 & 0.62     & 0.57 & $+0.05$ $[-0.00,+0.10]$ \\
+ & MOR & 43\%  & 19/41 & 0.031    & 0.74 & $+0.22$ $[+0.12,+0.31]$ \\
+ & MIX & 93\%  & 42/15 & 0.003    & 0.46 & $-0.06$ $[-0.11,+0.01]$ \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-Metric A discriminates almost nothing: every arm of every solver reaches
-within 1\% of its own final value between 80\% and 97\% of its budget, and
-on the GA the seeded arms plateau marginally \emph{later} than the control.
-That is the expected behaviour of a self-referential target --- an arm that
-settles quickly on a poor value scores well --- and, given how tightly the
-values cluster, the metric separates nothing here. We report it to document
-that it should not be used alone, and do not tabulate it further.
+Metric A behaves exactly as the pilot warned. Its medians span $0.09$ to
+$0.70$ of the budget, so it is not that the metric fails to separate the
+arms; it is that it separates them in the wrong order. On the GA the
+earliest plateau belongs to MOR, at $0.49$ against the control's $0.60$,
+and on TSN2 the same, $0.27$ against $0.36$ --- while the arms that
+actually finish best plateau latest, V2 at $0.70$ on the GA. This is the
+signature of a self-referential target: an arm that settles quickly on a
+poor value scores well \emph{because} it is poor. MOR is the worst
+generator on all four solvers, and metric A makes it look the fastest on
+two of them. We report it to document that it must not be used alone, and
+do not tabulate it further.
 
 Metric B needs care of a different kind. An arm that never reaches the
 target on an instance has no time-to-target there, and dropping such
@@ -1172,33 +1176,34 @@ over instances) as a secondary quantity whose bias is known and runs in one
 direction.
 
 Under this treatment ABCE3 stands out. Its mixed pool reaches the control's
-\emph{final} quality earlier on 57 of the 60 instances that are not ties,
-cutting restricted mean time from $0.67$ to $0.20$ of the budget; V2 and
-V2H do nearly as well, and all six seeded arms are significant on both
-contrasts --- five faster, MOR slower. These are unambiguous ``same
-quality, sooner'' results, and they agree with the converged-quality
-finding for that solver.
+\emph{final} quality on every instance and earlier on 57 of the 59 that are
+not ties, cutting restricted mean time from $0.38$ to $0.12$ of the budget;
+V2 and V2H do nearly as well. These are unambiguous ``same quality,
+sooner'' results, and they agree with the converged-quality finding for
+that solver. TSN2 joins it more modestly: its mixed pool is earlier on 42
+instances and later on 15 ($p=0.003$), and reaches the target on $93\%$ of
+them against the control's $100\%$ by construction.
 
-Only TSN2 joins it, and marginally: its mixed pool is earlier on 39
-instances and later on 19 ($p=0.048$), the only other arm anywhere to clear
-the sign test in the direction of acceleration. On the GA the mixed pool is
-earlier on 24 and later on 28 --- a coin flip --- and on fEABCLS no arm
-clears the test either.
+The other two solvers give the opposite answer, and the GA gives it
+emphatically. \emph{Every one of its six seeded arms is significantly
+slower} to the control's own final quality, MIX included (18 earlier, 37
+later, $p=0.015$), and both contrasts agree on all six. On fEABCLS the
+three competitive pools --- V2H, V2 and MIX --- are statistically
+indistinguishable from the control ($p=1.00$ for V2 and MIX), while the
+three weak ones are significantly slower. Seeding buys that solver nothing
+in time, and it costs the GA time on every generator we tried.
 
-The two contrasts disagree on the GA and fEABCLS, and on the same three
-arms in both: $\Delta$RMTT is negative and significant for V2H, V2 and MIX,
-whose sign tests are not. That pattern has a definite reading. A mean is
-pulled down by a minority of instances on which the arm arrives much
-earlier, while the majority do not improve at all; the sign test is what
-separates a general acceleration from one concentrated in a subset. Outside
-ABCE3 and the mixed pool on TSN2, seeding buys the second, and the
-distinction matters to a practitioner deciding whether to seed a given run.
+Mean and sign now agree almost everywhere; they part company on two arms
+only, V2H on fEABCLS and GT on TSN2, where $\Delta$RMTT reaches
+significance and the sign test does not. The reading in those two cases is
+that the gain is concentrated in a minority of instances rather than being
+a general shift, which is what the sign test is there to detect.
 
-Eight arm--solver pairs are significantly \emph{slower} to the target than
-their control, and the weakest two generators account for all of them. MOR
-is slower on all four solvers: it reaches the target on 1 instance of 61 on
-the GA and on 3 on fEABCLS. GT is slower on three, being faster only on
-ABCE3. Both sit at the bottom of the quality ladder of
+Thirteen arm--solver pairs are significantly \emph{slower} to the target
+than their control, and MOR is the extreme of every one: it is slower on
+all four solvers and reaches the target on no instance at all on the GA and
+fEABCLS, where 59 of 61 comparisons go against it. GT is slower on three
+solvers. Both sit at the bottom of the quality ladder of
 Section~\ref{sec:res-seedqual}, so this is the one place in the study where
 seed quality and outcome move together.
 
@@ -1361,11 +1366,12 @@ wins, 0 losses out of 61, with no seeded arm except MOR failing to help.
 saturates but metric-A acceleration remains} --- \textbf{saturation
 confirmed, acceleration refuted}. Saturation holds: fEABCLS is
 statistically unchanged at the budget. The acceleration does not survive
-either time-to-target metric. Metric A separates nothing once curves are
-made monotone, and under metric B no fEABCLS arm clears the paired sign
-test: its mixed pool is earlier on 29 instances and later on 20
-(Section~\ref{sec:res-ttt}). What remains is the budget-fraction table,
-where fEABCLS improves from $14.84\%$ to $8.91\%$ at a tenth of the budget.
+either time-to-target metric. Metric A orders the arms by how early they
+settle rather than by where they settle, and under metric B the mixed pool
+on fEABCLS is statistically indistinguishable from its control --- earlier
+on 28 instances, later on 26, $p=1.00$ (Section~\ref{sec:res-ttt}). What
+remains is the budget-fraction table, where fEABCLS improves from
+$14.84\%$ to $8.91\%$ at a tenth of the budget.
 The gain at short budgets is therefore real, but it is not the general
 acceleration the pilot predicted.
 
