@@ -149,8 +149,8 @@ tried beats the unseeded control. The sign of the effect is therefore not
 predicted by solver quality. What does predict it is whether the solver's
 variation operators can exploit a structurally heterogeneous population, and
 what predicts its magnitude is the ratio of instance size to search budget:
-at one tenth of the budget seeding reduces the deviation from published
-lower bounds by 28\% to 44\% on all four solvers, including the one it
+at one tenth of the budget seeding reduces the excess over the published
+lower bounds by 37\% to 53\% on all four solvers, including the one it
 harms at convergence.
 
 The paper is organised as follows. Section~\ref{sec:related} reviews
@@ -326,10 +326,12 @@ random initialisation. For paired run $r\in\{0,\dots,29\}$ the arm takes
 pool lines $[(r\cdot k)\bmod 1024,\,(r\cdot k+k)\bmod 1024)$ --- consecutive
 blocks, no reordering or filtering, so each run draws from the generator's
 true output distribution rather than from a curated subset. The 30 blocks
-are all distinct, though with $k=250$ and 1{,}024 pool lines consecutive
-ones overlap by 22\% on average; the seeded populations are therefore not
-fully independent across runs, which is one reason the unit of analysis
-throughout is the instance rather than the run. Scout-bee replacements
+start at 30 distinct offsets and consecutive ones are disjoint, but with
+$k=250$ and 1{,}024 pool lines the wraparound makes any two of them share
+$22\%$ of their entries on average, and each pool line is drawn by $7.3$
+of the 30 runs; the seeded populations are therefore not fully independent
+across runs, which is one reason the unit of analysis throughout is the
+instance rather than the run. Scout-bee replacements
 during the run remain fully random. Seeds enter as raw permutations and are
 re-decoded and re-evaluated by the receiving solver, so no foreign
 objective values ever enter the search.
@@ -444,9 +446,18 @@ where $\tilde{t}_{\mathrm{conv}}$ is the median over that class's
 calibration instances. The floor of 60\,s prevents degenerate budgets on
 the small classes, where several solvers plateau in a few seconds. Every
 arm of a cell receives the identical budget, which is what the
-within-solver comparisons require. Reporting budgets per class rather than
-per instance trades a little precision for a protocol that does not
-require calibration runs on the 61 evaluation instances themselves.
+within-solver comparisons require. The eight calibration instances ---
+\texttt{tai15\_15\_01}, \texttt{tai20\_20\_02}, \texttt{tai30\_15\_01},
+\texttt{tai30\_20\_04}, \texttt{tai50\_15\_01}, \texttt{tai50\_15\_05},
+\texttt{tai50\_20\_01} and \texttt{tai50\_20\_05} --- are stratified across
+the size classes and are themselves members of the 61-instance evaluation
+set; the control traces behind $t_{\mathrm{conv}}$ comprise five runs for
+the GA and fEABC-LS and thirty for ABCE3 and TS-N2. The horizon of a class
+is therefore the control's own convergence timescale, measured on one or
+two of the instances to which it is later applied. What the endpoint
+measures is thus performance at a control-calibrated horizon rather than a
+solver-neutral approximation to convergence, a distinction we return to in
+Section~\ref{sec:res-budget}.
 
 The cap of 900\,s is a feasibility constraint rather than a methodological
 choice. The design comprises 51{,}240 runs; at the budgets of
