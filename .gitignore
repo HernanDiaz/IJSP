@@ -62,3 +62,6 @@ final/validate/*/
 final/leaktest/*/
 final/memtest/*/
 verify_independent
+
+# transcripciones completas de las revisiones automaticas (ruido, 2+ MB)
+review/*_run.log
