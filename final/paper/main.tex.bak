@@ -53,11 +53,8 @@ genetic algorithm, although every single-generator pool does. On the
 strongest solver the improvement is small, concentrated in one size class,
 and short of significance under an instance-weighted test; we report it as
 such. What matters more is the budget: at a tenth of ours, seeding cuts the
-excess over the lower bound on all four solvers, though by margins spanning
-an order of magnitude: from 11\% on the genetic algorithm to 40\% on the
-memetic ABC, or 1.3\% to 5.2\% of makespan. The two largest short-budget
-gains accrue to the two strongest solvers, reversing the ordering seen at
-the budget limit.
+excess over the lower bound by 37\% to 53\% on all four solvers, equivalent
+to 4\% to 11\% of makespan.
 
 Two observations constrain the mechanism. The mixed pool draws on exactly
 the solutions that feed the single-generator arms and starts from a worse
@@ -153,7 +150,7 @@ predicted by solver quality. What does predict it is whether the solver's
 variation operators can exploit a structurally heterogeneous population, and
 what predicts its magnitude is the ratio of instance size to search budget:
 at one tenth of the budget seeding reduces the excess over the published
-lower bounds by 11\% to 40\% on all four solvers, including the one it
+lower bounds by 37\% to 53\% on all four solvers, including the one it
 harms at convergence.
 
 The paper is organised as follows. Section~\ref{sec:related} reviews
@@ -544,25 +541,14 @@ and confirms that the inequality is tight rather than vacuous.
 
 \subsection{Which cells converged}\label{sec:res-conv}
 
-The plateau rule of Section~\ref{sec:design} --- improvement in
-$\mathbb{E}[C_{\max}]$ below $0.1\%$ over the final tenth of the budget ---
-is applied to each control \emph{run} rather than to the run-averaged
-curve, since averaging thirty traces can hide a subset that is still
-improving, and a cell is classified as converged when at least $90\%$ of
-its runs satisfy it. The final value of a run is the solution the solver
-returns, not the last point of its trace. This classifies 111 of the 244
-control cells as \emph{anytime-only}: 49 of 61 for the GA, 25 for fEABCLS,
-22 for TSN2 and 15 for ABCE3.
-
-The distribution is informative in itself. The GA fails the rule on every
-instance of the four largest classes. The $50\times20$ class defeats every
-solver but ABCE3, which converges on five of its ten instances; ABCE3's own
-failures are otherwise confined to $15\times15$, where a third of its runs
-are still improving when the $60$\,s floor stops them. Classification is
-insensitive to the exact threshold in the range that matters: at $0.05\%$
-the count of converged cells is 114 and at $0.25\%$ it is 162, against 133
-at the $0.1\%$ used here. Per-cell classifications are released with the
-data.
+Applying the plateau rule of Section~\ref{sec:design} to each control
+curve --- improvement in $\mathbb{E}[C_{\max}]$ below $0.1\%$ over the
+final tenth of the budget --- classifies 106 of the 244 control cells as
+\emph{anytime-only}: 50 of 61 for the GA, 20 for ABCE3, and 18 each for
+fEABCLS and TSN2. The distribution is informative in itself. The GA fails
+the rule on every instance of the four largest classes; TSN2 satisfies it
+on $20\times20$ through $50\times15$ but on none of the ten $50\times20$
+instances. Per-cell classifications are released with the data.
 
 \begin{table}[t]
 \centering
@@ -576,56 +562,46 @@ Solver & Subset & A0 & V2H & V2 & MOR & GT & GP & MIX \\
 \midrule
 \multirow{2}{*}{GA}
  & all (61)        & \textbf{7.52} & 7.66 & 8.05 & 9.70 & 8.47 & 7.99 & 7.58 \\
- & converged (12)  & 4.75 & 4.28 & 4.39 & 6.82 & 5.35 & 4.49 & \textbf{4.00} \\
+ & converged (11)  & 5.39 & \textbf{5.00} & 5.22 & 7.77 & 6.03 & 5.58 & \textbf{5.00} \\
 \midrule
 \multirow{2}{*}{ABCE3}
  & all (61)        & 10.51 & 9.51 & 9.39 & 10.71 & 10.20 & 9.68 & \textbf{9.37} \\
- & converged (46)  & 11.61 & 10.46 & \textbf{10.34} & 11.85 & 11.28 & 10.72 & 10.35 \\
+ & converged (41)  & 10.62 & 9.68 & \textbf{9.54} & 10.79 & 10.29 & 9.84 & \textbf{9.54} \\
 \midrule
 \multirow{2}{*}{fEABCLS}
  & all (61)        & 3.67 & \textbf{3.66} & \textbf{3.66} & 5.16 & 4.47 & 4.04 & 3.67 \\
- & converged (36)  & 3.39 & \textbf{3.34} & \textbf{3.34} & 4.80 & 4.07 & 3.73 & 3.40 \\
+ & converged (43)  & 3.85 & \textbf{3.72} & 3.73 & 5.45 & 4.63 & 4.18 & 3.78 \\
 \midrule
 \multirow{2}{*}{TSN2}
  & all (61)        & 3.60 & 3.64 & 3.62 & 4.25 & 3.99 & 3.67 & \textbf{3.41} \\
- & converged (39)  & \textbf{2.75} & 2.82 & 2.83 & 3.54 & 3.41 & 3.07 & 2.78 \\
+ & converged (43)  & 3.75 & 3.81 & 3.79 & 4.72 & 4.39 & 4.04 & \textbf{3.73} \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-Table~\ref{tab:conv} shows that the restriction leaves two of the four
-solvers unchanged in every respect that matters. fEABCLS keeps the same
-best arm and the same ordering. ABCE3 keeps its conclusion --- V2 and MIX
-are separated by a hundredth of a point and both beat the control by more
-than a point --- while its absolute level rises, because the cells it fails
-are the small $15\times15$ ones on which it does best.
+Table~\ref{tab:conv} shows that the restriction leaves three of the four
+solvers unchanged in every respect that matters: ABCE3, fEABCLS and TSN2
+keep the same best arm, the same ordering and the same qualitative
+conclusion. The absolute levels rise by one to three tenths of a point
+because the cells that converge are the easier ones.
 
-The GA is the first exception, and the difference is not cosmetic. Over all
-61 instances the unseeded control is the best arm (7.52 against MIX's
-7.58); over the 12 instances where that control actually converges the
-ordering reverses and the mixed pool beats it by 0.75 points (4.00 against
-4.75). The negative result for the GA is therefore a statement about
+The GA is the exception, and the difference is not cosmetic. Over all 61
+instances the unseeded control is the best arm (7.52 against MIX's 7.58);
+over the 11 instances where that control actually converges, the ordering
+reverses and the two best seeded arms beat it by 0.39 points (5.00 against
+5.39). The negative result for the GA is therefore a statement about
 \emph{insufficient budget}, not about seeding as such: it is the solver
 that needs the most time to consolidate a seeded population, and on the
-cells where it is given that time the harm disappears. This revises the
-reading of Section~\ref{sec:whyga}: what the GA lacks is not compatibility
-with heterogeneous parents in principle, but enough generations to exploit
-them under these budgets.
-
-TSN2 is the second exception, and it cuts the other way. Over all 61
-instances its mixed pool is the best arm (3.41 against the control's 3.60);
-over the 39 converged instances the control is best and the margin vanishes
-(2.75 against 2.78). The 22 cells TSN2 fails are its largest --- all ten
-$50\times20$ instances and eight of the ten $30\times20$ --- which are
-precisely where Section~\ref{sec:res-final} locates its gain. The benefit
-seeding brings to the strongest solver is thus confined to cells where its
-budget did not suffice to converge, a materially weaker claim than the
-unrestricted table supports, and we report it as such.
+cells where it is given that time the harm disappears. We carry this
+qualification through the rest of the paper, and it revises the reading of
+Section~\ref{sec:whyga}: what the GA lacks is not compatibility with
+heterogeneous parents in principle, but enough generations to exploit them
+under these budgets.
 
 Unless stated otherwise, the tables that follow use all 61 instances, so
-that every solver is evaluated on the same instance set; results restricted
-to converged cells are reported wherever they change a conclusion, which is
-the GA and TSN2.
+that every solver is evaluated on the same instance set; results
+restricted to converged cells are reported wherever they change a
+conclusion, which is the GA alone.
 
 \subsection{Final quality at the budget}\label{sec:res-final}
 
@@ -739,12 +715,12 @@ only: MOR wins nothing and loses 56 of 61.
 \paragraph{GA: harm, but only under an insufficient budget.} Over all 61
 instances no arm improves the genetic algorithm: the best, MIX, is 13/29/19
 with $\hat{A}_{12}=0.527$, and V2 is a clear loss (9/25/27). The
-qualification of Section~\ref{sec:res-conv} is essential here. The GA fails
-the plateau rule on 49 of 61 instances --- more than any other solver ---
-and on the 12 where its control does converge the ordering reverses, with
-MIX at 4.00\% against the control's 4.75\%. The reversal in the pooled
-table is therefore a statement about the budget this solver needs, not
-about seeding being harmful to it in principle.
+qualification of Section~\ref{sec:res-conv} is essential here and nowhere
+else. The GA fails the plateau rule on 50 of 61 instances --- more than any
+other solver --- and on the 11 where its control does converge the ordering
+reverses, with MIX and V2H at 5.00\% against the control's 5.39\%. The
+reversal in the pooled table is therefore a statement about the budget this
+solver needs, not about seeding being harmful to it in principle.
 
 Across all four solvers the generator ranking is stable in its extremes:
 MOR is the worst seeded arm and GT the second worst on every solver (MOR
@@ -950,73 +926,65 @@ with Table~\ref{tab:rpd} to within the trace sampling resolution.}
 Solver & Arm & 10\% & 25\% & 50\% & 75\% & 100\% \\
 \midrule
 \multirow{7}{*}{GA}
- & A0  & 13.58 & \textbf{11.00} & \textbf{8.96} & \textbf{8.06} & \textbf{7.56} \\
- & V2H & 12.91 & 11.78 & 9.70 & 8.50 & 7.73 \\
- & V2  & 12.70 & 11.92 & 10.29 & 9.02 & 8.14 \\
- & MOR & 14.07 & 12.24 & 10.85 & 10.17 & 9.75 \\
- & GT  & 13.15 & 11.34 & 9.76 & 8.99 & 8.51 \\
- & GP  & 12.43 & 11.09 & 9.48 & 8.60 & 8.04 \\
- & MIX & \textbf{12.10} & 11.08 & 9.32 & 8.32 & 7.64 \\
+ & A0  & 24.36 & 18.67 & 12.97 & 10.38 & 8.55 \\
+ & V2H & 13.94 & 13.25 & 11.04 & 9.65  & 8.39 \\
+ & V2  & 13.42 & 12.96 & 11.43 & 9.98  & 8.80 \\
+ & MOR & 20.72 & 17.07 & 13.42 & 11.67 & 10.40 \\
+ & GT  & 19.63 & 16.30 & 12.02 & 10.44 & 9.13 \\
+ & GP  & 13.56 & 12.74 & 10.87 & 9.62  & 8.51 \\
+ & MIX & \textbf{13.03} & \textbf{12.38} & \textbf{10.69} & \textbf{9.28} & \textbf{8.17} \\
 \midrule
 \multirow{7}{*}{ABCE3}
- & A0  & 12.28 & 11.45 & 10.83 & 10.67 & 10.52 \\
- & V2H & 10.83 & 10.10 & 9.68 & 9.61 & 9.52 \\
- & V2  & 10.78 & 9.97 & 9.55 & 9.48 & 9.40 \\
- & MOR & 12.84 & 11.95 & 11.11 & 10.92 & 10.73 \\
- & GT  & 11.84 & 11.12 & 10.52 & 10.35 & 10.22 \\
- & GP  & 10.65 & 10.17 & 9.84 & 9.76 & 9.68 \\
- & MIX & \textbf{10.23} & \textbf{9.76} & \textbf{9.49} & \textbf{9.46} & \textbf{9.38} \\
+ & A0  & 26.90 & 23.82 & 18.29 & 14.47 & 12.89 \\
+ & V2H & 13.70 & 12.85 & 11.42 & 10.53 & 10.18 \\
+ & V2  & 13.10 & 12.40 & 11.13 & \textbf{10.27} & 9.83 \\
+ & MOR & 22.02 & 19.35 & 15.98 & 13.88 & 12.57 \\
+ & GT  & 20.45 & 18.74 & 15.09 & 13.20 & 11.65 \\
+ & GP  & 13.46 & 12.84 & 11.39 & 10.55 & 10.19 \\
+ & MIX & \textbf{12.76} & \textbf{12.09} & \textbf{11.08} & 10.35 & \textbf{9.94} \\
 \midrule
 \multirow{7}{*}{fEABCLS}
- & A0  & 14.84 & 5.60 & 4.32 & 3.89 & 3.68 \\
- & V2H & 9.50 & 5.61 & 4.35 & 3.90 & \textbf{3.67} \\
- & V2  & 9.36 & 5.63 & 4.35 & 3.90 & \textbf{3.67} \\
- & MOR & 13.15 & 6.59 & 5.72 & 5.39 & 5.17 \\
- & GT  & 11.77 & 5.96 & 5.03 & 4.70 & 4.48 \\
- & GP  & 9.21 & 5.46 & 4.60 & 4.26 & 4.05 \\
- & MIX & \textbf{8.91} & \textbf{5.27} & \textbf{4.23} & \textbf{3.87} & 3.67 \\
+ & A0  & 15.87 & 10.61 & 6.93 & 5.26 & 4.27 \\
+ & V2H & 10.25 & 7.19  & 5.28 & 4.45 & 3.96 \\
+ & V2  & 10.19 & 7.40  & 5.44 & 4.61 & 4.21 \\
+ & MOR & 14.79 & 10.51 & 8.03 & 6.74 & 5.64 \\
+ & GT  & 12.67 & 9.22  & 6.91 & 5.82 & 5.06 \\
+ & GP  & 9.71  & 7.31  & 5.52 & 4.72 & 4.38 \\
+ & MIX & \textbf{9.38} & \textbf{6.66} & \textbf{4.85} & \textbf{4.27} & \textbf{3.89} \\
 \midrule
 \multirow{7}{*}{TSN2}
- & A0  & 12.48 & 5.98 & 4.36 & 3.79 & 3.53 \\
- & V2H & 8.70 & 5.63 & 4.29 & 3.81 & 3.59 \\
- & V2  & 8.41 & 5.53 & 4.25 & 3.80 & 3.57 \\
- & MOR & 10.04 & 5.52 & 4.66 & 4.36 & 4.19 \\
- & GT  & 9.78 & 5.36 & 4.40 & 4.08 & 3.93 \\
- & GP  & 7.94 & 5.08 & 4.11 & 3.76 & 3.59 \\
- & MIX & \textbf{7.89} & \textbf{5.05} & \textbf{3.94} & \textbf{3.55} & \textbf{3.36} \\
+ & A0  & 12.52 & 7.86 & 4.74 & 4.03 & 3.73 \\
+ & V2H & 8.73  & 6.34 & 4.46 & 3.95 & 3.70 \\
+ & V2  & 8.42  & 5.90 & 4.48 & 3.98 & 3.70 \\
+ & MOR & 10.29 & 6.68 & 5.00 & 4.58 & 4.38 \\
+ & GT  & 9.80  & 6.06 & 4.57 & 4.18 & 4.00 \\
+ & GP  & 7.94  & \textbf{5.52} & 4.26 & 3.89 & 3.70 \\
+ & MIX & \textbf{7.90} & \textbf{5.52} & \textbf{4.10} & \textbf{3.67} & \textbf{3.45} \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-One caution applies to these curves. They record the best individual
-\emph{in the population} at each sampling point rather than the solution
-the solver finally returns, and the last sample precedes termination by up
-to one sampling interval. In practice the two agree closely: the curve
-endpoint differs from the final quality of Table~\ref{tab:rpd} by a median
-of $0.000\%$ on ABCE3, $0.003\%$ on fEABCLS and $0.029\%$ on the GA. On
-TSN2 the curve ends $0.041\%$ \emph{below} the returned quality, because
-TS-N2 ranks internally by LEX2 while the curve tracks
-$\mathbb{E}[C_{\max}]$, so a schedule that is better on the midpoint need
-not be the one it returns. We nonetheless confine every cross-arm
-comparison to a single solver, where all arms are measured identically.
+Two cautions apply to these curves. They record the best individual
+\emph{in the population} at each sampling point, which is a lower bound on
+the best solution found so far; and the last sample precedes termination by
+up to one sampling interval. Both make the curve end slightly above the
+final quality of Table~\ref{tab:rpd}, by a median of $0.00\%$ on TSN2 and
+$0.04\%$ on fEABCLS but $0.32\%$ on the GA and $2.20\%$ on ABCE3, whose
+reported solution is retained in an elite structure that the population
+snapshot need not contain. Curves are therefore comparable \emph{within} a
+solver, where every arm is measured identically, but not across solvers.
 
 Within that scope, the aggregate view exposes a result the final-quality
 tables cannot show: \emph{at short budgets seeding is a large win for every
-solver in the portfolio, but by margins that differ by an order of
-magnitude between them}. At 10\% of budget MIX cuts mean RPD from
-$14.84\%$ to $8.91\%$ on fEABCLS and from $12.48\%$ to $7.89\%$ on TSN2,
-but only from $12.28\%$ to $10.23\%$ on ABCE3 and from $13.58\%$ to
-$12.10\%$ on the GA --- reductions of $40\%$, $37\%$, $17\%$ and $11\%$ in
-the excess over the lower bound, equivalent to $5.2\%$, $4.1\%$, $1.8\%$
-and $1.3\%$ of makespan. The two largest short-budget gains therefore
-accrue to the two \emph{strongest} solvers, which is the reverse of the
-ordering at the budget limit. Both are the solvers whose control spends its
-opening on an unseeded random population before local search can act:
-fEABCLS falls from $14.84\%$ to $5.60\%$ between a tenth and a quarter of
-its budget, and seeding buys precisely that opening. The practical reading
-is that the question ``does seeding help?'' is ill-posed unless the budget
-is specified, and that which solver benefits most depends on where in its
-own trajectory the budget cuts.
+solver in the portfolio}. At 10\% of budget MIX cuts mean RPD from
+$26.90\%$ to $12.76\%$ on ABCE3, from $24.36\%$ to $13.03\%$ on the GA,
+from $15.87\%$ to $9.38\%$ on fEABCLS and from $12.52\%$ to $7.90\%$ on
+TSN2 --- reductions of 53\%, 46\%, 41\% and 37\% in the excess over the
+lower bound, equivalent to 11\%, 9\%, 6\% and 4\% of makespan. The margins
+narrow but do not vanish: at the budget limit MIX still leads on all four. The practical
+reading is that the question ``does seeding help?'' is ill-posed unless the
+budget is specified, and that the shorter the budget the less the answer
+depends on which solver is being seeded.
 
 The GA panel isolates the reversal. Its seeded arms lead until roughly
 20\% of the budget, after which the control crosses and stays below to the
@@ -1029,19 +997,18 @@ immediately and never closes.
 The generator ranking is also stable along the whole trajectory, not merely
 at the end. MOR is the uppermost seeded curve in all four panels and GT the
 next, so their disadvantage is not an artefact of where measurement stops:
-from a quarter of the budget onwards both are worse than the control on the
-two ABC variants. At a tenth of the budget they are still ahead of it,
-which says more about how poor an unseeded random population is at that
-point than about any merit of theirs. MIX is the lowest curve in three of
-four panels for essentially the entire run. Two observations qualify the
-ranking. First, GP is competitive with MIX at very short budgets --- on
-TSN2 at 10\% of budget GP reaches $7.94\%$ against MIX's $7.89\%$ --- so
-the advantage of the mixed pool \emph{widens as the search proceeds} rather
-than being inherited from higher initial seed quality. That is exactly what
-one expects if the operative variable is pool diversity rather than seed
+on the two ABC variants these pools are worse than the control at every
+budget. MIX is the lowest curve in three of four panels for essentially the
+entire run. Two observations qualify the ranking. First, GP and V2 are
+competitive with MIX at very short budgets --- on TSN2 at 10\% of budget GP
+reaches 8.06\% against MIX's 8.00\%, and on ABCE3 V2 reaches 11.71\%
+against MIX's 11.73\%, i.e.\ marginally ahead --- so the advantage of the
+mixed pool \emph{emerges as the search proceeds} rather than being
+inherited from higher initial seed quality. That is exactly what one
+expects if the operative variable is pool diversity rather than seed
 quality, and Section~\ref{sec:res-seedqual} confirms it directly. Second,
-V2 degrades relative to V2H on the GA as the budget grows ($8.14\%$ versus
-$7.73\%$ at convergence), a hint that seeding the entire population with a
+V2 degrades relative to V2H on the GA as the budget grows (8.29\% versus
+7.94\% at convergence), a hint that seeding the entire population with a
 single learned policy is worse than seeding half of it, and that some
 random material is worth retaining.
 
@@ -1112,28 +1079,28 @@ the data.}
 Solver & Arm & Reach & Earlier/later & $p$ (sign) & RMTT & $\Delta$RMTT [95\% CI] \\
 \midrule
 \multirow{4}{*}{GA}
- & A0  & 100\% & ---   & ---      & 0.94 & --- \\
- & V2  & 38\%  & 20/32 & 0.38     & 0.86 & $-0.08$ $[-0.14,-0.02]$ \\
- & MOR & 2\%   & 1/48  & $<0.001$ & 0.99 & $+0.05$ $[+0.03,+0.08]$ \\
- & MIX & 46\%  & 24/28 & 0.68     & 0.83 & $-0.12$ $[-0.18,-0.06]$ \\
+ & A0  & 100\% & ---   & ---      & 0.96 & --- \\
+ & V2  & 34\%  & 16/28 & 0.48     & 0.86 & $-0.10$ $[-0.16,-0.04]$ \\
+ & MOR & 15\%  & 8/34  & $<0.001$ & 0.95 & $0.00$ $[-0.04,+0.03]$ \\
+ & MIX & 51\%  & 25/24 & 1.00     & 0.82 & $-0.14$ $[-0.22,-0.07]$ \\
 \midrule
 \multirow{4}{*}{ABCE3}
- & A0  & 100\% & ---   & ---      & 0.67 & --- \\
- & V2  & 90\%  & 54/4  & $<0.001$ & 0.29 & $-0.38$ $[-0.45,-0.30]$ \\
- & MOR & 38\%  & 19/37 & 0.045    & 0.81 & $+0.14$ $[+0.06,+0.23]$ \\
- & MIX & 95\%  & 57/3  & $<0.001$ & \textbf{0.20} & $\mathbf{-0.47}$ $[-0.54,-0.40]$ \\
+ & A0  & 100\% & ---   & ---      & 0.83 & --- \\
+ & V2  & 92\%  & 55/5  & $<0.001$ & 0.30 & $-0.53$ $[-0.61,-0.44]$ \\
+ & MOR & 61\%  & 25/27 & 0.89     & 0.78 & $-0.05$ $[-0.12,+0.02]$ \\
+ & MIX & 89\%  & 52/6  & $<0.001$ & \textbf{0.29} & $\mathbf{-0.54}$ $[-0.63,-0.45]$ \\
 \midrule
 \multirow{4}{*}{fEABCLS}
  & A0  & 100\% & ---   & ---      & 0.90 & --- \\
- & V2  & 56\%  & 32/19 & 0.32     & 0.75 & $-0.15$ $[-0.22,-0.08]$ \\
- & MOR & 5\%   & 1/43  & $<0.001$ & 0.99 & $+0.09$ $[+0.06,+0.11]$ \\
- & MIX & 48\%  & 29/20 & 0.32     & 0.76 & $-0.14$ $[-0.22,-0.07]$ \\
+ & V2  & 52\%  & 28/22 & 0.48     & 0.78 & $-0.12$ $[-0.19,-0.06]$ \\
+ & MOR & 15\%  & 6/41  & $<0.001$ & 0.96 & $+0.05$ $[+0.02,+0.09]$ \\
+ & MIX & 54\%  & 33/20 & 0.30     & 0.74 & $-0.16$ $[-0.23,-0.09]$ \\
 \midrule
 \multirow{4}{*}{TSN2}
- & A0  & 100\% & ---   & ---      & 0.86 & --- \\
- & V2  & 49\%  & 24/34 & 0.71     & 0.83 & $-0.03$ $[-0.09,+0.03]$ \\
- & MOR & 23\%  & 14/43 & $<0.001$ & 0.88 & $+0.02$ $[-0.04,+0.08]$ \\
- & MIX & 66\%  & 39/19 & 0.048    & 0.72 & $-0.14$ $[-0.21,-0.07]$ \\
+ & A0  & 100\% & ---   & ---      & 0.87 & --- \\
+ & V2  & 46\%  & 24/33 & 0.87     & 0.82 & $-0.05$ $[-0.11,+0.01]$ \\
+ & MOR & 31\%  & 18/37 & 0.072    & 0.83 & $-0.04$ $[-0.10,+0.02]$ \\
+ & MIX & 66\%  & 38/18 & 0.063    & 0.71 & $-0.16$ $[-0.23,-0.09]$ \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -1173,36 +1140,30 @@ difference in restricted mean time ($\Delta$RMTT, with a bootstrap interval
 over instances) as a secondary quantity whose bias is known and runs in one
 direction.
 
-Under this treatment ABCE3 stands out. Its mixed pool reaches the control's
-\emph{final} quality earlier on 57 of the 60 instances that are not ties,
-cutting restricted mean time from $0.67$ to $0.20$ of the budget; V2 and
-V2H do nearly as well, and all six seeded arms are significant on both
-contrasts --- five faster, MOR slower. These are unambiguous ``same
-quality, sooner'' results, and they agree with the converged-quality
-finding for that solver.
+Under this treatment ABCE3 stands alone. Its mixed pool reaches the
+control's \emph{final} quality earlier on 52 of the 58 instances that are
+not ties, cutting restricted mean time from $0.83$ to $0.29$ of the budget;
+V2 does almost as well, and five of the six seeded arms are significant on
+both contrasts. These are unambiguous ``same quality, sooner'' results, and
+they agree with the converged-quality finding for that solver.
 
-Only TSN2 joins it, and marginally: its mixed pool is earlier on 39
-instances and later on 19 ($p=0.048$), the only other arm anywhere to clear
-the sign test in the direction of acceleration. On the GA the mixed pool is
-earlier on 24 and later on 28 --- a coin flip --- and on fEABCLS no arm
-clears the test either.
+No other solver supports that claim. On the GA the mixed pool is earlier on
+25 instances and later on 24 --- a coin flip. On fEABCLS and TSN2 no arm
+clears the sign test after correction, TSN2's mixed pool coming closest at
+$p=0.063$. The two contrasts disagree on exactly these three solvers:
+$\Delta$RMTT is negative and significant for four GA arms, three fEABCLS
+arms and two TSN2 arms whose sign tests are not. That pattern has a
+definite reading. A mean is pulled down by a minority of instances on which
+the arm arrives much earlier, while the majority do not improve at all; the
+sign test is what separates a general acceleration from one concentrated in
+a subset. Outside ABCE3, seeding buys the second, and the distinction
+matters to a practitioner choosing whether to seed a given run.
 
-The two contrasts disagree on the GA and fEABCLS, and on the same three
-arms in both: $\Delta$RMTT is negative and significant for V2H, V2 and MIX,
-whose sign tests are not. That pattern has a definite reading. A mean is
-pulled down by a minority of instances on which the arm arrives much
-earlier, while the majority do not improve at all; the sign test is what
-separates a general acceleration from one concentrated in a subset. Outside
-ABCE3 and the mixed pool on TSN2, seeding buys the second, and the
-distinction matters to a practitioner deciding whether to seed a given run.
-
-Eight arm--solver pairs are significantly \emph{slower} to the target than
-their control, and the weakest two generators account for all of them. MOR
-is slower on all four solvers: it reaches the target on 1 instance of 61 on
-the GA and on 3 on fEABCLS. GT is slower on three, being faster only on
-ABCE3. Both sit at the bottom of the quality ladder of
-Section~\ref{sec:res-seedqual}, so this is the one place in the study where
-seed quality and outcome move together.
+Three arms are significantly \emph{slower} to the target than their
+control: MOR on the GA (8 earlier, 34 later), and MOR (6/41, $\Delta$RMTT
+$+0.05$) and GT (10/38) on fEABCLS. MOR is the weakest generator on the
+quality ladder of Section~\ref{sec:res-seedqual}, so this is the one place
+where seed quality and outcome move together.
 
 The contrast with a success-only tally is instructive. Computing medians
 over successes alone would have credited MOR on the GA with reaching the
@@ -1365,9 +1326,9 @@ confirmed, acceleration refuted}. Saturation holds: fEABCLS is
 statistically unchanged at the budget. The acceleration does not survive
 either time-to-target metric. Metric A separates nothing once curves are
 made monotone, and under metric B no fEABCLS arm clears the paired sign
-test: its mixed pool is earlier on 29 instances and later on 20
+test: its mixed pool is earlier on 33 instances and later on 20
 (Section~\ref{sec:res-ttt}). What remains is the budget-fraction table,
-where fEABCLS improves from $14.84\%$ to $8.91\%$ at a tenth of the budget.
+where fEABCLS improves from $15.87\%$ to $9.38\%$ at a tenth of the budget.
 The gain at short budgets is therefore real, but it is not the general
 acceleration the pilot predicted.
 

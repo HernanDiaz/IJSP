@@ -43,12 +43,18 @@ fi
 # $2 = desplazamiento de numeracion de ejecucion (para no mezclar trozos).
 trace_runs() {
   awk -F';' -v off="$2" '
-    /^Evolution/{f=1}
-    f && $1 ~ /^[0-9]+$/ {
+    # La columna Step es la generacion PROMEDIADA sobre las ejecuciones del
+    # trozo, asi que casi siempre es decimal (135.6, 266.8, ...) y en la ultima
+    # fila esta vacia. Filtrar por /^[0-9]+$/ descartaba el 45-78% de las filas
+    # segun el solver, incluida la fila final. Se delimita el bloque por sus
+    # cabeceras y se acepta toda fila de datos.
+    /^Evolution/ { e=1; next }
+    e && /^Step;/ { h=1; next }
+    h && NF > 6 {
       for (r=0; r<40; r++) {
         ct = 7 + r*6 + 1        # Runtime de la ejecucion r
         cv = 7 + r*6 + 2        # Best de la ejecucion r
-        if (cv > NF || $cv == "") continue
+        if (cv > NF || $cv == "" || $ct == "") continue
         v = $cv + 0
         if (v <= 0) continue
         key = off + r
