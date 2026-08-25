@@ -20,18 +20,23 @@
 #
 #     d_i = T_brazo(i) - T_A0(i),   i = 1..61     (negativo = el brazo llega antes)
 #
-# QUE CONTRASTE ES VALIDO AQUI. Un brazo que no alcanza el objetivo tiene un
-# tiempo real MAYOR que el presupuesto, pero se registra como 1.0: la truncatura
-# SUBESTIMA su tiempo. Como A0 alcanza siempre, solo se truncan los brazos
-# sembrados, de modo que el sesgo va A FAVOR de la siembra. Por tanto:
+# QUE CONTRASTE ES VALIDO AQUI.
 #
-#   - La MEDIA de d esta sesgada hacia mostrar aceleracion y NO es un estimador
-#     honesto cuando hay muchos no alcanzadores. Se reporta como secundaria y
-#     debe leerse como cota inferior del tiempo del brazo sembrado.
-#   - El SIGNO de d si es correcto siempre: un no alcanzador registra
-#     T = 1.0 >= T_A0, luego d >= 0 y se cuenta como "no mas rapido", que es lo
-#     que corresponde. El TEST DE SIGNOS es por tanto valido bajo la truncatura
-#     y se adopta como CONTRASTE PRINCIPAL.
+#   - El estimando de la media es explicitamente el TIEMPO MEDIO RESTRINGIDO
+#     E[min(T,1)]. Registrar al no alcanzador en 1.0 no es un sesgo: es la
+#     definicion de ese estimando. Lo que subestima es la media SIN restringir,
+#     que es otra cosa y no se reporta.
+#   - El signo de d nunca se invierte por la restriccion, pero si puede EMPATAR
+#     cuando A0 tambien llega en 1.0; los empates se descartan, como es habitual
+#     en el test de signos.
+#   - El objetivo es ENDOGENO: se extrae del endpoint del propio A0, de modo que
+#     A0 se evalua contra una diana sacada de su realizacion y el brazo no. Eso
+#     no garantiza el nulo binomial en 0.5, y no se supone: ttt_null.R lo MIDE
+#     partiendo las 30 ejecuciones de A0 en dos mitades bajo H0 cierta. El
+#     resultado es que el procedimiento esta casi calibrado (error de tipo I
+#     3.2%-6.8% frente al 5% nominal) pero con un ligero sesgo en contra del
+#     brazo: bajo H0 cuenta como "antes" solo el 45-49% de las veces. El test de
+#     signos se contrasta por tanto CONTRA ESA PROPORCION NULA, no contra 0.5.
 #
 # Inferencia, toda emparejada por instancia:
 #   - PRINCIPAL: test de signos exacto sobre las 61 diferencias (binomial),
@@ -47,6 +52,7 @@
 # Las curvas de Kaplan-Meier se conservan SOLO como descripcion.
 suppressPackageStartupMessages(library(survival))
 lb <- read.csv("final/ta_lb.csv", stringsAsFactors = FALSE)[, c("inst","lb")]
+nulo <- read.csv("final/ttt_null.csv", stringsAsFactors = FALSE)   # proporcion nula por solver
 algos <- c(ga="GA", abce3="ABCE3", feabcls="fEABCLS", tsn2="TSN2")
 arms <- c("A0","V2H","V2","MOR","GT","GP","MIX")
 seeded <- setdiff(arms, "A0")
@@ -76,6 +82,7 @@ todo <- data.frame()
 for (al in names(algos)) {
   d <- read.csv(sprintf("final/phase2/anytime_%s.csv", al), stringsAsFactors = FALSE)
   d <- merge(d, lb, by = "inst"); d$rpd <- 100 * (d$bestcmax - d$lb) / d$lb
+  p0 <- nulo$p_antes_nulo[nulo$algo == al]; if (!length(p0)) p0 <- 0.5
   insts <- Reduce(intersect, lapply(arms, function(a) unique(d$inst[d$arm == a])))
 
   # Objetivo por instancia: el endpoint del control mas un 0.5%, EN MAKESPAN.
@@ -112,8 +119,9 @@ for (al in names(algos)) {
   for (a in seeded) {
     dif <- Tm[, a] - Tm[, "A0"]
     antes <- sum(dif < 0); desp <- sum(dif > 0); emp <- sum(dif == 0)
-    # test de signos exacto: valido bajo la truncatura (el signo nunca se invierte)
-    psig[a] <- if (antes + desp > 0) binom.test(antes, antes + desp)$p.value else 1
+    # Test de signos CALIBRADO: la hipotesis nula no es 0.5 sino la proporcion
+    # que produce el propio diseno bajo H0 cierta, medida en ttt_null.R.
+    psig[a] <- if (antes + desp > 0) binom.test(antes, antes + desp, p = p0)$p.value else 1
     pperm[a] <- perm_p(dif); ci <- boot_ci(dif)
     filas[[a]] <- data.frame(algo = al, arm = a, n = n,
                              reach = mean(Rm[, a]), antes = antes, desp = desp, emp = emp,

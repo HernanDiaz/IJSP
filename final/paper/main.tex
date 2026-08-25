@@ -1093,13 +1093,16 @@ paired by instance. Time is the fraction of the per-instance budget, and an
 arm that never reaches the target within the budget is recorded at $1.0$.
 ``Reach'' is the percentage of the 61 instances on which the target is
 attained. ``Earlier/later'' counts the instances on which the arm reaches
-it before or after its own paired control, ties excluded; the sign test on
-those counts is the \emph{primary} contrast, because recording a
-non-reacher at $1.0$ can never flip its sign --- such an arm always
-registers as later. $\Delta$RMTT, the paired difference in restricted mean
-time, is reported second: that same recording understates a non-reacher's
-true time and therefore flatters the seeded arm. Both are Holm-corrected
-over the six seeded arms of each solver. The control reaches its own target
+it before or after its own paired control, ties excluded. The sign test on
+those counts is the \emph{primary} contrast, taken against the null
+proportion this design itself produces rather than against $0.5$: since the
+target is drawn from the control's own endpoint, a split-half calibration
+under a true null (Section~\ref{sec:res-threats}) puts that proportion at
+$0.46$--$0.49$ depending on the solver. $\Delta$RMTT is the paired
+difference in restricted mean time $E[\min(T,1)]$, for which recording a
+non-reacher at $1.0$ is the definition of the estimand, not an
+approximation to it. Both are Holm-corrected over the six seeded arms of
+each solver. The control reaches its own target
 on all 61 instances by construction, so no test is reported for it. Three
 representative arms per solver are shown; the full table is released with
 the data.}
@@ -1113,12 +1116,12 @@ Solver & Arm & Reach & Earlier/later & $p$ (sign) & RMTT & $\Delta$RMTT [95\% CI
  & A0  & 100\% & ---   & ---      & 0.62 & --- \\
  & V2  & 56\%  & 6/49  & $<0.001$ & 0.77 & $+0.16$ $[+0.12,+0.20]$ \\
  & MOR & 5\%   & 0/59  & $<0.001$ & 0.99 & $+0.37$ $[+0.31,+0.44]$ \\
- & MIX & 77\%  & 18/37 & 0.015    & 0.70 & $+0.09$ $[+0.04,+0.13]$ \\
+ & MIX & 77\%  & 18/37 & 0.057    & 0.70 & $+0.09$ $[+0.04,+0.13]$ \\
 \midrule
 \multirow{4}{*}{ABCE3}
  & A0  & 100\% & ---   & ---      & 0.38 & --- \\
  & V2  & 100\% & 54/2  & $<0.001$ & 0.16 & $-0.22$ $[-0.28,-0.16]$ \\
- & MOR & 70\%  & 13/40 & $<0.001$ & 0.60 & $+0.22$ $[+0.14,+0.30]$ \\
+ & MOR & 70\%  & 13/40 & 0.004    & 0.60 & $+0.22$ $[+0.14,+0.30]$ \\
  & MIX & 100\% & 57/2  & $<0.001$ & \textbf{0.12} & $\mathbf{-0.26}$ $[-0.31,-0.21]$ \\
 \midrule
 \multirow{4}{*}{fEABCLS}
@@ -1130,8 +1133,8 @@ Solver & Arm & Reach & Earlier/later & $p$ (sign) & RMTT & $\Delta$RMTT [95\% CI
 \multirow{4}{*}{TSN2}
  & A0  & 100\% & ---   & ---      & 0.52 & --- \\
  & V2  & 90\%  & 35/24 & 0.62     & 0.57 & $+0.05$ $[-0.00,+0.10]$ \\
- & MOR & 43\%  & 19/41 & 0.031    & 0.74 & $+0.22$ $[+0.12,+0.31]$ \\
- & MIX & 93\%  & 42/15 & 0.003    & 0.46 & $-0.06$ $[-0.11,+0.01]$ \\
+ & MOR & 43\%  & 19/41 & 0.047    & 0.74 & $+0.22$ $[+0.12,+0.31]$ \\
+ & MIX & 93\%  & 42/15 & 0.001    & 0.46 & $-0.06$ $[-0.11,+0.01]$ \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -1184,28 +1187,31 @@ that solver. TSN2 joins it more modestly: its mixed pool is earlier on 42
 instances and later on 15 ($p=0.003$), and reaches the target on $93\%$ of
 them against the control's $100\%$ by construction.
 
-The other two solvers give the opposite answer, and the GA gives it
-emphatically. \emph{Every one of its six seeded arms is significantly
-slower} to the control's own final quality, MIX included (18 earlier, 37
-later, $p=0.015$), and both contrasts agree on all six. On fEABCLS the
-three competitive pools --- V2H, V2 and MIX --- are statistically
-indistinguishable from the control ($p=1.00$ for V2 and MIX), while the
-three weak ones are significantly slower. Seeding buys that solver nothing
-in time, and it costs the GA time on every generator we tried.
+The other two solvers give the opposite answer. \emph{Five of the GA's six
+seeded arms are significantly slower} to the control's own final quality;
+only the mixed pool escapes, and narrowly (18 earlier, 37 later,
+$p=0.057$), though its restricted mean time is clearly worse ($+0.09$,
+$[+0.04,+0.13]$). That is the same pattern the final-quality analysis found
+on this solver: every single-generator pool harms it and the mixed pool
+does not. On fEABCLS the three competitive pools --- V2H, V2 and MIX ---
+are statistically indistinguishable from the control ($p=1.00$ for V2 and
+MIX), while the three weak ones are significantly slower. Seeding buys that
+solver nothing in time.
 
-Mean and sign now agree almost everywhere; they part company on two arms
-only, V2H on fEABCLS and GT on TSN2, where $\Delta$RMTT reaches
-significance and the sign test does not. The reading in those two cases is
-that the gain is concentrated in a minority of instances rather than being
-a general shift, which is what the sign test is there to detect.
+Mean and sign agree almost everywhere. They part on three arms: MIX on the
+GA, V2H on fEABCLS and GT on TSN2, where $\Delta$RMTT reaches significance
+and the sign test does not. In each the difference is concentrated in a
+minority of instances rather than being a general shift, which is exactly
+what the sign test is there to detect.
 
-Thirteen arm--solver pairs are significantly \emph{slower} to the target
-than their control, and MOR is the extreme of every one: it is slower on
-all four solvers and reaches the target on no instance at all on the GA and
-fEABCLS, where 59 of 61 comparisons go against it. GT is slower on three
-solvers. Both sit at the bottom of the quality ladder of
-Section~\ref{sec:res-seedqual}, so this is the one place in the study where
-seed quality and outcome move together.
+Ten arm--solver pairs are significantly \emph{slower} to the target than
+their control, and MOR is the extreme of every one: it is slower on all
+four solvers and reaches the target on no instance at all on the GA and
+fEABCLS, where 59 of 61 comparisons go against it. GT is slower on two
+solvers and, revealingly, \emph{faster} on ABCE3 --- the solver that
+tolerates every pool. Both generators sit at the bottom of the quality
+ladder of Section~\ref{sec:res-seedqual}, so this is the one place in the
+study where seed quality and outcome move together.
 
 The contrast with a success-only tally is instructive. Computing medians
 over successes alone would have credited MOR on the GA with reaching the
@@ -1397,7 +1403,26 @@ observation that reoriented the mechanism analysis.
 
 \subsection{Threats addressed by design}\label{sec:res-threats}
 
-Three checks guard the numbers above. First, expected makespans were
+Before the checks themselves, one inferential property of the time-to-target
+design needs establishing rather than assuming. Its target is
+\emph{endogenous}: it is drawn from the control's own endpoint, so the
+control is measured against a quantity taken from its own realisation while
+the seeded arm is not. That asymmetry is not obviously harmless, and it is
+not enough to observe that censoring cannot reverse a sign. We therefore
+measured it. Splitting each instance's thirty control runs at random into
+two halves of fifteen, averaging each half and treating one as control and
+the other as arm, reproduces the analysis under a null that is true by
+construction. Over 400 such replicates the sign test rejects at $4.3\%$ on
+the GA, $6.8\%$ on ABCE3, $4.0\%$ on fEABCLS and $3.3\%$ on TSN2 against a
+nominal $5\%$, so the procedure is close to calibrated. It is not exactly
+so: under the null the seeded arm counts as earlier on only $46.2\%$,
+$45.3\%$, $47.3\%$ and $48.7\%$ of instances respectively, a small tilt
+against seeding. Every sign test in Table~\ref{tab:ttt} is taken against
+that solver's own null proportion rather than against $0.5$, which is what
+removes the tilt; the effect is visible on the GA, where the mixed pool
+reads as significantly slower against $0.5$ and does not against $0.462$.
+
+Three further checks guard the numbers above. First, expected makespans were
 recomputed by an \emph{independent} verifier: a standalone program that
 shares no code with the solver. It re-implements the instance parser, the
 interval arithmetic and the decoding from scratch, depends only on the
