@@ -65,3 +65,6 @@ verify_independent
 
 # transcripciones completas de las revisiones automaticas (ruido, 2+ MB)
 review/*_run.log
+
+# copias de seguridad del .tex
+final/paper/*.tex.bak
