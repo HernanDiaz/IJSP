@@ -112,7 +112,7 @@ time to the arm's own plateau, so an arm that stagnates early on a worse
 value is credited with an acceleration. Any of these three artefacts can
 manufacture a positive seeding result where none exists.
 
-This paper makes four contributions.
+This paper makes three contributions.
 \begin{enumerate}
 \item \textbf{A pre-specified anytime methodology} for evaluating
   population seeding: convergence-checked final quality; two complementary
@@ -138,12 +138,6 @@ This paper makes four contributions.
   \emph{worse} average population than its single-generator counterparts
   and still converges better, which points to pool composition rather than
   seed quality as the operative variable.
-\item \textbf{A reproducibility audit} of the seed pools themselves: we
-  detect and correct a semantic mismatch between the pool generator's
-  makespan convention (lexicographic-by-upper-bound) and the solvers'
-  component-wise interval evaluation --- invisible in the upper bound,
-  optimistic in the lower bound for up to 22\% of pool entries --- and
-  release corrected pools, code and full experimental data.
 \end{enumerate}
 
 Our results do not support the assumption we set out to test. Over 51{,}240
@@ -279,7 +273,7 @@ replication).
 %% TODO: replication table in an appendix.
 
 %% =========================================================================
-\section{Seed pools, audit, and injection mechanism}\label{sec:seeding}
+\section{Seed pools and injection mechanism}\label{sec:seeding}
 
 \subsection{Generators and pools}
 For every instance we use pools of 1{,}024 i.i.d.\ solutions per generator,
@@ -311,21 +305,18 @@ The mixed pool interleaves the three generators one entry at a time, so
 that any contiguous window of 250 entries contains $84/83/83$ seeds of
 v2/GT/GP to within one seed, whatever its offset.
 
-\subsection{Pool audit: a decoder-consistency lesson}\label{sec:audit}
-Before any experiment we verified that the solvers reproduce the stored
-interval of every pool line. The permutations decode identically, and the
-\emph{upper} makespan bound agreed on 1{,}024/1{,}024 lines of every pool
-tested. The \emph{lower} bound did not: the pool generator had aggregated
-job completion times lexicographically by upper bound, whereas the exact
-component-wise convention (used by all solvers) takes the maximum of lower
-bounds independently. The stored lower bounds were therefore optimistic for
-1--22\% of lines per pool (deviations up to 98 time units on $50\times20$
-instances). We re-evaluated every pool under the exact convention ---
-permutations untouched --- and use the corrected pools throughout. The
-general lesson for hybrid learning-plus-search pipelines is that
-cross-system solution exchange needs a \emph{semantic audit}: an error
-invisible in one bound of the objective can silently bias any comparison
-based on the other.
+\subsection{Evaluation convention of the pools}\label{sec:audit}
+Each pool line stores a permutation together with its interval makespan.
+Both interval conventions of Section~\ref{sec:problem} occur in this
+literature, and the pools had been written under LEX2: job completion
+times aggregated lexicographically by upper bound. The solvers evaluate
+component-wise. The two agree on the upper bound --- identical on
+1{,}024/1{,}024 lines of every pool --- and differ on the lower bound,
+which LEX2 leaves optimistic on 1--22\% of lines per pool, by up to 98
+time units on the $50\times20$ instances. We therefore re-evaluated every
+pool component-wise, leaving the permutations untouched, so that stored
+and solver-side objective values coincide throughout. The released pools
+carry the component-wise values.
 
 \subsection{Injection mechanism}
 Seeding is deliberately minimal. A seeded arm with fraction $k/250$
@@ -1566,9 +1557,12 @@ that is there.
 
 %% =========================================================================
 \section*{Data and code availability}
-%% Corrected pools, seeding operator, setups, run logs, aggregated CSVs and
-%% analysis scripts to be deposited on Zenodo (group practice). Commit hash
-%% of the solver framework to be pinned at submission.
+The seed pools, the injection operator, the experiment setups, the run
+logs of all 51{,}240 runs, the aggregated result tables and the analysis
+scripts that produce every table and figure in this paper are deposited at
+\texttt{[DOI pending]}, together with the independent verifier of
+Section~\ref{sec:res-threats} and the commit hash of the solver framework.
+%% DOI y hash a fijar en el momento del envio.
 
 \bibliographystyle{elsarticle-num}
 \bibliography{references}
