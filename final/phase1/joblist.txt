@@ -1,0 +1,16 @@
+./FuzzyFW 'final/phase1/ga/tai15_15_01/setup.txt' 'SelectosYTaillardIntervalos/tai15_15_01.F.15_01.txt' 'final/phase1/ga/tai15_15_01' > 'final/phase1/ga/tai15_15_01/log.txt' 2>&1
+./FuzzyFW 'final/phase1/ga/tai20_20_02/setup.txt' 'SelectosYTaillardIntervalos/tai20_20_02.F.15_01.txt' 'final/phase1/ga/tai20_20_02' > 'final/phase1/ga/tai20_20_02/log.txt' 2>&1
+./FuzzyFW 'final/phase1/ga/tai30_15_01/setup.txt' 'SelectosYTaillardIntervalos/tai30_15_01.F.15_01.txt' 'final/phase1/ga/tai30_15_01' > 'final/phase1/ga/tai30_15_01/log.txt' 2>&1
+./FuzzyFW 'final/phase1/ga/tai30_20_04/setup.txt' 'SelectosYTaillardIntervalos/tai30_20_04.F.15_01.txt' 'final/phase1/ga/tai30_20_04' > 'final/phase1/ga/tai30_20_04/log.txt' 2>&1
+./FuzzyFW 'final/phase1/ga/tai50_15_01/setup.txt' 'SelectosYTaillardIntervalos/tai50_15_01.F.15_01.txt' 'final/phase1/ga/tai50_15_01' > 'final/phase1/ga/tai50_15_01/log.txt' 2>&1
+./FuzzyFW 'final/phase1/ga/tai50_15_05/setup.txt' 'SelectosYTaillardIntervalos/tai50_15_05.F.15_01.txt' 'final/phase1/ga/tai50_15_05' > 'final/phase1/ga/tai50_15_05/log.txt' 2>&1
+./FuzzyFW 'final/phase1/ga/tai50_20_01/setup.txt' 'SelectosYTaillardIntervalos/tai50_20_01.F.15_01.txt' 'final/phase1/ga/tai50_20_01' > 'final/phase1/ga/tai50_20_01/log.txt' 2>&1
+./FuzzyFW 'final/phase1/ga/tai50_20_05/setup.txt' 'SelectosYTaillardIntervalos/tai50_20_05.F.15_01.txt' 'final/phase1/ga/tai50_20_05' > 'final/phase1/ga/tai50_20_05/log.txt' 2>&1
+./FuzzyFW 'final/phase1/feabcls/tai15_15_01/setup.txt' 'SelectosYTaillardIntervalos/tai15_15_01.F.15_01.txt' 'final/phase1/feabcls/tai15_15_01' > 'final/phase1/feabcls/tai15_15_01/log.txt' 2>&1
+./FuzzyFW 'final/phase1/feabcls/tai20_20_02/setup.txt' 'SelectosYTaillardIntervalos/tai20_20_02.F.15_01.txt' 'final/phase1/feabcls/tai20_20_02' > 'final/phase1/feabcls/tai20_20_02/log.txt' 2>&1
+./FuzzyFW 'final/phase1/feabcls/tai30_15_01/setup.txt' 'SelectosYTaillardIntervalos/tai30_15_01.F.15_01.txt' 'final/phase1/feabcls/tai30_15_01' > 'final/phase1/feabcls/tai30_15_01/log.txt' 2>&1
+./FuzzyFW 'final/phase1/feabcls/tai30_20_04/setup.txt' 'SelectosYTaillardIntervalos/tai30_20_04.F.15_01.txt' 'final/phase1/feabcls/tai30_20_04' > 'final/phase1/feabcls/tai30_20_04/log.txt' 2>&1
+./FuzzyFW 'final/phase1/feabcls/tai50_15_01/setup.txt' 'SelectosYTaillardIntervalos/tai50_15_01.F.15_01.txt' 'final/phase1/feabcls/tai50_15_01' > 'final/phase1/feabcls/tai50_15_01/log.txt' 2>&1
+./FuzzyFW 'final/phase1/feabcls/tai50_15_05/setup.txt' 'SelectosYTaillardIntervalos/tai50_15_05.F.15_01.txt' 'final/phase1/feabcls/tai50_15_05' > 'final/phase1/feabcls/tai50_15_05/log.txt' 2>&1
+./FuzzyFW 'final/phase1/feabcls/tai50_20_01/setup.txt' 'SelectosYTaillardIntervalos/tai50_20_01.F.15_01.txt' 'final/phase1/feabcls/tai50_20_01' > 'final/phase1/feabcls/tai50_20_01/log.txt' 2>&1
+./FuzzyFW 'final/phase1/feabcls/tai50_20_05/setup.txt' 'SelectosYTaillardIntervalos/tai50_20_05.F.15_01.txt' 'final/phase1/feabcls/tai50_20_05' > 'final/phase1/feabcls/tai50_20_05/log.txt' 2>&1

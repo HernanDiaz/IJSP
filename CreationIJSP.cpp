@@ -1311,4 +1311,149 @@ FuzzyFW::Individual * CreationManagerIntervalMkSchedule::createIndividual(
 		}
 		return this->SPJFSchedule.createIndividual(svars);
 }
+
+
+//=============================================================================
+//
+//	Class CreationSeededSchedule
+//
+//=============================================================================
+//-----  Setup method  --------------------------------------------------------
+void CreationSeededSchedule::setup(FuzzyFW::ParameterDB *parameters) {
+	Creation::setup(parameters);
+
+	// SGS para decodificar (igual que la creacion aleatoria)
+	std::string sgsType = parameters->getStringLower(this->sgsLabel);
+	if (sgsType.length() == 0) {
+		std::string errorMsg = "SGS not found. Please, specify a SGS to use";
+		errorMsg += " during the evaluation of individuals";
+		throw new IJSPException("Creation", errorMsg);
+	}
+	this->sgs = IJSPClassRegister::getSGSObject(sgsType);
+	if (this->sgs == NULL) {
+		std::string errorMsg = "The introduced SGS is not";
+		errorMsg += " recognised: \'" + sgsType + "\'";
+		throw new IJSPException("Creation", errorMsg);
+	}
+	this->sgs->setup(parameters);
+	this->randomSchedule.setup(parameters);
+
+	// Parametros de siembra
+	this->seedCount = (unsigned int)parameters->getInteger(CREATION_SEED_COUNT, 0);
+	this->popSize = (unsigned int)parameters->getInteger(CREATION_POPULATION_SIZE, 0);
+	// Indice global de la primera ejecucion de este proceso (0 si no se indica,
+	// que reproduce el comportamiento anterior para una corrida no troceada).
+	this->seedOffset = (unsigned int)parameters->getInteger(CREATION_SEED_OFFSET, 0);
+
+	std::string poolPath = parameters->getString(CREATION_SEED_POOL);
+	if (poolPath.length() == 0) {
+		throw new IJSPException("Creation",
+			"Parametro \'" + std::string(CREATION_SEED_POOL) + "\' no encontrado para creation=ijsp.seeded");
+	}
+
+	std::ifstream in(poolPath.c_str());
+	if (!in.is_open()) {
+		throw new IJSPException("Creation",
+			"No se pudo abrir el pool de siembra: \'" + poolPath + "\'");
+	}
+	this->seedJobs.clear();
+	std::string line;
+	while (std::getline(in, line)) {
+		if (line.empty()) continue;
+		size_t sc = line.find(';');
+		std::string permPart = (sc == std::string::npos) ? line : line.substr(0, sc);
+		std::vector<int> jobs;
+		std::stringstream ss(permPart);
+		int v;
+		while (ss >> v) jobs.push_back(v);
+		if (!jobs.empty()) this->seedJobs.push_back(jobs);
+	}
+	in.close();
+
+	if (this->seedJobs.empty()) {
+		throw new IJSPException("Creation",
+			"El pool de siembra no contiene permutaciones: \'" + poolPath + "\'");
+	}
+}
+
+
+//-----  buildFromJobPerm  ----------------------------------------------------
+FuzzyFW::Individual * CreationSeededSchedule::buildFromJobPerm(
+	const std::vector<int> &jobs,
+	const FuzzyFW::SharedVarsEvolutionary *svars) const {
+
+	ProblemIJSP * fuzzyProb = dynamic_cast<ProblemIJSP *>(svars->problem);
+	if (fuzzyProb == NULL) {
+		std::string errorMsg = "This creation works only with interval problems.";
+		throw new IJSPException("Creation", errorMsg);
+	}
+
+	// Convertir secuencia de trabajos (1-based) -> permutacion de task-ids internos
+	unsigned int nJobs = fuzzyProb->getNumberJobs();
+	std::vector<int> occ(nJobs, 0), taskPerm;
+	taskPerm.reserve(jobs.size());
+	for (size_t i = 0; i < jobs.size(); i++) {
+		int job0 = jobs[i] - 1;
+		if (job0 < 0 || job0 >= (int)nJobs) {
+			throw new IJSPException("Creation",
+				"Numero de trabajo fuera de rango en el pool: " + valueToString(jobs[i]));
+		}
+		int tid = fuzzyProb->getTaskId(job0, occ[job0]);
+		if (tid < 0) {
+			throw new IJSPException("Creation",
+				"Ocurrencia de trabajo invalida en el pool (trabajo " + valueToString(jobs[i]) + ")");
+		}
+		occ[job0]++;
+		taskPerm.push_back(tid);
+	}
+
+	// Misma genesis que la creacion aleatoria, pero con la permutacion dada
+	this->sgs->buildSchedule(svars, taskPerm);
+	FuzzyFW::Individual * indiv = svars->encoder->encode(this->sgs->getSchedule(), svars);
+	indiv->updatePhenotype(this->sgs->getSchedule()->clone());
+	return indiv;
+}
+
+
+//-----  create Individual (aleatorio; para scouts y relleno)  ----------------
+FuzzyFW::Individual * CreationSeededSchedule::createIndividual(
+	const FuzzyFW::SharedVarsEvolutionary *svars) const {
+	return this->randomSchedule.createIndividual(svars);
+}
+
+
+//-----  create Population  ---------------------------------------------------
+FuzzyFW::Population * CreationSeededSchedule::createPopulation(
+	const unsigned int reqSize,
+	const FuzzyFW::SharedVarsEvolutionary *svars) const {
+
+	// Llamadas parciales (abejas scout) o siembra desactivada -> todo aleatorio
+	if (reqSize != this->popSize || this->seedCount == 0 || this->seedJobs.empty()) {
+		return FuzzyFW::Creation::createPopulation(reqSize, svars);
+	}
+
+	FuzzyFW::Population * population = new FuzzyFW::Population();
+	unsigned int L = (unsigned int)this->seedJobs.size();
+	unsigned int nSeed = (this->seedCount < reqSize) ? this->seedCount : reqSize;
+	// El bloque depende del indice GLOBAL de ejecucion, no del contador local del
+	// proceso: asi 30 ejecuciones seguidas y 6 procesos de 5 asignan las mismas
+	// semillas. Sin esto, cada proceso reinicia en 0 y repite los mismos bloques.
+	unsigned int globalRun = this->seedOffset + this->runCounter;
+	unsigned int blockStart = (globalRun * this->seedCount) % L;
+
+	for (unsigned int i = 0; i < reqSize; i++) {
+		FuzzyFW::Individual * indiv;
+		if (i < nSeed) {
+			unsigned int idx = (blockStart + i) % L;
+			indiv = this->buildFromJobPerm(this->seedJobs[idx], svars);
+		} else {
+			indiv = this->randomSchedule.createIndividual(svars);
+		}
+		indiv->id = i;
+		population->addIndividual(indiv);
+	}
+
+	this->runCounter++;
+	return population;
+}
 }

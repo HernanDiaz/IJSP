@@ -1,0 +1,153 @@
+[08-23 17:06:07] === 1/4 extraccion e integridad ===
+final/phase2/results_ga.csv : 12810 filas
+  ga: 427 celdas, 0 con runs != 30
+final/phase2/results_abce3.csv : 12810 filas
+  abce3: 427 celdas, 0 con runs != 30
+final/phase2/results_feabcls.csv : 12810 filas
+  feabcls: 427 celdas, 0 con runs != 30
+final/phase2/results_tsn2.csv : 12810 filas
+  tsn2: 427 celdas, 0 con runs != 30
+[08-23 17:45:35] === 2/4 curvas anytime ===
+final/phase2/anytime_ga.csv : 32141 filas  (rejilla 2s)
+final/phase2/anytime_abce3.csv : 115525 filas  (rejilla 0.2s)
+final/phase2/anytime_feabcls.csv : 44051 filas  (rejilla 5s)
+final/phase2/anytime_tsn2.csv : 52076 filas  (rejilla 5s)
+[08-23 18:06:21] === 3/4 verificacion amplia de makespans ===
+  DISCREPANCIA en tsn2/tai50_20_09/MOR: 1 de 5
+
+celdas verificadas: 196   (sin datos: 0)
+soluciones re-decodificadas: 980
+discrepancias: 5
+[08-23 18:06:54] === 4/4 analisis ===
+=== la referencia antigua (best_known) frente a la cota inferior publicada ===
+instancias con ambas referencias: 61
+best_known por DEBAJO de la LB publicada (imposible -> referencia blanda): 0
+holgura best_known vs LB:  mediana +3.05%   rango [+0.00%, +12.52%]
+
+=== RPD medio (%) sobre la cota inferior publicada ===
+algo      n_ins       A0     V2H      V2     MOR      GT      GP     MIX
+ga           61     7.52    7.66    8.05    9.70    8.47    7.99    7.58
+abce3        61    10.51    9.51    9.39   10.71   10.20    9.68    9.37
+feabcls      61     3.67    3.66    3.66    5.16    4.47    4.04    3.67
+tsn2         61     3.60    3.64    3.62    4.25    3.99    3.67    3.41
+
+(brazos sin datos aparecen como NA; n_ins = instancias con TODOS los brazos)
+
+[08-23 18:06:58] ### ga ###
+arm     wins   ties losses       dAvg      A12
+V2H       11     31     19        4.1    0.545
+V2         9     25     27       12.2    0.614
+MOR        1      3     57       43.8    0.920
+GT         4     16     41       19.9    0.739
+GP         9     21     31       11.5    0.648
+MIX       13     29     19        2.5    0.527
+
+(wins/losses: Wilcoxon pareado con Holm por instancia, alfa=0.05; dAvg: media de deltas vs A0; A12<0.5 = el brazo tiende a ser mejor)
+
+=== delta medio vs A0 por clase ===
+clase        V2H       V2      MOR       GT       GP      MIX
+
+[08-23 18:07:02] ### abce3 ###
+arm     wins   ties losses       dAvg      A12
+V2H       32     29      0      -21.6    0.298
+V2        35     26      0      -24.4    0.274
+MOR        1     54      6        3.9    0.544
+GT        14     46      1       -6.1    0.436
+GP        30     31      0      -17.3    0.325
+MIX       35     26      0      -24.2    0.266
+
+(wins/losses: Wilcoxon pareado con Holm por instancia, alfa=0.05; dAvg: media de deltas vs A0; A12<0.5 = el brazo tiende a ser mejor)
+
+=== delta medio vs A0 por clase ===
+clase        V2H       V2      MOR       GT       GP      MIX
+
+[08-23 18:07:05] ### feabcls ###
+arm     wins   ties losses       dAvg      A12
+V2H        7     43     11        0.1    0.499
+V2         7     44     10        0.2    0.495
+MOR        0      5     56       28.8    0.885
+GT         3     12     46       15.7    0.768
+GP         7     27     27        6.8    0.640
+MIX       12     38     11       -0.4    0.499
+
+(wins/losses: Wilcoxon pareado con Holm por instancia, alfa=0.05; dAvg: media de deltas vs A0; A12<0.5 = el brazo tiende a ser mejor)
+
+=== delta medio vs A0 por clase ===
+clase        V2H       V2      MOR       GT       GP      MIX
+
+[08-23 18:07:09] ### tsn2 ###
+arm     wins   ties losses       dAvg      A12
+V2H        5     48      8        0.6    0.518
+V2         6     47      8       -0.0    0.510
+MOR        9     13     39        9.7    0.691
+GT         9     20     32        5.2    0.643
+GP        10     32     19       -1.3    0.539
+MIX       15     41      5       -5.5    0.436
+
+(wins/losses: Wilcoxon pareado con Holm por instancia, alfa=0.05; dAvg: media de deltas vs A0; A12<0.5 = el brazo tiende a ser mejor)
+
+=== delta medio vs A0 por clase ===
+clase        V2H       V2      MOR       GT       GP      MIX
+
+=== GA  (n=61 instancias) ===
+Friedman: chi2=132.6, df=6, p=3.59e-26
+arm      rango   post-hoc vs mejor (Wilcoxon pareado, Holm)
+A0        2.69   <- MEJOR
+MIX       2.95   p=0.4047 (indistinguible del mejor)
+V2H       3.08   p=0.1760 (indistinguible del mejor)
+GP        3.85   p=0.0005 (peor, significativo)
+V2        4.25   p=0.0043 (peor, significativo)
+GT        4.77   p=0.0000 (peor, significativo)
+MOR       6.41   p=0.0000 (peor, significativo)
+
+=== ABCE3  (n=61 instancias) ===
+Friedman: chi2=185.0, df=6, p=2.9e-37
+arm      rango   post-hoc vs mejor (Wilcoxon pareado, Holm)
+MIX       2.41   <- MEJOR
+V2        2.50   p=0.8773 (indistinguible del mejor)
+V2H       3.08   p=0.3270 (indistinguible del mejor)
+GP        3.31   p=0.0008 (peor, significativo)
+GT        4.96   p=0.0000 (peor, significativo)
+A0        5.60   p=0.0000 (peor, significativo)
+MOR       6.14   p=0.0000 (peor, significativo)
+
+=== fEABCLS  (n=61 instancias) ===
+Friedman: chi2=177.6, df=6, p=1.07e-35
+arm      rango   post-hoc vs mejor (Wilcoxon pareado, Holm)
+MIX       2.78   <- MEJOR
+V2H       2.93   p=1.0000 (indistinguible del mejor)
+A0        2.99   p=1.0000 (indistinguible del mejor)
+V2        3.04   p=1.0000 (indistinguible del mejor)
+GP        4.24   p=0.0000 (peor, significativo)
+GT        5.51   p=0.0000 (peor, significativo)
+MOR       6.52   p=0.0000 (peor, significativo)
+
+=== TSN2  (n=61 instancias) ===
+Friedman: chi2=75.5, df=6, p=3e-14
+arm      rango   post-hoc vs mejor (Wilcoxon pareado, Holm)
+MIX       2.57   <- MEJOR
+A0        3.40   p=0.0316 (peor, significativo)
+V2        3.80   p=0.0026 (peor, significativo)
+GP        3.85   p=0.0000 (peor, significativo)
+V2H       3.93   p=0.0026 (peor, significativo)
+GT        5.07   p=0.0000 (peor, significativo)
+MOR       5.37   p=0.0000 (peor, significativo)
+
+
+=== ¿DEPENDE DEL ALGORITMO? rangos medios lado a lado ===
+          A0  V2H   V2  MOR   GT   GP  MIX
+GA      2.69 3.08 4.25 6.41 4.77 3.85 2.95
+ABCE3   5.60 3.08 2.50 6.14 4.96 3.31 2.41
+fEABCLS 2.99 2.93 3.04 6.52 5.51 4.24 2.78
+TSN2    3.40 3.93 3.80 5.37 5.07 3.85 2.57
+
+concordancia entre solvers (Spearman medio entre pares): 0.690
+correlacion de rangos por pares:
+          GA ABCE3 fEABCLS TSN2
+GA      1.00  0.36    0.86 0.82
+ABCE3   0.36  1.00    0.71 0.61
+fEABCLS 0.86  0.71    1.00 0.79
+TSN2    0.82  0.61    0.79 1.00
+
+mejor brazo por solver: GA=A0, ABCE3=MIX, fEABCLS=MIX, TSN2=MIX
+[08-23 18:07:14] === POSTPROCESO COMPLETO ===

@@ -1,0 +1,62 @@
+# Replicacion GA (Diaz et al., IPMU 2020) - config Tabla 1
+# JOX p=1.0, mutacion insertion p=0.15, seleccion shuffle,
+# reemplazo tournament 2/4 parents-offspring sin repeticion,
+# poblacion 250, parada 25 iteraciones sin mejora, Insertion SGS (schedules activos),
+# evaluacion makespan componentwise / comparacion por Expected Value (= midpoint MP)
+
+# GENERIC
+algorithm = GA
+seed = 1
+runs = 5
+
+# PROBLEM
+problem.hasbounds = no
+postexecution.robustness = no
+
+# OBJECTIVE
+objective = ijsp.makespan
+evaluation.interval.comparison = EV
+evaluation.interval.maximum = Component
+evaluation.lamarckism = yes
+
+# CODIFICATION
+codification = ijsp.job-order
+decodification = ijsp.job-order
+decode.sgs = insertion
+sgs.interval.comparison = EV
+
+# CREATION
+creation = ijsp.random
+creation.sgs = insertion
+
+# CROSSOVER
+crossover = ijsp.jox
+crossover.probability = 1.0
+
+# MUTATION
+mutation = insertion
+mutation.probability = 0.15
+
+# SELECTION
+selection = shuffle
+
+# REPLACEMENT
+replacement = parents
+replacement.allow-repeated = no
+
+# STOPPING CRITERION
+generations = 100000
+
+# POPULATION
+population.size = 250
+
+# STATISTICS
+statistics.1.metric = best
+statistics.1.value = ijsp.makespan
+statistics.2.metric = average
+statistics.2.value = ijsp.makespan
+
+# Traza de evolucion muestreada por tiempo (memoria acotada)
+evolution.unit = time
+evolution.span = 5
+timelimit = 233

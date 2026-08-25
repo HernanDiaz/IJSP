@@ -49,7 +49,7 @@ double StatisticsHamming::getValue(const FuzzyFW::SharedVarsEvolutionary * svars
 		}
 
 		for (unsigned int j = i + 1; j < population->size(); j++) {
-			indiv2 = dynamic_cast<IndividualArrayInt *>(population->getIndividual(i));
+			indiv2 = dynamic_cast<IndividualArrayInt *>(population->getIndividual(j));
 			if (indiv2 == NULL) {
 				std::string errorMsg = "Hamming distance can be computed only on ";
 				errorMsg += "arrays of integer values";

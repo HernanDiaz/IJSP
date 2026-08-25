@@ -1,0 +1,61 @@
+# Replicacion ABCE3 (Diaz et al., IWINAC 2022) - Tabla 1, variante Elite3
+# Recomb GOX, pemp=1 (crossover.probability), neighbourhood Swap, pon=1 (mutation.probability),
+# maxnumtrials=20, elite.selection=3 (Elite3), elite.size=50, pop 250, parada 25 sin mejora.
+# SIN local search (frequency=none; se dan stubs de LS/neighbourhood porque el ABC los exige).
+
+algorithm = ABC
+seed = 1
+runs = 30
+
+problem.hasbounds = no
+postexecution.robustness = no
+
+objective = ijsp.makespan
+evaluation.interval.comparison = EV
+evaluation.interval.maximum = Component
+evaluation.lamarckism = yes
+
+codification = ijsp.job-order
+decodification = ijsp.job-order
+decode.sgs = insertion
+sgs.interval.comparison = EV
+
+creation = ijsp.random
+creation.sgs = insertion
+
+# Employed phase: recombinacion (pemp = crossover.probability)
+crossover = ijsp.gox
+crossover.probability = 1.0
+
+# Onlooker phase: vecindario (pon = mutation.probability)
+mutation = swap
+mutation.probability = 1.0
+
+selection = shuffle
+replacement = parents
+replacement.allow-repeated = no
+
+noimprovement = 25
+population.size = 250
+
+# ABC specific
+maxnumtrials = 20
+elite.selection = 3
+elite.size = 50
+
+# Local search DESACTIVADA (stubs obligatorios + frequency none)
+localsearch = HillClimbing
+localsearch.neighbourhood = ijsp.makespan.n1
+neighbourhood.estimator = heads&tails
+localsearch.frequency = none
+localsearch.target = 0.75
+localsearch.lamarckism = yes
+
+statistics.1.metric = best
+statistics.1.value = ijsp.makespan
+statistics.2.metric = average
+statistics.2.value = ijsp.makespan
+
+# Traza de evolucion muestreada por tiempo (memoria acotada)
+evolution.unit = time
+evolution.span = 5

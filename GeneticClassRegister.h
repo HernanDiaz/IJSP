@@ -333,6 +333,7 @@ public:
 		// -----  CREATION OPERATORS  -----------------------------------------
     	CreationMap[toUpper("ijsp-random")] = &createCreationInstance<IJSP::CreationRandomSchedule>;
 		CreationMap[toUpper("ijsp.random")] = &createCreationInstance<IJSP::CreationRandomSchedule>;
+		CreationMap[toUpper("ijsp.seeded")] = &createCreationInstance<IJSP::CreationSeededSchedule>;
 		CreationMap[toUpper("ijsp.SRT.makespan")] = &createCreationInstance<IJSP::CreationSRTIntervalMkSchedule>;
 		CreationMap[toUpper("ijsp.SNTF.makespan")] = &createCreationInstance<IJSP::CreationSNTFIntervalMkSchedule>;
 		

@@ -20,6 +20,15 @@ namespace IJSP {
 	// Creation parameters defined in this header file
 #define CREATION_SGS "creation.sgs"
 #define CREATION_RANDOM_RATIO "creation.randomratio"
+#define CREATION_SEED_POOL "creation.seed.pool"
+#define CREATION_SEED_COUNT "creation.seed.count"
+// Indice GLOBAL de la primera ejecucion de este proceso. runCounter es local al
+// proceso y se reinicia a 0 en cada arranque; al partir un experimento de 30
+// ejecuciones en varios procesos, todos repetirian los mismos bloques del pool.
+// Con este desplazamiento cada proceso continua donde acabo el anterior, de modo
+// que trocear y no trocear asignan exactamente las mismas semillas.
+#define CREATION_SEED_OFFSET "creation.seed.offset"
+#define CREATION_POPULATION_SIZE "population.size"
 
 
 //=============================================================================
@@ -1025,5 +1034,81 @@ namespace IJSP {
 			return setup;
 		}
 
+	};
+
+	//=============================================================================
+	//
+	//	Class CreationSeededSchedule
+	//
+	//=============================================================================
+	/**
+	 * Siembra la poblacion inicial con permutaciones de un pool (formato
+	 * "j1 j2 ... jN;[lower,upper]", trabajos 1-based) y rellena el resto aleatorio.
+	 *
+	 * Solo siembra en la creacion de la poblacion COMPLETA (popSize == population.size);
+	 * cualquier llamada parcial (abejas scout) se crea totalmente aleatoria, por lo que
+	 * el contador no se corrompe durante la evolucion.
+	 *
+	 * Asignacion de bloques por run (segun INSTRUCCIONES_PILOTO_TS.md): para el run r
+	 * con k = creation.seed.count sembrados, se toman las lineas
+	 * [(r*k) mod L, (r*k+k) mod L) con envoltura circular (L = tamano del pool).
+	 * runCounter se incrementa en cada creacion de poblacion completa.
+	 *
+	 * @author hdiaz (siembra RL)
+	 */
+	class CreationSeededSchedule : public FuzzyFW::Creation {
+	protected:
+		const std::string sgsLabel;
+		SGS_IJSP * sgs;
+		CreationRandomSchedule randomSchedule;   // para el relleno aleatorio y los scouts
+		unsigned int seedCount;                  // k sembrados por poblacion completa
+		unsigned int popSize;                    // tamano de la poblacion completa
+		std::vector< std::vector<int> > seedJobs;// secuencias de trabajos (1-based) del pool
+		mutable unsigned int runCounter;         // +1 por cada poblacion completa creada
+		unsigned int seedOffset;                 // indice global de la 1a ejecucion del proceso
+
+	public:
+		explicit CreationSeededSchedule(FuzzyFW::ParameterDB *parameters = NULL)
+			: sgsLabel(CREATION_SGS), sgs(NULL), Creation(parameters),
+			  seedCount(0), popSize(0), runCounter(0), seedOffset(0) { }
+
+		CreationSeededSchedule(const CreationSeededSchedule &source)
+			: Creation(source), sgsLabel(CREATION_SGS), sgs(NULL),
+			  randomSchedule(source.randomSchedule), seedCount(source.seedCount),
+			  popSize(source.popSize), seedJobs(source.seedJobs), runCounter(0),
+			  seedOffset(source.seedOffset) { }
+
+		virtual void setup(FuzzyFW::ParameterDB *parameters);
+
+		virtual Creation * clone() const {
+			return new CreationSeededSchedule(*this);
+		}
+
+		virtual ~CreationSeededSchedule() { }
+
+		virtual FuzzyFW::Individual * createIndividual(
+			const FuzzyFW::SharedVarsEvolutionary *svars) const;
+
+		virtual FuzzyFW::Population * createPopulation(
+			const unsigned int popSize,
+			const FuzzyFW::SharedVarsEvolutionary *svars) const;
+
+		virtual std::vector<std::string> getName() const {
+			std::vector<std::string> setup;
+			std::vector<std::string> sgsName = this->sgs->getName();
+			setup.push_back("Seeded");
+			setup.push_back(";SeedCount:;" + valueToString(this->seedCount));
+			setup.push_back(";PoolLines:;" + valueToString((int)this->seedJobs.size()));
+			setup.push_back(";SGS:;" + sgsName[0]);
+			for (size_t i = 1; i < sgsName.size(); i++)
+				setup.push_back(";" + sgsName[i]);
+			return setup;
+		}
+
+	protected:
+		// Construye un individuo a partir de una secuencia de trabajos (1-based)
+		FuzzyFW::Individual * buildFromJobPerm(
+			const std::vector<int> &jobs,
+			const FuzzyFW::SharedVarsEvolutionary *svars) const;
 	};
 }

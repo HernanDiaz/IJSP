@@ -1,0 +1,54 @@
+# Replicacion fEABCLS (Diaz et al., Natural Computing 2023) - Tabla 1, con Local Search
+# Global attraction JOX, local exploration Swap, maxnumtrials=15, elite.selection=3,
+# elite.size=40, pop 250, parada 25 sin mejora. HillClimbing sobre vecindario N1 (arco critico),
+# aplicado cada iteracion (frequency=period, period=1).
+
+algorithm = ABCPSO
+seed = 1
+runs = 2
+
+problem.hasbounds = no
+
+objective = ijsp.makespan
+evaluation.interval.comparison = EV
+evaluation.interval.maximum = Component
+evaluation.lamarckism = yes
+
+codification = ijsp.job-order
+decodification = ijsp.job-order
+decode.sgs = insertion
+sgs.interval.comparison = EV
+
+creation = ijsp.random
+creation.sgs = insertion
+
+crossover = ijsp.jox
+crossover.probability = 1.0
+
+mutation = swap
+mutation.probability = 1.0
+
+selection = shuffle
+replacement = parents
+replacement.allow-repeated = no
+
+noimprovement = 25
+population.size = 250
+
+maxnumtrials = 15
+elite.selection = 3
+elite.size = 40
+
+# Local search ACTIVA: HillClimbing sobre N1, cada iteracion
+localsearch = HillClimbing
+localsearch.neighbourhood = ijsp.makespan.n1
+neighbourhood.estimator = heads&tails
+localsearch.frequency = period
+localsearch.period = 1
+localsearch.target = 0.75
+localsearch.lamarckism = yes
+
+statistics.1.metric = best
+statistics.1.value = ijsp.makespan
+statistics.2.metric = average
+statistics.2.value = ijsp.makespan

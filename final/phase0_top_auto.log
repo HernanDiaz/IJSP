@@ -1,0 +1,14 @@
+auto_phase0_top esperando PHASE0 DONE... Wed Jul 22 08:06:28 CEST 2026
+lanzando FTOP Thu Jul 23 04:12:19 CEST 2026
+tai15_15_01 -> pools_test/corrected/int__tai15_15_01_v2top_repo_pool.csv : 250 lineas (best E[Cmax]=[1275, 1457])
+tai20_20_02 -> pools_test/corrected/int__tai20_20_02_v2top_repo_pool.csv : 250 lineas (best E[Cmax]=[1671, 1896])
+tai30_15_01 -> pools_test/corrected/int__tai30_15_01_v2top_repo_pool.csv : 250 lineas (best E[Cmax]=[1852, 2104])
+tai30_20_04 -> pools_test/corrected/int__tai30_20_04_v2top_repo_pool.csv : 250 lineas (best E[Cmax]=[2169, 2446])
+tai50_15_01 -> pools_test/corrected/int__tai50_15_01_v2top_repo_pool.csv : 250 lineas (best E[Cmax]=[2898, 3279])
+tai50_15_05 -> pools_test/corrected/int__tai50_15_05_v2top_repo_pool.csv : 250 lineas (best E[Cmax]=[2886, 3264])
+tai50_20_01 -> pools_test/corrected/int__tai50_20_01_v2top_repo_pool.csv : 250 lineas (best E[Cmax]=[3051, 3484])
+tai50_20_05 -> pools_test/corrected/int__tai50_20_05_v2top_repo_pool.csv : 250 lineas (best E[Cmax]=[2986, 3341])
+TOP POOLS OK
+FTOP pendientes: 16
+Inicio PHASE0-TOP: Thu Jul 23 04:12:23 CEST 2026  |  16 procesos, <=14
+PHASE0-TOP DONE: Thu Jul 23 12:02:16 CEST 2026

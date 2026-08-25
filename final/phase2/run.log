@@ -1,0 +1,7 @@
+Inicio PHASE2: Thu Jul 23 15:04:22 CEST 2026  |  1708 procesos, <=14, 30 runs, CAP=900s FLOOR=60s
+Inicio PHASE2: Sun Jul 26 00:08:48 CEST 2026  |  980 procesos, <=14, 30 runs, CAP=900s FLOOR=60s
+Inicio PHASE2: Sun Jul 26 11:50:29 CEST 2026  |  966 procesos, <=14, 30 runs, CAP=900s FLOOR=60s
+Inicio PHASE2C: Sun Jul 26 15:00:26 CEST 2026 | 5796 trozos, <=14, chunk ga/abce3=5 feabcls/tsn2=3
+PHASE2C DONE: Sat Aug  8 17:27:19 CEST 2026
+Inicio PHASE2C: Sun Aug  9 03:19:55 CEST 2026 | 10248 trozos, <=14, chunk ga/abce3=5 feabcls/tsn2=5
+PHASE2C DONE: Sun Aug 23 17:03:47 CEST 2026

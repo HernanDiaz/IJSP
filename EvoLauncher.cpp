@@ -76,8 +76,10 @@ std::string EvoLauncher::optimise(Problem *problem) {
 			// Open output file for solutions
 			std::ofstream outputFile;
 			std::string outputName = this->logFolder + FSEP;
-			// Open output for the robustness analyzer
-			this->analyzer.open(problem, outputName, signature, setup);
+			// Open output for the robustness analyzer (desactivable: postexecution.robustness=no)
+			bool doRobust = setup->getBoolean("postexecution.robustness", true);
+			if (doRobust)
+				this->analyzer.open(problem, outputName, signature, setup);
 			outputName += signature + "_" + EVO_OUTPUT_SOLS + ".csv";
 
 			outputFile.open(outputName.c_str());
@@ -110,7 +112,8 @@ std::string EvoLauncher::optimise(Problem *problem) {
 				outputFile << solution.second->toString() << std::endl;
 
 				//Post execution analysis
-				this->analyzer.analyze(problem, solution.first, solution.second, setup, run);
+				if (doRobust)
+					this->analyzer.analyze(problem, solution.first, solution.second, setup, run);
 
 				// Print evolution data
 				std::vector< std::vector<double> > evolStats;
@@ -128,7 +131,8 @@ std::string EvoLauncher::optimise(Problem *problem) {
 				}
 			}
 			outputFile.close();
-			this->analyzer.close();
+			if (doRobust)
+				this->analyzer.close();
 
 			// Open output file
 			outputName = this->logFolder + FSEP;

@@ -1,0 +1,88 @@
+Artificial Bee Colony PSO
+Problem to solve:;tai50_20_01.F.15_01
+;Objective Function:;Makespan
+;;Maximum:;Component
+;;Comparisons:;Lexicographical 2
+;Population Size:;250
+; Maximum Trials per food source:;24
+; Elite selection:;3
+;Stopping criteria:
+;;Max.Generations:;100000
+;;Max.Generations without improvement:;none
+;;Max.Evaluations:;none
+;;Time Limit:;60
+;Codification:;Job Permutation
+;Decodification:;Job Permutation
+;;SGS:;Insertion
+;Initial Popul.:;Random
+;;SGS:;Insertion
+;Selection:;Shuffle
+;Crossover:;JOX
+;;Probability:;0.9
+;Mutation:;Insertion
+;;Probability:;0.1
+;Replacement:;Parents-Offspring
+;;Allow repeat;No
+;Local Search:;Tabu Search
+;;Tabu-list min.Size:;3
+;;Tabu-list max.Size:;100000
+;;Max. Iterations without Improve:;20
+;;Max. Time:;2
+;;Guide:;Real fitness
+;;Filter:;No
+;;Neighbourhood:;Makespan-N2
+;;;Estimator:;heads&tails
+;;Frequency:; Periodical
+;;;Iterations:;1
+;;Target:; Random
+;;;Percentage:;100
+;;Lamarckism;Yes
+
+
+Runtimes
+------------------------------------------------
+Time;Average;Best;Worst;Std.Dev.;Run 1;Run 2;Run 3;Run 4;Run 5;Run 6
+Total runtime;60.5052;60.25;60.7969;0.21302;60.25;60.7969;60.3125;60.4375;60.5469;60.6875
+Creation;0.370193;0.334706;0.440871;0.0394655;0.440871;0.385505;0.362694;0.336091;0.36129;0.334706
+Selection;0.0688478;0;0.155119;0.0604498;0;0.077101;0.103627;0.155119;0;0.07724
+Crossover;0.421739;0.283213;0.568769;0.124706;0.440871;0.565407;0.310881;0.568769;0.36129;0.283213
+Mutation;0.0215167;0;0.0516129;0.0194295;0.0259336;0.0257003;0;0.0258532;0.0516129;0
+Replacement;0.00862665;0;0.0259067;0.0133644;0;0;0.0259067;0.0258532;0;0
+Evaluation;0;0;0;0;0;0;0;0;0;0
+Local Search;99.1091;98.8883;99.3048;0.164425;99.0923;98.9463;99.1969;98.8883;99.2258;99.3048
+Others;0;0;0;0;0;0;0;0;0;0
+
+
+Basic statistics
+------------------------------------------------
+Field;Average;Best;Worst;Std.Dev.;Run 1;Run 2;Run 3;Run 4;Run 5;Run 6
+Number of Generations;1;1;1;0;1;1;1;1;1;1
+Evaluations (ABC);500;500;500;0;500;500;500;500;500;500
+Evaluations (Local Search);903128;887961;935236;16703.1;896838;935236;900286;904507;887961;893938
+Evaluations (Total);903628;888461;935736;16703.1;897338;935736;900786;905007;888461;894438
+Avg. Neighbours visited per LS;2349.49;2226.75;2429.18;92.4756;2360.1;2226.75;2420.12;2418.47;2242.33;2429.18
+Number of Calls to LS;385;368;420;19.7484;380;420;372;374;396;368
+Number of Solutions improved by LS;341.5;329;369;14.639;341;369;341;329;340;329
+Avg of solutions improved by LS;0.887482;0.858586;0.916667;0.019837;0.897368;0.878571;0.916667;0.879679;0.858586;0.894022
+Number of Solutions worsened by LS;0;0;0;0;0;0;0;0;0;0
+Avg of solutions worsened by LS;0;0;0;0;0;0;0;0;0;0
+Number of Solutions equal fitness after LS;43.5;31;56;9.07193;39;51;31;45;56;39
+Avg of solutions equal fitness after LS;0.112518;0.0833333;0.141414;0.019837;0.102632;0.121429;0.0833333;0.120321;0.141414;0.105978
+Avg. Iterations per LS;129.198;122.971;134.503;4.98399;128.537;122.971;132.97;132.588;123.619;134.503
+Avg replacements per generation;0;0;0;0;0;0;0;0;0;0
+Total replacements in ABC;0;0;0;0;0;0;0;0;0;0
+Best solution;3273.75;3225;3309.5;29.0616;3287;3309.5;3225;3258;3278;3285
+
+
+Objective function values
+------------------------------------------------
+Average;Best;Worst;Std.Dev.;Run 1;Run 2;Run 3;Run 4;Run 5;Run 6
+3273.75;(2993, 3457);(3066, 3553);29.0616;(3035, 3539);(3066, 3553);(2993, 3457);(3031, 3485);(3032, 3524);(3056, 3514)
+
+
+Evolution
+------------------------------------------------
+Average Evolution;;;;;;Run 1;;;;;;Run 2;;;;;;Run 3;;;;;;Run 4;;;;;;Run 5;;;;;;Run 6
+Step;Runtime;Best;Avg;Best Cmax;Avg Cmax;Generation;Runtime;Best;Avg;Best Cmax;Avg Cmax;Generation;Runtime;Best;Avg;Best Cmax;Avg Cmax;Generation;Runtime;Best;Avg;Best Cmax;Avg Cmax;Generation;Runtime;Best;Avg;Best Cmax;Avg Cmax;Generation;Runtime;Best;Avg;Best Cmax;Avg Cmax;Generation;Runtime;Best;Avg;Best Cmax;Avg Cmax
+0;0.223958;3724.08;3992.44;3724.08;3992.44;0;0.265625;3715;3990.27;3715;3990.27;0;0.234375;3785.5;3984.45;3785.5;3984.45;0;0.21875;3667.5;3999.87;3667.5;3999.87;0;0.203125;3673.5;4001.8;3673.5;4001.8;0;0.21875;3749.5;3987.82;3749.5;3987.82;0;0.203125;3753.5;3990.44;3753.5;3990.44
+1;60.5052;3273.75;3576.66;3273.75;3576.66;1;60.25;3287;3576;3287;3576;1;60.7969;3309.5;3556.85;3309.5;3556.85;1;60.3125;3225;3585.99;3225;3585.99;1;60.4375;3258;3592.92;3258;3592.92;1;60.5469;3278;3553.85;3278;3553.85;1;60.6875;3285;3594.38;3285;3594.38

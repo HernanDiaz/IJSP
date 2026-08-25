@@ -1,0 +1,681 @@
+Pool: pools_test/int__tai15_15_01_graspmor_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 992/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 30
+== tai15_15_01 graspmor ==
+Pool: pools_test/int__tai15_15_01_gtmwkr_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 1003/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 28
+== tai15_15_01 gtmwkr ==
+Pool: pools_test/int__tai15_15_01_gp_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 971/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 36
+== tai15_15_01 gp ==
+Pool: pools_test/int__tai15_15_02_v2_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 988/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 47
+== tai15_15_02 v2 ==
+Pool: pools_test/int__tai15_15_02_graspmor_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 1010/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 33
+== tai15_15_02 graspmor ==
+Pool: pools_test/int__tai15_15_02_gtmwkr_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 975/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 53
+== tai15_15_02 gtmwkr ==
+Pool: pools_test/int__tai15_15_02_gp_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 943/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 55
+== tai15_15_02 gp ==
+Pool: pools_test/int__tai15_15_03_v2_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 951/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 55
+== tai15_15_03 v2 ==
+Pool: pools_test/int__tai15_15_03_graspmor_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 912/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 35
+== tai15_15_03 graspmor ==
+Pool: pools_test/int__tai15_15_03_gtmwkr_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 956/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 43
+== tai15_15_03 gtmwkr ==
+Pool: pools_test/int__tai15_15_03_gp_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 936/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 44
+== tai15_15_03 gp ==
+Pool: pools_test/int__tai15_15_04_v2_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 890/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 61
+== tai15_15_04 v2 ==
+Pool: pools_test/int__tai15_15_04_graspmor_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 993/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 40
+== tai15_15_04 graspmor ==
+Pool: pools_test/int__tai15_15_04_gtmwkr_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 969/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 30
+== tai15_15_04 gtmwkr ==
+Pool: pools_test/int__tai15_15_04_gp_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 915/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 52
+== tai15_15_04 gp ==
+Pool: pools_test/int__tai15_15_06_v2_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 854/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 46
+== tai15_15_06 v2 ==
+Pool: pools_test/int__tai15_15_06_graspmor_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 935/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 73
+== tai15_15_06 graspmor ==
+Pool: pools_test/int__tai15_15_06_gtmwkr_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 850/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 38
+== tai15_15_06 gtmwkr ==
+Pool: pools_test/int__tai15_15_06_gp_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 819/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 71
+== tai15_15_06 gp ==
+Pool: pools_test/int__tai15_15_07_v2_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 726/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 50
+== tai15_15_07 v2 ==
+Pool: pools_test/int__tai15_15_07_graspmor_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 739/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 69
+== tai15_15_07 graspmor ==
+Pool: pools_test/int__tai15_15_07_gtmwkr_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 375/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 58
+== tai15_15_07 gtmwkr ==
+Pool: pools_test/int__tai15_15_07_gp_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 862/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 69
+== tai15_15_07 gp ==
+Pool: pools_test/int__tai15_15_08_v2_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 913/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 53
+== tai15_15_08 v2 ==
+Pool: pools_test/int__tai15_15_08_graspmor_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 1003/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 64
+== tai15_15_08 graspmor ==
+Pool: pools_test/int__tai15_15_08_gtmwkr_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 1013/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 48
+== tai15_15_08 gtmwkr ==
+Pool: pools_test/int__tai15_15_08_gp_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 930/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 60
+== tai15_15_08 gp ==
+Pool: pools_test/int__tai15_15_09_v2_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 949/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 49
+== tai15_15_09 v2 ==
+Pool: pools_test/int__tai15_15_09_graspmor_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 908/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 44
+== tai15_15_09 graspmor ==
+Pool: pools_test/int__tai15_15_09_gtmwkr_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 865/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 54
+== tai15_15_09 gtmwkr ==
+Pool: pools_test/int__tai15_15_09_gp_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 918/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 40
+== tai15_15_09 gp ==
+Pool: pools_test/int__tai15_15_10_v2_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 847/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 42
+== tai15_15_10 v2 ==
+Pool: pools_test/int__tai15_15_10_graspmor_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 539/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 38
+== tai15_15_10 graspmor ==
+Pool: pools_test/int__tai15_15_10_gtmwkr_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 856/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 64
+== tai15_15_10 gtmwkr ==
+Pool: pools_test/int__tai15_15_10_gp_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 893/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 51
+== tai15_15_10 gp ==
+Pool: pools_test/int__tai20_20_01_v2_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 905/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 55
+== tai20_20_01 v2 ==
+Pool: pools_test/int__tai20_20_01_graspmor_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 1015/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 39
+== tai20_20_01 graspmor ==
+Pool: pools_test/int__tai20_20_01_gtmwkr_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 720/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 64
+== tai20_20_01 gtmwkr ==
+Pool: pools_test/int__tai20_20_01_gp_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 822/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 61
+== tai20_20_01 gp ==
+Pool: pools_test/int__tai20_20_03_v2_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 887/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 41
+== tai20_20_03 v2 ==
+Pool: pools_test/int__tai20_20_03_graspmor_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 627/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 39
+== tai20_20_03 graspmor ==
+Pool: pools_test/int__tai20_20_03_gtmwkr_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 1015/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 28
+== tai20_20_03 gtmwkr ==
+Pool: pools_test/int__tai20_20_03_gp_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 935/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 49
+== tai20_20_03 gp ==
+Pool: pools_test/int__tai20_20_04_v2_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 947/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 39
+== tai20_20_04 v2 ==
+Pool: pools_test/int__tai20_20_04_graspmor_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 872/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 51
+== tai20_20_04 graspmor ==
+Pool: pools_test/int__tai20_20_04_gtmwkr_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 970/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 35
+== tai20_20_04 gtmwkr ==
+Pool: pools_test/int__tai20_20_04_gp_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 891/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 77
+== tai20_20_04 gp ==
+Pool: pools_test/int__tai20_20_05_v2_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 870/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 50
+== tai20_20_05 v2 ==
+Pool: pools_test/int__tai20_20_05_graspmor_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 855/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 49
+== tai20_20_05 graspmor ==
+Pool: pools_test/int__tai20_20_05_gtmwkr_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 855/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 57
+== tai20_20_05 gtmwkr ==
+Pool: pools_test/int__tai20_20_05_gp_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 889/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 33
+== tai20_20_05 gp ==
+Pool: pools_test/int__tai20_20_06_v2_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 873/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 46
+== tai20_20_06 v2 ==
+Pool: pools_test/int__tai20_20_06_graspmor_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 946/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 54
+== tai20_20_06 graspmor ==
+Pool: pools_test/int__tai20_20_06_gtmwkr_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 831/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 79
+== tai20_20_06 gtmwkr ==
+Pool: pools_test/int__tai20_20_06_gp_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 908/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 43
+== tai20_20_06 gp ==
+Pool: pools_test/int__tai20_20_07_v2_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 901/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 46
+== tai20_20_07 v2 ==
+Pool: pools_test/int__tai20_20_07_graspmor_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 965/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 38
+== tai20_20_07 graspmor ==
+Pool: pools_test/int__tai20_20_07_gtmwkr_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 918/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 25
+== tai20_20_07 gtmwkr ==
+Pool: pools_test/int__tai20_20_07_gp_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 949/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 51
+== tai20_20_07 gp ==
+Pool: pools_test/int__tai20_20_08_v2_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 813/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 74
+== tai20_20_08 v2 ==
+Pool: pools_test/int__tai20_20_08_graspmor_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 870/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 71
+== tai20_20_08 graspmor ==
+Pool: pools_test/int__tai20_20_08_gtmwkr_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 749/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 94
+== tai20_20_08 gtmwkr ==
+Pool: pools_test/int__tai20_20_08_gp_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 846/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 75
+== tai20_20_08 gp ==
+Pool: pools_test/int__tai20_20_09_v2_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 885/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 55
+== tai20_20_09 v2 ==
+Pool: pools_test/int__tai20_20_09_graspmor_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 1003/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 36
+== tai20_20_09 graspmor ==
+Pool: pools_test/int__tai20_20_09_gtmwkr_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 758/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 56
+== tai20_20_09 gtmwkr ==
+Pool: pools_test/int__tai20_20_09_gp_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 882/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 62
+== tai20_20_09 gp ==
+Pool: pools_test/int__tai20_20_10_v2_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 909/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 45
+== tai20_20_10 v2 ==
+Pool: pools_test/int__tai20_20_10_graspmor_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 1023/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 7
+== tai20_20_10 graspmor ==
+Pool: pools_test/int__tai20_20_10_gtmwkr_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 1000/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 19
+== tai20_20_10 gtmwkr ==
+Pool: pools_test/int__tai20_20_10_gp_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 924/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 31
+== tai20_20_10 gp ==
+Pool: pools_test/int__tai30_15_01_graspmor_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 852/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 52
+== tai30_15_01 graspmor ==
+Pool: pools_test/int__tai30_15_01_gtmwkr_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 1016/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 37
+== tai30_15_01 gtmwkr ==
+Pool: pools_test/int__tai30_15_01_gp_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 983/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 65
+== tai30_15_01 gp ==
+Pool: pools_test/int__tai30_15_02_v2_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 827/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 59
+== tai30_15_02 v2 ==
+Pool: pools_test/int__tai30_15_02_graspmor_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 753/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 50
+== tai30_15_02 graspmor ==
+Pool: pools_test/int__tai30_15_02_gtmwkr_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 946/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 64
+== tai30_15_02 gtmwkr ==
+Pool: pools_test/int__tai30_15_02_gp_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 898/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 63
+== tai30_15_02 gp ==
+Pool: pools_test/int__tai30_15_03_v2_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 856/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 82
+== tai30_15_03 v2 ==
+Pool: pools_test/int__tai30_15_03_graspmor_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 789/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 73
+== tai30_15_03 graspmor ==
+Pool: pools_test/int__tai30_15_03_gtmwkr_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 700/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 90
+== tai30_15_03 gtmwkr ==
+Pool: pools_test/int__tai30_15_03_gp_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 771/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 93
+== tai30_15_03 gp ==
+Pool: pools_test/int__tai30_15_04_v2_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 824/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 87
+== tai30_15_04 v2 ==
+Pool: pools_test/int__tai30_15_04_graspmor_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 892/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 40
+== tai30_15_04 graspmor ==
+Pool: pools_test/int__tai30_15_04_gtmwkr_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 968/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 104
+== tai30_15_04 gtmwkr ==
+Pool: pools_test/int__tai30_15_04_gp_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 887/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 87
+== tai30_15_04 gp ==
+Pool: pools_test/int__tai30_15_05_v2_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 759/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 96
+== tai30_15_05 v2 ==
+Pool: pools_test/int__tai30_15_05_graspmor_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 951/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 55
+== tai30_15_05 graspmor ==
+Pool: pools_test/int__tai30_15_05_gtmwkr_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 835/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 98
+== tai30_15_05 gtmwkr ==
+Pool: pools_test/int__tai30_15_05_gp_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 862/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 72
+== tai30_15_05 gp ==
+Pool: pools_test/int__tai30_15_06_v2_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 935/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 54
+== tai30_15_06 v2 ==
+Pool: pools_test/int__tai30_15_06_graspmor_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 967/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 29
+== tai30_15_06 graspmor ==
+Pool: pools_test/int__tai30_15_06_gtmwkr_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 1019/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 66
+== tai30_15_06 gtmwkr ==
+Pool: pools_test/int__tai30_15_06_gp_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 962/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 77
+== tai30_15_06 gp ==
+Pool: pools_test/int__tai30_15_07_v2_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 913/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 88
+== tai30_15_07 v2 ==
+Pool: pools_test/int__tai30_15_07_graspmor_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 538/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 91
+== tai30_15_07 graspmor ==
+Pool: pools_test/int__tai30_15_07_gtmwkr_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 918/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 50
+== tai30_15_07 gtmwkr ==
+Pool: pools_test/int__tai30_15_07_gp_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 879/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 60
+== tai30_15_07 gp ==
+Pool: pools_test/int__tai30_15_08_v2_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 823/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 50
+== tai30_15_08 v2 ==
+Pool: pools_test/int__tai30_15_08_graspmor_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 897/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 39
+== tai30_15_08 graspmor ==
+Pool: pools_test/int__tai30_15_08_gtmwkr_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 817/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 56
+== tai30_15_08 gtmwkr ==
+Pool: pools_test/int__tai30_15_08_gp_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 848/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 89
+== tai30_15_08 gp ==
+Pool: pools_test/int__tai30_15_09_v2_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 832/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 50
+== tai30_15_09 v2 ==
+Pool: pools_test/int__tai30_15_09_graspmor_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 626/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 69
+== tai30_15_09 graspmor ==
+Pool: pools_test/int__tai30_15_09_gtmwkr_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 883/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 47
+== tai30_15_09 gtmwkr ==
+Pool: pools_test/int__tai30_15_09_gp_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 874/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 51
+== tai30_15_09 gp ==
+Pool: pools_test/int__tai30_15_10_v2_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 927/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 67
+== tai30_15_10 v2 ==
+Pool: pools_test/int__tai30_15_10_graspmor_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 1012/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 32
+== tai30_15_10 graspmor ==
+Pool: pools_test/int__tai30_15_10_gtmwkr_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 1011/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 62
+== tai30_15_10 gtmwkr ==
+Pool: pools_test/int__tai30_15_10_gp_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 999/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 43
+== tai30_15_10 gp ==
+Pool: pools_test/int__tai30_20_01_v2_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 994/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 30
+== tai30_20_01 v2 ==
+Pool: pools_test/int__tai30_20_01_graspmor_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 908/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 71
+== tai30_20_01 graspmor ==
+Pool: pools_test/int__tai30_20_01_gtmwkr_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 1010/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 4
+== tai30_20_01 gtmwkr ==
+Pool: pools_test/int__tai30_20_01_gp_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 984/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 30
+== tai30_20_01 gp ==
+Pool: pools_test/int__tai30_20_02_v2_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 987/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 43
+== tai30_20_02 v2 ==
+Pool: pools_test/int__tai30_20_02_graspmor_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 1004/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 34
+== tai30_20_02 graspmor ==
+Pool: pools_test/int__tai30_20_02_gtmwkr_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 1023/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 30
+== tai30_20_02 gtmwkr ==
+Pool: pools_test/int__tai30_20_02_gp_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 987/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 41
+== tai30_20_02 gp ==
+Pool: pools_test/int__tai30_20_03_v2_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 946/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 56
+== tai30_20_03 v2 ==
+Pool: pools_test/int__tai30_20_03_graspmor_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 914/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 43
+== tai30_20_03 graspmor ==
+Pool: pools_test/int__tai30_20_03_gtmwkr_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 951/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 41
+== tai30_20_03 gtmwkr ==
+Pool: pools_test/int__tai30_20_03_gp_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 899/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 51
+== tai30_20_03 gp ==
+Pool: pools_test/int__tai30_20_05_v2_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 928/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 89
+== tai30_20_05 v2 ==
+Pool: pools_test/int__tai30_20_05_graspmor_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 1014/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 25
+== tai30_20_05 graspmor ==
+Pool: pools_test/int__tai30_20_05_gtmwkr_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 1016/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 39
+== tai30_20_05 gtmwkr ==
+Pool: pools_test/int__tai30_20_05_gp_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 941/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 101
+== tai30_20_05 gp ==
+Pool: pools_test/int__tai30_20_06_v2_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 902/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 60
+== tai30_20_06 v2 ==
+Pool: pools_test/int__tai30_20_06_graspmor_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 908/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 45
+== tai30_20_06 graspmor ==
+Pool: pools_test/int__tai30_20_06_gtmwkr_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 871/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 54
+== tai30_20_06 gtmwkr ==
+Pool: pools_test/int__tai30_20_06_gp_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 915/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 41
+== tai30_20_06 gp ==
+Pool: pools_test/int__tai30_20_07_v2_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 839/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 51
+== tai30_20_07 v2 ==
+Pool: pools_test/int__tai30_20_07_graspmor_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 973/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 20
+== tai30_20_07 graspmor ==
+Pool: pools_test/int__tai30_20_07_gtmwkr_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 799/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 81
+== tai30_20_07 gtmwkr ==
+Pool: pools_test/int__tai30_20_07_gp_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 856/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 49
+== tai30_20_07 gp ==
+Pool: pools_test/int__tai30_20_08_v2_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 883/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 52
+== tai30_20_08 v2 ==
+Pool: pools_test/int__tai30_20_08_graspmor_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 985/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 44
+== tai30_20_08 graspmor ==
+Pool: pools_test/int__tai30_20_08_gtmwkr_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 985/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 40
+== tai30_20_08 gtmwkr ==
+Pool: pools_test/int__tai30_20_08_gp_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 882/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 78
+== tai30_20_08 gp ==
+Pool: pools_test/int__tai30_20_09_v2_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 946/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 54
+== tai30_20_09 v2 ==
+Pool: pools_test/int__tai30_20_09_graspmor_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 918/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 70
+== tai30_20_09 graspmor ==
+Pool: pools_test/int__tai30_20_09_gtmwkr_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 921/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 67
+== tai30_20_09 gtmwkr ==
+Pool: pools_test/int__tai30_20_09_gp_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 833/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 73
+== tai30_20_09 gp ==
+Pool: pools_test/int__tai30_20_10_v2_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 1016/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 14
+== tai30_20_10 v2 ==
+Pool: pools_test/int__tai30_20_10_graspmor_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 1022/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 9
+== tai30_20_10 graspmor ==
+Pool: pools_test/int__tai30_20_10_gtmwkr_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 1018/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 12
+== tai30_20_10 gtmwkr ==
+Pool: pools_test/int__tai30_20_10_gp_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 1001/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 22
+== tai30_20_10 gp ==
+Pool: pools_test/int__tai50_15_01_graspmor_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 1024/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 0
+== tai50_15_01 graspmor ==
+Pool: pools_test/int__tai50_15_01_gtmwkr_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 1024/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 0
+== tai50_15_01 gtmwkr ==
+Pool: pools_test/int__tai50_15_01_gp_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 1024/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 0
+== tai50_15_01 gp ==
+Pool: pools_test/int__tai50_15_02_v2_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 976/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 40
+== tai50_15_02 v2 ==
+Pool: pools_test/int__tai50_15_02_graspmor_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 974/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 79
+== tai50_15_02 graspmor ==
+Pool: pools_test/int__tai50_15_02_gtmwkr_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 1022/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 9
+== tai50_15_02 gtmwkr ==
+Pool: pools_test/int__tai50_15_02_gp_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 1012/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 48
+== tai50_15_02 gp ==
+Pool: pools_test/int__tai50_15_03_v2_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 1007/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 31
+== tai50_15_03 v2 ==
+Pool: pools_test/int__tai50_15_03_graspmor_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 1011/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 37
+== tai50_15_03 graspmor ==
+Pool: pools_test/int__tai50_15_03_gtmwkr_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 1016/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 31
+== tai50_15_03 gtmwkr ==
+Pool: pools_test/int__tai50_15_03_gp_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 1012/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 72
+== tai50_15_03 gp ==
+Pool: pools_test/int__tai50_15_04_v2_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 963/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 62
+== tai50_15_04 v2 ==
+Pool: pools_test/int__tai50_15_04_graspmor_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 887/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 92
+== tai50_15_04 graspmor ==
+Pool: pools_test/int__tai50_15_04_gtmwkr_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 1013/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 42
+== tai50_15_04 gtmwkr ==
+Pool: pools_test/int__tai50_15_04_gp_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 991/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 74
+== tai50_15_04 gp ==
+Pool: pools_test/int__tai50_15_05_graspmor_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 881/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 92
+== tai50_15_05 graspmor ==
+Pool: pools_test/int__tai50_15_05_gtmwkr_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 926/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 59
+== tai50_15_05 gtmwkr ==
+Pool: pools_test/int__tai50_15_05_gp_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 963/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 43
+== tai50_15_05 gp ==
+Pool: pools_test/int__tai50_15_06_v2_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 916/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 61
+== tai50_15_06 v2 ==
+Pool: pools_test/int__tai50_15_06_graspmor_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 902/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 45
+== tai50_15_06 graspmor ==
+Pool: pools_test/int__tai50_15_06_gtmwkr_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 754/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 79
+== tai50_15_06 gtmwkr ==
+Pool: pools_test/int__tai50_15_06_gp_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 918/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 63
+== tai50_15_06 gp ==
+Pool: pools_test/int__tai50_15_07_v2_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 987/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 63
+== tai50_15_07 v2 ==
+Pool: pools_test/int__tai50_15_07_graspmor_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 1017/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 9
+== tai50_15_07 graspmor ==
+Pool: pools_test/int__tai50_15_07_gtmwkr_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 1024/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 0
+== tai50_15_07 gtmwkr ==
+Pool: pools_test/int__tai50_15_07_gp_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 1015/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 13
+== tai50_15_07 gp ==
+Pool: pools_test/int__tai50_15_08_v2_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 863/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 80
+== tai50_15_08 v2 ==
+Pool: pools_test/int__tai50_15_08_graspmor_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 797/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 88
+== tai50_15_08 graspmor ==
+Pool: pools_test/int__tai50_15_08_gtmwkr_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 1019/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 44
+== tai50_15_08 gtmwkr ==
+Pool: pools_test/int__tai50_15_08_gp_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 996/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 65
+== tai50_15_08 gp ==
+Pool: pools_test/int__tai50_15_09_v2_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 963/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 63
+== tai50_15_09 v2 ==
+Pool: pools_test/int__tai50_15_09_graspmor_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 1000/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 59
+== tai50_15_09 graspmor ==
+Pool: pools_test/int__tai50_15_09_gtmwkr_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 1020/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 17
+== tai50_15_09 gtmwkr ==
+Pool: pools_test/int__tai50_15_09_gp_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 1016/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 27
+== tai50_15_09 gp ==
+Pool: pools_test/int__tai50_15_10_v2_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 850/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 56
+== tai50_15_10 v2 ==
+Pool: pools_test/int__tai50_15_10_graspmor_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 918/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 64
+== tai50_15_10 graspmor ==
+Pool: pools_test/int__tai50_15_10_gtmwkr_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 927/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 55
+== tai50_15_10 gtmwkr ==
+Pool: pools_test/int__tai50_15_10_gp_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 975/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 82
+== tai50_15_10 gp ==
+Pool: pools_test/int__tai50_20_01_graspmor_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 986/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 39
+== tai50_20_01 graspmor ==
+Pool: pools_test/int__tai50_20_01_gtmwkr_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 987/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 72
+== tai50_20_01 gtmwkr ==
+Pool: pools_test/int__tai50_20_01_gp_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 947/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 61
+== tai50_20_01 gp ==
+Pool: pools_test/int__tai50_20_02_v2_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 794/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 96
+== tai50_20_02 v2 ==
+Pool: pools_test/int__tai50_20_02_graspmor_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 875/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 99
+== tai50_20_02 graspmor ==
+Pool: pools_test/int__tai50_20_02_gtmwkr_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 782/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 60
+== tai50_20_02 gtmwkr ==
+Pool: pools_test/int__tai50_20_02_gp_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 664/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 66
+== tai50_20_02 gp ==
+Pool: pools_test/int__tai50_20_03_v2_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 838/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 99
+== tai50_20_03 v2 ==
+Pool: pools_test/int__tai50_20_03_graspmor_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 939/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 45
+== tai50_20_03 graspmor ==
+Pool: pools_test/int__tai50_20_03_gtmwkr_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 902/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 70
+== tai50_20_03 gtmwkr ==
+Pool: pools_test/int__tai50_20_03_gp_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 811/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 83
+== tai50_20_03 gp ==
+Pool: pools_test/int__tai50_20_04_v2_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 821/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 88
+== tai50_20_04 v2 ==
+Pool: pools_test/int__tai50_20_04_graspmor_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 851/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 79
+== tai50_20_04 graspmor ==
+Pool: pools_test/int__tai50_20_04_gtmwkr_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 746/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 74
+== tai50_20_04 gtmwkr ==
+Pool: pools_test/int__tai50_20_04_gp_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 771/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 77
+== tai50_20_04 gp ==
+Pool: pools_test/int__tai50_20_05_graspmor_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 918/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 84
+== tai50_20_05 graspmor ==
+Pool: pools_test/int__tai50_20_05_gtmwkr_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 1024/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 0
+== tai50_20_05 gtmwkr ==
+Pool: pools_test/int__tai50_20_05_gp_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 1023/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 11
+== tai50_20_05 gp ==
+Pool: pools_test/int__tai50_20_06_v2_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 882/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 67
+== tai50_20_06 v2 ==
+Pool: pools_test/int__tai50_20_06_graspmor_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 778/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 80
+== tai50_20_06 graspmor ==
+Pool: pools_test/int__tai50_20_06_gtmwkr_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 831/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 68
+== tai50_20_06 gtmwkr ==
+Pool: pools_test/int__tai50_20_06_gp_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 845/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 45
+== tai50_20_06 gp ==
+Pool: pools_test/int__tai50_20_07_v2_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 901/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 81
+== tai50_20_07 v2 ==
+Pool: pools_test/int__tai50_20_07_graspmor_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 826/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 87
+== tai50_20_07 graspmor ==
+Pool: pools_test/int__tai50_20_07_gtmwkr_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 1002/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 72
+== tai50_20_07 gtmwkr ==
+Pool: pools_test/int__tai50_20_07_gp_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 899/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 68
+== tai50_20_07 gp ==
+Pool: pools_test/int__tai50_20_08_v2_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 782/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 79
+== tai50_20_08 v2 ==
+Pool: pools_test/int__tai50_20_08_graspmor_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 817/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 63
+== tai50_20_08 graspmor ==
+Pool: pools_test/int__tai50_20_08_gtmwkr_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 680/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 80
+== tai50_20_08 gtmwkr ==
+Pool: pools_test/int__tai50_20_08_gp_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 736/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 74
+== tai50_20_08 gp ==
+Pool: pools_test/int__tai50_20_09_v2_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 928/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 67
+== tai50_20_09 v2 ==
+Pool: pools_test/int__tai50_20_09_graspmor_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 648/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 134
+== tai50_20_09 graspmor ==
+Pool: pools_test/int__tai50_20_09_gtmwkr_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 899/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 69
+== tai50_20_09 gtmwkr ==
+Pool: pools_test/int__tai50_20_09_gp_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 870/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 80
+== tai50_20_09 gp ==
+Pool: pools_test/int__tai50_20_10_v2_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 749/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 127
+== tai50_20_10 v2 ==
+Pool: pools_test/int__tai50_20_10_graspmor_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 963/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 86
+== tai50_20_10 graspmor ==
+Pool: pools_test/int__tai50_20_10_gtmwkr_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 924/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 78
+== tai50_20_10 gtmwkr ==
+Pool: pools_test/int__tai50_20_10_gp_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 951/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 96
+== tai50_20_10 gp ==
+Pool: pools_test/int__ft10_v2_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 979/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 18
+== ft10 v2 ==
+Pool: pools_test/int__ft10_graspmor_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 957/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 33
+== ft10 graspmor ==
+Pool: pools_test/int__ft10_gtmwkr_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 990/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 20
+== ft10 gtmwkr ==
+Pool: pools_test/int__ft10_gp_pool.csv  lineas=1024  parseErrors=0
+  coincide componentwise (repo): 970/1024  |  lex-por-upper (doc): 1024/1024  |  maxErrLower(comp): 40
+== ft10 gp ==
+rewrite: 244/244 pools corregidos
+mix: 61/61 construidos
+PHASE2 POOLS DONE: Thu Jul 23 14:46:56 CEST 2026

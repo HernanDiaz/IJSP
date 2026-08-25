@@ -1,0 +1,73 @@
+# TSN2 = fEABC (ABCPSO) + Tabu Search (LS) + vecindario N2 + ranking LEX2
+# Config irace-tuneada del paper (Tabla tab:tuned, fila N_2):
+#   Crossover JOX, Mutation insertion, Elite 50, NTmax 24, LS target 100%, Bad-iter 20
+# Fijos: poblacion 250, tabu-min-size 3 (sin max fijo), LEX2, T_max=2s/llamada,
+#   LS por generacion (period=1), Lamarckiano, parada 25 gens sin mejora.
+
+# GENERIC
+algorithm = ABCPSO
+seed = 1
+runs = 2
+
+# PROBLEM
+problem.hasbounds = no
+postexecution.robustness = no
+
+# OBJECTIVE (ranking LEX2)
+objective = ijsp.makespan
+evaluation.interval.comparison = LEX2
+evaluation.interval.maximum = Component
+evaluation.lamarckism = yes
+
+# CODIFICATION
+codification = ijsp.job-order
+decodification = ijsp.job-order
+decode.sgs = insertion
+sgs.interval.comparison = LEX2
+
+# CREATION
+creation = ijsp.seeded
+creation.sgs = insertion
+
+# CROSSOVER / MUTATION (base fEABC, mutacion tuneada = insertion)
+crossover = ijsp.jox
+crossover.probability = 0.9
+mutation = insertion
+mutation.probability = 0.10
+
+# SELECTION / REPLACEMENT
+selection = shuffle
+replacement = parents
+replacement.allow-repeated = no
+
+# STOPPING: criterio primario 25 gens sin mejora + techo de seguridad 900s/run (Fase B del paper)
+generations = 100000
+timelimit = 120
+
+# POPULATION / ABC
+population.size = 250
+maxnumtrials = 24
+elite.selection = 3
+elite.size = 50
+
+# LOCAL SEARCH = TABU sobre N2
+localsearch = tabu
+localsearch.neighbourhood = ijsp.makespan.n2
+neighbourhood.estimator = heads&tails
+localsearch.frequency = period
+localsearch.period = 1
+localsearch.target = 1.0
+localsearch.lamarckism = yes
+localsearch.max-time = 2
+localsearch.bad-iterations = 20
+localsearch.tabu-size.min = 3
+localsearch.tabu-size.max = 100000
+
+# STATISTICS
+statistics.1.metric = best
+statistics.1.value = ijsp.makespan
+statistics.2.metric = average
+statistics.2.value = ijsp.makespan
+
+creation.seed.pool = pools_test/corrected/int__tai50_20_01_v2_repo_pool.csv
+creation.seed.count = 250

@@ -1,37 +1,63 @@
-# Compiled object files
+# =========================================================================
+# Que SI se versiona: codigo fuente, scripts de experimento y analisis,
+# configuraciones, pools de semillas, CSV agregados, figuras, tablas y paper.
+# Que NO: salidas crudas de las ejecuciones y binarios. Son ~5 GB y se
+# depositan en Zenodo, que es lo que promete la seccion de disponibilidad
+# de datos del articulo.
+# =========================================================================
+
+# --- binarios y objetos de compilacion ---
 *.o
 *.d
-
-# Executable
 FuzzyFW
+FuzzyFW.*
+seed_consistency_test
+verify_solution
+!*.cpp
+!*.h
 
-# IDE files
-.idea/
-.claude/
+# --- ruido de compilacion que quedo suelto en el directorio ---
+build_errors*.txt
+build_full_errors.txt
+build_verify_err.txt
+srclist*.txt
+out.txt
 
-# LaTeX auxiliary files
-*.aux
-*.bbl
-*.blg
-*.log
-*.spl
-*.synctex.gz
+# --- salidas crudas de ejecuciones (2.4 GB): un subdirectorio por
+#     algoritmo/instancia/brazo/trozo. Se excluyen enteras, pero se
+#     conservan los CSV agregados que estan en la raiz de final/phase2.
+final/phase2/*/
+final/diversity/*/
+final/smoke/
+pilot/
+repro/*/
+# repro/*.txt (los setups replicados) SI se versionan
 
-# Backup files
-*~
+# --- pools de semillas: 479 MB en 316 ficheros. Van a Zenodo.
+#     El script que los reconstruye (final/build_mix_pools.sh) si esta.
+pools_test/
 
-# Experiment results (large CSV files)
-experiments/results/
-experiments/run_log.txt
-experiments/run_tai100.log
-experiments/run_experiments.log
+# --- trazas de diversidad: 31 MB, regenerables con final/diversity_proxy.sh
+final/phase2/diversity_*.csv
 
-# Debug and temp files
-experiments/LocalSearchdebugN1.txt
-experiments/*_backup_*.xlsx
-experiments/resultados_experimentos.xlsx
-experiments/check_floats.R
+# --- registro del vigilante de memoria: 2.7 MB de telemetria de maquina
+final/guard.csv
 
-# Papers and reference documents (managed separately)
-Papers/
-data/
+# --- artefactos intermedios de LaTeX (el .tex, .bib y .pdf si se versionan)
+final/paper/*.aux
+final/paper/*.log
+final/paper/*.blg
+final/paper/*.spl
+final/paper/*.out
+final/paper/*.bbl
+
+# --- copia de seguridad puntual
+final/main.tex.backup
+
+# --- salidas crudas de las fases preliminares (63 MB): mismo criterio que
+#     phase2. Se conservan sus joblist/run.log y los CSV de resumen.
+final/phase0/*/
+final/phase1/*/
+final/validate/*/
+final/leaktest/*/
+final/memtest/*/
