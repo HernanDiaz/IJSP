@@ -1,74 +1,101 @@
 #!/usr/bin/env bash
-# Homogeneiza las curvas anytime: extrae la traza (tiempo, mejor E[Cmax]) de cada
-# configuracion —sea de resolucion fina (por generacion) o de 5 s— y la remuestrea
-# a una REJILLA TEMPORAL COMUN por algoritmo, con interpolacion escalonada
-# (el mejor valor conocido hasta ese instante). Asi las curvas son comparables
-# aunque las trazas se hayan grabado con distinta granularidad.
+# Curvas anytime: para cada (instancia, brazo) produce E[Cmax] MEJOR-HASTA-AHORA
+# frente al tiempo de CPU, sobre una rejilla comun por algoritmo.
 #
-# Rejilla por algoritmo (elegida segun su escala temporal, medida en Fase 1):
-#   abce3   -> 0.2 s (converge en 0.2-3 s)
-#   ga      -> 2 s   (presupuestos 60-321 s)
-#   feabcls -> 5 s   (presupuestos 60-900 s)
-#   tsn2    -> 5 s   (presupuestos 60-900 s)
-# Uso: resample_anytime.sh <algo>  -> final/phase2/anytime_<algo>.csv
+# DOS CUIDADOS QUE LA VERSION ANTERIOR NO TENIA:
+#
+# 1) Se usan las trazas POR EJECUCION (columnas 8+6r = Runtime, 9+6r = Best),
+#    no el bloque "Average Evolution" de las columnas 1-6. Ese bloque promedia
+#    sobre las ejecuciones que han alcanzado cada paso, asi que su composicion
+#    cambia a lo largo de la traza.
+#
+# 2) Se aplica MINIMO ACUMULADO a cada ejecucion. La columna "Best" es el mejor
+#    de la POBLACION en esa generacion, no el mejor encontrado hasta el momento:
+#    medido sobre TSN2, sube entre 4 y 9 veces de 85 puntos por ejecucion. Una
+#    curva anytime debe ser monotona, de modo que se acumula el minimo.
+#
+# Cada ejecucion se extiende con su ultimo valor hasta el final de la rejilla,
+# para que la media no cambie de composicion (sesgo de supervivencia).
+#
+# NOTA: el ultimo punto de la traza puede ser peor que la solucion finalmente
+# reportada, porque el muestreo es cada evolution.span y la ultima mejora puede
+# caer entre la ultima muestra y la terminacion. Por eso las curvas al 100% del
+# presupuesto no coinciden exactamente con las tablas de calidad final.
 cd "$(dirname "$0")/.."
 algo=${1:?uso: resample_anytime.sh <algo>}
+BASEDIR=${OUT_OVERRIDE:-final/phase2}
+out="$BASEDIR/anytime_${algo}.csv"
 case "$algo" in
-  abce3) STEP=0.2 ;; ga) STEP=2 ;; *) STEP=5 ;;
+  ga)      STEP=2   ;;
+  abce3)   STEP=0.2 ;;
+  feabcls) STEP=5   ;;
+  tsn2)    STEP=5   ;;
+  *)       STEP=5   ;;
 esac
-out="final/phase2/anytime_${algo}.csv"
-echo "algo,inst,arm,t,bestcmax" > "$out"
-
-clase() { case "$1" in
-  ft10) echo 10x10 ;; tai15_15_*) echo 15x15 ;; tai20_20_*) echo 20x20 ;; tai30_15_*) echo 30x15 ;;
-  tai30_20_*) echo 30x20 ;; tai50_15_*) echo 50x15 ;; tai50_20_*) echo 50x20 ;;
-esac; }
+if [ -n "$INSTS_OVERRIDE" ]; then INSTS="$INSTS_OVERRIDE"; else
 INSTS="ft10"
 for cls in tai15_15 tai20_20 tai30_15 tai30_20 tai50_15 tai50_20; do
   for i in $(seq -w 1 10); do INSTS="$INSTS ${cls}_${i}"; done
 done
+fi
 
-# traza (runtime, mejor-historico) de un CSV de estadisticas -> stdout
-# OJO: se usa la columna 3 ("Best" = best-so-far, monotona), NO la 5
-# ("Best Cmax" = mejor de la poblacion actual, que SI puede empeorar cuando el
-# algoritmo descarta soluciones por diversidad: verificado 63 subidas de 286
-# filas en abce3, con ~3% de diferencia en el valor final).
-trace_of() {
-  awk -F';' '/^Evolution/{f=1} f && $1 ~ /^[0-9]+$/ { printf "%.3f %.3f\n", $2, $3 }' "$1"
+# Extrae "run_global tiempo mejor_acumulado" de un fichero de trazas.
+# $2 = desplazamiento de numeracion de ejecucion (para no mezclar trozos).
+trace_runs() {
+  awk -F';' -v off="$2" '
+    /^Evolution/{f=1}
+    f && $1 ~ /^[0-9]+$/ {
+      for (r=0; r<40; r++) {
+        ct = 7 + r*6 + 1        # Runtime de la ejecucion r
+        cv = 7 + r*6 + 2        # Best de la ejecucion r
+        if (cv > NF || $cv == "") continue
+        v = $cv + 0
+        if (v <= 0) continue
+        key = off + r
+        if (!(key in mn) || v < mn[key]) mn[key] = v    # minimo acumulado
+        printf "%d %.3f %.3f\n", key, $ct, mn[key]
+      }
+    }' "$1"
 }
 
+echo "algo,inst,arm,t,bestcmax" > "$out"
 for inst in $INSTS; do
   for arm in A0 V2H V2 MOR GT GP MIX; do
-    base="final/phase2/$algo/$inst/$arm"
-    # recolecta la traza: formato monolitico o por trozos (se toma la de cada trozo
-    # y se promedia por instante de rejilla, ya que cada trozo cubre 5 de los 30 runs)
+    base="$BASEDIR/$algo/$inst/$arm"
     tmp=$(mktemp)
-    mono=$(ls "$base"/*.csv 2>/dev/null | grep -v -E 'Sols|Robust|Scenar' | head -1)
-    # PRIORIDAD A LOS CHUNKS: las corridas monoliticas abortadas del 26-jul dejaron
-    # trazas incompletas al nivel del brazo que ocultaban la corrida buena.
-    [ -n "$(ls -d "$base"/c* 2>/dev/null)" ] && mono=""
-    if [ -n "$mono" ]; then
-      trace_of "$mono" > "$tmp"
-    else
+    if [ -n "$(ls -d "$base"/c* 2>/dev/null)" ]; then
+      off=0
       for d in $(ls -d "$base"/c* 2>/dev/null | sort -V); do
         c=$(ls "$d"/*.csv 2>/dev/null | grep -v -E 'Sols|Robust|Scenar' | head -1)
-        [ -n "$c" ] && trace_of "$c" >> "$tmp"
+        [ -n "$c" ] && { trace_runs "$c" "$off" >> "$tmp"; off=$((off+5)); }
       done
+    else
+      c=$(ls "$base"/*.csv 2>/dev/null | grep -v -E 'Sols|Robust|Scenar' | head -1)
+      [ -n "$c" ] && trace_runs "$c" 0 >> "$tmp"
     fi
     [ -s "$tmp" ] || { rm -f "$tmp"; continue; }
-    # remuestreo a la rejilla: para cada t de la rejilla, media de los valores
-    # "ultimo conocido <= t" de cada traza aportada
-    sort -n "$tmp" | awk -v st="$STEP" -v a="$algo" -v i="$inst" -v ar="$arm" '
-      { t[++n]=$1; v[n]=$2; if($1>tmax) tmax=$1 }
-      END{
-        if(n==0) exit;
-        k=1; last="";
-        for (g=0; g<=tmax; g+=st) {
-          while (k<=n && t[k]<=g) { last=v[k]; k++ }
-          if (last!="") printf "%s,%s,%s,%.1f,%.2f\n", a, i, ar, g, last
+    # Rejilla comun: para cada t, media sobre ejecuciones del ultimo valor <= t,
+    # extendiendo con el ultimo conocido las que ya terminaron.
+    sort -k1,1n -k2,2n "$tmp" | awk -v st="$STEP" -v a="$algo" -v i="$inst" -v ar="$arm" '
+      { run[$1]=1; n=++cnt[$1]; T[$1,n]=$2; V[$1,n]=$3; if ($2>tmax) tmax=$2 }
+      END {
+        nrun=0; for (r in run) nrun++
+        for (t=st; t<=tmax+st/2; t+=st) {
+          s=0; k=0
+          for (r in run) {
+            m=cnt[r]; cur=""
+            for (j=1; j<=m; j++) { if (T[r,j] <= t) cur=V[r,j]; else break }
+            if (cur=="") continue            # esa ejecucion aun no ha reportado
+            s+=cur; k++
+          }
+          # COMPOSICION ESTABLE: solo se emite el punto si TODAS las ejecuciones
+          # han reportado ya. Si no, la media cambia de composicion al ir
+          # incorporandose ejecuciones y la curva puede subir aunque cada
+          # ejecucion sea monotona.
+          if (k == nrun) printf "%s,%s,%s,%.2f,%.2f\n", a, i, ar, t, s/k
         }
       }' >> "$out"
     rm -f "$tmp"
   done
 done
-echo "$out : $(( $(wc -l < "$out") - 1 )) filas  (rejilla ${STEP}s)"
+echo "$out : $(( $(wc -l < "$out") - 1 )) filas  (rejilla ${STEP}s, minimo acumulado por ejecucion)"

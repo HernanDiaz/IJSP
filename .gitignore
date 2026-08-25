@@ -61,3 +61,4 @@ final/phase1/*/
 final/validate/*/
 final/leaktest/*/
 final/memtest/*/
+verify_independent
