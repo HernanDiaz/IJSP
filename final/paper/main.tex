@@ -543,17 +543,29 @@ for \emph{every} schedule $x$, and therefore
 so the crisp lower bound is a valid (if not tight) bound for the interval
 problem. We take LB from the consolidated table of
 Coupvent des Graviers et al.\ \cite{coupvent2025bounds}; the instance
-mapping was verified rather than assumed, with 19 of 60 instances showing
+mapping was checked rather than assumed, with 19 of 60 instances showing
 exact agreement between the published bound and the machine-load bound
-recomputed from the instance files.
+recomputed from the instance files. For the remaining 41 the check is an
+inequality, which is necessary but does not identify an instance, and we
+do not claim more than that.
+
+An exact identification is nevertheless available to any reader, and we
+supply what it needs. Because each interval was built as
+$[p_o-\delta,\,p_o+\delta]$, it is symmetric about the original crisp
+duration, so the midpoint recovers that duration exactly; across the 61
+instances every midpoint is integral, with no exception. We therefore
+release the recovered crisp matrices, one per instance with a hash, so that
+identification reduces to an element-wise comparison against Taillard's
+published files. The recovery procedure itself is validated on the one
+instance of the set whose crisp form is unambiguous: \texttt{ft10} recovers
+to the Fisher--Thompson $10\times10$ matrix exactly.
 
 Inequality~(\ref{eq:lb}) also yields a falsifiable prediction: no run may
 ever fall below its bound. Across all 51{,}240 runs there is not a single
-violation. This is a consistency check rather than a proof of correctness
---- many errors would preserve the inequality, and the exact agreement
-above covers 19 of the 60 mapped instances, the remainder being verified
-only in the weaker sense that the recomputed machine-load bound does not
-exceed the published one. Moreover the bound is
+violation. This is a consistency check rather than a proof of correctness:
+many errors would preserve the inequality, and it is the released crisp
+matrices, not this check, that would settle the mapping. Moreover the bound
+is
 \emph{attained exactly} on six instances --- \texttt{tai30\_15\_05},
 \texttt{tai50\_15\_01}, \texttt{tai50\_15\_02}, \texttt{tai50\_15\_04},
 \texttt{tai50\_15\_07} and \texttt{tai50\_20\_09} --- where our portfolio
@@ -1794,7 +1806,9 @@ that is there.
 \section*{Data and code availability}
 The seed pools, the injection operator, the experiment setups, the run
 logs of all 51{,}240 runs, the aggregated result tables and the analysis
-scripts that produce every table and figure in this paper are deposited at
+scripts that produce every table and figure in this paper, together with the
+recovered crisp instance matrices of Section~ef{sec:rpd-ref} and their
+hashes, are deposited at
 \texttt{[DOI pending]}, together with the independent verifier of
 Section~\ref{sec:res-threats} and the commit hash of the solver framework.
 %% DOI y hash a fijar en el momento del envio.
