@@ -602,33 +602,19 @@ classifications are released with the data.
 
 \begin{table}[htbp]
 \centering
-\caption{Mean RPD (\%) over all 61 instances and over the subset whose
-\emph{control} satisfies the plateau rule. Best arm per row in bold. The
-restricted rows are a common subset, so the arms remain comparable to each
-other, but a control-plateau instance is not one in which the seeded arm
-has necessarily plateaued as well; Table~\ref{tab:inter} gives the paired
-intersections for three representative arms, which is the stronger comparison.}
+\caption{Mean RPD (\%) over the $n$ instances whose \emph{control}
+satisfies the plateau rule. Best arm per row in bold; compare
+Table~\ref{tab:rpd} for the full 61.}
 \label{tab:conv}
 \small
 \begin{tabular}{llccccccc}
 \toprule
-Solver & Subset & A0 & V2H & V2 & MOR & GT & GP & MIX \\
+Solver & $n$ & A0 & V2H & V2 & MOR & GT & GP & MIX \\
 \midrule
-\multirow{2}{*}{GA}
- & all (61)        & \textbf{7.52} & 7.66 & 8.05 & 9.70 & 8.47 & 7.99 & 7.58 \\
- & converged (12)  & 4.75 & 4.28 & 4.39 & 6.82 & 5.35 & 4.49 & \textbf{4.00} \\
-\midrule
-\multirow{2}{*}{ABCE3}
- & all (61)        & 10.51 & 9.51 & 9.39 & 10.71 & 10.20 & 9.68 & \textbf{9.37} \\
- & converged (46)  & 11.61 & 10.46 & \textbf{10.34} & 11.85 & 11.28 & 10.72 & 10.35 \\
-\midrule
-\multirow{2}{*}{fEABCLS}
- & all (61)        & 3.67 & \textbf{3.66} & \textbf{3.66} & 5.16 & 4.47 & 4.04 & 3.67 \\
- & converged (36)  & 3.39 & \textbf{3.34} & \textbf{3.34} & 4.80 & 4.07 & 3.73 & 3.40 \\
-\midrule
-\multirow{2}{*}{TSN2}
- & all (61)        & 3.60 & 3.64 & 3.62 & 4.25 & 3.99 & 3.67 & \textbf{3.41} \\
- & converged (39)  & \textbf{2.75} & 2.82 & 2.83 & 3.54 & 3.41 & 3.07 & 2.78 \\
+GA      & 12 & 4.75  & 4.28  & 4.39           & 6.82  & 5.35  & 4.49  & \textbf{4.00} \\
+ABCE3   & 46 & 11.61 & 10.46 & \textbf{10.34} & 11.85 & 11.28 & 10.72 & 10.35 \\
+fEABCLS & 36 & 3.39  & \textbf{3.34} & \textbf{3.34} & 4.80 & 4.07 & 3.73 & 3.40 \\
+TSN2    & 39 & \textbf{2.75} & 2.82 & 2.83     & 3.54  & 3.41  & 3.07  & 2.78 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -636,12 +622,9 @@ Solver & Subset & A0 & V2H & V2 & MOR & GT & GP & MIX \\
 \begin{table}[htbp]
 \centering
 \caption{Mean RPD (\%) restricted to the instances where the control
-\emph{and} the compared arm both satisfy the plateau rule. ``$n$ both'' is
-the size of that intersection, which differs by arm because convergence
-rates do. Negative $\Delta$ favours the seeded arm. This is the comparison
-that conditioning on the control alone cannot support, since a
-control-plateau instance need not be one in which the seeded arm has
-plateaued too.}
+\emph{and} the compared arm both satisfy the plateau rule. Negative
+$\Delta$ favours the seeded arm. Three representative arms; the full set is
+released with the data.}
 \label{tab:inter}
 \small
 \begin{tabular}{llcccc}
@@ -806,19 +789,16 @@ difference from the control, giving $n=61$ observations; one signed-rank
 test per (solver, arm) is applied to those differences, with Holm
 correction over the six arms of each solver; and a 95\% confidence interval
 for the mean difference is obtained by bootstrapping instances ($10^4$
-resamples). Table~\ref{tab:ic} reports the result, alongside the
-per-instance win/loss counts and Vargha--Delaney $\hat{A}_{12}$ that give
-the same comparison in a more directly readable form.
+resamples). Table~\ref{tab:ic} reports the result. Alongside it, W/NS/L
+counts the instances on which the arm is significantly better, not
+significantly different, or significantly worse under a per-instance
+signed-rank test, and $\hat{A}_{12}<0.5$ favours seeding; these give the
+same comparison in a more directly readable form.
 \begin{table}[htbp]
 \centering
 \caption{Each seeded arm against the unseeded control, with the instance as
-the experimental unit ($n=61$). W/NS/L counts the instances on which the arm
-is significantly better, not significantly different, or significantly worse
-under a per-instance signed-rank test; $\hat{A}_{12}<0.5$ favours seeding.
-The remaining columns are the study-level analysis: the per-instance
-difference in RPD from the control in percentage points (negative favours
-seeding), a bootstrap 95\% interval over instances, and a Holm-corrected
-signed-rank $p$-value within each solver.}
+the experimental unit ($n=61$). Differences are in percentage points of
+RPD; negative favours seeding.}
 \label{tab:ic}
 \small
 \begin{tabular}{llccc l l}
@@ -1129,23 +1109,8 @@ median computed only over successes is meaningless without it.
 \begin{table}[htbp]
 \centering
 \caption{Time to reach the unseeded control's final quality ($+0.5\%$),
-paired by instance. Time is the fraction of the per-instance budget, and an
-arm that never reaches the target within the budget is recorded at $1.0$.
-``Reach'' is the percentage of the 61 instances on which the target is
-attained. ``Earlier/later'' counts the instances on which the arm reaches
-it before or after its own paired control, ties excluded. The sign test on
-those counts is the \emph{primary} contrast, taken against the null
-proportion this design itself produces rather than against $0.5$: since the
-target is drawn from the control's own endpoint, a split-half calibration
-under a true null (Section~\ref{sec:res-threats}) puts that proportion at
-$0.46$--$0.49$ depending on the solver. $\Delta$RMTT is the paired
-difference in restricted mean time $E[\min(T,1)]$, for which recording a
-non-reacher at $1.0$ is the definition of the estimand, not an
-approximation to it. Both are Holm-corrected over the six seeded arms of
-each solver. The control reaches its own target
-on all 61 instances by construction, so no test is reported for it. Three
-representative arms per solver are shown; the full table is released with
-the data.}
+paired by instance, as a fraction of the per-instance budget. Three
+representative arms per solver; the full table is released with the data.}
 \label{tab:ttt}
 \small
 \begin{tabular}{llccccc}
@@ -1203,15 +1168,20 @@ with one that is uncensorable by definition, and we therefore do not report
 one.
 
 What survives both constraints is a paired analysis of the recorded times,
-with non-reachers recorded at the budget, $T=1.0$. That recording
-understates a non-reacher's true time, and since only seeded arms are ever
-non-reachers, the understatement runs in favour of seeding. It biases the
-mean but not the sign: an arm recorded at $1.0$ has $T\ge T_{A0}$ and is
-always counted as later. We accordingly take the sign test on the paired
-earlier/later counts as the primary contrast, and report the paired
-difference in restricted mean time ($\Delta$RMTT, with a bootstrap interval
-over instances) as a secondary quantity whose bias is known and runs in one
-direction.
+with a non-reacher recorded at the budget, $T=1.0$. The quantity the mean
+then estimates is the restricted mean time $E[\min(T,1)]$, for which that
+recording is a definition rather than an approximation. The primary
+contrast is the sign test on the paired earlier/later counts, ties
+excluded, taken against the null proportion the design itself produces
+rather than against $0.5$: because the target is drawn from the control's
+own endpoint, a split-half calibration under a true null
+(Section~\ref{sec:res-threats}) puts that proportion at $0.46$--$0.49$
+depending on the solver. The paired difference in restricted mean time
+($\Delta$RMTT) is reported alongside it with a bootstrap interval over
+instances. Both are Holm-corrected over the six seeded arms of each solver.
+No test is reported for the control, which attains its own target on all 61
+instances by construction; ``reach'' is the percentage of instances on
+which an arm attains it at all.
 
 Under this treatment ABCE3 stands out. Its mixed pool reaches the control's
 \emph{final} quality on every instance and earlier on 57 of the 59 that are
@@ -1323,8 +1293,6 @@ ABCE3   & 5.60 & \textbf{3.08} & \textbf{2.50} & 6.14 & 4.96 & 3.31 & \textbf{2.
 fEABCLS & \textbf{2.99} & \textbf{2.93} & \textbf{3.04} & 6.52 & 5.51 & 4.24 & \textbf{2.78} \\
 TSN2    & 3.40 & 3.93 & 3.80 & 5.37 & 5.07 & 3.85 & \textbf{2.57} \\
 \midrule
-$\chi^2$ (df 6) & \multicolumn{7}{c}{GA 132.6 \quad ABCE3 185.0 \quad
-fEABCLS 177.6 \quad TSN2 75.5} \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -1632,9 +1600,8 @@ test.
 \paragraph{Mechanism.} The two explanatory claims --- pool composition
 rather than seed quality, and consolidation failure rather than premature
 convergence --- are associations that survive the obvious alternatives, not
-controlled results. Establishing them would require pools matched on
-quality with diversity varied independently, and a GA in which only the
-crossover changes. Neither experiment is in this design.
+controlled results. Section~\ref{sec:whyga} states the three specific
+limits on the second of them.
 
 \paragraph{Budgets and cost.} Budgets are CPU-time caps measured with the
 process clock on a single Linux machine at a fixed occupancy of fourteen
