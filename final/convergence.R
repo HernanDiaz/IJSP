@@ -1,72 +1,80 @@
 # ¿QUE CELDAS SATISFACEN LA REGLA DE MESETA Y CUALES NO?
 #
-# Regla del diseno: una celda de CONTROL converge si la mejora del objetivo
-# (E[Cmax], no del RPD) en el ultimo 10% del presupuesto es < 0.1%.
+# Regla del diseno: una celda converge si la mejora del objetivo (E[Cmax], no
+# del RPD) en el ultimo 10% del presupuesto es < 0.1%.
 #
-# DOS DEFECTOS DE LA VERSION ANTERIOR, ambos corregidos aqui:
+# TRES DEFECTOS DE VERSIONES ANTERIORES, todos corregidos aqui:
 #
-# 1. Usaba como valor final el ULTIMO PUNTO DE LA CURVA promediada, que es una
-#    instantanea del mejor de la POBLACION. El solver devuelve una solucion que
-#    puede ser mejor, porque retiene una estructura elite y porque la ultima
-#    mejora puede caer entre la ultima muestra y la terminacion. El propio
-#    articulo mide ese desfase: mediana 2.20% en ABCE3, VEINTIDOS VECES el
-#    umbral de 0.1% que la regla contrasta. Una regla no puede discriminar con
-#    un umbral veinte veces menor que el error de su propio estimador.
-#    Aqui el valor final es el DEVUELTO por el solver (results_<algo>.csv).
+# 1. Se usaba como valor final el ULTIMO PUNTO DE LA CURVA promediada, que es
+#    una instantanea de poblacion. Aqui el valor final es el DEVUELTO por el
+#    solver (results_<algo>.csv).
 #
-# 2. Aplicaba la regla a la curva PROMEDIADA sobre las 30 ejecuciones, lo que
-#    puede ocultar que un subconjunto sigue mejorando al final. Aqui la regla se
-#    evalua EJECUCION A EJECUCION y se agrega con un criterio declarado.
+# 2. Se aplicaba la regla a la curva PROMEDIADA sobre las 30 ejecuciones, lo
+#    que puede ocultar que un subconjunto sigue mejorando. Aqui se evalua
+#    EJECUCION A EJECUCION y se agrega con un criterio declarado (>=90%).
 #
-# SENTIDO DEL SESGO RESIDUAL. v90 es el minimo acumulado de la poblacion en
-# t <= 0.9T, que es >= al incumbente real en ese instante (la elite puede
-# guardar ya algo mejor). Por tanto la mejora medida (v90 - final)/final es una
-# COTA SUPERIOR de la mejora real: la regla puede declarar "no convergida" una
-# celda que si converge, nunca al reves. El error es conservador.
+# 3. Solo se comprobaba el CONTROL. Una instancia en la que converge A0 no es
+#    un experimento en el que hayan convergido todos los brazos: el brazo
+#    sembrado puede seguir mejorando, que es precisamente lo que predice la
+#    explicacion de "consolidacion lenta" del GA. Ademas, condicionar por el
+#    comportamiento de A0 selecciona instancias usando el resultado de uno de
+#    los dos comparandos. Aqui se comprueba CADA BRAZO y las comparaciones
+#    restringidas se hacen sobre la INTERSECCION: instancias donde convergen a
+#    la vez el control y el brazo con el que se compara.
 #
-# Criterio de agregacion (declarado, no ajustado a posteriori): la celda
-# converge si al menos el 90% de sus ejecuciones cumplen la regla. Se acompana
-# de un analisis de sensibilidad sobre umbral y fraccion.
+# SENTIDO DEL SESGO RESIDUAL. v90 es el minimo acumulado en t <= 0.9T, que es
+# >= al incumbente real en ese instante. La mejora medida es por tanto una cota
+# SUPERIOR de la real: la regla puede declarar "no convergida" una celda que si
+# converge, nunca al reves.
 lb <- read.csv("final/ta_lb.csv", stringsAsFactors = FALSE)[, c("inst","lb")]
 algos <- c(ga="GA", abce3="ABCE3", feabcls="fEABCLS", tsn2="TSN2")
 clases <- c("10x10","15x15","20x20","30x15","30x20","50x15","50x20")
 arms <- c("A0","V2H","V2","MOR","GT","GP","MIX")
+seeded <- setdiff(arms, "A0")
 UMBRAL <- 0.1     # % de mejora en el ultimo 10% del presupuesto
 FRAC   <- 0.90    # fraccion de ejecuciones que deben cumplirla
 
 cl <- unique(read.csv("final/phase2/results_ga.csv", stringsAsFactors = FALSE)[, c("inst","clase")])
 
-# --- mejora por ejecucion, con el valor final DEVUELTO por el solver ---
-por_ejec <- function(al) {
-  cv <- read.csv(sprintf("final/phase2/conv_runs_%s.csv", al), stringsAsFactors = FALSE)
+# mejora por ejecucion de un (solver, brazo), con el valor final DEVUELTO
+por_ejec <- function(al, arm) {
+  suf <- if (arm == "A0") "" else paste0("_", arm)
+  f <- sprintf("final/phase2/conv_runs_%s%s.csv", al, suf)
+  if (!file.exists(f)) return(NULL)
+  cv <- read.csv(f, stringsAsFactors = FALSE)
   rs <- read.csv(sprintf("final/phase2/results_%s.csv", al), stringsAsFactors = FALSE)
-  rs <- rs[rs$arm == "A0", c("inst","run","ecmax")]
+  rs <- rs[rs$arm == arm, c("inst","run","ecmax")]
   m <- merge(cv, rs, by = c("inst","run"))
   m$mejora <- 100 * (m$v90 - m$ecmax) / m$ecmax
   m
 }
-
-cat("=== Regla de meseta sobre el control, por ejecucion ===\n")
-cat(sprintf("    converge si >= %.0f%% de las 30 ejecuciones mejoran < %.1f%%\n",
-            100*FRAC, UMBRAL))
-cat("    valor final = solucion DEVUELTA, no ultimo punto de la curva\n\n")
+# clasificacion por instancia de un (solver, brazo)
+clasifica <- function(m, u = UMBRAL, fr = FRAC) {
+  a <- aggregate(list(ok = m$mejora < u), by = list(inst = m$inst), FUN = mean)
+  data.frame(inst = a$inst, frac_ok = a$ok, conv = a$ok >= fr,
+             stringsAsFactors = FALSE)
+}
 
 datos <- list(); conv <- list()
-cat(sprintf("%-8s %-8s %6s %11s %11s   %s\n",
-            "solver","clase","n","mejora med","% ejec ok","veredicto"))
 for (al in names(algos)) {
-  m <- por_ejec(al); datos[[al]] <- m
-  est <- aggregate(cbind(mejora, ok = mejora < UMBRAL) ~ inst, data = m,
-                   FUN = function(x) c(med = median(x), mn = mean(x)))
-  est <- data.frame(inst = est$inst,
-                    mejora = est$mejora[, "med"],
-                    frac_ok = est$ok[, "mn"])
-  est$conv <- est$frac_ok >= FRAC
-  est <- merge(est, cl, by = "inst")
-  conv[[al]] <- est
+  datos[[al]] <- list(); conv[[al]] <- list()
+  for (a in arms) {
+    m <- por_ejec(al, a)
+    if (is.null(m)) next
+    datos[[al]][[a]] <- m
+    conv[[al]][[a]] <- clasifica(m)
+  }
+}
+
+cat("=== Regla de meseta por ejecucion, CONTROL (A0) ===\n")
+cat(sprintf("    converge si >= %.0f%% de las 30 ejecuciones mejoran < %.1f%%\n\n", 100*FRAC, UMBRAL))
+cat(sprintf("%-8s %-8s %6s %11s %11s   %s\n", "solver","clase","n","mejora med","% ejec ok","veredicto"))
+for (al in names(algos)) {
+  e <- merge(conv[[al]][["A0"]], cl, by = "inst")
+  md <- aggregate(mejora ~ inst, data = datos[[al]][["A0"]], FUN = median)
+  e <- merge(e, md, by = "inst")
   for (k in clases) {
-    x <- est[est$clase == k, ]
-    if (nrow(x) == 0) next
+    x <- e[e$clase == k, ]; if (nrow(x) == 0) next
     nc <- sum(x$conv)
     cat(sprintf("%-8s %-8s %6d %10.3f%% %10.0f%%   %s\n", algos[[al]], k, nrow(x),
         median(x$mejora), 100*mean(x$frac_ok),
@@ -75,62 +83,79 @@ for (al in names(algos)) {
   cat("\n")
 }
 
-cat("=== celdas anytime-only por solver ===\n")
+cat("=== celdas anytime-only del control ===\n")
 tot <- 0
 for (al in names(algos)) {
-  e <- conv[[al]]; n <- sum(!e$conv); tot <- tot + n
-  cat(sprintf("  %-8s %2d de %d\n", algos[[al]], n, nrow(e)))
+  n <- sum(!conv[[al]][["A0"]]$conv); tot <- tot + n
+  cat(sprintf("  %-8s %2d de 61\n", algos[[al]], n))
 }
-cat(sprintf("  TOTAL: %d de %d celdas de control\n", tot, 4*61))
+cat(sprintf("  TOTAL: %d de %d celdas de control\n\n", tot, 4*61))
 
-# --- comparacion con la clasificacion anterior (curva promediada) ---
-cat("\n=== Cuanto cambia respecto a la regla sobre la curva promediada ===\n")
+cat("=== Convergencia de CADA BRAZO, no solo del control ===\n")
+cat(sprintf("  %-8s %s\n", "solver", paste(sprintf("%7s", arms), collapse="")))
 for (al in names(algos)) {
-  d <- read.csv(sprintf("final/phase2/anytime_%s.csv", al), stringsAsFactors = FALSE)
-  d <- d[d$arm == "A0", ]
-  viejo <- sapply(unique(d$inst), function(i) {
-    s <- d[d$inst == i, ]; s <- s[order(s$t), ]
-    if (nrow(s) < 5) return(NA)
-    Tm <- max(s$t); idx <- which(s$t <= 0.9*Tm)
-    if (!length(idx)) return(NA)
-    100*(s$bestcmax[idx[length(idx)]] - s$bestcmax[nrow(s)]) / s$bestcmax[nrow(s)] < UMBRAL
-  })
-  e <- conv[[al]]
-  v <- viejo[e$inst]
-  cat(sprintf("  %-8s antes %2d convergidas -> ahora %2d  (%d celdas cambian de clase)\n",
-              algos[[al]], sum(v, na.rm = TRUE), sum(e$conv), sum(v != e$conv, na.rm = TRUE)))
+  v <- sapply(arms, function(a) if (is.null(conv[[al]][[a]])) NA else sum(conv[[al]][[a]]$conv))
+  cat(sprintf("  %-8s %s\n", algos[[al]], paste(sprintf("%7s", v), collapse="")))
 }
+cat("  (numero de las 61 instancias en que ese brazo cumple la regla)\n\n")
 
-# --- sensibilidad: la clasificacion depende del umbral y del criterio? ---
-cat("\n=== Sensibilidad: celdas convergidas de 244 ===\n")
-cat(sprintf("  %-10s %s\n", "umbral", paste(sprintf("%8s", paste0("frac>=", c(0.5,0.8,0.9,1.0))), collapse="")))
-for (u in c(0.05, 0.1, 0.25, 0.5, 1.0)) {
-  fila <- sapply(c(0.5,0.8,0.9,1.0), function(fr)
-    sum(sapply(names(algos), function(al) {
-      m <- datos[[al]]
-      a <- aggregate(list(ok = m$mejora < u), by = list(inst = m$inst), FUN = mean)
-      sum(a$ok >= fr) })))
-  cat(sprintf("  %-10s %s\n", sprintf("%.2f%%", u), paste(sprintf("%8d", fila), collapse="")))
-}
-
-cat("\n=== RPD medio: TODAS las instancias vs SOLO las convergidas ===\n")
+cat("=== Comparacion restringida a la INTERSECCION (convergen A0 y el brazo) ===\n")
+inter <- data.frame()
 for (al in names(algos)) {
   r <- merge(read.csv(sprintf("final/phase2/results_%s.csv", al), stringsAsFactors = FALSE),
              lb, by = "inst")
   r$rpd <- 100*(r$ecmax - r$lb)/r$lb
-  ok <- conv[[al]]$inst[conv[[al]]$conv]
-  todo <- sapply(arms, function(a) mean(r$rpd[r$arm == a]))
-  solo <- if (length(ok)) sapply(arms, function(a) mean(r$rpd[r$arm == a & r$inst %in% ok])) else rep(NA, 7)
-  cat(sprintf("\n  %s  (%d de %d instancias convergen)\n", algos[[al]], length(ok), nrow(conv[[al]])))
-  cat(sprintf("    %-12s %s\n", "brazo",       paste(sprintf("%7s", arms), collapse="")))
-  cat(sprintf("    %-12s %s\n", "todas",       paste(sprintf("%7.2f", todo), collapse="")))
-  cat(sprintf("    %-12s %s\n", "convergidas", paste(sprintf("%7.2f", solo), collapse="")))
-  if (length(ok) > 1)
-    cat(sprintf("    mejor brazo: %s (todas) / %s (convergidas)\n",
-        arms[which.min(todo)], arms[which.min(solo)]))
+  cA <- conv[[al]][["A0"]]
+  cat(sprintf("\n  %s\n", algos[[al]]))
+  cat(sprintf("    %-5s %6s %10s %10s %9s\n", "brazo", "n ambos", "A0", "brazo", "dif"))
+  for (a in seeded) {
+    cb <- conv[[al]][[a]]; if (is.null(cb)) next
+    ok <- intersect(cA$inst[cA$conv], cb$inst[cb$conv])
+    if (!length(ok)) { cat(sprintf("    %-5s %6d %10s\n", a, 0, "---")); next }
+    v0 <- mean(r$rpd[r$arm == "A0" & r$inst %in% ok])
+    v1 <- mean(r$rpd[r$arm == a    & r$inst %in% ok])
+    cat(sprintf("    %-5s %6d %10.2f %10.2f %+9.2f\n", a, length(ok), v0, v1, v1-v0))
+    inter <- rbind(inter, data.frame(algo=al, arm=a, n=length(ok), a0=v0, brazo=v1, dif=v1-v0))
+  }
+}
+write.csv(inter, "final/convergencia_interseccion.csv", row.names = FALSE)
+
+cat("\n\n=== Sensibilidad del RESULTADO, no solo del recuento ===\n")
+cat("    mejor brazo sobre el subconjunto convergido del control, por criterio\n")
+cat(sprintf("  %-8s %-12s %s\n", "solver", "umbral", paste(sprintf("%10s", paste0("frac>=", c(0.5,0.8,0.9,1.0))), collapse="")))
+for (al in names(algos)) {
+  r <- merge(read.csv(sprintf("final/phase2/results_%s.csv", al), stringsAsFactors = FALSE),
+             lb, by = "inst")
+  r$rpd <- 100*(r$ecmax - r$lb)/r$lb
+  for (u in c(0.05, 0.1, 0.25)) {
+    fila <- sapply(c(0.5,0.8,0.9,1.0), function(fr) {
+      cc <- clasifica(datos[[al]][["A0"]], u, fr)
+      ok <- cc$inst[cc$conv]
+      if (length(ok) < 2) return("--")
+      m <- sapply(arms, function(a) mean(r$rpd[r$arm == a & r$inst %in% ok]))
+      sprintf("%s(%d)", arms[which.min(m)], length(ok))
+    })
+    cat(sprintf("  %-8s %-12s %s\n", if (u == 0.05) algos[[al]] else "",
+                sprintf("%.2f%%", u), paste(sprintf("%10s", fila), collapse="")))
+  }
 }
 
-out <- do.call(rbind, lapply(names(conv), function(a)
-  data.frame(algo = a, conv[[a]][, c("inst","clase","mejora","frac_ok","conv")])))
+cat("\n=== Aviso: mejoras negativas ===\n")
+for (al in names(algos)) {
+  m <- datos[[al]][["A0"]]
+  n <- sum(m$mejora < 0)
+  if (n > 0) cat(sprintf("  %-8s %4d de %d ejecuciones con mejora NEGATIVA (min %.2f%%)\n",
+                         algos[[al]], n, nrow(m), min(m$mejora)))
+}
+cat("  Causa: StatisticsIJSP toma el mejor con isBetterThan, que en TS-N2 es\n")
+cat("  LEX2. La traza guarda su incumbente en LEX2, cuyo midpoint no es\n")
+cat("  monotono, asi que la 'mejora' medida en E[Cmax] puede salir negativa.\n")
+cat("  Esas ejecuciones satisfacen trivialmente una regla que pide mejora\n")
+cat("  < 0.1%, por una razon ajena a la convergencia. Se declara en el texto.\n")
+
+out <- do.call(rbind, lapply(names(conv), function(al)
+  do.call(rbind, lapply(names(conv[[al]]), function(a)
+    data.frame(algo = al, arm = a, conv[[al]][[a]])))))
+out <- merge(out, cl, by = "inst")
 write.csv(out, "final/convergencia.csv", row.names = FALSE)
-cat(sprintf("\nescrito: final/convergencia.csv (%d filas)\n", nrow(out)))
+cat(sprintf("\nescrito: final/convergencia.csv (%d filas) y final/convergencia_interseccion.csv\n", nrow(out)))

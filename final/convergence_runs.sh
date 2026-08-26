@@ -27,7 +27,9 @@
 cd "$(dirname "$0")/.."
 algo=${1:?uso: convergence_runs.sh <algo>}
 BASEDIR=${OUT_OVERRIDE:-final/phase2}
-out="$BASEDIR/conv_runs_${algo}.csv"
+ARM=${2:-A0}
+ARMSUF=$( [ "$ARM" = A0 ] && echo "" || echo "_$ARM" )
+out="$BASEDIR/conv_runs_${algo}${ARMSUF}.csv"
 
 if [ -n "$INSTS_OVERRIDE" ]; then INSTS="$INSTS_OVERRIDE"; else
 INSTS="ft10"
@@ -59,7 +61,7 @@ trace_runs() {
 
 echo "algo,inst,run,t_fin,v90,v_fin" > "$out"
 for inst in $INSTS; do
-  base="$BASEDIR/$algo/$inst/A0"
+  base="$BASEDIR/$algo/$inst/$ARM"
   tmp=$(mktemp)
   # los trozos tienen PRIORIDAD sobre un monolitico que haya quedado del
   # mismo cell: mezclarlos duplicaria ejecuciones

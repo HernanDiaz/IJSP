@@ -235,7 +235,8 @@ All four solvers share the permutation-with-repetition encoding
 \cite{Bierwirth1995}, the insertion schedule-generation scheme (active
 schedules) for decoding, population size 250, and the component-wise
 interval evaluation described above. Table~\ref{tab:portfolio} summarises
-their published configurations, which we replicate verbatim.
+their published configurations, whose parameter settings we replicate
+verbatim.
 
 \begin{table}[t]
 \centering\small
@@ -253,9 +254,24 @@ Crossover & JOX, $p_c{=}1.0$ & GOX, $p{=}1.0$ & JOX & JOX\\
 Mutation/move & insertion, $p_m{=}0.15$ & swap, $p{=}1.0$ & swap & insertion\\
 Elite / trials & --- & $B{=}50$, NT$_{\max}{=}20$ & 40 / 15 & 50 / 24\\
 Local search & none & none & HC (first impr.), $N_1$ & tabu (best impr.), $N_2$, LEX2\\
-LS control & --- & --- & 75\% of pop.\ per gen. & 100\%, $B_{\max}{=}20$, $T_{\max}{=}2$s\\
+LS control & --- & --- & best of each trial pair$^{\dagger}$ & 100\%, $B_{\max}{=}20$, $T_{\max}{=}2$s\\
 \bottomrule
 \end{tabular}
+
+\vspace{2pt}
+\footnotesize
+$^{\dagger}$ The published configuration sets the local-search target to
+$75\%$ of the population, and that is the value we ran. Its effect in this
+implementation is narrower than the figure suggests, and we state what the
+code does rather than what the parameter names: local search is invoked on
+the two-member candidate population formed by each employed-bee trial, and
+$\lfloor 0.75\times 2\rfloor-1=0$ leaves the random quota empty, so only the
+better of the two candidates is improved
+(\texttt{ArtificialBeeColonyPSO.cpp:559--574,\,705,\,727}). Every arm of
+this solver runs the identical mechanism, so within-solver comparisons are
+unaffected; the qualification bears on how the solver should be described,
+and on the replication gap reported below.
+\normalsize
 \end{table}
 
 \subsection{Replication check}
@@ -266,10 +282,16 @@ ${\sim}1$ percentage point on all twelve instances (fEABC matches or
 slightly improves on every one); fEABC-LS reproduces the published ranking
 (best of its family). Our ABCE3 replication runs systematically
 ${\sim}1.5$--$2.5$ pp above the published averages; we were unable to close
-this gap from the published description and disclose it here. It does not
-affect any conclusion of this paper, because all seeding comparisons are
-within-solver (seeded arms versus the unseeded control of the same
-replication).
+this gap from the published description and disclose it here.
+
+We take the published parameter settings verbatim, but that is a statement
+about the configuration, not a claim that our implementation is
+behaviourally identical to the authors' own. The ABCE3 gap above shows it
+need not be, and the local-search footnote to Table~\ref{tab:portfolio} shows
+where the two can diverge while the parameter file reads the same. Neither
+affects any conclusion of this paper, because every seeding comparison is
+within-solver: a seeded arm against the unseeded control of the same
+implementation, under the same budget, on the same instances.
 
 %% TODO: replication table in an appendix.
 
@@ -557,15 +579,35 @@ instance of the four largest classes. The $50\times20$ class defeats every
 solver but ABCE3, which converges on five of its ten instances; ABCE3's own
 failures are otherwise confined to $15\times15$, where a third of its runs
 are still improving when the $60$\,s floor stops them. Classification is
-insensitive to the exact threshold in the range that matters: at $0.05\%$
-the count of converged cells is 114 and at $0.25\%$ it is 162, against 133
-at the $0.1\%$ used here. Per-cell classifications are released with the
-data.
+sensitive to both the threshold and the required fraction of runs: the
+count of converged cells moves from 114 at $0.05\%$ to 133 at the $0.1\%$
+used here and 162 at $0.25\%$, and from 194 to 63 as the required fraction
+goes from half the runs to all of them. What matters is whether the
+\emph{conclusions} move with it, and we report that directly below rather
+than claiming a stability the counts do not have. Per-cell classifications
+are released with the data.
+
+Two properties of the rule need declaring. It is evaluated on the control
+only, so a cell that passes is one whose \emph{control} has plateaued, not
+one in which every arm has; the comparisons that depend on convergence are
+therefore reported below on the intersection, where the control and the arm
+being compared both pass. And on TS-N2, 325 of the 1830 control runs record
+a \emph{negative} improvement, down to $-1.95\%$. The cause is a mismatch of
+objective rather than a defect: the framework's statistic takes the best
+individual under the solver's own ranking, which for TS-N2 is LEX2, so the
+recorded incumbent's midpoint need not be monotone even though its LEX2
+value is. Those runs pass a rule that asks for improvement below $0.1\%$ for
+a reason that has nothing to do with convergence, which inflates TS-N2's
+count of converged cells by an amount we cannot separate cleanly.
 
 \begin{table}[t]
 \centering
 \caption{Mean RPD (\%) over all 61 instances and over the subset whose
-control satisfies the plateau rule. Best arm per row in bold.}
+\emph{control} satisfies the plateau rule. Best arm per row in bold. The
+restricted rows are a common subset, so the arms remain comparable to each
+other, but a control-plateau instance is not one in which the seeded arm
+has necessarily plateaued as well; Table~\ref{tab:inter} gives the paired
+intersections, which is the stronger comparison.}
 \label{tab:conv}
 \small
 \begin{tabular}{llccccccc}
@@ -591,6 +633,56 @@ Solver & Subset & A0 & V2H & V2 & MOR & GT & GP & MIX \\
 \end{tabular}
 \end{table}
 
+\begin{table}[t]
+\centering
+\caption{Mean RPD (\%) restricted to the instances where the control
+\emph{and} the compared arm both satisfy the plateau rule. ``$n$ both'' is
+the size of that intersection, which differs by arm because convergence
+rates do. Negative $\Delta$ favours the seeded arm. This is the comparison
+that conditioning on the control alone cannot support, since a
+control-plateau instance need not be one in which the seeded arm has
+plateaued too.}
+\label{tab:inter}
+\small
+\begin{tabular}{llcccc}
+\toprule
+Solver & Arm & $n$ both & A0 & Arm & $\Delta$ \\
+\midrule
+\multirow{6}{*}{GA}
+ & V2H & 9  & 4.47 & 3.85 & $-0.62$ \\
+ & V2  & 11 & 4.44 & 4.04 & $-0.40$ \\
+ & MOR & 8  & 3.88 & 5.98 & $+2.10$ \\
+ & GT  & 5  & 4.23 & 5.51 & $+1.28$ \\
+ & GP  & 9  & 4.27 & 3.64 & $-0.63$ \\
+ & MIX & 10 & 4.14 & \textbf{3.45} & $\mathbf{-0.69}$ \\
+\midrule
+\multirow{6}{*}{ABCE3}
+ & V2H & 46 & 11.61 & 10.46 & $-1.15$ \\
+ & V2  & 46 & 11.61 & \textbf{10.34} & $\mathbf{-1.27}$ \\
+ & MOR & 43 & 11.69 & 11.95 & $+0.26$ \\
+ & GT  & 44 & 11.69 & 11.36 & $-0.34$ \\
+ & GP  & 45 & 11.64 & 10.73 & $-0.91$ \\
+ & MIX & 46 & 11.61 & 10.35 & $-1.26$ \\
+\midrule
+\multirow{6}{*}{fEABCLS}
+ & V2H & 27 & 3.54 & 3.53 & $-0.00$ \\
+ & V2  & 31 & 3.26 & 3.22 & $\mathbf{-0.05}$ \\
+ & MOR & 19 & 3.86 & 5.27 & $+1.41$ \\
+ & GT  & 27 & 3.49 & 4.11 & $+0.62$ \\
+ & GP  & 23 & 2.62 & 2.81 & $+0.20$ \\
+ & MIX & 34 & 3.46 & 3.48 & $+0.02$ \\
+\midrule
+\multirow{6}{*}{TSN2}
+ & V2H & 35 & 2.37 & 2.41 & $+0.04$ \\
+ & V2  & 30 & 2.49 & 2.57 & $+0.08$ \\
+ & MOR & 33 & 2.80 & 3.57 & $+0.78$ \\
+ & GT  & 30 & 2.42 & 2.95 & $+0.54$ \\
+ & GP  & 34 & 2.43 & 2.78 & $+0.34$ \\
+ & MIX & 35 & 2.32 & 2.34 & $+0.02$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
 Table~\ref{tab:conv} shows that the restriction leaves two of the four
 solvers unchanged in every respect that matters. fEABCLS keeps the same
 best arm and the same ordering. ABCE3 keeps its conclusion --- V2 and MIX
@@ -598,27 +690,47 @@ are separated by a hundredth of a point and both beat the control by more
 than a point --- while its absolute level rises, because the cells it fails
 are the small $15\times15$ ones on which it does best.
 
+Because the rule is evaluated on the control alone, the sound comparison is
+the one restricted to instances where \emph{both} the control and the arm
+being compared plateau. Convergence rates differ enough between arms to
+make this matter: on fEABCLS the mixed pool plateaus on 44 of 61 instances
+against the control's 36, while on the GA the randomised
+Giffler--Thompson pool plateaus on only 8. Table~\ref{tab:inter} reports
+those paired intersections.
+
 The GA is the first exception, and the difference is not cosmetic. Over all
 61 instances the unseeded control is the best arm (7.52 against MIX's
-7.58); over the 12 instances where that control actually converges the
-ordering reverses and the mixed pool beats it by 0.75 points (4.00 against
-4.75). The negative result for the GA is therefore a statement about
+7.58); over the 10 instances where control and mixed pool both plateau, the
+ordering reverses and the mixed pool wins by 0.69 points (3.45 against
+4.14). The two other pools that help at convergence, V2H and GP, reverse by
+a similar margin, while MOR and GT remain harmful there ($+2.10$ and
+$+1.28$). The negative result for the GA is therefore a statement about
 \emph{insufficient budget}, not about seeding as such: it is the solver
 that needs the most time to consolidate a seeded population, and on the
-cells where it is given that time the harm disappears. This revises the
-reading of Section~\ref{sec:whyga}: what the GA lacks is not compatibility
-with heterogeneous parents in principle, but enough generations to exploit
-them under these budgets.
+cells where it is given that time the harm disappears for the pools that
+were never the problem. This revises the reading of
+Section~\ref{sec:whyga}: what the GA lacks is not compatibility with
+heterogeneous parents in principle, but enough generations to exploit them
+under these budgets.
 
 TSN2 is the second exception, and it cuts the other way. Over all 61
 instances its mixed pool is the best arm (3.41 against the control's 3.60);
-over the 39 converged instances the control is best and the margin vanishes
-(2.75 against 2.78). The 22 cells TSN2 fails are its largest --- all ten
+over the 35 instances where both plateau, the margin vanishes entirely
+($2.34$ against $2.32$). The cells TSN2 fails are its largest --- all ten
 $50\times20$ instances and eight of the ten $30\times20$ --- which are
 precisely where Section~\ref{sec:res-final} locates its gain. The benefit
 seeding brings to the strongest solver is thus confined to cells where its
 budget did not suffice to converge, a materially weaker claim than the
 unrestricted table supports, and we report it as such.
+
+The conclusions are not equally robust to how the rule is set. Varying the
+threshold over $\{0.05, 0.1, 0.25\}\%$ and the required fraction of runs
+over $\{0.5, 0.8, 0.9, 1.0\}$, the best arm on the GA is the mixed pool in
+eleven of the twelve combinations, and on ABCE3 it is always a seeded arm.
+On TSN2 it is not stable: the mixed pool wins when half the runs must
+satisfy the rule, and the unseeded control wins when four fifths or nine
+tenths must. We therefore state the TSN2 result as conditional on that
+choice rather than as a finding.
 
 Unless stated otherwise, the tables that follow use all 61 instances, so
 that every solver is evaluated on the same instance set; results restricted
