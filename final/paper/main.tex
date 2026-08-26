@@ -141,18 +141,15 @@ This paper makes three contributions.
   seed quality as the operative variable.
 \end{enumerate}
 
-Our results do not support the assumption we set out to test. Over 51{,}240
-runs, a mixed seed pool improves the weakest solver on 35 of 61 instances
-without losing on any, leaves a memetic ABC statistically unchanged,
-degrades a genetic algorithm, and improves a strong tabu hybrid
-only on the largest instance class --- where, however, every generator we
-tried beats the unseeded control. The sign of the effect is therefore not
-predicted by solver quality. What does predict it is whether the solver's
-variation operators can exploit a structurally heterogeneous population, and
-what predicts its magnitude is the ratio of instance size to search budget:
-at one tenth of the budget seeding reduces the excess over the published
-lower bounds by 11\% to 40\% on all four solvers, including the one it
-harms at convergence.
+Our results do not support the assumption we set out to test. A mixed seed
+pool improves the weakest solver decisively, leaves a memetic ABC
+unchanged, does not harm a genetic algorithm although every
+single-generator pool does, and helps a strong tabu hybrid only where its
+budget is tightest relative to instance size. The sign of the effect is
+therefore not predicted by solver quality; what it tracks is whether the
+solver's variation operators can exploit a structurally heterogeneous
+population, and its magnitude tracks the ratio of instance size to search
+budget. Section~\ref{sec:results} gives the figures.
 
 The paper is organised as follows. Section~\ref{sec:related} reviews
 related work. Section~\ref{sec:problem} defines the IJSP and the solver
@@ -329,17 +326,15 @@ that any contiguous window of 250 entries contains $84/83/83$ seeds of
 v2/GT/GP to within one seed, whatever its offset.
 
 \subsection{Evaluation convention of the pools}\label{sec:audit}
-Each pool line stores a permutation together with its interval makespan.
-Both interval conventions of Section~\ref{sec:problem} occur in this
-literature, and the pools had been written under LEX2: job completion
-times aggregated lexicographically by upper bound. The solvers evaluate
-component-wise. The two agree on the upper bound --- identical on
-1{,}024/1{,}024 lines of every pool --- and differ on the lower bound,
-which LEX2 leaves optimistic on 1--22\% of lines per pool, by up to 98
-time units on the $50\times20$ instances. We therefore re-evaluated every
-pool component-wise, leaving the permutations untouched, so that stored
-and solver-side objective values coincide throughout. The released pools
-carry the component-wise values.
+Each pool line stores a permutation together with its interval makespan,
+evaluated component-wise so that stored and solver-side objective values
+coincide. The distinction matters because both interval conventions of
+Section~\ref{sec:problem} occur in this literature and they do not agree:
+against LEX2 aggregation the upper bound is identical on all
+1{,}024 lines of every pool, while the lower bound differs on 1--22\% of
+lines, by up to 98 time units on the $50\times20$ instances. Anyone
+exchanging solutions between components that rank intervals differently
+should expect the same.
 
 \subsection{Injection mechanism}
 Seeding is deliberately minimal. A seeded arm with fraction $k/250$
@@ -480,7 +475,7 @@ is therefore the control's own convergence timescale, measured on one or
 two of the instances to which it is later applied. What the endpoint
 measures is thus performance at a control-calibrated horizon rather than a
 solver-neutral approximation to convergence, a distinction we return to in
-Section~\ref{sec:res-budget}.
+Section~\ref{sec:limits}.
 
 The cap of 900\,s is a feasibility constraint rather than a methodological
 choice. The design comprises 51{,}240 runs; at the budgets of
@@ -578,39 +573,18 @@ and confirms that the inequality is tight rather than vacuous.
 
 The plateau rule of Section~\ref{sec:design} --- improvement in
 $\mathbb{E}[C_{\max}]$ below $0.1\%$ over the final tenth of the budget ---
-is applied to each control \emph{run} rather than to the run-averaged
-curve, since averaging thirty traces can hide a subset that is still
-improving, and a cell is classified as converged when at least $90\%$ of
-its runs satisfy it. The final value of a run is the solution the solver
-returns, not the last point of its trace. This classifies 111 of the 244
-control cells as \emph{anytime-only}: 49 of 61 for the GA, 25 for fEABCLS,
-22 for TSN2 and 15 for ABCE3.
-
-The distribution is informative in itself. The GA fails the rule on every
-instance of the four largest classes. The $50\times20$ class defeats every
-solver but ABCE3, which converges on five of its ten instances; ABCE3's own
-failures are otherwise confined to $15\times15$, where a third of its runs
-are still improving when the $60$\,s floor stops them. Classification is
-sensitive to both the threshold and the required fraction of runs: the
-count of converged cells moves from 114 at $0.05\%$ to 133 at the $0.1\%$
-used here and 162 at $0.25\%$, and from 194 to 63 as the required fraction
-goes from half the runs to all of them. What matters is whether the
-\emph{conclusions} move with it, and we report that directly below rather
-than claiming a stability the counts do not have. Per-cell classifications
-are released with the data.
-
-Two properties of the rule need declaring. It is evaluated on the control
-only, so a cell that passes is one whose \emph{control} has plateaued, not
-one in which every arm has; the comparisons that depend on convergence are
-therefore reported below on the intersection, where the control and the arm
-being compared both pass. And on TS-N2, 325 of the 1830 control runs record
-a \emph{negative} improvement, down to $-1.95\%$. The cause is a mismatch of
-objective rather than a defect: the framework's statistic takes the best
-individual under the solver's own ranking, which for TS-N2 is LEX2, so the
-recorded incumbent's midpoint need not be monotone even though its LEX2
-value is. Those runs pass a rule that asks for improvement below $0.1\%$ for
-a reason that has nothing to do with convergence, which inflates TS-N2's
-count of converged cells by an amount we cannot separate cleanly.
+is applied to each control \emph{run} against the solution the solver
+returns, rather than to the run-averaged curve, since averaging thirty
+traces can hide a subset that is still improving; a cell counts as
+converged when at least $90\%$ of its runs satisfy it. This classifies 111
+of the 244 control cells as \emph{anytime-only}: 49 of 61 for the GA, 25
+for fEABCLS, 22 for TSN2 and 15 for ABCE3. The GA fails on every instance
+of the four largest classes, and the $50\times20$ class defeats every
+solver but ABCE3, whose own failures are otherwise confined to
+$15\times15$, where a third of its runs are still improving when the
+$60$\,s floor stops them. What the classification is and is not sensitive
+to is reported in Section~\ref{sec:res-threats}; the per-cell
+classifications are released with the data.
 
 \begin{table}[t]
 \centering
@@ -619,7 +593,7 @@ count of converged cells by an amount we cannot separate cleanly.
 restricted rows are a common subset, so the arms remain comparable to each
 other, but a control-plateau instance is not one in which the seeded arm
 has necessarily plateaued as well; Table~\ref{tab:inter} gives the paired
-intersections, which is the stronger comparison.}
+intersections for three representative arms, which is the stronger comparison.}
 \label{tab:conv}
 \small
 \begin{tabular}{llccccccc}
@@ -660,36 +634,24 @@ plateaued too.}
 \toprule
 Solver & Arm & $n$ both & A0 & Arm & $\Delta$ \\
 \midrule
-\multirow{6}{*}{GA}
- & V2H & 9  & 4.47 & 3.85 & $-0.62$ \\
+\multirow{3}{*}{GA}
  & V2  & 11 & 4.44 & 4.04 & $-0.40$ \\
  & MOR & 8  & 3.88 & 5.98 & $+2.10$ \\
- & GT  & 5  & 4.23 & 5.51 & $+1.28$ \\
- & GP  & 9  & 4.27 & 3.64 & $-0.63$ \\
  & MIX & 10 & 4.14 & \textbf{3.45} & $\mathbf{-0.69}$ \\
 \midrule
-\multirow{6}{*}{ABCE3}
- & V2H & 46 & 11.61 & 10.46 & $-1.15$ \\
+\multirow{3}{*}{ABCE3}
  & V2  & 46 & 11.61 & \textbf{10.34} & $\mathbf{-1.27}$ \\
  & MOR & 43 & 11.69 & 11.95 & $+0.26$ \\
- & GT  & 44 & 11.69 & 11.36 & $-0.34$ \\
- & GP  & 45 & 11.64 & 10.73 & $-0.91$ \\
  & MIX & 46 & 11.61 & 10.35 & $-1.26$ \\
 \midrule
-\multirow{6}{*}{fEABCLS}
- & V2H & 27 & 3.54 & 3.53 & $-0.00$ \\
+\multirow{3}{*}{fEABCLS}
  & V2  & 31 & 3.26 & 3.22 & $\mathbf{-0.05}$ \\
  & MOR & 19 & 3.86 & 5.27 & $+1.41$ \\
- & GT  & 27 & 3.49 & 4.11 & $+0.62$ \\
- & GP  & 23 & 2.62 & 2.81 & $+0.20$ \\
  & MIX & 34 & 3.46 & 3.48 & $+0.02$ \\
 \midrule
-\multirow{6}{*}{TSN2}
- & V2H & 35 & 2.37 & 2.41 & $+0.04$ \\
+\multirow{3}{*}{TSN2}
  & V2  & 30 & 2.49 & 2.57 & $+0.08$ \\
  & MOR & 33 & 2.80 & 3.57 & $+0.78$ \\
- & GT  & 30 & 2.42 & 2.95 & $+0.54$ \\
- & GP  & 34 & 2.43 & 2.78 & $+0.34$ \\
  & MIX & 35 & 2.32 & 2.34 & $+0.02$ \\
 \bottomrule
 \end{tabular}
@@ -773,60 +735,6 @@ TSN2    & 3.60  & 3.64 & 3.62 & 4.25  & 3.99  & 3.67 & \textbf{3.41} \\
 \end{tabular}
 \end{table}
 
-Table~\ref{tab:wilcoxon} gives the corresponding paired tests. For each
-solver and arm we count the instances on which the arm differs
-significantly from A0 (paired Wilcoxon signed-rank, Holm-corrected within
-each instance across the six seeded arms, $\alpha=0.05$), together with the
-mean signed difference in $\mathbb{E}[C_{\max}]$ and the aggregated
-Vargha--Delaney $\hat{A}_{12}$.
-
-\begin{table}[t]
-\centering
-\caption{Paired comparison of each seeded arm against the unseeded control,
-over 61 instances. W/NS/L: instances on which the arm is significantly better, not significantly different, or significantly worse (Wilcoxon signed-rank
-with Holm correction). $\Delta$: mean signed difference in
-$\mathbb{E}[C_{\max}]$ (negative favours seeding). $\hat{A}_{12}<0.5$
-favours seeding.}
-\label{tab:wilcoxon}
-\small
-\begin{tabular}{llcccc}
-\toprule
-Solver & Arm & W/NS/L & $\Delta$ & $\hat{A}_{12}$ \\
-\midrule
-\multirow{6}{*}{GA}
- & V2H & 11/31/19 & $+4.1$  & 0.545 \\
- & V2  & 9/25/27  & $+12.2$ & 0.614 \\
- & MOR & 1/3/57   & $+43.8$ & 0.920 \\
- & GT  & 4/16/41  & $+19.9$ & 0.739 \\
- & GP  & 9/21/31  & $+11.5$ & 0.648 \\
- & MIX & 13/29/19 & $+2.5$  & 0.527 \\
-\midrule
-\multirow{6}{*}{ABCE3}
- & V2H & 32/29/\textbf{0} & $-21.6$ & 0.298 \\
- & V2  & \textbf{35}/26/\textbf{0} & $-24.4$ & 0.274 \\
- & MOR & 1/54/6   & $+3.9$  & 0.544 \\
- & GT  & 14/46/1  & $-6.1$  & 0.436 \\
- & GP  & 30/31/\textbf{0} & $-17.3$ & 0.325 \\
- & MIX & \textbf{35}/26/\textbf{0} & $-24.2$ & 0.266 \\
-\midrule
-\multirow{6}{*}{fEABCLS}
- & V2H & 7/43/11  & $+0.1$  & 0.499 \\
- & V2  & 7/44/10  & $+0.2$  & 0.495 \\
- & MOR & 0/5/56   & $+28.8$ & 0.885 \\
- & GT  & 3/12/46  & $+15.7$ & 0.768 \\
- & GP  & 7/27/27  & $+6.8$  & 0.640 \\
- & MIX & 12/38/11 & $-0.4$  & 0.499 \\
-\midrule
-\multirow{6}{*}{TSN2}
- & V2H & 5/48/8   & $+0.6$  & 0.518 \\
- & V2  & 6/47/8   & $-0.0$  & 0.510 \\
- & MOR & 9/13/39  & $+9.7$  & 0.691 \\
- & GT  & 9/20/32  & $+5.2$  & 0.643 \\
- & GP  & 10/32/19 & $-1.3$  & 0.539 \\
- & MIX & \textbf{15}/41/5 & $-5.5$ & \textbf{0.436} \\
-\bottomrule
-\end{tabular}
-\end{table}
 
 \paragraph{ABCE3: large and uniform gains.} The elitist bee colony is the
 weakest solver in the portfolio (10.51\% RPD unseeded) and benefits
@@ -883,62 +791,62 @@ Section~\ref{sec:res-seedqual} tests that directly.
 
 \subsection{Effect sizes with the instance as unit}\label{sec:res-ic}
 
-Table~\ref{tab:wilcoxon} counts, per instance, whether an arm differs from
-the control. That summary is easy to read but it does not control error
-across the study: it runs six tests per instance and solver, corrects only
-within each instance, and then tallies the outcomes. We therefore repeat
-the analysis with the instance as the experimental unit throughout. Each
-arm is summarised per instance by the mean of its 30 runs; the quantity
-analysed is the per-instance difference from the control, giving $n=61$
-observations; one signed-rank test per (solver, arm) is applied to those
-differences, with Holm correction over the six arms of each solver; and a
-95\% confidence interval for the mean difference is obtained by
-bootstrapping instances ($10^4$ resamples). Table~\ref{tab:ic} reports the
-result.
-
+The experimental unit is the instance. Each arm is summarised per instance
+by the mean of its 30 runs; the quantity analysed is the per-instance
+difference from the control, giving $n=61$ observations; one signed-rank
+test per (solver, arm) is applied to those differences, with Holm
+correction over the six arms of each solver; and a 95\% confidence interval
+for the mean difference is obtained by bootstrapping instances ($10^4$
+resamples). Table~\ref{tab:ic} reports the result, alongside the
+per-instance win/loss counts and Vargha--Delaney $\hat{A}_{12}$ that give
+the same comparison in a more directly readable form.
 \begin{table}[t]
 \centering
-\caption{Per-instance difference in RPD from the unseeded control
-(percentage points, negative favours seeding), with bootstrap 95\%
-confidence intervals over instances and Holm-corrected signed-rank
-$p$-values within each solver. $n=61$ instances.}
+\caption{Each seeded arm against the unseeded control, with the instance as
+the experimental unit ($n=61$). W/NS/L counts the instances on which the arm
+is significantly better, not significantly different, or significantly worse
+under a per-instance signed-rank test; $\hat{A}_{12}<0.5$ favours seeding.
+The remaining columns are the study-level analysis: the per-instance
+difference in RPD from the control in percentage points (negative favours
+seeding), a bootstrap 95\% interval over instances, and a Holm-corrected
+signed-rank $p$-value within each solver.}
 \label{tab:ic}
 \small
-\begin{tabular}{llccc l}
+\begin{tabular}{llccc l l}
 \toprule
-Solver & Arm & Mean diff. & 95\% CI & $p$ (Holm) & \\
+Solver & Arm & W/NS/L & $\hat{A}_{12}$ & Mean diff. & 95\% CI & $p$ (Holm) \\
 \midrule
 \multirow{6}{*}{GA}
- & V2H & $+0.141$ & $[-0.073,\,+0.356]$ & 0.358 & \\
- & V2  & $+0.528$ & $[+0.240,\,+0.840]$ & 0.012 & $*$ \\
- & MOR & $+2.179$ & $[+1.887,\,+2.481]$ & $<0.001$ & $*{*}{*}$ \\
- & GT  & $+0.947$ & $[+0.668,\,+1.229]$ & $<0.001$ & $*{*}{*}$ \\
- & GP  & $+0.467$ & $[+0.198,\,+0.730]$ & 0.002 & $*{*}$ \\
- & MIX & $+0.055$ & $[-0.183,\,+0.294]$ & 0.546 & \\
+ & V2H & 11/31/19 & 0.54 & +0.14 & $[-0.07,+0.36]$ & 0.358 \\
+ & V2  & 9/25/27 & 0.61 & +0.53 & $[+0.24,+0.84]$ & 0.012* \\
+ & MOR & 1/3/57 & 0.92 & +2.18 & $[+1.89,+2.48]$ & $<$0.001*** \\
+ & GT  & 4/16/41 & 0.74 & +0.95 & $[+0.67,+1.23]$ & $<$0.001*** \\
+ & GP  & 9/21/31 & 0.65 & +0.47 & $[+0.20,+0.73]$ & 0.002** \\
+ & MIX & 13/29/19 & 0.53 & \textbf{+0.06} & $[-0.18,+0.29]$ & 0.546 \\
 \midrule
 \multirow{6}{*}{ABCE3}
- & V2H & $-0.997$ & $[-1.214,\,-0.800]$ & $<0.001$ & $*{*}{*}$ \\
- & V2  & $-1.113$ & $[-1.342,\,-0.899]$ & $<0.001$ & $*{*}{*}$ \\
- & MOR & $+0.206$ & $[+0.089,\,+0.327]$ & 0.005 & $*{*}$ \\
- & GT  & $-0.303$ & $[-0.492,\,-0.127]$ & 0.005 & $*{*}$ \\
- & GP  & $-0.830$ & $[-1.087,\,-0.596]$ & $<0.001$ & $*{*}{*}$ \\
- & MIX & $\mathbf{-1.140}$ & $[-1.361,\,-0.930]$ & $<0.001$ & $*{*}{*}$ \\
+ & V2H & 32/29/0 & 0.30 & -1.00 & $[-1.21,-0.80]$ & $<$0.001*** \\
+ & V2  & 35/26/0 & 0.27 & -1.11 & $[-1.34,-0.90]$ & $<$0.001*** \\
+ & MOR & 1/54/6 & 0.54 & +0.21 & $[+0.09,+0.33]$ & 0.005** \\
+ & GT  & 14/46/1 & 0.44 & -0.30 & $[-0.49,-0.13]$ & 0.005** \\
+ & GP  & 30/31/0 & 0.32 & -0.83 & $[-1.09,-0.60]$ & $<$0.001*** \\
+ & MIX & 35/26/0 & 0.27 & \textbf{-1.14} & $[-1.36,-0.93]$ & $<$0.001*** \\
 \midrule
 \multirow{6}{*}{fEABCLS}
- & V2H & $-0.016$ & $[-0.123,\,+0.092]$ & 1.000 & \\
- & V2  & $-0.010$ & $[-0.122,\,+0.098]$ & 1.000 & \\
- & MOR & $+1.485$ & $[+1.244,\,+1.741]$ & $<0.001$ & $*{*}{*}$ \\
- & GT  & $+0.799$ & $[+0.604,\,+0.994]$ & $<0.001$ & $*{*}{*}$ \\
- & GP  & $+0.366$ & $[+0.199,\,+0.537]$ & $<0.001$ & $*{*}{*}$ \\
- & MIX & $-0.005$ & $[-0.130,\,+0.115]$ & 1.000 & \\
+ & V2H & 7/43/11 & 0.50 & \textbf{-0.02} & $[-0.12,+0.09]$ & 1.000 \\
+ & V2  & 7/44/10 & 0.49 & -0.01 & $[-0.12,+0.10]$ & 1.000 \\
+ & MOR & 0/5/56 & 0.88 & +1.48 & $[+1.24,+1.74]$ & $<$0.001*** \\
+ & GT  & 3/12/46 & 0.77 & +0.80 & $[+0.60,+0.99]$ & $<$0.001*** \\
+ & GP  & 7/27/27 & 0.64 & +0.37 & $[+0.20,+0.54]$ & $<$0.001*** \\
+ & MIX & 12/38/11 & 0.50 & -0.01 & $[-0.13,+0.12]$ & 1.000 \\
 \midrule
 \multirow{6}{*}{TSN2}
- & V2H & $+0.048$ & $[-0.048,\,+0.143]$ & 0.486 & \\
- & V2  & $+0.024$ & $[-0.084,\,+0.126]$ & 0.486 & \\
- & MOR & $+0.652$ & $[+0.393,\,+0.912]$ & $<0.001$ & $*{*}{*}$ \\
- & GT  & $+0.398$ & $[+0.179,\,+0.607]$ & $<0.001$ & $*{*}{*}$ \\
- & GP  & $+0.070$ & $[-0.135,\,+0.261]$ & 0.456 & \\
- & MIX & $\mathbf{-0.187}$ & $[-0.350,\,-0.045]$ & 0.261 & \\
+ & V2H & 5/48/8 & 0.52 & +0.05 & $[-0.05,+0.14]$ & 0.486 \\
+ & V2  & 6/47/8 & 0.51 & +0.02 & $[-0.08,+0.13]$ & 0.486 \\
+ & MOR & 9/13/39 & 0.69 & +0.65 & $[+0.39,+0.91]$ & $<$0.001*** \\
+ & GT  & 9/20/32 & 0.64 & +0.40 & $[+0.18,+0.61]$ & 0.001*** \\
+ & GP  & 10/32/19 & 0.54 & +0.07 & $[-0.13,+0.26]$ & 0.456 \\
+ & MIX & 15/41/5 & 0.44 & \textbf{-0.19} & $[-0.35,-0.04]$ & 0.261 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -1263,16 +1171,11 @@ Solver & Arm & Reach & Earlier/later & $p$ (sign) & RMTT & $\Delta$RMTT [95\% CI
 \end{tabular}
 \end{table}
 
-Metric A behaves exactly as the pilot warned. Its medians span $0.09$ to
-$0.70$ of the budget, so it is not that the metric fails to separate the
-arms; it is that it separates them in the wrong order. On the GA the
-earliest plateau belongs to MOR, at $0.49$ against the control's $0.60$,
-and on TSN2 the same, $0.27$ against $0.36$ --- while the arms that
-actually finish best plateau latest, V2 at $0.70$ on the GA. This is the
-signature of a self-referential target: an arm that settles quickly on a
-poor value scores well \emph{because} it is poor. MOR is the worst
-generator on all four solvers, and metric A makes it look the fastest on
-two of them. We report it to document that it must not be used alone, and
+Metric A behaves exactly as the pilot warned, and one figure shows why. On
+the GA the earliest plateau belongs to MOR ($0.49$ of the budget against the
+control's $0.60$), and MOR is the worst generator on all four solvers: an
+arm that settles quickly on a poor value scores well \emph{because} it is
+poor. We report the metric to document that it must not be used alone, and
 do not tabulate it further.
 
 Metric B needs care of a different kind. An arm that never reaches the
@@ -1465,65 +1368,52 @@ to better solutions. Sampling breadth and seed quality both point the wrong
 way for the objection; within-population generator diversity is what
 remains.
 
-\subsection{A limitation of CPU-time budgets}\label{sec:res-budget}
-
-The stopping rule is a fixed CPU-time budget, measured with the process
-clock. CPU-seconds are reproducible; the \emph{work} they buy is not,
-because the instructions retired per CPU-second depend on contention for
-cache and memory bandwidth among the concurrently executing workers. All
-cells here were produced under an identical occupancy --- fourteen
-concurrent workers throughout --- so the effect is constant across the
-design, and within a solver it is in any case common to all seven arms,
-leaving the paired instance-level comparisons that carry every claim in
-this paper unaffected. What is \emph{not} transferable is the absolute
-level: an RPD of 3.41\% for TSN2 is specific to this machine at this
-occupancy and should not be compared against figures published for these
-solvers elsewhere. More generally, studies reporting a single absolute
-quality figure under a wall-clock or CPU-time budget, without stating the
-hardware occupancy under which it was obtained, are less reproducible than
-they appear.
-
 \subsection{The pilot's five statements, at scale}\label{sec:res-hyp}
 
 Section~\ref{sec:pilot} closed with five statements fixed before the final
-experiment. Reporting their fate is part of the point of specifying them.
+experiment. Table~\ref{tab:hyp} reports their fate, which is part of the
+point of specifying them. Two are worth a sentence beyond the verdict. The
+GA statement is the one the pilot got right for the wrong reason: the gain
+does reverse under a converged budget, as it found on three instances, but
+on the cells where that solver's control genuinely converges the reversal
+reverses again. And statement (v) is the one the experiment contradicts
+outright; it is the observation that reoriented the mechanism analysis of
+Section~\ref{sec:discussion}.
 
-\emph{(i) Seeding improves converged quality for the elitist ABC} ---
-\textbf{confirmed}, and by a wider margin than the pilot suggested: 35
-wins, 0 losses out of 61, with no seeded arm except MOR failing to help.
-
-\emph{(ii) For solvers with strong local search the final quality
-saturates but metric-A acceleration remains} --- \textbf{saturation
-confirmed, acceleration refuted}. Saturation holds: fEABCLS is
-statistically unchanged at the budget. The acceleration does not survive
-either time-to-target metric. Metric A orders the arms by how early they
-settle rather than by where they settle, and under metric B the mixed pool
-on fEABCLS is statistically indistinguishable from its control --- earlier
-on 28 instances, later on 26, $p=1.00$ (Section~\ref{sec:res-ttt}). What
-remains is the budget-fraction table, where fEABCLS improves from
-$14.84\%$ to $8.91\%$ at a tenth of the budget.
-The gain at short budgets is therefore real, but it is not the general
-acceleration the pilot predicted.
-
-\emph{(iii) For the plain GA the apparent gain is an artefact} ---
-\textbf{confirmed at the pilot's budgets, but incomplete}. The gain does
-reverse under a converged budget, as the pilot found. What the pilot could
-not see, having used three instances, is that on the 11 instances where the
-GA's control genuinely converges the reversal reverses again
-(Section~\ref{sec:res-conv}).
-
-\emph{(iv) GP and v2 tie at the top of the ladder and MOR never helps} ---
-\textbf{partly confirmed}. MOR never helps: it is last on all four solvers.
-But GP and v2 do not tie at the top; the mixed pool outranks both on every
-solver, which the pilot's design could not have detected because it is a
-property of combining them.
-
-\emph{(v) Initial-population quality ranks as the pool ladder predicts} ---
-\textbf{refuted for the mixed pool}. The single-generator arms rank as
-expected, but MIX starts from a worse average population than V2 or GP and
-still converges better (Section~\ref{sec:res-seedqual}). This is the one
-statement the final experiment contradicts outright, and it is the
-observation that reoriented the mechanism analysis.
+\begin{table}[t]
+\centering
+\caption{The five statements fixed after the pilot, and their fate at
+scale. Section references give the supporting evidence.}
+\label{tab:hyp}
+\small
+\begin{tabular}{p{0.40\linewidth}p{0.17\linewidth}p{0.35\linewidth}}
+\toprule
+Statement & Verdict & Evidence \\
+\midrule
+(i) Seeding improves converged quality for the elitist ABC
+ & confirmed, by a wider margin
+ & 35 wins, 0 losses of 61; every pool but MOR helps
+   (\S\ref{sec:res-final}) \\
+(ii) With strong local search, quality saturates but metric-A
+acceleration remains
+ & saturation confirmed, acceleration refuted
+ & fEABCLS unchanged at the budget and indistinguishable under both
+   time-to-target metrics; only the short-budget gain survives
+   (\S\ref{sec:res-ttt}) \\
+(iii) For the plain GA the apparent gain is an artefact
+ & confirmed at the pilot's budgets, incomplete
+ & reverses again where the control converges (\S\ref{sec:res-conv}) \\
+(iv) GP and v2 tie at the top of the ladder; MOR never helps
+ & partly confirmed
+ & MOR is last on all four solvers, but the mixed pool outranks GP and v2
+   everywhere (\S\ref{sec:res-ranking}) \\
+(v) Initial-population quality ranks as the pool ladder predicts
+ & refuted for the mixed pool
+ & MIX starts worse than V2 or GP and still converges better
+   (\S\ref{sec:res-seedqual}) \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 \subsection{Threats addressed by design}\label{sec:res-threats}
 
@@ -1545,6 +1435,21 @@ against seeding. Every sign test in Table~\ref{tab:ttt} is taken against
 that solver's own null proportion rather than against $0.5$, which is what
 removes the tilt; the effect is visible on the GA, where the mixed pool
 reads as significantly slower against $0.5$ and does not against $0.462$.
+
+Two properties of the plateau rule of Section~\ref{sec:res-conv} qualify
+what it can be asked to support. Its \emph{counts} are sensitive to how it
+is set:
+converged cells move from 114 at a $0.05\%$ threshold to 162 at $0.25\%$,
+and from 194 to 63 as the fraction of runs required to satisfy it goes from
+half to all. Only the conclusions drawn from those counts are reported as
+stable, and only where they are. And on TS-N2, 325 of the 1830 control runs
+record a \emph{negative} improvement, down to $-1.95\%$: the framework's
+statistic takes the best individual under the solver's own ranking, which
+for TS-N2 is LEX2, so the recorded incumbent's midpoint need not be
+monotone even though its LEX2 value is. Those runs satisfy a rule that asks
+for improvement below $0.1\%$ for a reason unrelated to convergence, which
+inflates that solver's converged count by an amount we cannot separate
+cleanly.
 
 Three further checks guard the numbers above. First, expected makespans were
 recomputed by an \emph{independent} verifier: a standalone program that
@@ -1707,7 +1612,7 @@ Before concluding that seeding fails on a recombination-based solver,
 check whether its control has converged; on our data that distinction
 separates a genuine null from an artefact of the budget.
 
-\subsection{Limitations}
+\subsection{Limitations}\label{sec:limits}
 
 \paragraph{Scope.} The study covers one problem family (interval JSP), one
 encoding (permutation with repetition), and four solvers three of which
@@ -1727,9 +1632,15 @@ crossover changes. Neither experiment is in this design.
 
 \paragraph{Budgets and cost.} Budgets are CPU-time caps measured with the
 process clock on a single Linux machine at a fixed occupancy of fourteen
-concurrent workers. Within a cell every arm shares the cap, but absolute
-times are not portable, and the work a CPU-second buys depends on that
-occupancy. We also do not measure the cost of \emph{producing} the pools:
+concurrent workers. Within a cell every arm shares the cap, so the paired
+comparisons that carry every claim here are unaffected, but the absolute
+level is not portable: the work a CPU-second buys depends on contention for
+cache and memory bandwidth among the concurrent workers. Our absolute RPDs
+should not be compared against figures published for these solvers
+elsewhere, and more generally a single absolute quality figure reported
+under a time budget, without the hardware occupancy that produced it, is
+less reproducible than it appears. We also do not measure the cost of
+\emph{producing} the pools:
 the training of the learned policy is excluded as amortised across
 instances, and the per-instance generation cost of the four generators was
 not instrumented. At the budgets where seeding matters most --- a tenth of
