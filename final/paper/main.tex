@@ -1058,10 +1058,17 @@ the advantage of the mixed pool \emph{widens as the search proceeds} rather
 than being inherited from higher initial seed quality. That is exactly what
 one expects if the operative variable is pool diversity rather than seed
 quality, and Section~\ref{sec:res-seedqual} confirms it directly. Second,
-V2 degrades relative to V2H on the GA as the budget grows ($8.14\%$ versus
-$7.73\%$ at convergence), a hint that seeding the entire population with a
-single learned policy is worse than seeding half of it, and that some
-random material is worth retaining.
+the seeded \emph{fraction} interacts with the solver, and not in one
+direction. On the GA, seeding half the population beats seeding all of it:
+the paired per-instance difference between V2H and V2 is $-0.39$ points of
+RPD, interval $[-0.54,-0.26]$, $p<10^{-3}$. On ABCE3 the comparison
+reverses with the same confidence, $+0.12$ points, $[+0.05,+0.18]$,
+$p<10^{-3}$, in favour of seeding the whole population; on fEABCLS and TSN2
+the two are indistinguishable ($p=0.58$ and $p=0.35$). Retaining random
+material is therefore not a general recommendation. It helps the one solver
+that cannot consolidate a fully seeded population within its budget, which
+is the same solver, and on our reading the same mechanism, as the reversal
+of Section~\ref{sec:res-conv}.
 
 Figure~\ref{fig:anytime} restricts the same analysis to the $50\times20$
 class in absolute time, where the seeding effect on the strong solvers is
@@ -1580,7 +1587,7 @@ reading the present data favour, not as a demonstrated cause.
 
 \subsection{Practitioner guidance}
 
-The results support three recommendations, each with its scope attached.
+The results support four recommendations, each with its scope attached.
 (i) Seed with a \emph{mixed} pool: it outranks every single-generator pool
 on all four solvers. We did not measure generation cost, so we make no
 claim that combining three generators is free; a practitioner working at
@@ -1590,7 +1597,12 @@ size, and expect its \emph{sign} to be unreliable when the budget is far
 from sufficient --- that is where our genetic algorithm reverses. (iii)
 Before concluding that seeding fails on a recombination-based solver,
 check whether its control has converged; on our data that distinction
-separates a genuine null from an artefact of the budget.
+separates a genuine null from an artefact of the budget. (iv) Do not assume
+a seeded fraction transfers between solvers. Seeding the whole population
+is better on the elitist ABC and worse on the genetic algorithm, both at
+$p<10^{-3}$, and neither is detectable without running the contrast: the
+half-seeded and fully seeded arms differ by at most $0.39$ points of RPD,
+well inside the spread that separates the generators themselves.
 
 \subsection{Limitations}\label{sec:limits}
 
@@ -1628,8 +1640,10 @@ away.
 
 \paragraph{Design gaps.} The seeded fraction $p^{*}=100\%$ was selected on
 two solvers and eight instances, so it is a protocol decision for this
-study rather than a generally preferable fraction; the GA's V2H arm, which
-is less harmful than V2, suggests the fraction interacts with the solver.
+study rather than a generally preferable fraction, and the half-seeded arm
+shows the fraction interacting with the solver in both directions
+(Section~\ref{sec:res-anytime}). Only two fractions were run, so the shape
+of that interaction between them is unmeasured.
 The mixed pool was not compared against two-generator mixtures or against
 alternative proportions, so we cannot attribute its advantage to any
 particular pairing. And the structural-diversity instrumentation covers
