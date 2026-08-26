@@ -110,22 +110,12 @@ existing metaheuristics with such solutions? Folk wisdom answers yes, and
 heuristic seeding of evolutionary algorithms has a long history
 \cite{Kazimipour2014,Louis2004}. Yet the empirical evidence behind that
 wisdom is weaker than it appears. Seeding studies typically compare final
-objective values under a fixed stopping rule, and our pilot experiments
-show that this practice is fragile in three specific ways.
-
-First, \emph{stagnation-triggered stopping}: under the customary
-``$N$ iterations without improvement'' rule, a well-seeded population that
-the solver cannot immediately improve triggers the rule at the floor value,
-so seeded runs are cut short while unseeded runs search for an order of
-magnitude longer --- the comparison silently penalises the seeds. Second,
-\emph{budget-dependent gains}: under a fixed budget chosen without a
-convergence check, seeded arms of weak solvers appear to win; with a
-five-fold larger budget the unseeded control keeps improving, overtakes the
-stagnating seeded population, and the sign of the effect \emph{reverses}.
-Third, \emph{self-referential speed}: convergence speed is reported as the
-time to the arm's own plateau, so an arm that stagnates early on a worse
-value is credited with an acceleration. Any of these three artefacts can
-manufacture a positive seeding result where none exists.
+objective values under a fixed stopping rule, and a pilot study reported in
+Section~\ref{sec:pilot} shows that practice to be fragile in three specific
+ways --- \emph{stagnation-triggered stopping}, \emph{budget-dependent gains
+that reverse}, and \emph{self-referential speed metrics} --- any one of
+which can manufacture a positive seeding result where none exists. The
+design of this study follows from avoiding them.
 
 This paper makes three contributions.
 \begin{enumerate}
