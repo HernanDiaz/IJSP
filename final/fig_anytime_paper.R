@@ -45,6 +45,30 @@ for (al in names(algos)) {
   grid(col = "grey90")
   for (a in names(arms)) lines(grid_t[keep], M[keep, a], col = cols[[a]], lty = ltys[[a]],
                                lwd = lwds[[a]])
+  # Marcar las MUESTRAS REALES cuando la traza es gruesa. La rejilla de
+  # remuestreo puede ser mucho mas fina que el intervalo de muestreo del
+  # framework: en ABCE3 sobre 50x20 el presupuesto es de 60 s y hay 13 muestras
+  # por ejecucion, de modo que una curva escalonada dibujada sobre una rejilla
+  # de 0.2 s aparenta una resolucion temporal que el dato no tiene. Los puntos
+  # muestran donde se conoce el valor de verdad.
+  tr <- sprintf("final/phase2/a0_traces_%s.csv", al)
+  if (file.exists(tr)) {
+    z <- read.csv(tr, stringsAsFactors = FALSE)
+    z <- z[z$inst %in% ok, ]
+    if (nrow(z)) {
+      dt <- median(unlist(lapply(split(z, paste(z$inst, z$run)),
+                                 function(x) diff(sort(x$t)))), na.rm = TRUE)
+      span <- diff(range(grid_t[keep]))
+      if (is.finite(dt) && dt > span / 40) {          # menos de ~40 muestras
+        st <- sort(unique(round(z$t / dt) * dt))
+        st <- st[st >= min(grid_t[keep]) & st <= max(grid_t[keep])]
+        idx <- sapply(st, function(tt) which.min(abs(grid_t[keep] - tt)))
+        for (a in c("A0", "MIX"))
+          points(grid_t[keep][idx], M[keep, a][idx], bg = cols[[a]],
+                 col = "white", pch = 21, cex = 0.9, lwd = 1.1)
+      }
+    }
+  }
   legend("topright", legend = unname(arms), col = cols[names(arms)], lty = ltys[names(arms)],
          lwd = lwds[names(arms)], bty = "n", cex = 0.72)
 }

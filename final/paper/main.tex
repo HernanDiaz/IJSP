@@ -1071,16 +1071,22 @@ concentrated.
 \centering
 \includegraphics[width=\linewidth]{../figs/anytime_50x20.png}
 \caption{Convergence on the $50\times20$ class (10 instances, 30 runs).
-Mean RPD with respect to the published lower bound against CPU time, for
-the unseeded control and the two best seeded arms. Note the differing time
-axes: solver budgets are calibrated per solver and size class.}
+Mean RPD with respect to the published lower bound against CPU time. Time
+axes differ because budgets are calibrated per solver and size class.
+Markers show the instants at which the traces are actually sampled, drawn
+where that resolution is coarse enough to matter.}
 \label{fig:anytime}
 \end{figure}
 
 Two features are specific to this class. ABCE3's control flattens at
 approximately 11.2\% while both seeded arms flatten near 9.7\%, a gap
 present from the first seconds that never closes --- a genuine improvement
-in converged quality rather than an acceleration. TSN2's control exhibits a
+in converged quality rather than an acceleration. Its panel is visibly
+coarser than the others because its budget on this class is the $60$\,s
+floor of Equation~\eqref{eq:budget} while the trace is sampled every
+$5$\,s: thirteen measurements per run, against 165 for fEABCLS. The steps
+are where the data are, not an artefact of the estimator. TSN2's control
+exhibits a
 sharp step near 50\,s, when the tabu phase first engages, and thereafter
 descends steadily; MIX remains below it over the entire trajectory and is
 still below at the budget limit (approximately 3.3\% against 4.1\%). The
