@@ -1,0 +1,15 @@
+nohup: ignoring input
+=== MIXH: comprobaciones previas ===
+  binario: presente y posterior a las fuentes de siembra
+  pools mixtos: 61 de 61, todos con 1024 entradas
+  celdas MIXH previas: 0
+  celdas originales con datos: 1952 de 1708
+
+=== trabajos a generar ===
+configs ya completas (monoliticas): 0 | trozos ya hechos: 0 | trozos pendientes: 1464
+DRYRUN: nada lanzado.
+
+=== lanzando MIXH con 14 workers ===
+  coste estimado: ~50 h de CPU / 14 workers = ~2.1 dias
+configs ya completas (monoliticas): 0 | trozos ya hechos: 0 | trozos pendientes: 1464
+Inicio PHASE2C: Wed Aug 26 12:19:45 CEST 2026 | 1464 trozos, <=14, chunk ga/abce3=5 feabcls/tsn2=3

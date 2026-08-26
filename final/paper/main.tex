@@ -313,8 +313,16 @@ semi-active decoder. Four generators span a quality ladder:
   evolved and irace-tuned offline, with GRASP-style $\varepsilon$-noise
   (strongest heuristic baseline);
 \item \textbf{v2}: a deep-RL dispatching policy (deep-sets architecture,
-  three independent training checkpoints), trained only on Taillard
-  instances TA11--TA14 and developed/tuned on TA15--TA20.
+  PPO, stochastic sampling of the policy for diversity), trained only on
+  Taillard instances TA11--TA14 and developed on TA15--TA20. Its pool is
+  the one structural exception to i.i.d.\ sampling: it is three
+  consecutive blocks of $342/341/341$ solutions, one per training
+  checkpoint, and the blocks differ measurably in quality (Kruskal--Wallis
+  $p<10^{-6}$ on every instance tested). The consequence for the arms that
+  use it is quantified in Section~\ref{sec:limits}. The policy also ranks
+  candidate schedules by LEX2, whereas three of the four solvers rank by
+  the midpoint, so these seeds are optimised under a different criterion
+  from the one that later evaluates them.
 \end{itemize}
 Across the 71-instance pool collection the ladder is clean: mean relative
 errors of 51.1\% (MOR) $>$ 30.3\% (GT) $>$ 21.4\% (GP) $\approx$ 21.2\%
@@ -358,8 +366,29 @@ during the run remain fully random. Seeds enter as raw permutations and are
 re-decoded and re-evaluated by the receiving solver, so no foreign
 objective values ever enter the search.
 
-%% TODO [AWAIT-PHASE2]: measured seed-generation times per generator and
-%% their fraction of the smallest per-cell budget.
+\subsection{The cost of producing the seeds}\label{sec:gencost}
+
+Seeding is not free, and at the budgets where it helps most the cost is not
+negligible. Generation was timed for the two heuristic generators on a
+single thread: a pool of 1{,}024 solutions takes $91$\,s on $15\times15$
+and $1{,}255$\,s on $50\times20$ for GP-$\varepsilon$, and $89$\,s to
+$1{,}500$\,s for GT-$\varepsilon$, scaling roughly linearly in the number of
+operations. The learned policy is the expensive one: measured per-rollout
+inference of $0.60$\,s on $15\times15$ and $3.98$\,s on $50\times20$ puts it
+six to ten times above the rules per solution. We did not time the v2 and
+MOR-$\varepsilon$ pools directly and do not report an equivalent figure for
+them.
+
+Two readings follow, and they differ by an order of magnitude. Producing the
+250 seeds of a \emph{single} run costs from $22$\,s on $15\times15$ to
+$306$\,s on $50\times20$ with the cheapest generator --- between four and
+fifty-one times the tenth of the budget at which the anytime advantage is
+largest, depending on solver and class. Amortised instead over the thirty
+runs that share a pool, as in this study and in any repeated-solve setting,
+the same cost falls to between $0.1$ and $7$ times that slice, and below it
+in most cells. The short-budget result therefore holds as stated for a
+practitioner who reuses a pool, and does not hold for one who generates
+seeds to solve a single instance once.
 
 %% =========================================================================
 \section{Pilot study: three ways to fool yourself}\label{sec:pilot}
@@ -1263,11 +1292,15 @@ meaningful margin. It nonetheless finishes ahead of both
 (Table~\ref{tab:rpd}). A pool that starts worse and ends better is direct
 evidence that the operative variable is composition, not seed quality.
 
-This also disposes of a possible confound. The mixed pool is assembled from
-exactly the same 1{,}024 solutions per generator that feed the V2, GT and
-GP arms --- it introduces no new material, only a different mixture --- so
-no difference in provenance or generation effort can be invoked to explain
-its advantage.
+This also bears on a possible confound. The mixed pool introduces no new
+material: it is drawn from the same generator pools that feed the V2, GT
+and GP arms, taking the first $342/341/341$ entries of each. For GT and GP,
+whose pools are i.i.d., that is a sample of the same distribution the
+single-generator arm draws from. For v2 it is not: those first 342 entries
+are one training checkpoint, while the V2 arm cycles through all three. So
+no difference in \emph{provenance} explains the mixed pool's advantage, but
+its v2 component is narrower than the V2 arm's, not merely a re-mixture of
+it.
 
 \subsection{Which seeding strategy? Generator ranking and its
 solver-dependence}\label{sec:res-ranking}
@@ -1579,9 +1612,11 @@ reading the present data favour, not as a demonstrated cause.
 
 The results support four recommendations, each with its scope attached.
 (i) Seed with a \emph{mixed} pool: it outranks every single-generator pool
-on all four solvers. We did not measure generation cost, so we make no
-claim that combining three generators is free; a practitioner working at
-very short budgets, where seeding matters most, should measure it. (ii)
+on all four solvers, and drawing on three generators costs no more than
+drawing on one, since the pool is the same size. What is not free is
+producing it: at the tenth of the budget where the advantage is largest,
+generating a run's seeds costs several times that slice unless the pool is
+reused across runs (Section~\ref{sec:gencost}). Seed once, solve many. (ii)
 Expect the benefit to grow as the budget tightens relative to instance
 size, and expect its \emph{sign} to be unreliable when the budget is far
 from sufficient --- that is where our genetic algorithm reverses. (iii)
@@ -1620,13 +1655,25 @@ cache and memory bandwidth among the concurrent workers. Our absolute RPDs
 should not be compared against figures published for these solvers
 elsewhere, and more generally a single absolute quality figure reported
 under a time budget, without the hardware occupancy that produced it, is
-less reproducible than it appears. We also do not measure the cost of
-\emph{producing} the pools:
-the training of the learned policy is excluded as amortised across
-instances, and the per-instance generation cost of the four generators was
-not instrumented. At the budgets where seeding matters most --- a tenth of
-ours --- that omission is material, and we flag it rather than assume it
-away.
+less reproducible than it appears. Section~\ref{sec:gencost} reports the
+cost of producing the pools, with two gaps: the training of the learned
+policy is excluded as amortised across instances, and only the two
+heuristic generators were timed directly, the learned policy's pool cost
+being inferred from per-rollout inference and MOR-$\varepsilon$'s not
+measured at all.
+
+\paragraph{The v2 pool is blocked, not i.i.d.} Its 1{,}024 entries are three
+consecutive blocks, one per training checkpoint, and the blocks differ in
+quality. Because an arm draws a contiguous window whose start advances with
+the run index, the checkpoint mixture varies from run to run: several V2
+runs and twenty of the thirty V2H runs are fed by a single checkpoint. Over
+thirty runs the mixture averages close to balanced ($91/80/80$ of 250 for
+V2), so the effect on the per-instance means that carry our analysis is
+small, but the between-run variance of the two v2 arms is inflated relative
+to every other arm, and inflated in a structured rather than random way. The
+mixed pool inherits the head of that pool, so its v2 third is one
+checkpoint. Interleaving the checkpoints, as the mixed pool interleaves its
+generators, would remove this.
 
 \paragraph{Design gaps.} The seeded fraction $p^{*}=100\%$ was selected on
 two solvers and eight instances, so it is a protocol decision for this
