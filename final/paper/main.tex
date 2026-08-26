@@ -17,6 +17,20 @@
 \usepackage{booktabs}
 \usepackage{multirow}
 
+%% Colocacion de flotantes. Con doce tablas y el interlineado doble de la
+%% opcion [review], los flotantes declarados solo como [t] no encuentran
+%% hueco y LaTeX los acumula hasta vaciarlos al final del documento. Estos
+%% parametros permiten mas flotantes por pagina y una mayor fraccion de
+%% pagina ocupada por ellos, de modo que cada tabla queda cerca del texto
+%% que la comenta.
+\setcounter{topnumber}{3}
+\setcounter{bottomnumber}{2}
+\setcounter{totalnumber}{4}
+\renewcommand{\topfraction}{0.9}
+\renewcommand{\bottomfraction}{0.7}
+\renewcommand{\textfraction}{0.07}
+\renewcommand{\floatpagefraction}{0.75}
+
 \journal{Swarm and Evolutionary Computation}
 
 \begin{document}
@@ -235,7 +249,7 @@ interval evaluation described above. Table~\ref{tab:portfolio} summarises
 their published configurations, whose parameter settings we replicate
 verbatim.
 
-\begin{table}[t]
+\begin{table}[htbp]
 \centering\small
 \caption{Solver portfolio (published configurations). All use population
 250, permutation-with-repetition encoding and insertion SGS decoding.}
@@ -586,7 +600,7 @@ $60$\,s floor stops them. What the classification is and is not sensitive
 to is reported in Section~\ref{sec:res-threats}; the per-cell
 classifications are released with the data.
 
-\begin{table}[t]
+\begin{table}[htbp]
 \centering
 \caption{Mean RPD (\%) over all 61 instances and over the subset whose
 \emph{control} satisfies the plateau rule. Best arm per row in bold. The
@@ -619,7 +633,7 @@ Solver & Subset & A0 & V2H & V2 & MOR & GT & GP & MIX \\
 \end{tabular}
 \end{table}
 
-\begin{table}[t]
+\begin{table}[htbp]
 \centering
 \caption{Mean RPD (\%) restricted to the instances where the control
 \emph{and} the compared arm both satisfy the plateau rule. ``$n$ both'' is
@@ -717,7 +731,7 @@ Table~\ref{tab:rpd} reports mean RPD over the 61 instances. Three regimes
 are immediately visible, and they do \emph{not} order themselves by solver
 strength.
 
-\begin{table}[t]
+\begin{table}[htbp]
 \centering
 \caption{Mean RPD (\%) with respect to published lower bounds, over 61
 instances and 30 runs per cell. Lower is better; the best arm per solver is
@@ -738,48 +752,43 @@ TSN2    & 3.60  & 3.64 & 3.62 & 4.25  & 3.99  & 3.67 & \textbf{3.41} \\
 
 \paragraph{ABCE3: large and uniform gains.} The elitist bee colony is the
 weakest solver in the portfolio (10.51\% RPD unseeded) and benefits
-massively. MIX and V2 each win on 35 of 61 instances and V2H on 32, and all
-three \emph{lose on none}, with $\hat{A}_{12}$ between 0.266 and 0.298.
-Even GP, a mid-ranked generator elsewhere, wins 30 and loses none. This is
-the textbook case: the solver's own diversification never reaches the
-quality already present in the seeds.
+massively: MIX reaches 9.37\%, V2 9.39\% and V2H 9.51\%, and even GP, a
+mid-ranked generator elsewhere, reaches 9.68\%. This is the textbook case:
+the solver's own diversification never reaches the quality already present
+in the seeds.
 
 \paragraph{TSN2: a gain confined to the largest instances.} The
 tabu-search hybrid is the strongest solver, and the natural expectation ---
 which our own pilot supported --- is saturation. It does not saturate, but
-the effect must be stated carefully. MIX wins 15 instances and loses 5
-($\Delta=-5.5$, $\hat{A}_{12}=0.436$), lowering RPD from 3.60\% to 3.41\%,
-i.e.\ removing 5.3\% of the excess over the lower bound. It is also the
-only arm that improves this solver: every other pool is neutral or harmful.
-In aggregate the gain is small, and it is \emph{not} uniform: MIX is better
-on 35 instances and worse on 22, with a median relative change of
-$-0.03\%$. The gain is almost entirely attributable to one size class, and
-we quantify this in Section~\ref{sec:res-size}. The defensible claim is
+the effect must be stated carefully. MIX lowers RPD from 3.60\% to 3.41\%,
+removing 5.3\% of the excess over the lower bound, and it is the only arm
+that improves this solver: every other pool is neutral or harmful. The gain
+is small in aggregate and it is \emph{not} uniform, being almost entirely
+attributable to one size class, which Section~\ref{sec:res-size}
+quantifies. The defensible claim is
 therefore not that seeding improves the strongest solver in general, but that it does
 so on large instances under a search budget that is tight relative to
 instance size.
 
-\paragraph{fEABCLS: neutrality.} The memetic ABC is statistically
-indistinguishable from its control under the three best generators (MIX
-12/38/11, V2 7/44/10, V2H 7/43/11, all $\hat{A}_{12}\approx0.50$). Its
-hill-climbing component reaches seed-level quality unaided within the
-budget. Note that neutrality here is a property of the \emph{good} pools
-only: MOR wins nothing and loses 56 of 61.
+\paragraph{fEABCLS: neutrality.} The memetic ABC lands within a hundredth
+of a point of its control under the three best generators (3.67\% against
+MIX 3.67\%, V2 3.66\%, V2H 3.66\%): its hill-climbing component reaches
+seed-level quality unaided within the budget. Neutrality here is a property
+of the \emph{good} pools only --- MOR costs it 1.49 points.
 
 \paragraph{GA: harm, but only under an insufficient budget.} Over all 61
-instances no arm improves the genetic algorithm: the best, MIX, is 13/29/19
-with $\hat{A}_{12}=0.527$, and V2 is a clear loss (9/25/27). The
-qualification of Section~\ref{sec:res-conv} is essential here. The GA fails
-the plateau rule on 49 of 61 instances --- more than any other solver ---
-and on the 12 where its control does converge the ordering reverses, with
-MIX at 4.00\% against the control's 4.75\%. The reversal in the pooled
-table is therefore a statement about the budget this solver needs, not
-about seeding being harmful to it in principle.
+instances no arm improves the genetic algorithm: the control's 7.52\% is
+the lowest figure in its block, with MIX closest at 7.58\% and V2 a clear
+loss at 8.05\%. That reading is conditional on the budget. This solver
+fails the plateau rule on 49 of 61 instances, more than any other, and
+where its control does converge the ordering reverses
+(Section~\ref{sec:res-conv}); the pooled figure is therefore a statement
+about the budget the GA needs, not about seeding being harmful to it in
+principle.
 
 Across all four solvers the generator ranking is stable in its extremes:
-MOR is the worst seeded arm and GT the second worst on every solver (MOR
-reaches $\hat{A}_{12}=0.920$ on the GA and $0.885$ on fEABCLS), while MIX
-holds the best Friedman rank among seeded arms on all four
+MOR is the worst seeded arm and GT the second worst on every solver, while
+MIX holds the best Friedman rank among seeded arms on all four
 (Section~\ref{sec:res-ranking}). On mean RPD, MIX is the best seeded arm on
 three solvers and is within 0.01 points of the best on fEABCLS. The
 positions in between are not stable: GP outranks V2 on the GA but not on
@@ -800,7 +809,7 @@ for the mean difference is obtained by bootstrapping instances ($10^4$
 resamples). Table~\ref{tab:ic} reports the result, alongside the
 per-instance win/loss counts and Vargha--Delaney $\hat{A}_{12}$ that give
 the same comparison in a more directly readable form.
-\begin{table}[t]
+\begin{table}[htbp]
 \centering
 \caption{Each seeded arm against the unseeded control, with the instance as
 the experimental unit ($n=61$). W/NS/L counts the instances on which the arm
@@ -851,20 +860,19 @@ Solver & Arm & W/NS/L & $\hat{A}_{12}$ & Mean diff. & 95\% CI & $p$ (Holm) \\
 \end{tabular}
 \end{table}
 
-Three readings change relative to the per-instance tally.
+Three of the four solvers need a word beyond the table.
 
-\paragraph{ABCE3 is unaffected by the stricter analysis.} MIX improves the
-solver by $1.14$ percentage points of RPD with a confidence interval of
-$[-1.36,-0.93]$ and $p<10^{-3}$ after correction; V2, V2H and GP are
-likewise unambiguous. Correcting over all 24 contrasts of the study rather
-than within solvers changes nothing: the same 15 remain significant.
+\paragraph{ABCE3 gains unambiguously.} MIX improves it by $1.14$ percentage
+points of RPD, interval $[-1.36,-0.93]$, $p<10^{-3}$; V2, V2H and GP
+likewise. Correcting over all 24 contrasts of the study rather than within
+solvers changes nothing: the same 15 remain significant.
 
-\paragraph{The GA is not harmed by the mixed pool.} Its difference is
-$+0.055$ points with an interval spanning zero and $p=0.55$. What is
-significantly harmful on this solver is every \emph{single-generator} pool:
-MOR ($+2.18$), GT ($+0.95$), V2 ($+0.53$) and GP ($+0.47$). Combined with
-Section~\ref{sec:res-conv}, the picture is that the GA is damaged by
-homogeneous seeds under an insufficient budget, not by seeding as such.
+\paragraph{The GA is harmed by homogeneous pools, not by seeding.} The
+mixed pool's difference is $+0.055$ points, with an interval spanning zero
+and $p=0.55$, while every \emph{single-generator} pool is significantly
+harmful: MOR ($+2.18$), GT ($+0.95$), V2 ($+0.53$) and GP ($+0.47$). Read
+with Section~\ref{sec:res-conv}, the picture is a solver damaged by
+homogeneous seeds under an insufficient budget.
 
 \paragraph{The improvement on TSN2 does not reach significance.} This is
 the reading that changes most. The signed-rank test over the 61
@@ -890,7 +898,7 @@ Figure~\ref{fig:size} plots the relative change in $\mathbb{E}[C_{\max}]$
 under MIX seeding against instance class, ordered by number of operations
 (100 to 1000).
 
-\begin{figure}[t]
+\begin{figure}[htbp]
 \centering
 \includegraphics[width=\linewidth]{../figs/main_effect_by_size.png}
 \caption{Relative change in $\mathbb{E}[C_{\max}]$ under MIX seeding with
@@ -916,7 +924,7 @@ instances account for $94.8\%$ of the aggregate improvement; the remaining
 Table~\ref{tab:rpd} would therefore misrepresent the result as a general
 improvement of the strongest solver, which it is not.
 
-\begin{table}[t]
+\begin{table}[htbp]
 \centering
 \caption{Decomposition of the MIX seeding effect on TSN2 by instance class.
 $\Delta$ is the mean signed change in $\mathbb{E}[C_{\max}]$ (negative
@@ -959,7 +967,7 @@ instance enters or leaves mid-curve. Figure~\ref{fig:anytimeall} shows the
 resulting profiles over all 61 instances, and Table~\ref{tab:budgetfrac}
 gives the values at five budget fractions.
 
-\begin{figure}[t]
+\begin{figure}[htbp]
 \centering
 \includegraphics[width=\linewidth]{../figs/anytime_all.png}
 \caption{Anytime behaviour over all 61 instances. Mean RPD with respect to
@@ -968,7 +976,7 @@ consumed, for the unseeded control and the two best seeded arms.}
 \label{fig:anytimeall}
 \end{figure}
 
-\begin{table}[t]
+\begin{table}[htbp]
 \centering
 \caption{Mean RPD (\%) over all 61 instances at five fractions of the
 per-instance budget. Values are resampled from execution traces and agree
@@ -1079,7 +1087,7 @@ Figure~\ref{fig:anytime} restricts the same analysis to the $50\times20$
 class in absolute time, where the seeding effect on the strong solvers is
 concentrated.
 
-\begin{figure}[t]
+\begin{figure}[htbp]
 \centering
 \includegraphics[width=\linewidth]{../figs/anytime_50x20.png}
 \caption{Convergence on the $50\times20$ class (10 instances, 30 runs).
@@ -1118,7 +1126,7 @@ medians over the 61 instances. Metric B is reported together with the
 proportion of instances on which the arm reaches the target at all, since a
 median computed only over successes is meaningless without it.
 
-\begin{table}[t]
+\begin{table}[htbp]
 \centering
 \caption{Time to reach the unseeded control's final quality ($+0.5\%$),
 paired by instance. Time is the fraction of the per-instance budget, and an
@@ -1254,7 +1262,7 @@ of the initial population each arm actually receives, read from the
 step-zero record of the traces, so it is the solvers' own evaluation rather
 than the value stored with the pool.
 
-\begin{table}[t]
+\begin{table}[htbp]
 \centering
 \caption{Quality of the seeded initial population relative to the unseeded
 control, averaged over five instances spanning $20\times20$ to
@@ -1298,7 +1306,7 @@ instances as blocks, followed by Holm-corrected paired post-hoc
 comparisons against the top-ranked arm of each solver.
 Table~\ref{tab:ranking} reports the mean ranks.
 
-\begin{table}[t]
+\begin{table}[htbp]
 \centering
 \caption{Mean Friedman ranks of the seven arms (1 = best) over 61
 instances. Friedman rejects rank equality for every solver
@@ -1380,7 +1388,7 @@ reverses again. And statement (v) is the one the experiment contradicts
 outright; it is the observation that reoriented the mechanism analysis of
 Section~\ref{sec:discussion}.
 
-\begin{table}[t]
+\begin{table}[htbp]
 \centering
 \caption{The five statements fixed after the pilot, and their fate at
 scale. Section references give the supporting evidence.}
@@ -1484,14 +1492,12 @@ artefact documented in Section~\ref{sec:pilot}.
 
 \subsection{Seeding quality is not the operative variable}
 
-The pre-specified hypothesis --- that seeding helps precisely those
-solvers whose own search saturates below the seed level --- is not
-supported. Ordering the portfolio by unseeded RPD gives ABCE3 (10.51) $>$
-GA (7.52) $>$ fEABCLS (3.67) $>$ TSN2 (3.60), but the seeding effect
-follows the order ABCE3 (large gain) $>$ TSN2 (small gain) $>$ fEABCLS
-(null) $>$ GA (loss at the budget, gain once the budget suffices). The
-strongest solver in the portfolio benefits while a mid-ranked one appears
-harmed, so solver quality alone does not predict the sign of the effect.
+The pre-specified hypothesis --- that seeding helps precisely those solvers
+whose own search saturates below the seed level --- is not supported. The
+ordering by unseeded quality and the ordering by seeding effect do not
+match: the weakest solver gains most, the strongest gains a little, a
+mid-ranked one is unaffected and another is harmed at the budget and helped
+once it suffices. Solver quality alone does not predict the sign.
 
 Two variables do carry information, and the design supports them as
 associations rather than isolating them as causes. The first is the
@@ -1531,7 +1537,7 @@ the result. The seeded GA is not less diverse than its control --- it is
 under MIX (paired Wilcoxon, $p<10^{-4}$), and it ends the run at $0.720$
 against the control's $0.464$.
 
-\begin{table}[t]
+\begin{table}[htbp]
 \centering
 \caption{Mean pairwise Hamming distance of the population (0 = identical
 population, 1 = maximal positional difference), averaged over four
