@@ -38,6 +38,7 @@ instfile() { if [ "$1" = "ft10" ]; then echo "SelectosYTaillardIntervalos/F0.15.
 armspec() { case "$1" in
   A0) echo ", 0";; V2H) echo "v2, 125";; V2) echo "v2, 250";; MOR) echo "graspmor, 250";;
   GT) echo "gtmwkr, 250";; GP) echo "gp, 250";; MIX) echo "mix, 250";;
+  MIXH) echo "mix, 125";;
 esac; }
 
 # INSTS_OVERRIDE y OUT_OVERRIDE: para el smoke test, mismo codigo pero
@@ -50,10 +51,17 @@ for cls in tai15_15 tai20_20 tai30_15 tai30_20 tai50_15 tai50_20; do
   for i in $(seq -w 1 10); do INSTS="$INSTS ${cls}_${i}"; done
 done
 fi
-ARMS="A0 V2H V2 MOR GT GP MIX"
+# ARMS_OVERRIDE permite anadir un brazo sin retocar el resto: los trozos ya
+# completos se saltan de todos modos, pero limitar la lista hace explicito que
+# la corrida no puede tocar celdas existentes.
+ARMS=${ARMS_OVERRIDE:-"A0 V2H V2 MOR GT GP MIX"}
 ALGOS=${ALGOS:-"ga feabcls tsn2"}   # abce3 ya completo; ga parcialmente
 
-: > "$OUT/joblist_chunk.txt"; skipc=0; skipm=0; todo=0
+# En DRYRUN la lista va a un temporal: un ensayo no debe tocar ni siquiera el
+# fichero de trabajos del experimento.
+JOB="$OUT/joblist_chunk.txt"
+[ "${DRYRUN:-0}" = "1" ] && JOB="${DRYJOB:-$(mktemp)}"
+: > "$JOB"; skipc=0; skipm=0; todo=0
 for algo in $ALGOS; do
   ch=$(chunk_size "$algo")
   nch=$(( (RUNS + ch - 1) / ch ))
@@ -69,15 +77,23 @@ for algo in $ALGOS; do
         d="$base/c$j"
         csv=$(ls "$d"/*.csv 2>/dev/null | grep -v -E 'Sols|Robust|Scenar' | head -1)
         [ -n "$csv" ] && { skipc=$((skipc+1)); continue; }
-        todo=$((todo+1)); rm -rf "$d"; mkdir -p "$d"
+        todo=$((todo+1))
         seed=$(( 1 + (j-1)*ch ))
+        pool=""
+        if [ "$k" -gt 0 ]; then
+          pool="pools_test/corrected/int__${inst}_${g}_repo_pool.csv"
+          [ -f "$pool" ] || { echo "FALTA pool: $pool"; exit 1; }
+        fi
+        # DRYRUN no debe TOCAR EL DISCO. Antes creaba el directorio y escribia
+        # setup.txt antes de comprobar la variable, de modo que un "ensayo"
+        # dejaba miles de ficheros y ensuciaba el arbol del experimento.
+        if [ "${DRYRUN:-0}" != "1" ]; then
+        rm -rf "$d"; mkdir -p "$d"
         sed -e "s/^runs = .*/runs = $ch/" -e "s/^seed = .*/seed = $seed/" "repro/setup_${algo}.txt" > "$d/setup.txt"
         sed -i "s/^noimprovement = .*/generations = 100000/" "$d/setup.txt"
         if grep -q '^timelimit' "$d/setup.txt"; then sed -i "s/^timelimit = .*/timelimit = $bud/" "$d/setup.txt"
         else echo "timelimit = $bud" >> "$d/setup.txt"; fi
-        if [ "$k" -gt 0 ]; then
-          pool="pools_test/corrected/int__${inst}_${g}_repo_pool.csv"
-          [ -f "$pool" ] || { echo "FALTA pool: $pool"; exit 1; }
+        if [ -n "$pool" ]; then
           sed -i "s/^creation = ijsp.random/creation = ijsp.seeded/" "$d/setup.txt"
           # INDICE GLOBAL de la primera ejecucion de este trozo. Sin el, cada
           # proceso reinicia su contador y los 6 trozos repiten los mismos
@@ -85,7 +101,8 @@ for algo in $ALGOS; do
           { echo ""; echo "creation.seed.pool = $pool"; echo "creation.seed.count = $k";
             echo "creation.seed.offset = $(( (j-1)*ch ))"; } >> "$d/setup.txt"
         fi
-        echo "./FuzzyFW '$d/setup.txt' '$f' '$d' > '$d/log.txt' 2>&1" >> "$OUT/joblist_chunk.txt"
+        fi
+        echo "./FuzzyFW '$d/setup.txt' '$f' '$d' > '$d/log.txt' 2>&1" >> "$JOB"
       done
     done
   done
@@ -93,5 +110,5 @@ done
 echo "configs ya completas (monoliticas): $skipm | trozos ya hechos: $skipc | trozos pendientes: $todo"
 if [ "${DRYRUN:-0}" = "1" ]; then echo "DRYRUN: nada lanzado."; exit 0; fi
 echo "Inicio PHASE2C: $(date) | $todo trozos, <=$PAR, chunk ga/abce3=${CH:-5} feabcls/tsn2=${CH:-3}" | tee -a "$OUT/run.log"
-cat "$OUT/joblist_chunk.txt" | xargs -I CMD -P "$PAR" bash -c CMD
+cat "$JOB" | xargs -I CMD -P "$PAR" bash -c CMD
 echo "PHASE2C DONE: $(date)" | tee -a "$OUT/run.log"
