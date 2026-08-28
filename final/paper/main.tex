@@ -58,9 +58,10 @@ and mixed pools, over 61 interval Taillard instances and 30 runs per cell
 manufacture positive seeding results: stagnation-triggered stopping,
 single-budget comparison, and self-referential speed metrics.
 
-The answer turns almost entirely on the budget. Run to convergence, seeding
-is worth $0.1\%$ to $1.0\%$ of makespan and is significant on one solver of
-four. At a tenth of that budget it is worth $1.3\%$ to $5.2\%$, on all four.
+The answer turns almost entirely on the budget. At the full budget, which a
+plateau rule finds sufficient for convergence on only 133 of the 244 control
+cells, seeding is worth $0.1\%$ to $1.0\%$ of makespan and is significant on
+one solver of four; at a tenth of it, $1.3\%$ to $5.2\%$ on all four.
 Seeding buys time rather than quality: it reaches a given quality sooner,
 not a better one --- except on the weakest solver, where it does both.
 
@@ -69,9 +70,8 @@ the pools that help: a mixed pool starts from a worse average population
 than its components and finishes ahead of them. Independently, the fraction
 seeded interacts with the solver, half the population being better on the
 genetic algorithm and worse on the elitist ABC. An exploratory eighth arm
-combining both is the best performer on three of the four solvers and the
-only one that improves the genetic algorithm, with an interaction
-indistinguishable from additive there. The premature convergence usually
+combining both is the best performer on three solvers and the only one that
+improves the genetic algorithm. Finally, the premature convergence usually
 blamed for seeding failures is contradicted: the harmed genetic algorithm
 ends \emph{more} dispersed than its control.
 \end{abstract}
@@ -1700,13 +1700,14 @@ reading the present data favour, not as a demonstrated cause.
 \subsection{Practitioner guidance}
 
 The results support four recommendations, each with its scope attached.
-(i) Seed with a \emph{mixed} pool, and default to replacing \emph{half} the
-population rather than all of it. The mixed pool outranks every
-single-generator pool on all four solvers, and drawing on three generators
-costs no more than drawing on one since the pool is the same size; the half
-strength variant is the best arm on three of the four, and the only one that
-helps the genetic algorithm. Seed the whole population only when the solver
-consolidates readily, as the elitist ABC does. What is not free is producing
+(i) Seed with a \emph{mixed} pool. It outranks every single-generator pool
+on all four solvers, and drawing on three generators costs no more than
+drawing on one since the pool is the same size. Whether to replace the whole
+population or half of it is the open question: our half-strength arm is the
+best performer on three solvers and the only one that helps the genetic
+algorithm, but it is the exploratory arm of
+Section~\ref{sec:res-fraction}, so we offer it as the variant worth trying
+first rather than as an established default. What is not free is producing
 the pool: at the tenth of the budget where the advantage is largest,
 generating a run's seeds costs several times that slice unless the pool is
 reused across runs (Section~\ref{sec:gencost}). Seed once, solve many. (ii)
