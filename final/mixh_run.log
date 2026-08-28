@@ -13,3 +13,4 @@ DRYRUN: nada lanzado.
   coste estimado: ~50 h de CPU / 14 workers = ~2.1 dias
 configs ya completas (monoliticas): 0 | trozos ya hechos: 0 | trozos pendientes: 1464
 Inicio PHASE2C: Wed Aug 26 12:19:45 CEST 2026 | 1464 trozos, <=14, chunk ga/abce3=5 feabcls/tsn2=3
+PHASE2C DONE: Fri Aug 28 14:52:04 CEST 2026

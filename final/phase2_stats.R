@@ -4,7 +4,7 @@
 # Uso: Rscript phase2_stats.R final/phase2/results_<algo>.csv
 args <- commandArgs(trailingOnly = TRUE)
 d <- read.csv(args[1], stringsAsFactors = FALSE)
-arms <- c("V2H","V2","MOR","GT","GP","MIX")
+arms <- c("V2H","V2","MOR","GT","GP","MIX","MIXH")
 insts <- unique(d$inst)
 
 a12 <- function(x, y) { # P(X < Y) + 0.5 P(=) ; x=brazo, y=A0 (menor mejor)

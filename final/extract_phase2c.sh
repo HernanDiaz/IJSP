@@ -20,7 +20,7 @@ fi
 echo "algo,inst,clase,arm,run,ecmax" > "$out"
 for inst in $INSTS; do
   cls=$(clase "$inst")
-  for arm in A0 V2H V2 MOR GT GP MIX; do
+  for arm in A0 V2H V2 MOR GT GP MIX MIXH; do
     base="$BASEDIR/$algo/$inst/$arm"
     # PRIORIDAD A LOS CHUNKS. Las corridas monoliticas abortadas del 26-jul
     # dejaron <arm>/*_Sols.csv con runs incompletos (p.ej. 21 en vez de 30);

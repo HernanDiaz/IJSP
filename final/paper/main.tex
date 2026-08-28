@@ -54,7 +54,7 @@ Shop Scheduling Problem with interval processing times, using four
 published solvers spanning the weak-to-strong axis, four seed generators
 --- a deep reinforcement-learning policy and a ladder of randomised
 constructives --- and a mixed pool, over 61 interval Taillard instances and
-30 runs per cell (51{,}240 runs). A pilot study first identifies three
+30 runs per cell (58{,}560 runs). A pilot study first identifies three
 practices that manufacture positive seeding results: stagnation-triggered
 stopping, single-budget comparison, and self-referential speed metrics.
 
@@ -65,7 +65,10 @@ $[-1.36,-0.93]$), leaves a memetic ABC unchanged, and does not harm a
 genetic algorithm, although every single-generator pool does. On the
 strongest solver the improvement is small, confined to one size class, and
 absent once the analysis is restricted to instances whose control actually
-converged. What matters more is the budget: at a tenth of ours, seeding
+converged. Two mechanisms are separable and additive: mixing generators and
+retaining random material help independently, and only their combination
+improves the genetic algorithm --- the arm that does both is the best
+performer on three of the four solvers. What matters more is the budget: at a tenth of ours, seeding
 cuts the excess over the lower bound on all four solvers, but by margins
 spanning an order of magnitude --- 11\% on the genetic algorithm against
 40\% on the memetic ABC --- and the two largest gains accrue to the two
@@ -511,7 +514,7 @@ solver-neutral approximation to convergence, a distinction we return to in
 Section~\ref{sec:limits}.
 
 The cap of 900\,s is a feasibility constraint rather than a methodological
-choice. The design comprises 51{,}240 runs; at the budgets of
+choice. The design comprises 58{,}560 runs; at the budgets of
 (\ref{eq:budget}) it consumed roughly 4{,}900 CPU-hours and fourteen days
 of wall-clock time on fourteen concurrent workers. Raising the cap would
 scale that figure proportionally on the classes that reach it, which are
@@ -548,7 +551,7 @@ budget limit.
 
 All results below come from the full factorial design of
 Section~\ref{sec:design}: 61 instances $\times$ 7 arms $\times$ 4 solvers
-$\times$ 30 RNG-paired runs (51{,}240 runs). Every instance--arm cell
+$\times$ 30 RNG-paired runs (58{,}560 runs). Every instance--arm cell
 contains exactly 30 runs; no cell was imputed or dropped.
 
 \subsection{Reference for relative deviations}\label{sec:rpd-ref}
@@ -589,7 +592,7 @@ instance of the set whose crisp form is unambiguous: \texttt{ft10} recovers
 to the Fisher--Thompson $10\times10$ matrix exactly.
 
 Inequality~(\ref{eq:lb}) also yields a falsifiable prediction: no run may
-ever fall below its bound. Across all 51{,}240 runs there is not a single
+ever fall below its bound. Across all 58{,}560 runs there is not a single
 violation. This is a consistency check rather than a proof of correctness:
 many errors would preserve the inequality, and it is the released crisp
 matrices, not this check, that would settle the mapping. Moreover the bound
@@ -626,14 +629,14 @@ satisfies the plateau rule. Best arm per row in bold; compare
 Table~\ref{tab:rpd} for the full 61.}
 \label{tab:conv}
 \small
-\begin{tabular}{llccccccc}
+\begin{tabular}{lccccccccc}
 \toprule
-Solver & $n$ & A0 & V2H & V2 & MOR & GT & GP & MIX \\
+Solver & $n$ & A0 & V2H & V2 & MOR & GT & GP & MIX & MIXH \\
 \midrule
-GA      & 12 & 4.75  & 4.28  & 4.39           & 6.82  & 5.35  & 4.49  & \textbf{4.00} \\
-ABCE3   & 46 & 11.61 & 10.46 & \textbf{10.34} & 11.85 & 11.28 & 10.72 & 10.35 \\
-fEABCLS & 36 & 3.39  & \textbf{3.34} & \textbf{3.34} & 4.80 & 4.07 & 3.73 & 3.40 \\
-TSN2    & 39 & \textbf{2.75} & 2.82 & 2.83     & 3.54  & 3.41  & 3.07  & 2.78 \\
+GA      & 12 & 4.75 & 4.28 & 4.39 & 6.82 & 5.35 & 4.49 & \textbf{4.00} & 4.13 \\
+ABCE3   & 46 & 11.61 & 10.46 & \textbf{10.34} & 11.85 & 11.28 & 10.72 & 10.35 & 10.43 \\
+fEABCLS & 36 & 3.39 & \textbf{3.34} & \textbf{3.34} & 4.80 & 4.07 & 3.73 & 3.40 & 3.37 \\
+TSN2    & 39 & \textbf{2.75} & 2.82 & 2.83 & 3.54 & 3.41 & 3.07 & 2.78 & 2.79 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -739,14 +742,14 @@ strength.
 instances and 30 runs per cell. Lower is better; the best arm per solver is
 in bold. A0 is the unseeded control.}
 \label{tab:rpd}
-\begin{tabular}{lccccccc}
+\begin{tabular}{lcccccccc}
 \toprule
-Solver & A0 & V2H & V2 & MOR & GT & GP & MIX \\
+Solver & A0 & V2H & V2 & MOR & GT & GP & MIX & MIXH \\
 \midrule
-GA      & \textbf{7.52} & 7.66 & 8.05 & 9.70  & 8.47  & 7.99 & 7.58 \\
-ABCE3   & 10.51 & 9.51 & 9.39 & 10.71 & 10.20 & 9.68 & \textbf{9.37} \\
-fEABCLS & 3.67  & \textbf{3.66} & \textbf{3.66} & 5.16  & 4.47  & 4.04 & 3.67 \\
-TSN2    & 3.60  & 3.64 & 3.62 & 4.25  & 3.99  & 3.67 & \textbf{3.41} \\
+GA      & 7.52 & 7.66 & 8.05 & 9.70 & 8.47 & 7.99 & 7.58 & \textbf{7.25} \\
+ABCE3   & 10.51 & 9.51 & 9.39 & 10.71 & 10.20 & 9.68 & \textbf{9.37} & 9.43 \\
+fEABCLS & 3.67 & 3.66 & 3.66 & 5.16 & 4.47 & 4.04 & 3.67 & \textbf{3.58} \\
+TSN2    & 3.60 & 3.64 & 3.62 & 4.25 & 3.99 & 3.67 & 3.41 & \textbf{3.36} \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -778,15 +781,16 @@ MIX 3.67\%, V2 3.66\%, V2H 3.66\%): its hill-climbing component reaches
 seed-level quality unaided within the budget. Neutrality here is a property
 of the \emph{good} pools only --- MOR costs it 1.49 points.
 
-\paragraph{GA: harm, but only under an insufficient budget.} Over all 61
-instances no arm improves the genetic algorithm: the control's 7.52\% is
-the lowest figure in its block, with MIX closest at 7.58\% and V2 a clear
-loss at 8.05\%. That reading is conditional on the budget. This solver
-fails the plateau rule on 49 of 61 instances, more than any other, and
-where its control does converge the ordering reverses
-(Section~\ref{sec:res-conv}); the pooled figure is therefore a statement
-about the budget the GA needs, not about seeding being harmful to it in
-principle.
+\paragraph{GA: harmed by every pool but one.} Six of the seven seeded arms
+leave the genetic algorithm worse than its 7.52\% control, V2 clearly so at
+8.05\% and the mixed pool at parity (7.58\%). The exception is the mixed
+pool at half strength, MIXH, at 7.25\%: the only arm anywhere in the study
+that improves this solver. Section~\ref{sec:res-fraction} takes that up,
+since it is the one result that separates the two mechanisms this paper
+proposes. The rest of the reading is conditional on the budget: the GA
+fails the plateau rule on 49 of 61 instances, more than any other solver,
+and where its control does converge the ordering reverses
+(Section~\ref{sec:res-conv}).
 
 Across all four solvers the generator ranking is stable in its extremes:
 MOR is the worst seeded arm and GT the second worst on every solver, while
@@ -824,37 +828,41 @@ RPD; negative favours seeding.}
 \toprule
 Solver & Arm & W/NS/L & $\hat{A}_{12}$ & Mean diff. & 95\% CI & $p$ (Holm) \\
 \midrule
-\multirow{6}{*}{GA}
+\multirow{7}{*}{GA}
  & V2H & 11/31/19 & 0.54 & +0.14 & $[-0.07,+0.36]$ & 0.358 \\
  & V2  & 9/25/27 & 0.61 & +0.53 & $[+0.24,+0.84]$ & 0.012* \\
  & MOR & 1/3/57 & 0.92 & +2.18 & $[+1.89,+2.48]$ & $<$0.001*** \\
  & GT  & 4/16/41 & 0.74 & +0.95 & $[+0.67,+1.23]$ & $<$0.001*** \\
  & GP  & 9/21/31 & 0.65 & +0.47 & $[+0.20,+0.73]$ & 0.002** \\
- & MIX & 13/29/19 & 0.53 & \textbf{+0.06} & $[-0.18,+0.29]$ & 0.546 \\
+ & MIX & 13/29/19 & 0.53 & +0.06 & $[-0.18,+0.29]$ & 0.546 \\
+ & MIXH & 20/32/9 & 0.42 & \textbf{-0.28} & $[-0.47,-0.10]$ & 0.022* \\
 \midrule
-\multirow{6}{*}{ABCE3}
+\multirow{7}{*}{ABCE3}
  & V2H & 32/29/0 & 0.30 & -1.00 & $[-1.21,-0.80]$ & $<$0.001*** \\
  & V2  & 35/26/0 & 0.27 & -1.11 & $[-1.34,-0.90]$ & $<$0.001*** \\
  & MOR & 1/54/6 & 0.54 & +0.21 & $[+0.09,+0.33]$ & 0.005** \\
  & GT  & 14/46/1 & 0.44 & -0.30 & $[-0.49,-0.13]$ & 0.005** \\
  & GP  & 30/31/0 & 0.32 & -0.83 & $[-1.09,-0.60]$ & $<$0.001*** \\
  & MIX & 35/26/0 & 0.27 & \textbf{-1.14} & $[-1.36,-0.93]$ & $<$0.001*** \\
+ & MIXH & 31/30/0 & 0.28 & -1.07 & $[-1.30,-0.87]$ & $<$0.001*** \\
 \midrule
-\multirow{6}{*}{fEABCLS}
+\multirow{7}{*}{fEABCLS}
  & V2H & 7/43/11 & 0.50 & \textbf{-0.02} & $[-0.12,+0.09]$ & 1.000 \\
  & V2  & 7/44/10 & 0.49 & -0.01 & $[-0.12,+0.10]$ & 1.000 \\
  & MOR & 0/5/56 & 0.88 & +1.48 & $[+1.24,+1.74]$ & $<$0.001*** \\
  & GT  & 3/12/46 & 0.77 & +0.80 & $[+0.60,+0.99]$ & $<$0.001*** \\
  & GP  & 7/27/27 & 0.64 & +0.37 & $[+0.20,+0.54]$ & $<$0.001*** \\
- & MIX & 12/38/11 & 0.50 & -0.01 & $[-0.13,+0.12]$ & 1.000 \\
+ & MIX & 12/38/11 & 0.50 & -0.01 & $[-0.13,+0.11]$ & 1.000 \\
+ & MIXH & 13/41/7 & 0.45 & \textbf{-0.09} & $[-0.22,+0.03]$ & 0.903 \\
 \midrule
-\multirow{6}{*}{TSN2}
+\multirow{7}{*}{TSN2}
  & V2H & 5/48/8 & 0.52 & +0.05 & $[-0.05,+0.14]$ & 0.486 \\
  & V2  & 6/47/8 & 0.51 & +0.02 & $[-0.08,+0.13]$ & 0.486 \\
  & MOR & 9/13/39 & 0.69 & +0.65 & $[+0.39,+0.91]$ & $<$0.001*** \\
  & GT  & 9/20/32 & 0.64 & +0.40 & $[+0.18,+0.61]$ & 0.001*** \\
  & GP  & 10/32/19 & 0.54 & +0.07 & $[-0.13,+0.26]$ & 0.456 \\
- & MIX & 15/41/5 & 0.44 & \textbf{-0.19} & $[-0.35,-0.04]$ & 0.261 \\
+ & MIX & 15/41/5 & 0.44 & -0.19 & $[-0.34,-0.04]$ & 0.261 \\
+ & MIXH & 13/45/3 & 0.43 & \textbf{-0.24} & $[-0.41,-0.08]$ & 0.166 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -1084,10 +1092,11 @@ RPD, interval $[-0.54,-0.26]$, $p<10^{-3}$. On ABCE3 the comparison
 reverses with the same confidence, $+0.12$ points, $[+0.05,+0.18]$,
 $p<10^{-3}$, in favour of seeding the whole population; on fEABCLS and TSN2
 the two are indistinguishable ($p=0.58$ and $p=0.35$). Retaining random
-material is therefore not a general recommendation. It helps the one solver
+material is therefore not a general recommendation. It helps the solver
 that cannot consolidate a fully seeded population within its budget, which
 is the same solver, and on our reading the same mechanism, as the reversal
-of Section~\ref{sec:res-conv}.
+of Section~\ref{sec:res-conv}. Section~\ref{sec:res-fraction} shows that
+this lever is independent of pool composition and adds to it.
 
 Figure~\ref{fig:anytime} restricts the same analysis to the $50\times20$
 class in absolute time, where the seeding effect on the strong solvers is
@@ -1149,29 +1158,33 @@ representative arms per solver; the full table is released with the data.}
 \toprule
 Solver & Arm & Reach & Earlier/later & $p$ (sign) & RMTT & $\Delta$RMTT [95\% CI] \\
 \midrule
-\multirow{4}{*}{GA}
+\multirow{5}{*}{GA}
  & A0  & 100\% & ---   & ---      & 0.62 & --- \\
  & V2  & 56\%  & 6/49  & $<0.001$ & 0.77 & $+0.16$ $[+0.12,+0.20]$ \\
  & MOR & 5\%   & 0/59  & $<0.001$ & 0.99 & $+0.37$ $[+0.31,+0.44]$ \\
  & MIX & 77\%  & 18/37 & 0.057    & 0.70 & $+0.09$ $[+0.04,+0.13]$ \\
+ & MIXH & 85\% & 35/19 & 0.013    & \textbf{0.62} & $0.00$ $[-0.05,+0.06]$ \\
 \midrule
-\multirow{4}{*}{ABCE3}
+\multirow{5}{*}{ABCE3}
  & A0  & 100\% & ---   & ---      & 0.38 & --- \\
  & V2  & 100\% & 54/2  & $<0.001$ & 0.16 & $-0.22$ $[-0.28,-0.16]$ \\
  & MOR & 70\%  & 13/40 & 0.004    & 0.60 & $+0.22$ $[+0.14,+0.30]$ \\
- & MIX & 100\% & 57/2  & $<0.001$ & \textbf{0.12} & $\mathbf{-0.26}$ $[-0.31,-0.21]$ \\
+ & MIX & 100\% & 57/2  & $<0.001$ & 0.12 & $-0.26$ $[-0.31,-0.21]$ \\
+ & MIXH & 100\% & 60/0 & $<0.001$ & \textbf{0.11} & $\mathbf{-0.27}$ $[-0.32,-0.22]$ \\
 \midrule
-\multirow{4}{*}{fEABCLS}
+\multirow{5}{*}{fEABCLS}
  & A0  & 100\% & ---   & ---      & 0.44 & --- \\
  & V2  & 89\%  & 24/25 & 1.00     & 0.50 & $+0.06$ $[+0.01,+0.11]$ \\
  & MOR & 11\%  & 0/59  & $<0.001$ & 0.94 & $+0.49$ $[+0.43,+0.56]$ \\
  & MIX & 89\%  & 28/26 & 1.00     & 0.50 & $+0.06$ $[+0.01,+0.12]$ \\
+ & MIXH & 90\% & 37/17 & 0.010    & \textbf{0.46} & $+0.02$ $[-0.04,+0.09]$ \\
 \midrule
-\multirow{4}{*}{TSN2}
+\multirow{5}{*}{TSN2}
  & A0  & 100\% & ---   & ---      & 0.52 & --- \\
  & V2  & 90\%  & 35/24 & 0.62     & 0.57 & $+0.05$ $[-0.00,+0.10]$ \\
  & MOR & 43\%  & 19/41 & 0.047    & 0.74 & $+0.22$ $[+0.12,+0.31]$ \\
  & MIX & 93\%  & 42/15 & 0.001    & 0.46 & $-0.06$ $[-0.11,+0.01]$ \\
+ & MIXH & 95\% & 46/13 & $<0.001$ & \textbf{0.43} & $\mathbf{-0.09}$ $[-0.15,-0.02]$ \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -1210,7 +1223,7 @@ own endpoint, a split-half calibration under a true null
 (Section~\ref{sec:res-threats}) puts that proportion at $0.46$--$0.49$
 depending on the solver. The paired difference in restricted mean time
 ($\Delta$RMTT) is reported alongside it with a bootstrap interval over
-instances. Both are Holm-corrected over the six seeded arms of each solver.
+instances. Both are Holm-corrected over the seven seeded arms of each solver.
 No test is reported for the control, which attains its own target on all 61
 instances by construction; ``reach'' is the percentage of instances on
 which an arm attains it at all.
@@ -1254,6 +1267,53 @@ The contrast with a success-only tally is instructive. Computing medians
 over successes alone would have credited MOR on the GA with reaching the
 target at 71\% of budget, a figure derived from the 15\% of instances where
 it succeeds at all.
+
+\subsection{Composition and fraction are two mechanisms, not
+one}\label{sec:res-fraction}
+
+The design carries two claims about why seeding works, and until now they
+were measured on different pools: \emph{composition}, from the mixed pool
+against the single-generator ones at full strength, and \emph{fraction},
+from the half-seeded learned arm against the fully seeded one. Whether they
+are the same mechanism seen twice or two that add is answered by the arm
+that combines them.
+
+On the genetic algorithm they add. Neither half-seeding the learned pool
+($+0.14$ points of RPD, $p=0.36$) nor mixing at full strength ($+0.06$,
+$p=0.55$) improves this solver. Doing both does: MIXH reaches $-0.28$
+points, interval $[-0.47,-0.10]$, $p=0.022$, and beats each of its
+components directly --- $-0.33$ against MIX and $-0.42$ against V2H, both
+$p<10^{-3}$ on paired per-instance differences. It is the only arm in the
+study that improves the genetic algorithm at its budget.
+
+The time-to-target evidence points the same way and is stronger, since it
+survives correction. Against its control the mixed pool at full strength is
+\emph{later} on this solver (18 earlier, 37 later); at half strength the
+sign inverts to 35 earlier and 19 later, $p=0.013$, with restricted mean
+time falling from $0.70$ to $0.62$ --- the control's own value. Half
+seeding does not merely reduce the delay that full seeding causes here; it
+removes it.
+
+Elsewhere the two mechanisms do not add, and on one solver they trade off.
+MIXH is the best arm on fEABCLS ($3.58\%$ against the control's $3.67\%$)
+and on TSN2 ($3.36\%$ against $3.60\%$), and on both it converts a
+time-to-target result that failed correction into one that passes: fEABCLS
+moves from 28/26 at $p=1.00$ to 37/17 at $p=0.010$, and TSN2 from 42/15 to
+46/13. But on ABCE3, the solver that consolidates seeds most readily, the
+full mixture remains better ($9.37\%$ against $9.43\%$; $+0.07$ in favour of
+MIX, $p=0.096$), and it is the one solver where retaining random material
+buys nothing.
+
+That pattern is the same one the convergence analysis produces. Retaining
+random material helps exactly where the solver cannot consolidate a fully
+seeded population inside its budget, and the ordering of solvers by how
+much it helps is the ordering by how badly they consolidate. We report this
+as a coherent association across three independent measurements ---
+converged quality, time to target, and the fraction contrast --- and not as
+an isolated effect. Two cautions bound it. The genetic algorithm's
+final-quality result does not survive correction over all 28 contrasts of
+the study, although its time-to-target result does; and only two fractions
+were run, so the shape of the interaction between them is unmeasured.
 
 \subsection{Initial-population quality: the mixed pool does not start
 better}\label{sec:res-seedqual}
@@ -1307,14 +1367,14 @@ solver-dependence}\label{sec:res-ranking}
 
 The practitioner's question is not whether seeding helps in general but
 which pool to use, and whether that choice must be re-made for every
-solver. We answer both with a Friedman test over the seven arms with the 61
+solver. We answer both with a Friedman test over the eight arms with the 61
 instances as blocks, followed by Holm-corrected paired post-hoc
 comparisons against the top-ranked arm of each solver.
 Table~\ref{tab:ranking} reports the mean ranks.
 
 \begin{table}[htbp]
 \centering
-\caption{Mean Friedman ranks of the seven arms (1 = best) over 61
+\caption{Mean Friedman ranks of the eight arms (1 = best) over 61
 instances. Friedman rejects rank equality for every solver
 ($p<10^{-15}$ throughout). Boldface marks arms not significantly worse
 than that solver's top-ranked arm (Holm-corrected paired Wilcoxon,
@@ -1336,7 +1396,7 @@ TSN2    & 3.40 & 3.93 & 3.80 & 5.37 & 5.07 & 3.85 & \textbf{2.57} \\
 Two findings follow, and they answer different questions.
 
 \paragraph{Which generator: the answer varies little across solvers.}
-The ranking of the six seeded arms is highly consistent across the
+The ranking of the seven seeded arms is highly consistent across the
 portfolio: restricted to those arms, the mean pairwise Spearman correlation
 between the four rank vectors is $\rho=0.88$. MIX is the best
 \emph{seeded} arm for all four solvers, with ranks between 2.41 and 2.95,
@@ -1611,10 +1671,14 @@ reading the present data favour, not as a demonstrated cause.
 \subsection{Practitioner guidance}
 
 The results support four recommendations, each with its scope attached.
-(i) Seed with a \emph{mixed} pool: it outranks every single-generator pool
-on all four solvers, and drawing on three generators costs no more than
-drawing on one, since the pool is the same size. What is not free is
-producing it: at the tenth of the budget where the advantage is largest,
+(i) Seed with a \emph{mixed} pool, and default to replacing \emph{half} the
+population rather than all of it. The mixed pool outranks every
+single-generator pool on all four solvers, and drawing on three generators
+costs no more than drawing on one since the pool is the same size; the half
+strength variant is the best arm on three of the four, and the only one that
+helps the genetic algorithm. Seed the whole population only when the solver
+consolidates readily, as the elitist ABC does. What is not free is producing
+the pool: at the tenth of the budget where the advantage is largest,
 generating a run's seeds costs several times that slice unless the pool is
 reused across runs (Section~\ref{sec:gencost}). Seed once, solve many. (ii)
 Expect the benefit to grow as the budget tightens relative to instance
@@ -1689,8 +1753,8 @@ four instances and two solvers, a narrow base for the argument it supports.
 \section{Conclusions}\label{sec:conclusions}
 
 We conducted, to our knowledge, the largest controlled study of population
-seeding for the interval job shop: four solvers, seven initialisation arms,
-61 benchmark instances and 30 runs per cell --- 51{,}240 runs --- evaluated
+seeding for the interval job shop: four solvers, eight initialisation arms,
+61 benchmark instances and 30 runs per cell --- 58{,}560 runs --- evaluated
 against published lower bounds under a fixed-budget protocol designed to
 eliminate three artefacts we document in a pilot study.
 
@@ -1717,14 +1781,19 @@ converged and budget-limited cells. A seeding study that fixes one budget
 without checking convergence can therefore report either sign, and which
 one it reports is not predictable from the solver's strength.
 
-Second, \emph{composition beats quality}. The mixed pool is assembled from
-exactly the solutions that feed the single-generator arms and receives a
-worse average initial population than two of them, yet it holds the best
-Friedman rank among seeded arms on all four solvers. Seed quality is not
-irrelevant at the bottom of the ladder: MOR, the weakest generator, is
-significantly slower to the control's own final quality on all four
-solvers, and GT on three of them. But among the pools that help, quality
-does not order them, and composition does.
+Second, \emph{what a pool is made of, and how much of the population it
+replaces, are two separable levers}. The mixed pool draws on the solutions
+that feed the single-generator arms and receives a worse average initial
+population than two of them, yet outranks all of them: composition, not
+seed quality, orders the pools that help. Independently of that, the
+fraction seeded interacts with the solver, and in both directions ---
+seeding half the population is better on the genetic algorithm and worse on
+the elitist ABC. The two levers add rather than substitute: neither alone
+improves the genetic algorithm and their combination does, and that
+combination is the best arm on three of the four solvers. Seed quality is
+not irrelevant at the bottom of the ladder --- MOR, the weakest generator,
+is significantly slower to the control's own final quality on all four
+solvers --- but among the pools that help it is not what separates them.
 
 Third, \emph{the failure mode is not the one usually assumed}. Premature
 convergence is the standard explanation for seeding going wrong; our
@@ -1746,7 +1815,7 @@ that is there.
 %% =========================================================================
 \section*{Data and code availability}
 The seed pools, the injection operator, the experiment setups, the run
-logs of all 51{,}240 runs, the aggregated result tables and the analysis
+logs of all 58{,}560 runs, the aggregated result tables and the analysis
 scripts that produce every table and figure in this paper, together with the
 recovered crisp instance matrices of Section~ef{sec:rpd-ref} and their
 hashes, are deposited at

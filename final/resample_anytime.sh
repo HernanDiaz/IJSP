@@ -66,7 +66,7 @@ trace_runs() {
 
 echo "algo,inst,arm,t,bestcmax" > "$out"
 for inst in $INSTS; do
-  for arm in A0 V2H V2 MOR GT GP MIX; do
+  for arm in A0 V2H V2 MOR GT GP MIX MIXH; do
     base="$BASEDIR/$algo/$inst/$arm"
     tmp=$(mktemp)
     if [ -n "$(ls -d "$base"/c* 2>/dev/null)" ]; then

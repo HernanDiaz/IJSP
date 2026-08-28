@@ -54,7 +54,7 @@ suppressPackageStartupMessages(library(survival))
 lb <- read.csv("final/ta_lb.csv", stringsAsFactors = FALSE)[, c("inst","lb")]
 nulo <- read.csv("final/ttt_null.csv", stringsAsFactors = FALSE)   # proporcion nula por solver
 algos <- c(ga="GA", abce3="ABCE3", feabcls="fEABCLS", tsn2="TSN2")
-arms <- c("A0","V2H","V2","MOR","GT","GP","MIX")
+arms <- c("A0","V2H","V2","MOR","GT","GP","MIX","MIXH")
 seeded <- setdiff(arms, "A0")
 set.seed(20260825)
 BPERM <- 20000

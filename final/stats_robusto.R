@@ -17,7 +17,7 @@
 suppressPackageStartupMessages(library(boot))
 lb <- read.csv("final/ta_lb.csv", stringsAsFactors = FALSE)[, c("inst","lb")]
 algos <- c(ga="GA", abce3="ABCE3", feabcls="fEABCLS", tsn2="TSN2")
-seeded <- c("V2H","V2","MOR","GT","GP","MIX")
+seeded <- c("V2H","V2","MOR","GT","GP","MIX","MIXH")
 set.seed(20260825)
 B <- 10000
 
@@ -59,8 +59,8 @@ todo <- do.call(rbind, res_all)
 todo$p_global <- p.adjust(todo$p, method = "holm")          # 24 contrastes
 sig_solver <- sum(todo$p_holm < 0.05)
 sig_global <- sum(todo$p_global < 0.05)
-cat(sprintf("  contrastes: %d (4 solvers x 6 brazos)\n", nrow(todo)))
-cat(sprintf("  significativos con Holm por solver (familia de 6): %d\n", sig_solver))
+cat(sprintf("  contrastes: %d (%d solvers x %d brazos sembrados)\n", nrow(todo), length(algos), length(seeded)))
+cat(sprintf("  significativos con Holm por solver (familia de %d): %d\n", length(seeded), sig_solver))
 cat(sprintf("  significativos con Holm sobre los %d contrastes:    %d\n", nrow(todo), sig_global))
 cat("  brazos que pierden significacion al corregir globalmente:")
 perd <- todo[todo$p_holm < 0.05 & todo$p_global >= 0.05, ]

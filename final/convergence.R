@@ -29,7 +29,7 @@
 lb <- read.csv("final/ta_lb.csv", stringsAsFactors = FALSE)[, c("inst","lb")]
 algos <- c(ga="GA", abce3="ABCE3", feabcls="fEABCLS", tsn2="TSN2")
 clases <- c("10x10","15x15","20x20","30x15","30x20","50x15","50x20")
-arms <- c("A0","V2H","V2","MOR","GT","GP","MIX")
+arms <- c("A0","V2H","V2","MOR","GT","GP","MIX","MIXH")
 seeded <- setdiff(arms, "A0")
 UMBRAL <- 0.1     # % de mejora en el ultimo 10% del presupuesto
 FRAC   <- 0.90    # fraccion de ejecuciones que deben cumplirla
