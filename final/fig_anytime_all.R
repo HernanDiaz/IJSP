@@ -8,11 +8,12 @@
 lb <- read.csv("final/ta_lb.csv", stringsAsFactors = FALSE)[, c("inst","lb")]
 algos <- c(ga = "GA", abce3 = "ABCE3", feabcls = "fEABCLS", tsn2 = "TSN2")
 arms <- c(A0 = "Unseeded (A0)", V2H = "Learned, half (V2H)", V2 = "Learned (V2)",
-          MOR = "MOR-eps", GT = "GT-eps", GP = "GP-eps", MIX = "Mixed pool (MIX)")
+          MOR = "MOR-eps", GT = "GT-eps", GP = "GP-eps", MIX = "Mixed pool (MIX)", MIXH = "Mixed, half (MIXH)")
 cols <- c(A0 = "#000000", V2H = "#0072B2", V2 = "#56B4E9", MOR = "#E69F00",
-          GT = "#D55E00", GP = "#009E73", MIX = "#CC0000")
-lwds <- c(A0 = 3.2, V2H = 1.8, V2 = 1.8, MOR = 1.8, GT = 1.8, GP = 1.8, MIX = 3.2)
-ltys <- c(A0 = 1, V2H = 2, V2 = 1, MOR = 4, GT = 5, GP = 3, MIX = 1)
+          GT = "#D55E00", GP = "#009E73", MIX = "#CC0000", MIXH = "#7B2D8E")
+lwds <- c(A0 = 3.2, V2H = 1.8, V2 = 1.8, MOR = 1.8, GT = 1.8, GP = 1.8,
+          MIX = 2.4, MIXH = 3.2)
+ltys <- c(A0 = 1, V2H = 2, V2 = 1, MOR = 4, GT = 5, GP = 3, MIX = 1, MIXH = 1)
 fr <- seq(0.02, 1, by = 0.02)
 
 png("final/figs/anytime_all.png", width = 1800, height = 1350, res = 145)

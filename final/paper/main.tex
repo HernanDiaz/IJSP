@@ -64,15 +64,16 @@ four. At a tenth of that budget it is worth $1.3\%$ to $5.2\%$, on all four.
 Seeding buys time rather than quality: it reaches a given quality sooner,
 not a better one --- except on the weakest solver, where it does both.
 
-Two mechanisms are separable and additive. Composition rather than seed
-quality orders the pools that help: a mixed pool starts from a worse average
-population than its components and finishes ahead of them. Independently,
-the fraction seeded interacts with the solver, half the population being
-better on the genetic algorithm and worse on the elitist ABC. Neither lever
-alone improves the genetic algorithm and their combination does, which is
-also the best arm on three solvers. The premature convergence usually blamed
-for seeding failures is contradicted: the harmed genetic algorithm ends
-\emph{more} dispersed than its control.
+Two design levers are separable. Composition rather than seed quality orders
+the pools that help: a mixed pool starts from a worse average population
+than its components and finishes ahead of them. Independently, the fraction
+seeded interacts with the solver, half the population being better on the
+genetic algorithm and worse on the elitist ABC. An exploratory eighth arm
+combining both is the best performer on three of the four solvers and the
+only one that improves the genetic algorithm, with an interaction
+indistinguishable from additive there. The premature convergence usually
+blamed for seeding failures is contradicted: the harmed genetic algorithm
+ends \emph{more} dispersed than its control.
 \end{abstract}
 
 \begin{keyword}
@@ -468,9 +469,13 @@ perform. Consequently no seed pools were generated for either excluded
 group.
 
 \subsection{Arms}
-Seven arms per solver: the unseeded control A0; the generator ladder
-MOR, GT, GP, v2 and mix at the pre-specified fraction $p^{*}$; and a
-v2@50\% contrast arm. The fraction sub-study (Phase~0, pre-specified
+Seven arms per solver were fixed before the experiment ran: the unseeded
+control A0; the generator ladder MOR, GT, GP, v2 and mix at the
+pre-specified fraction $p^{*}$; and a v2@50\% contrast arm. An eighth,
+mix@50\%, was added afterwards as an exploratory follow-up and is reported
+separately in Section~\ref{sec:res-fraction}; it ran under the identical
+protocol, bringing the design to $61\times8\times4\times30$ cells. The
+fraction sub-study (Phase~0, pre-specified
 decision rule combining converged quality in ABCE3 and time-to-target in
 TS-N2 over eight stratified instances) selected $p^{*}=100\%$: the benefit
 of v2 seeding is monotone in the fraction on both criteria, with no
@@ -822,40 +827,40 @@ RPD; negative favours seeding.}
 Solver & Arm & W/NS/L & $\hat{A}_{12}$ & Mean diff. & 95\% CI & $p$ (Holm) \\
 \midrule
 \multirow{7}{*}{GA}
- & V2H & 11/31/19 & 0.54 & +0.14 & $[-0.07,+0.36]$ & 0.358 \\
- & V2  & 9/25/27 & 0.61 & +0.53 & $[+0.24,+0.84]$ & 0.012* \\
- & MOR & 1/3/57 & 0.92 & +2.18 & $[+1.89,+2.48]$ & $<$0.001*** \\
- & GT  & 4/16/41 & 0.74 & +0.95 & $[+0.67,+1.23]$ & $<$0.001*** \\
- & GP  & 9/21/31 & 0.65 & +0.47 & $[+0.20,+0.73]$ & 0.002** \\
- & MIX & 13/29/19 & 0.53 & +0.06 & $[-0.18,+0.29]$ & 0.546 \\
- & MIXH & 20/32/9 & 0.42 & \textbf{-0.28} & $[-0.47,-0.10]$ & 0.022* \\
+ & V2H  & 11/31/19  & 0.54 & +0.14 & $[-0.07,+0.36]$ & 0.358 \\
+ & V2   & 9/25/27   & 0.61 & +0.53 & $[+0.24,+0.84]$ & 0.016* \\
+ & MOR  & 1/3/57    & 0.92 & +2.18 & $[+1.89,+2.48]$ & $<$0.001*** \\
+ & GT   & 4/16/41   & 0.74 & +0.95 & $[+0.67,+1.23]$ & $<$0.001*** \\
+ & GP   & 9/21/31   & 0.65 & +0.47 & $[+0.20,+0.73]$ & 0.002** \\
+ & MIX  & 13/29/19  & 0.53 & +0.06 & $[-0.18,+0.29]$ & 0.546 \\
+ & MIXH & 20/32/9   & 0.42 & \textbf{-0.28} & $[-0.47,-0.10]$ & 0.022* \\
 \midrule
 \multirow{7}{*}{ABCE3}
- & V2H & 32/29/0 & 0.30 & -1.00 & $[-1.21,-0.80]$ & $<$0.001*** \\
- & V2  & 35/26/0 & 0.27 & -1.11 & $[-1.34,-0.90]$ & $<$0.001*** \\
- & MOR & 1/54/6 & 0.54 & +0.21 & $[+0.09,+0.33]$ & 0.005** \\
- & GT  & 14/46/1 & 0.44 & -0.30 & $[-0.49,-0.13]$ & 0.005** \\
- & GP  & 30/31/0 & 0.32 & -0.83 & $[-1.09,-0.60]$ & $<$0.001*** \\
- & MIX & 35/26/0 & 0.27 & \textbf{-1.14} & $[-1.36,-0.93]$ & $<$0.001*** \\
- & MIXH & 31/30/0 & 0.28 & -1.07 & $[-1.30,-0.87]$ & $<$0.001*** \\
+ & V2H  & 32/29/0   & 0.30 & -1.00 & $[-1.22,-0.80]$ & $<$0.001*** \\
+ & V2   & 35/26/0   & 0.27 & -1.11 & $[-1.34,-0.89]$ & $<$0.001*** \\
+ & MOR  & 1/54/6    & 0.54 & +0.21 & $[+0.09,+0.33]$ & 0.005** \\
+ & GT   & 14/46/1   & 0.44 & -0.30 & $[-0.50,-0.13]$ & 0.005** \\
+ & GP   & 30/31/0   & 0.32 & -0.83 & $[-1.08,-0.59]$ & $<$0.001*** \\
+ & MIX  & 35/26/0   & 0.27 & \textbf{-1.14} & $[-1.36,-0.92]$ & $<$0.001*** \\
+ & MIXH & 31/30/0   & 0.28 & -1.07 & $[-1.30,-0.87]$ & $<$0.001*** \\
 \midrule
 \multirow{7}{*}{fEABCLS}
- & V2H & 7/43/11 & 0.50 & \textbf{-0.02} & $[-0.12,+0.09]$ & 1.000 \\
- & V2  & 7/44/10 & 0.49 & -0.01 & $[-0.12,+0.10]$ & 1.000 \\
- & MOR & 0/5/56 & 0.88 & +1.48 & $[+1.24,+1.74]$ & $<$0.001*** \\
- & GT  & 3/12/46 & 0.77 & +0.80 & $[+0.60,+0.99]$ & $<$0.001*** \\
- & GP  & 7/27/27 & 0.64 & +0.37 & $[+0.20,+0.54]$ & $<$0.001*** \\
- & MIX & 12/38/11 & 0.50 & -0.01 & $[-0.13,+0.11]$ & 1.000 \\
- & MIXH & 13/41/7 & 0.45 & \textbf{-0.09} & $[-0.22,+0.03]$ & 0.903 \\
+ & V2H  & 7/43/11   & 0.50 & -0.02 & $[-0.12,+0.09]$ & 1.000 \\
+ & V2   & 7/44/10   & 0.49 & -0.01 & $[-0.12,+0.10]$ & 1.000 \\
+ & MOR  & 0/5/56    & 0.88 & +1.48 & $[+1.24,+1.74]$ & $<$0.001*** \\
+ & GT   & 3/12/46   & 0.77 & +0.80 & $[+0.60,+1.00]$ & $<$0.001*** \\
+ & GP   & 7/27/27   & 0.64 & +0.37 & $[+0.20,+0.54]$ & $<$0.001*** \\
+ & MIX  & 12/38/11  & 0.50 & -0.01 & $[-0.13,+0.11]$ & 1.000 \\
+ & MIXH & 13/41/7   & 0.45 & \textbf{-0.09} & $[-0.22,+0.03]$ & 0.903 \\
 \midrule
 \multirow{7}{*}{TSN2}
- & V2H & 5/48/8 & 0.52 & +0.05 & $[-0.05,+0.14]$ & 0.486 \\
- & V2  & 6/47/8 & 0.51 & +0.02 & $[-0.08,+0.13]$ & 0.486 \\
- & MOR & 9/13/39 & 0.69 & +0.65 & $[+0.39,+0.91]$ & $<$0.001*** \\
- & GT  & 9/20/32 & 0.64 & +0.40 & $[+0.18,+0.61]$ & 0.001*** \\
- & GP  & 10/32/19 & 0.54 & +0.07 & $[-0.13,+0.26]$ & 0.456 \\
- & MIX & 15/41/5 & 0.44 & -0.19 & $[-0.34,-0.04]$ & 0.261 \\
- & MIXH & 13/45/3 & 0.43 & \textbf{-0.24} & $[-0.41,-0.08]$ & 0.166 \\
+ & V2H  & 5/48/8    & 0.52 & +0.05 & $[-0.05,+0.14]$ & 0.486 \\
+ & V2   & 6/47/8    & 0.51 & +0.02 & $[-0.08,+0.13]$ & 0.486 \\
+ & MOR  & 9/13/39   & 0.69 & +0.65 & $[+0.39,+0.91]$ & $<$0.001*** \\
+ & GT   & 9/20/32   & 0.64 & +0.40 & $[+0.18,+0.61]$ & $<$0.001*** \\
+ & GP   & 10/32/19  & 0.54 & +0.07 & $[-0.14,+0.25]$ & 0.456 \\
+ & MIX  & 15/41/5   & 0.44 & -0.19 & $[-0.34,-0.04]$ & 0.261 \\
+ & MIXH & 13/45/3   & 0.43 & \textbf{-0.24} & $[-0.41,-0.08]$ & 0.166 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -864,7 +869,7 @@ Three of the four solvers need a word beyond the table.
 
 \paragraph{ABCE3 gains unambiguously.} MIX improves it by $1.14$ percentage
 points of RPD, interval $[-1.36,-0.93]$, $p<10^{-3}$; V2, V2H and GP
-likewise. Correcting over all 24 contrasts of the study rather than within
+likewise. Correcting over all 28 contrasts of the study rather than within
 solvers changes nothing: the same 15 remain significant.
 
 \paragraph{The GA is harmed by homogeneous pools, not by seeding.} The
@@ -972,7 +977,7 @@ gives the values at five budget fractions.
 \includegraphics[width=\linewidth]{../figs/anytime_all.png}
 \caption{Anytime behaviour over all 61 instances. Mean RPD with respect to
 the published lower bound against the fraction of the per-instance budget
-consumed, for the unseeded control and the two best seeded arms.}
+consumed, for all eight arms.}
 \label{fig:anytimeall}
 \end{figure}
 
@@ -982,46 +987,50 @@ consumed, for the unseeded control and the two best seeded arms.}
 per-instance budget. Values are resampled from execution traces and agree
 with Table~\ref{tab:rpd} to within the trace sampling resolution.}
 \label{tab:budgetfrac}
-\small
+\footnotesize
 \begin{tabular}{llccccc}
 \toprule
 Solver & Arm & 10\% & 25\% & 50\% & 75\% & 100\% \\
 \midrule
-\multirow{7}{*}{GA}
- & A0  & 13.58 & \textbf{11.00} & \textbf{8.96} & \textbf{8.06} & \textbf{7.56} \\
- & V2H & 12.91 & 11.78 & 9.70 & 8.50 & 7.73 \\
- & V2  & 12.70 & 11.92 & 10.29 & 9.02 & 8.14 \\
- & MOR & 14.07 & 12.24 & 10.85 & 10.17 & 9.75 \\
- & GT  & 13.15 & 11.34 & 9.76 & 8.99 & 8.51 \\
- & GP  & 12.43 & 11.09 & 9.48 & 8.60 & 8.04 \\
- & MIX & \textbf{12.10} & 11.08 & 9.32 & 8.32 & 7.64 \\
+\multirow{8}{*}{GA}
+ & A0   & 13.58 & 11.00 & 8.96 & 8.06 & 7.56 \\
+ & V2H  & 12.91 & 11.78 & 9.70 & 8.50 & 7.73 \\
+ & V2   & 12.70 & 11.92 & 10.29 & 9.02 & 8.14 \\
+ & MOR  & 14.07 & 12.24 & 10.85 & 10.17 & 9.75 \\
+ & GT   & 13.15 & 11.34 & 9.76 & 8.99 & 8.51 \\
+ & GP   & 12.43 & 11.09 & 9.48 & 8.60 & 8.04 \\
+ & MIX  & \textbf{12.10} & 11.08 & 9.32 & 8.32 & 7.64 \\
+ & MIXH & 12.21 & \textbf{10.74} & \textbf{8.78} & \textbf{7.82} & \textbf{7.29} \\
 \midrule
-\multirow{7}{*}{ABCE3}
- & A0  & 12.28 & 11.45 & 10.83 & 10.67 & 10.52 \\
- & V2H & 10.83 & 10.10 & 9.68 & 9.61 & 9.52 \\
- & V2  & 10.78 & 9.97 & 9.55 & 9.48 & 9.40 \\
- & MOR & 12.84 & 11.95 & 11.11 & 10.92 & 10.73 \\
- & GT  & 11.84 & 11.12 & 10.52 & 10.35 & 10.22 \\
- & GP  & 10.65 & 10.17 & 9.84 & 9.76 & 9.68 \\
- & MIX & \textbf{10.23} & \textbf{9.76} & \textbf{9.49} & \textbf{9.46} & \textbf{9.38} \\
+\multirow{8}{*}{ABCE3}
+ & A0   & 12.28 & 11.45 & 10.83 & 10.67 & 10.52 \\
+ & V2H  & 10.83 & 10.10 & 9.68 & 9.61 & 9.52 \\
+ & V2   & 10.78 & 9.97 & 9.55 & 9.48 & 9.40 \\
+ & MOR  & 12.84 & 11.95 & 11.11 & 10.92 & 10.73 \\
+ & GT   & 11.84 & 11.12 & 10.52 & 10.35 & 10.22 \\
+ & GP   & 10.65 & 10.17 & 9.84 & 9.76 & 9.68 \\
+ & MIX  & \textbf{10.23} & \textbf{9.76} & \textbf{9.49} & \textbf{9.46} & \textbf{9.38} \\
+ & MIXH & 10.30 & 9.84 & 9.60 & 9.53 & 9.44 \\
 \midrule
-\multirow{7}{*}{fEABCLS}
- & A0  & 14.84 & 5.60 & 4.32 & 3.89 & 3.68 \\
- & V2H & 9.50 & 5.61 & 4.35 & 3.90 & \textbf{3.67} \\
- & V2  & 9.36 & 5.63 & 4.35 & 3.90 & \textbf{3.67} \\
- & MOR & 13.15 & 6.59 & 5.72 & 5.39 & 5.17 \\
- & GT  & 11.77 & 5.96 & 5.03 & 4.70 & 4.48 \\
- & GP  & 9.21 & 5.46 & 4.60 & 4.26 & 4.05 \\
- & MIX & \textbf{8.91} & \textbf{5.27} & \textbf{4.23} & \textbf{3.87} & 3.67 \\
+\multirow{8}{*}{fEABCLS}
+ & A0   & 14.84 & 5.60 & 4.32 & 3.89 & 3.68 \\
+ & V2H  & 9.50 & 5.61 & 4.35 & 3.90 & 3.67 \\
+ & V2   & 9.36 & 5.63 & 4.35 & 3.90 & 3.67 \\
+ & MOR  & 13.15 & 6.59 & 5.72 & 5.39 & 5.17 \\
+ & GT   & 11.77 & 5.96 & 5.03 & 4.70 & 4.48 \\
+ & GP   & 9.21 & 5.46 & 4.60 & 4.26 & 4.05 \\
+ & MIX  & 8.91 & 5.27 & 4.23 & 3.87 & 3.67 \\
+ & MIXH & \textbf{8.85} & \textbf{5.08} & \textbf{4.10} & \textbf{3.76} & \textbf{3.58} \\
 \midrule
-\multirow{7}{*}{TSN2}
- & A0  & 12.48 & 5.98 & 4.36 & 3.79 & 3.53 \\
- & V2H & 8.70 & 5.63 & 4.29 & 3.81 & 3.59 \\
- & V2  & 8.41 & 5.53 & 4.25 & 3.80 & 3.57 \\
- & MOR & 10.04 & 5.52 & 4.66 & 4.36 & 4.19 \\
- & GT  & 9.78 & 5.36 & 4.40 & 4.08 & 3.93 \\
- & GP  & 7.94 & 5.08 & 4.11 & 3.76 & 3.59 \\
- & MIX & \textbf{7.89} & \textbf{5.05} & \textbf{3.94} & \textbf{3.55} & \textbf{3.36} \\
+\multirow{8}{*}{TSN2}
+ & A0   & 12.48 & 5.98 & 4.36 & 3.79 & 3.53 \\
+ & V2H  & 8.70 & 5.63 & 4.29 & 3.81 & 3.59 \\
+ & V2   & 8.41 & 5.53 & 4.25 & 3.80 & 3.57 \\
+ & MOR  & 10.04 & 5.52 & 4.66 & 4.36 & 4.19 \\
+ & GT   & 9.78 & 5.36 & 4.40 & 4.08 & 3.93 \\
+ & GP   & 7.94 & 5.08 & 4.11 & 3.76 & 3.59 \\
+ & MIX  & \textbf{7.89} & 5.05 & 3.94 & 3.55 & 3.36 \\
+ & MIXH & 8.02 & \textbf{4.90} & \textbf{3.80} & \textbf{3.48} & \textbf{3.30} \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -1261,23 +1270,48 @@ over successes alone would have credited MOR on the GA with reaching the
 target at 71\% of budget, a figure derived from the 15\% of instances where
 it succeeds at all.
 
-\subsection{Composition and fraction are two mechanisms, not
-one}\label{sec:res-fraction}
+\subsection{Composition and fraction as separate factors: an exploratory
+follow-up}\label{sec:res-fraction}
 
-The design carries two claims about why seeding works, and until now they
+\emph{This subsection is exploratory and we mark it as such.} The seven arms
+above were fixed before the experiment ran. The eighth, MIXH, was not: it
+was specified after the first seven had been analysed, precisely because
+their outcome raised a question they could not answer, and it was run under
+the same protocol three days later. Holm correction over the seven seeded
+arms handles simultaneous testing within a table; it does not undo the fact
+that this arm and its hypothesis were chosen with the earlier results in
+view. What follows is therefore a follow-up study whose findings invite
+confirmation, not a pre-specified test.
+
+The question is this. Two of the study's claims about how seeding works
 were measured on different pools: \emph{composition}, from the mixed pool
 against the single-generator ones at full strength, and \emph{fraction},
 from the half-seeded learned arm against the fully seeded one. Whether they
-are the same mechanism seen twice or two that add is answered by the arm
-that combines them.
+are one effect seen twice or two that combine is what the arm at their
+intersection can address.
 
-On the genetic algorithm they add. Neither half-seeding the learned pool
-($+0.14$ points of RPD, $p=0.36$) nor mixing at full strength ($+0.06$,
-$p=0.55$) improves this solver. Doing both does: MIXH reaches $-0.28$
-points, interval $[-0.47,-0.10]$, $p=0.022$, and beats each of its
-components directly --- $-0.33$ against MIX and $-0.42$ against V2H, both
-$p<10^{-3}$ on paired per-instance differences. It is the only arm in the
-study that improves the genetic algorithm at its budget.
+The four arms form a complete $2\times2$: pool (v2 or mixed) crossed with
+fraction (all or half the population). On the genetic algorithm neither
+factor alone helps --- half-seeding the learned pool gives $+0.14$ points
+of RPD ($p=0.36$) and mixing at full strength $+0.06$ ($p=0.55$) --- while
+their combination does: MIXH reaches $-0.28$ points, interval
+$[-0.47,-0.10]$, $p=0.022$, and beats each component directly, $-0.33$
+against MIX and $-0.42$ against V2H, both $p<10^{-3}$ paired. It is the only
+arm in the study that improves this solver at its budget.
+
+A combination outperforming each of its parts is compatible with several
+models, so we estimate the interaction rather than assert one. The
+difference in differences, $(\mathrm{MIXH}-\mathrm{MIX}) -
+(\mathrm{V2H}-\mathrm{V2})$, is $+0.06$ points on the GA with interval
+$[-0.06,+0.17]$ and $p=0.48$: the data are consistent with the two factors
+combining additively and exclude any large interaction, but do not
+demonstrate additivity. On two other solvers the interaction is small and
+\emph{negative} --- $-0.08$ on fEABCLS ($[-0.15,-0.03]$, $p=0.008$) and
+$-0.07$ on TSN2 ($[-0.14,-0.01]$, $p=0.046$) --- so there the combination
+is worth slightly more than the sum of its parts. On ABCE3 it is
+indistinguishable from zero. The defensible summary is that the two are
+separable design levers whose effects do not cancel, not that they are
+additive.
 
 The time-to-target evidence points the same way and is stronger, since it
 survives correction. Against its control the mixed pool at full strength is
@@ -1303,10 +1337,13 @@ seeded population inside its budget, and the ordering of solvers by how
 much it helps is the ordering by how badly they consolidate. We report this
 as a coherent association across three independent measurements ---
 converged quality, time to target, and the fraction contrast --- and not as
-an isolated effect. Two cautions bound it. The genetic algorithm's
+an isolated effect. Three cautions bound it. The arm and its hypothesis were
+selected after the first seven arms had been analysed, so this is a
+follow-up finding awaiting independent confirmation. The genetic algorithm's
 final-quality result does not survive correction over all 28 contrasts of
-the study, although its time-to-target result does; and only two fractions
-were run, so the shape of the interaction between them is unmeasured.
+the study, although its time-to-target result does. And only two fractions
+were run, so the shape of the response between them is unmeasured; the
+$2\times2$ estimates an interaction at those two levels, not a curve.
 
 \subsection{Initial-population quality: the mixed pool does not start
 better}\label{sec:res-seedqual}
@@ -1373,14 +1410,14 @@ instances. Friedman rejects rank equality for every solver
 than that solver's top-ranked arm (Holm-corrected paired Wilcoxon,
 $\alpha=0.05$).}
 \label{tab:ranking}
-\begin{tabular}{lccccccc}
+\begin{tabular}{lcccccccc}
 \toprule
-Solver & A0 & V2H & V2 & MOR & GT & GP & MIX \\
+Solver & A0 & V2H & V2 & MOR & GT & GP & MIX & MIXH \\
 \midrule
-GA      & \textbf{2.69} & \textbf{3.08} & 4.25 & 6.41 & 4.77 & 3.85 & \textbf{2.95} \\
-ABCE3   & 5.60 & \textbf{3.08} & \textbf{2.50} & 6.14 & 4.96 & 3.31 & \textbf{2.41} \\
-fEABCLS & \textbf{2.99} & \textbf{2.93} & \textbf{3.04} & 6.52 & 5.51 & 4.24 & \textbf{2.78} \\
-TSN2    & 3.40 & 3.93 & 3.80 & 5.37 & 5.07 & 3.85 & \textbf{2.57} \\
+GA      & 3.39 & 3.80 & 5.05 & 7.36 & 5.67 & 4.64 & 3.75 & \textbf{2.34} \\
+ABCE3   & 6.55 & \textbf{3.61} & \textbf{2.99} & 7.09 & 5.88 & 3.98 & \textbf{2.87} & \textbf{3.03} \\
+fEABCLS & \textbf{3.55} & \textbf{3.45} & \textbf{3.57} & 7.47 & 6.41 & 5.15 & 3.48 & \textbf{2.93} \\
+TSN2    & 4.06 & 4.58 & 4.45 & 6.25 & 5.98 & 4.67 & \textbf{3.13} & \textbf{2.87} \\
 \midrule
 \bottomrule
 \end{tabular}
@@ -1389,28 +1426,27 @@ TSN2    & 3.40 & 3.93 & 3.80 & 5.37 & 5.07 & 3.85 & \textbf{2.57} \\
 Two findings follow, and they answer different questions.
 
 \paragraph{Which generator: the answer varies little across solvers.}
-The ranking of the seven seeded arms is highly consistent across the
-portfolio: restricted to those arms, the mean pairwise Spearman correlation
-between the four rank vectors is $\rho=0.88$. MIX is the best
-\emph{seeded} arm for all four solvers, with ranks between 2.41 and 2.95,
-and is never significantly worse than the top-ranked arm of any solver ---
-indeed it is the top-ranked arm outright for three of the four. MOR is last
-for all four (5.37 to 6.52) and GT second-to-last for three. With six arms
-and four solvers a rank correlation of $0.88$ is a descriptive summary
-rather than a demonstration of invariance, and the intermediate positions
-do move: GP outranks V2 on the GA but not elsewhere. What is stable is the
-top and the bottom, which is what a practitioner needs: within this
-portfolio, use a mixed pool and avoid the low-diversity constructive pools,
-without re-tuning that choice per algorithm.
+The ranking of the seven seeded arms is consistent across the portfolio:
+the mean pairwise Spearman correlation between the four rank vectors is
+$\rho=0.72$. A mixed pool is the best seeded arm on every solver, at half
+strength on three of them (ranks $2.34$ to $2.93$) and at full strength on
+ABCE3 ($2.87$); the two variants are never separated by more than
+$0.16$ of a rank except on the GA. MOR is last for all four ($6.25$ to
+$7.47$) and GT second-to-last for three. With eight arms and four solvers a
+rank correlation of $0.72$ is a descriptive summary rather than a
+demonstration of invariance, and the intermediate positions do move: GP
+outranks V2 on the GA but not elsewhere. What is stable is the top and the
+bottom, which is what a practitioner needs: within this portfolio, use a
+mixed pool and avoid the low-diversity constructive pools, without
+re-tuning that choice per algorithm.
 
 \paragraph{Whether to seed at all: the answer does depend on the solver.}
 The only arm whose rank moves substantially across solvers is the unseeded
-control, from 2.69 on the GA (where it is the top-ranked arm overall) to
-5.60 on ABCE3 (where it ranks sixth of seven, beaten by every seeded arm
-except MOR). Including A0 drags the mean pairwise agreement down from
-$\rho=0.88$ to $\rho=0.69$, and the weakest pair, GA versus ABCE3, rises
-from $\rho=0.36$ to $\rho=0.83$ once the control is removed. The
-displacement of A0 is thus the entire source of cross-solver disagreement.
+control, from $3.39$ on the GA, where only the half-strength mixed pool
+beats it, to $6.55$ on ABCE3, where it ranks seventh of eight and is beaten
+by every seeded arm except MOR. The weakest pair of solvers is GA versus
+ABCE3 at $\rho=0.40$, against $0.86$--$0.90$ among the other pairs, and the
+displacement of A0 is what separates them.
 
 This dissociation is the cleanest statement of the paper's result. The
 question ``which seeds are good?'' has a solver-independent answer, because
@@ -1523,7 +1559,7 @@ interval arithmetic and the decoding from scratch, depends only on the
 standard library, and includes no header of the framework, so a defect in
 the solver's scheduling or interval classes cannot hide behind it. The
 sample is systematic rather than random --- every combination of the four
-solvers and seven arms on one instance from each of the seven size classes,
+solvers and eight arms on one instance from each of the seven size classes,
 980 stored solutions in total --- so each solver, arm and class is
 represented.
 
@@ -1781,9 +1817,10 @@ population than two of them, yet outranks all of them: composition, not
 seed quality, orders the pools that help. Independently of that, the
 fraction seeded interacts with the solver, and in both directions ---
 seeding half the population is better on the genetic algorithm and worse on
-the elitist ABC. The two levers add rather than substitute: neither alone
-improves the genetic algorithm and their combination does, and that
-combination is the best arm on three of the four solvers. Seed quality is
+the elitist ABC. The two levers do not cancel: neither alone improves the
+genetic algorithm and their combination does, and that combination is the
+best arm on three of the four solvers, although it was specified after the
+first seven and awaits confirmation. Seed quality is
 not irrelevant at the bottom of the ladder --- MOR, the weakest generator,
 is significantly slower to the control's own final quality on all four
 solvers --- but among the pools that help it is not what separates them.

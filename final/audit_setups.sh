@@ -4,7 +4,7 @@
 # diferencia (presupuesto, poblacion, operadores, criterio de parada) sesgaria
 # la comparacion entre brazos, que es la inferencia central del paper.
 cd "$(dirname "$0")/.."
-ARMS="A0 V2H V2 MOR GT GP MIX"
+ARMS="A0 V2H V2 MOR GT GP MIX MIXH"
 IGN='^(creation|creation\.seed\.pool|creation\.seed\.count|runs|seed) '
 
 echo "=== 1) los 7 brazos coinciden salvo en la siembra? ==="

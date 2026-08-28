@@ -10,7 +10,7 @@
 cd "$(dirname "$0")/.."
 algo=${1:-tsn2}
 INSTS="tai20_20_05 tai30_15_07 tai30_20_01 tai50_15_04 tai50_20_09"
-ARMS="A0 V2H V2 MOR GT GP MIX"
+ARMS="A0 V2H V2 MOR GT GP MIX MIXH"
 printf "%-14s %-5s %12s %12s\n" instancia brazo "mejor inicial" "media inicial"
 for inst in $INSTS; do
   for arm in $ARMS; do

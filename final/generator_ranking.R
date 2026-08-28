@@ -5,7 +5,7 @@
 # sobre los cuatro vectores de rangos medios.
 lb <- read.csv("final/ta_lb.csv", stringsAsFactors = FALSE)[, c("inst","lb")]
 algos <- c(ga="GA", abce3="ABCE3", feabcls="fEABCLS", tsn2="TSN2")
-arms  <- c("A0","V2H","V2","MOR","GT","GP","MIX")
+arms  <- c("A0","V2H","V2","MOR","GT","GP","MIX","MIXH")
 
 R <- list()
 for (al in names(algos)) {

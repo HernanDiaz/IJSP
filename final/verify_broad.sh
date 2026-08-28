@@ -6,7 +6,7 @@
 # Da PRIORIDAD A LOS CHUNKS, como el resto del pipeline ya corregido.
 cd "$(dirname "$0")/.."
 INSTS="ft10 tai15_15_03 tai20_20_05 tai30_15_07 tai30_20_01 tai50_15_04 tai50_20_09"
-ARMS="A0 V2H V2 MOR GT GP MIX"
+ARMS="A0 V2H V2 MOR GT GP MIX MIXH"
 tot=0; bad=0; cells=0; sincells=0
 for algo in ga abce3 feabcls tsn2; do
   for inst in $INSTS; do

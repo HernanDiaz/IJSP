@@ -8,7 +8,7 @@
 # el verificador debe matar su proceso, no la maquina.
 cd "$(dirname "$0")/.."
 INSTS="ft10 tai15_15_03 tai20_20_05 tai30_15_07 tai30_20_01 tai50_15_04 tai50_20_09"
-ARMS="A0 V2H V2 MOR GT GP MIX"
+ARMS="A0 V2H V2 MOR GT GP MIX MIXH"
 MODO=${1:-insertion}
 LIMV=${LIMV:-1048576}     # 1 GB de memoria virtual por proceso
 LIMT=${LIMT:-60}          # 60 s de CPU por proceso
