@@ -49,37 +49,30 @@ initialisation helps}
 
 \begin{abstract}
 Practitioners routinely assume that seeding a metaheuristic's initial
-population with good solutions improves its results. We test it on the Job
-Shop Scheduling Problem with interval processing times, using four
-published solvers spanning the weak-to-strong axis, four seed generators
---- a deep reinforcement-learning policy and a ladder of randomised
-constructives --- and a mixed pool, over 61 interval Taillard instances and
-30 runs per cell (58{,}560 runs). A pilot study first identifies three
-practices that manufacture positive seeding results: stagnation-triggered
-stopping, single-budget comparison, and self-referential speed metrics.
+population with good solutions improves its results. We test that on the Job
+Shop Scheduling Problem with interval processing times, using four published
+solvers spanning the weak-to-strong axis, four seed generators --- a deep
+reinforcement-learning policy and a ladder of randomised constructives ---
+and mixed pools, over 61 interval Taillard instances and 30 runs per cell
+(58{,}560 runs). A pilot study first identifies three practices that
+manufacture positive seeding results: stagnation-triggered stopping,
+single-budget comparison, and self-referential speed metrics.
 
-With the instance as the unit of analysis, the sign of the effect is not
-predicted by solver strength. A mixed pool improves the weakest solver by
-1.14 percentage points of deviation from published lower bounds (95\% CI
-$[-1.36,-0.93]$), leaves a memetic ABC unchanged, and does not harm a
-genetic algorithm, although every single-generator pool does. On the
-strongest solver the improvement is small, confined to one size class, and
-absent once the analysis is restricted to instances whose control actually
-converged. Two mechanisms are separable and additive: mixing generators and
-retaining random material help independently, and only their combination
-improves the genetic algorithm --- the arm that does both is the best
-performer on three of the four solvers. What matters more is the budget: at a tenth of ours, seeding
-cuts the excess over the lower bound on all four solvers, but by margins
-spanning an order of magnitude --- 11\% on the genetic algorithm against
-40\% on the memetic ABC --- and the two largest gains accrue to the two
-\emph{strongest} solvers, reversing the ordering at the budget limit.
+The answer turns almost entirely on the budget. Run to convergence, seeding
+is worth $0.1\%$ to $1.0\%$ of makespan and is significant on one solver of
+four. At a tenth of that budget it is worth $1.3\%$ to $5.2\%$, on all four.
+Seeding buys time rather than quality: it reaches a given quality sooner,
+not a better one --- except on the weakest solver, where it does both.
 
-Two observations constrain the mechanism. The mixed pool draws on the same
-solutions as the single-generator arms and starts from a worse average
-population, yet converges better, implicating composition rather than seed
-quality. And premature convergence, the usual explanation for seeding
-failures, is contradicted: the harmed genetic algorithm ends \emph{more}
-dispersed than its control, not less.
+Two mechanisms are separable and additive. Composition rather than seed
+quality orders the pools that help: a mixed pool starts from a worse average
+population than its components and finishes ahead of them. Independently,
+the fraction seeded interacts with the solver, half the population being
+better on the genetic algorithm and worse on the elitist ABC. Neither lever
+alone improves the genetic algorithm and their combination does, which is
+also the best arm on three solvers. The premature convergence usually blamed
+for seeding failures is contradicted: the harmed genetic algorithm ends
+\emph{more} dispersed than its control.
 \end{abstract}
 
 \begin{keyword}
