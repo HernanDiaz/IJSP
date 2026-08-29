@@ -35,6 +35,18 @@ for (ar in arms) {
   res[[ar]] <- c(W=W, T=T, L=L, dmean=mean(deltas), A12=mean(a12s))
 }
 cat(sprintf("%-5s %6s %6s %6s %10s %8s\n", "arm", "wins", "ties", "losses", "dAvg", "A12"))
+# Los recuentos se PERSISTEN, no solo se imprimen. Codificarlos a mano en el
+# generador de la tabla del articulo hizo que, al anadir un brazo, las filas
+# antiguas conservaran los valores de la familia anterior: el Holm dentro de
+# cada instancia se calcula sobre todos los brazos sembrados, asi que anadir
+# uno cambia TODOS los recuentos, no solo el nuevo.
+csvout <- sprintf("final/wl_%s.csv", sub(".*results_(.*)\\.csv", "\\1", args[1]))
+wl <- do.call(rbind, lapply(arms, function(a) {
+  r <- res[[a]]
+  data.frame(arm = a, W = r["W"], T = r["T"], L = r["L"],
+             dmean = r["dmean"], A12 = r["A12"], row.names = NULL) }))
+write.csv(wl, csvout, row.names = FALSE)
+
 for (ar in arms) {
   r <- res[[ar]]
   cat(sprintf("%-5s %6d %6d %6d %10.1f %8.3f\n", ar, r["W"], r["T"], r["L"], r["dmean"], r["A12"]))
