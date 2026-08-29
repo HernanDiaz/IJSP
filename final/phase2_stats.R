@@ -4,7 +4,12 @@
 # Uso: Rscript phase2_stats.R final/phase2/results_<algo>.csv
 args <- commandArgs(trailingOnly = TRUE)
 d <- read.csv(args[1], stringsAsFactors = FALSE)
-arms <- c("V2H","V2","MOR","GT","GP","MIX","MIXH")
+# Familia confirmatoria (preespecificada) y brazo exploratorio. El Holm dentro
+# de cada instancia corre sobre la familia a la que pertenece el brazo, de modo
+# que anadir el exploratorio no altera los recuentos de los seis originales.
+confirmatorio <- c("V2H","V2","MOR","GT","GP","MIX")
+arms <- c(confirmatorio, "MIXH")
+familia <- function(a) if (a %in% confirmatorio) confirmatorio else a
 insts <- unique(d$inst)
 
 a12 <- function(x, y) { # P(X < Y) + 0.5 P(=) ; x=brazo, y=A0 (menor mejor)
@@ -20,8 +25,9 @@ for (ar in arms) {
     a0 <- d[d$inst==ins & d$arm=="A0", ]; a0 <- a0[order(a0$run), "ecmax"]
     xx <- d[d$inst==ins & d$arm==ar,   ]; xx <- xx[order(xx$run), "ecmax"]
     if (length(a0) < 2 || length(xx) < 2 || length(a0) != length(xx)) next
-    # p-values de los 6 brazos de esta instancia para Holm
-    ps <- sapply(arms, function(a2) {
+    # p-values de la FAMILIA de este brazo en esta instancia, para Holm
+    fam <- familia(ar)
+    ps <- sapply(fam, function(a2) {
       yy <- d[d$inst==ins & d$arm==a2, ]; yy <- yy[order(yy$run), "ecmax"]
       if (length(yy) != length(a0)) return(NA)
       tryCatch(wilcox.test(yy, a0, paired=TRUE, exact=FALSE)$p.value, error=function(e) NA)

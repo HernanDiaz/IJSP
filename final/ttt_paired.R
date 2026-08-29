@@ -56,6 +56,11 @@ nulo <- read.csv("final/ttt_null.csv", stringsAsFactors = FALSE)   # proporcion 
 algos <- c(ga="GA", abce3="ABCE3", feabcls="fEABCLS", tsn2="TSN2")
 arms <- c("A0","V2H","V2","MOR","GT","GP","MIX","MIXH")
 seeded <- setdiff(arms, "A0")
+# Familia confirmatoria: los seis brazos fijados antes del experimento. MIXH se
+# especifico despues de analizarlos, asi que queda fuera de la correccion y su
+# p va sin ajustar; incluirlo penalizaria contrastes preespecificados por una
+# decision posterior.
+confirmatorio <- c("V2H","V2","MOR","GT","GP","MIX")
 set.seed(20260825)
 BPERM <- 20000
 BBOOT <- 10000
@@ -130,7 +135,9 @@ for (al in names(algos)) {
                              lo = ci[1], hi = ci[2],
                              p_signos = psig[a], p_perm = pperm[a])
   }
-  hsig <- p.adjust(psig, method = "holm"); hperm <- p.adjust(pperm, method = "holm")
+  hsig <- psig; hperm <- pperm
+  hsig[confirmatorio] <- p.adjust(psig[confirmatorio], method = "holm")
+  hperm[confirmatorio] <- p.adjust(pperm[confirmatorio], method = "holm")
   for (a in seeded) {
     f <- filas[[a]]; f$p_signos_holm <- hsig[a]; f$p_perm_holm <- hperm[a]
     st <- function(p) if (p < 0.001) "***" else if (p < 0.01) "**" else if (p < 0.05) "*" else ""
