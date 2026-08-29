@@ -21,17 +21,25 @@
 # test debe rechazar el 5% de las veces a alfa = 0.05. Toda desviacion es sesgo
 # del objetivo endogeno, no efecto de la siembra.
 set.seed(20260826)
-B <- 400            # replicas
+# DOS TANDAS INDEPENDIENTES. La primera ESTIMA la proporcion nula p0; la
+# segunda MIDE con que frecuencia rechaza el test que realmente se usa, es
+# decir el que contrasta contra ese p0. La version anterior media el rechazo
+# contra 0.5 y luego aplicaba p0 en el analisis: validaba un procedimiento
+# distinto del que se ejecutaba. Usar tandas separadas evita ademas estimar y
+# validar sobre las mismas replicas.
+B_EST <- 500        # replicas para estimar p0
+B_VAL <- 500        # replicas independientes para medir el error de tipo I
 NG <- 200           # puntos de rejilla por instancia
 ALPHA <- 0.05
 algos <- c(ga="GA", abce3="ABCE3", feabcls="fEABCLS", tsn2="TSN2")
 
 cat("=== Error de tipo I del test de signos bajo objetivo endogeno ===\n")
-cat(sprintf("    %d replicas; cada una parte las 30 ejecuciones de A0 en 15+15 y promedia\n", B))
-cat("    H0 cierta por construccion: ambas mitades salen del mismo proceso\n")
-cat("    esperado si el procedimiento es valido: antes = 50%, rechazo = 5%\n\n")
-cat(sprintf("  %-8s %7s %15s %14s %11s\n",
-            "solver", "n inst", "P(antes) media", "rechazo a 5%", "veredicto"))
+cat(sprintf("    %d replicas para estimar p0 + %d independientes para validar\n", B_EST, B_VAL))
+cat("    cada replica parte las 30 ejecuciones de A0 en 15+15 y promedia:\n")
+cat("    H0 cierta por construccion, ambas mitades salen del mismo proceso\n")
+cat("    el procedimiento es valido si el rechazo contra p0 ronda el 5%\n\n")
+cat(sprintf("  %-8s %6s %13s %13s %14s %11s\n",
+            "solver","n inst","p0 estimado","rechazo vs p0","rechazo vs 0.5","veredicto"))
 
 res <- data.frame()
 for (al in names(algos)) {
@@ -59,8 +67,9 @@ for (al in names(algos)) {
   }
   ok_inst <- names(mats)
 
-  antes_tot <- 0; desp_tot <- 0; rech <- 0; usadas <- 0
-  for (b in 1:B) {
+  # una replica bajo H0: parte las 30 ejecuciones del control en 15+15,
+  # promedia cada mitad y aplica la construccion de objetivo endogeno
+  replica <- function() {
     dif <- numeric(0)
     for (i in ok_inst) {
       V <- mats[[i]]; n <- nrow(V)
@@ -73,20 +82,31 @@ for (al in names(algos)) {
       T2 <- if (length(j2)) j2[1]/NG else 1.0
       dif <- c(dif, T2 - T1)
     }
-    a <- sum(dif < 0); p <- sum(dif > 0)
-    antes_tot <- antes_tot + a; desp_tot <- desp_tot + p
+    c(antes = sum(dif < 0), desp = sum(dif > 0))
+  }
+
+  # TANDA 1: estimar p0
+  a1 <- 0; d1 <- 0
+  for (b in 1:B_EST) { r <- replica(); a1 <- a1 + r["antes"]; d1 <- d1 + r["desp"] }
+  pa <- unname(a1 / (a1 + d1))
+
+  # TANDA 2, independiente: con que frecuencia rechaza el test QUE SE USA,
+  # es decir el binomial contra p0, y como referencia el ingenuo contra 0.5
+  rech <- 0; rech05 <- 0; usadas <- 0
+  for (b in 1:B_VAL) {
+    r <- replica(); a <- unname(r["antes"]); p <- unname(r["desp"])
     if (a + p > 0) {
       usadas <- usadas + 1
-      if (binom.test(a, a + p)$p.value < ALPHA) rech <- rech + 1
+      if (binom.test(a, a + p, p = pa)$p.value < ALPHA) rech <- rech + 1
+      if (binom.test(a, a + p)$p.value      < ALPHA) rech05 <- rech05 + 1
     }
   }
-  pa <- antes_tot / (antes_tot + desp_tot)
-  tr <- rech / usadas
-  ver <- if (abs(pa - 0.5) < 0.03 && tr < 0.10) "calibrado" else "SESGADO"
-  cat(sprintf("  %-8s %7d %14.1f%% %13.1f%% %11s\n",
-              algos[[al]], length(ok_inst), 100*pa, 100*tr, ver))
+  tr <- rech / usadas; tr05 <- rech05 / usadas
+  ver <- if (abs(tr - ALPHA) < 0.025) "calibrado" else "SESGADO"
+  cat(sprintf("  %-8s %6d %13.1f%% %13.1f%% %12.1f%% %11s\n",
+              algos[[al]], length(ok_inst), 100*pa, 100*tr, 100*tr05, ver))
   res <- rbind(res, data.frame(algo = al, n_inst = length(ok_inst),
-                               p_antes_nulo = pa, tipo_I = tr))
+                               p_antes_nulo = pa, tipo_I = tr, tipo_I_vs_05 = tr05))
 }
 write.csv(res, "final/ttt_null.csv", row.names = FALSE)
 cat("\nescrito: final/ttt_null.csv\n")

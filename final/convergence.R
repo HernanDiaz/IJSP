@@ -120,25 +120,42 @@ for (al in names(algos)) {
 }
 write.csv(inter, "final/convergencia_interseccion.csv", row.names = FALSE)
 
-cat("\n\n=== Sensibilidad del RESULTADO, no solo del recuento ===\n")
-cat("    mejor brazo sobre el subconjunto convergido del control, por criterio\n")
-cat(sprintf("  %-8s %-12s %s\n", "solver", "umbral", paste(sprintf("%10s", paste0("frac>=", c(0.5,0.8,0.9,1.0))), collapse="")))
-for (al in names(algos)) {
+cat("\n\n=== Sensibilidad de las CONCLUSIONES, sobre la INTERSECCION ===\n")
+cat("    Las dos conclusiones que dependen de la regla se enuncian sobre la\n")
+cat("    interseccion (convergen el control Y el brazo), asi que su\n")
+cat("    sensibilidad debe medirse ahi y no sobre el subconjunto del control:\n")
+cat("      GA   -> la reversion, MIX y MIXH mejores que A0\n")
+cat("      TSN2 -> la ventaja desaparece, MIX y MIXH ya no baten a A0\n")
+cat("    Cada celda es la diferencia brazo - A0 (negativo = el brazo gana) y\n")
+cat("    entre parentesis el tamano de la interseccion.\n\n")
+cat(sprintf("  %-8s %-6s %-8s %s\n", "solver", "brazo", "umbral",
+            paste(sprintf("%14s", paste0("frac>=", c(0.5,0.8,0.9,1.0))), collapse="")))
+sens <- data.frame()
+for (al in c("ga","tsn2")) {
   r <- merge(read.csv(sprintf("final/phase2/results_%s.csv", al), stringsAsFactors = FALSE),
              lb, by = "inst")
   r$rpd <- 100*(r$ecmax - r$lb)/r$lb
-  for (u in c(0.05, 0.1, 0.25)) {
-    fila <- sapply(c(0.5,0.8,0.9,1.0), function(fr) {
-      cc <- clasifica(datos[[al]][["A0"]], u, fr)
-      ok <- cc$inst[cc$conv]
-      if (length(ok) < 2) return("--")
-      m <- sapply(arms, function(a) mean(r$rpd[r$arm == a & r$inst %in% ok]))
-      sprintf("%s(%d)", arms[which.min(m)], length(ok))
-    })
-    cat(sprintf("  %-8s %-12s %s\n", if (u == 0.05) algos[[al]] else "",
-                sprintf("%.2f%%", u), paste(sprintf("%10s", fila), collapse="")))
+  for (a in c("MIX","MIXH")) {
+    for (u in c(0.05, 0.1, 0.25)) {
+      fila <- sapply(c(0.5,0.8,0.9,1.0), function(fr) {
+        cA <- clasifica(datos[[al]][["A0"]], u, fr)
+        cB <- clasifica(datos[[al]][[a]],   u, fr)
+        ok <- intersect(cA$inst[cA$conv], cB$inst[cB$conv])
+        if (length(ok) < 3) return("      --     ")
+        dd <- mean(r$rpd[r$arm == a & r$inst %in% ok]) -
+              mean(r$rpd[r$arm == "A0" & r$inst %in% ok])
+        sens <<- rbind(sens, data.frame(algo=al, arm=a, umbral=u, frac=fr,
+                                        n=length(ok), dif=dd))
+        sprintf("%+.2f (%d)", dd, length(ok))
+      })
+      cat(sprintf("  %-8s %-6s %-8s %s\n",
+                  if (u == 0.05 && a == "MIX") algos[[al]] else "",
+                  if (u == 0.05) a else "",
+                  sprintf("%.2f%%", u), paste(sprintf("%14s", fila), collapse="")))
+    }
   }
 }
+write.csv(sens, "final/convergencia_sensibilidad.csv", row.names = FALSE)
 
 cat("\n=== Aviso: mejoras negativas ===\n")
 for (al in names(algos)) {

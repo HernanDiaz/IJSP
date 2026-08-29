@@ -714,14 +714,17 @@ seeding brings to the strongest solver is thus confined to cells where its
 budget did not suffice to converge, a materially weaker claim than the
 unrestricted table supports, and we report it as such.
 
-The conclusions are not equally robust to how the rule is set. Varying the
-threshold over $\{0.05, 0.1, 0.25\}\%$ and the required fraction of runs
-over $\{0.5, 0.8, 0.9, 1.0\}$, the best arm on the GA is the mixed pool in
-eleven of the twelve combinations, and on ABCE3 it is always a seeded arm.
-On TSN2 it is not stable: the mixed pool wins when half the runs must
-satisfy the rule, and the unseeded control wins when four fifths or nine
-tenths must. We therefore state the TSN2 result as conditional on that
-choice rather than as a finding.
+Both conclusions survive the rule's own parameters. Varying the threshold
+over $\{0.05, 0.1, 0.25\}\%$ and the required fraction of runs over
+$\{0.5, 0.8, 0.9, 1.0\}$, and re-deriving the intersection at each setting,
+the GA reversal holds in every combination: the mixed pool beats the control
+by between $0.13$ and $0.72$ points, and its half-strength variant by
+between $0.33$ and $0.72$, with intersections ranging from 8 to 44
+instances. On TSN2 the difference stays within $\pm0.14$ points of zero
+throughout, so the disappearance of its advantage is not an artefact of
+where the threshold is placed either. The sensitivity is computed on the
+intersection rather than on the control-plateau subset, since that is the
+comparison the two conclusions rest on.
 
 Unless stated otherwise, the tables that follow use all 61 instances, so
 that every solver is evaluated on the same instance set; results restricted
@@ -1171,7 +1174,7 @@ Solver & Arm & Reach & Earlier/later & $p$ (sign) & RMTT & $\Delta$RMTT [95\% CI
  & V2  & 56\%  & 6/49  & $<0.001$ & 0.77 & $+0.16$ $[+0.12,+0.20]$ \\
  & MOR & 5\%   & 0/59  & $<0.001$ & 0.99 & $+0.37$ $[+0.31,+0.44]$ \\
  & MIX & 77\%  & 18/37 & 0.057    & 0.70 & $+0.09$ $[+0.04,+0.13]$ \\
- & MIXH$^{\dagger}$ & 85\% & 35/19 & 0.006 & 0.62 & $0.00$ $[-0.05,+0.06]$ \\
+ & MIXH$^{\dagger}$ & 85\% & 35/19 & 0.009 & 0.62 & $0.00$ $[-0.05,+0.06]$ \\
 \midrule
 \multirow{5}{*}{ABCE3}
  & A0  & 100\% & ---   & ---      & 0.38 & --- \\
@@ -1228,10 +1231,13 @@ contrast is the sign test on the paired earlier/later counts, ties
 excluded, taken against the null proportion the design itself produces
 rather than against $0.5$: because the target is drawn from the control's
 own endpoint, a split-half calibration under a true null
-(Section~\ref{sec:res-threats}) puts that proportion at $0.46$--$0.49$
+(Section~\ref{sec:res-threats}) puts that proportion at $0.44$--$0.49$
 depending on the solver. The paired difference in restricted mean time
 ($\Delta$RMTT) is reported alongside it with a bootstrap interval over
-instances. Both are Holm-corrected over the six pre-specified seeded arms of each solver, with MIXH unadjusted. $^{dagger}$MIXH is the exploratory arm of Section~ef{sec:res-fraction}, excluded from the correction family with its $p$ unadjusted.
+instances. Both are Holm-corrected over the six pre-specified seeded arms of
+each solver. $^{\dagger}$MIXH is the exploratory arm of
+Section~\ref{sec:res-fraction}: it is excluded from the correction family
+and its $p$ is unadjusted.
 No test is reported for the control, which attains its own target on all 61
 instances by construction; ``reach'' is the percentage of instances on
 which an arm attains it at all.
@@ -1533,15 +1539,17 @@ not enough to observe that censoring cannot reverse a sign. We therefore
 measured it. Splitting each instance's thirty control runs at random into
 two halves of fifteen, averaging each half and treating one as control and
 the other as arm, reproduces the analysis under a null that is true by
-construction. Over 400 such replicates the sign test rejects at $4.3\%$ on
-the GA, $6.8\%$ on ABCE3, $4.0\%$ on fEABCLS and $3.3\%$ on TSN2 against a
-nominal $5\%$, so the procedure is close to calibrated. It is not exactly
-so: under the null the seeded arm counts as earlier on only $46.2\%$,
-$45.3\%$, $47.3\%$ and $48.7\%$ of instances respectively, a small tilt
-against seeding. Every sign test in Table~\ref{tab:ttt} is taken against
-that solver's own null proportion rather than against $0.5$, which is what
-removes the tilt; the effect is visible on the GA, where the mixed pool
-reads as significantly slower against $0.5$ and does not against $0.462$.
+construction. The null proportion is estimated from 500 such replicates and
+the resulting procedure validated on 500 further, independent ones, so that
+what is checked is the test actually performed rather than a different one.
+Under the null the seeded arm counts as earlier on $46.3\%$, $43.8\%$,
+$47.3\%$ and $48.7\%$ of instances on the four solvers, a tilt against
+seeding rather than the $50\%$ a naive sign test would assume. Every sign
+test in Table~\ref{tab:ttt} is taken against its own solver's proportion,
+and on the validation replicates that test rejects at $4.0\%$, $4.8\%$,
+$6.0\%$ and $5.6\%$ against a nominal $5\%$. Testing against $0.5$ instead
+would reject at up to $8.4\%$, so the correction is what makes the procedure
+calibrated rather than anticonservative.
 
 Two properties of the plateau rule of Section~\ref{sec:res-conv} qualify
 what it can be asked to support. Its \emph{counts} are sensitive to how it
@@ -1632,9 +1640,14 @@ ABCE3 with the mean pairwise Hamming distance of the population, sampled
 every 10\,s over 10 runs on four medium instances (normalised to $[0,1]$,
 where 0 denotes an identical population). Table~\ref{tab:hamming} reports
 the result. The seeded GA is not less diverse than its control --- it is
-\emph{significantly more} diverse, by $+24.3\%$ under V2 and $+13.7\%$
-under MIX (paired Wilcoxon, $p<10^{-4}$), and it ends the run at $0.720$
-against the control's $0.464$.
+\emph{more} diverse, by $+20.1\%$ under V2 and $+10.7\%$ under MIX averaged
+over the four instances, in the same direction on all four of them, and it
+ends the run at $0.720$ against the control's $0.464$. We attach no
+$p$-value: with the instance as the unit and four instances, the smallest
+attainable two-sided sign-test $p$ is $0.125$, so this evidence is the size
+of the effect and its consistency, not a significance claim. ABCE3, which
+does not recombine, shows nothing in either direction ($-1.4\%$ under V2,
+$+0.4\%$ under MIX, two and one instances agreeing in sign).
 
 \begin{table}[htbp]
 \centering
@@ -1854,7 +1867,7 @@ that is there.
 The seed pools, the injection operator, the experiment setups, the run
 logs of all 58{,}560 runs, the aggregated result tables and the analysis
 scripts that produce every table and figure in this paper, together with the
-recovered crisp instance matrices of Section~ef{sec:rpd-ref} and their
+recovered crisp instance matrices of Section~\ref{sec:rpd-ref} and their
 hashes, are deposited at
 \texttt{[DOI pending]}, together with the independent verifier of
 Section~\ref{sec:res-threats} and the commit hash of the solver framework.
