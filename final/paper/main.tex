@@ -1709,10 +1709,18 @@ first hypothesis to test here. The data do not support it. We instrumented the G
 ABCE3 with the mean pairwise Hamming distance of the population, sampled
 every 10\,s over 10 runs on four medium instances (normalised to $[0,1]$,
 where 0 denotes an identical population). Table~\ref{tab:hamming} reports
-the result. The seeded GA is not less diverse than its control --- it is
-\emph{more} diverse, by $+20.1\%$ under V2 and $+10.7\%$ under MIX averaged
-over the four instances, in the same direction on all four of them, and it
-ends the run at $0.720$ against the control's $0.464$. We attach no
+the result.
+
+At initialisation the control is the more diverse arm, as it has to be:
+replacing random individuals by pool solutions can only reduce structural
+spread, and it does, on all four instances ($0.947$ against $0.931$ for V2
+and $0.930$ for MIX). The ordering inverts within the first ten seconds and never
+returns. Over the run as a whole the seeded GA is therefore the \emph{more}
+diverse arm --- by $+20.1\%$ under V2 and $+10.7\%$ under MIX averaged over
+the four instances, in the same direction on all four --- and it ends at
+$0.720$ against the control's $0.464$. Seeding does not make the initial
+population more diverse; it slows the rate at which the GA destroys the
+diversity it starts with. We attach no
 $p$-value: with the instance as the unit and four instances, the smallest
 attainable two-sided sign-test $p$ is $0.125$, so this evidence is the size
 of the effect and its consistency, not a significance claim. ABCE3, which
