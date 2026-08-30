@@ -6,7 +6,6 @@
 %% PENDING, requires input we do not have:
 %%   - seed-generation times per generator (Sec. 4.3)
 %%   - replication table for the appendix (Sec. 3.3)
-%%   - FTOP sub-study outcome (Sec. 6.2), if it was ever run
 %%   - optional: 2-3 further refs on RL-seeded metaheuristics (Sec. 2)
 %%   - Data and code availability: Zenodo DOI + framework commit hash
 %% =========================================================================
@@ -164,6 +163,18 @@ Section~\ref{sec:conclusions} concludes.
 %% =========================================================================
 \section{Related work}\label{sec:related}
 
+\paragraph{From the deterministic job shop to the interval job shop.} The
+solvers studied here inherit their machinery from the deterministic job
+shop. Simulated annealing over the disjunctive graph \cite{vanLaarhoven1992}
+and the branch-and-bound of \cite{carlier1989jobshop} established the
+representation; the decisive step for local search was the critical-block
+neighbourhood of the fast taboo search of Nowicki and Smutnicki
+\cite{Nowicki1996}, later refined in \cite{Nowicki2005}, and the guided
+local search of \cite{Balas1998}. The block-boundary neighbourhood used by
+the tabu component of our strongest solver is the interval counterpart of
+that construction, and the local search of \cite{GonzalezRodriguez2008}
+carried it to uncertain durations.
+
 \paragraph{Metaheuristics for the IJSP.} Lei introduced population-based
 neighbourhood search for interval makespan minimisation \cite{Lei2011} and
 a GA for interval due-date objectives \cite{Lei2012}. A GA tailored to
@@ -175,29 +186,66 @@ fast elitist ABC with hill-climbing local search (fEABC-LS)
 framework with a best-improvement tabu search over block-boundary
 neighbourhoods defined on both extreme scenario graphs \cite{DiazTSN2}. Our
 portfolio comprises exactly these published solvers, replicated from their
-original configurations (Section~\ref{sec:problem}).
+original configurations (Section~\ref{sec:problem}). The neighbouring fuzzy
+formulation has received sustained attention to benchmarking in particular:
+test beds, models and lower bounds for the fuzzy job shop are given in
+\cite{Palacios2016,Afsar2023}, and we follow that practice in reporting
+deviations against published bounds rather than against best-known values
+of our own (Section~\ref{sec:rpd-ref}).
 
-\paragraph{Population initialisation and seeding.} Initialisation
-strategies for evolutionary algorithms have been surveyed in
-\cite{Kazimipour2014}; injecting known solutions has been studied as
-case-injected genetic search \cite{Louis2004}, and constructive-heuristic
-seeding is standard practice in scheduling applications. What distinguishes
-the present study is not the mechanism --- ours is deliberately the
-simplest possible: replace $k$ random individuals by pool solutions at
-initialisation --- but the evaluation methodology: convergence checks,
-anytime metrics, and paired statistics with multiple-comparison control.
-
-%% TODO: 2-3 additional recent refs on RL-seeded metaheuristics if available.
+\paragraph{Population initialisation and seeding.} Initialisation is one of
+the oldest levers in evolutionary computation and one of the least settled.
+Surveys of the mechanisms are available in
+\cite{Kazimipour2014,Agushaka2022,Sarhani2023}; the recurring families are
+quasi-random and space-filling designs \cite{Maaranen2004}, opposition-based
+sampling \cite{Rahnamayan2008}, constructive-heuristic seeding, and the
+injection of solutions retained from previous runs, studied as case-injected
+genetic search \cite{Louis2004}. Two findings from this literature frame the
+present study. First, seeding is not uniformly beneficial: Burke et
+al.\ observed in evolutionary timetabling that when the seeding procedure
+returns similar solutions, the resulting loss of diversity can leave the
+algorithm worse off than random initialisation \cite{Burke1998}, and
+computational studies in the multi-objective setting report that the benefit
+varies sharply across problem families \cite{Friedrich2015} and that
+injecting even optimal solutions is not automatically an improvement
+\cite{Gong2023,Gong2023few}. Second, the evidence base is thin where it
+matters: the review of \cite{Sarhani2023} concludes that published
+initialisation studies rarely establish \emph{why} a scheme works or
+\emph{under which conditions}, and that the interaction between
+initialisation and the specific algorithm being initialised remains
+under-examined. What distinguishes the present study is therefore not the
+mechanism --- ours is deliberately the simplest possible: replace $k$ random
+individuals by pool solutions at initialisation --- but that the same
+injection protocol is applied across a portfolio of solvers of differing
+strength under a common budget, with convergence checks, anytime metrics and
+paired statistics with multiple-comparison control.
 
 \paragraph{Learning to construct schedules.} Deep RL dispatchers for the
-deterministic JSP \cite{ZhangL2D2020} and the broader learn-to-optimise
-programme \cite{Bengio2021} produce fast constructive policies whose
-natural integration point with mature metaheuristics is precisely
-initialisation. We treat the learned policy as one seed generator among
-several, which allows the question \emph{is a learned constructive better
-than a tuned heuristic one as a seed source?} to be answered under
-identical injection protocols.
+deterministic JSP \cite{ZhangL2D2020,Park2021}, their extension to the
+flexible variant \cite{Song2023}, and the broader learn-to-optimise
+programme \cite{Bengio2021,Kotary2021} produce fast constructive policies.
+Genetic programming pursues the same end by evolving dispatching rules
+rather than learning them by gradient, and the two lines are surveyed
+together in \cite{ZhangGP2024}. Where these policies meet mature
+metaheuristics, the coupling is usually made at the level of control --- for
+example, using a learned agent to adapt operators or parameters during the
+search \cite{Ma2025}. The alternative coupling is initialisation, which
+leaves the solver untouched and is therefore the one that isolates the value
+of the learned solutions themselves. We treat the learned policy as one seed
+generator among several, which allows the question \emph{is a learned
+constructive better than a tuned heuristic one as a seed source?} to be
+answered under identical injection protocols.
 
+\paragraph{Experimental methodology.} Because a seeded run and its control
+differ from the first generation, comparing them only at the end of the
+budget discards most of the effect. We follow the anytime perspective of
+\cite{LopezIbanez2014}, reporting time-to-target alongside final quality,
+and use non-parametric paired procedures with multiple-comparison control
+\cite{Derrac2011} and a stochastic effect size \cite{Vargha2000}. No
+parameter of any solver is tuned in this study: configurations are taken
+verbatim from the source publications, so that automatic configuration
+\cite{LopezIbanez2016} is deliberately excluded as a source of variation
+between arms.
 %% =========================================================================
 \section{The IJSP and the solver portfolio}\label{sec:problem}
 
@@ -490,8 +538,6 @@ decision rule combining converged quality in ABCE3 and time-to-target in
 TS-N2 over eight stratified instances) selected $p^{*}=100\%$: the benefit
 of v2 seeding is monotone in the fraction on both criteria, with no
 interior optimum.
-%% TODO: FTOP sub-study outcome (elitist selection of the best 250 pool
-%% lines vs iid sampling) — decides whether the ladder seeds iid or elite.
 
 \subsection{Budgets and stopping}
 Budgets are set per \emph{(solver, size class)} rather than per instance.
@@ -1353,6 +1399,17 @@ full mixture remains better ($9.37\%$ against $9.43\%$; $+0.07$ in favour of
 MIX, $p=0.096$), and it is the one solver where retaining random material
 buys nothing.
 
+That partial seeding can beat full seeding is not new in itself: it has
+been reported for multi-objective combinatorial problems, where populations
+containing only a few heuristic solutions outperformed both random and
+heavily seeded ones \cite{Gong2023few}. What the present design adds is
+that the prescription does not transfer uniformly. Under an identical
+protocol the same reduction in fraction helps three solvers and costs the
+fourth, and the pre-specified fraction sub-study of
+Section~\ref{sec:design}, run on the solvers where it did not help, found
+the benefit monotone in the fraction with no interior optimum. The
+fraction is a solver-dependent lever, not a constant of the problem.
+
 That pattern is the same one the convergence analysis produces. Retaining
 random material helps exactly where the solver cannot consolidate a fully
 seeded population inside its budget, and the ordering of solvers by how
@@ -1643,9 +1700,12 @@ of the obvious alternatives, not a controlled result.
 \subsection{Why the genetic algorithm is harmed: a failure to
 consolidate}\label{sec:whyga}
 
-The intuitive explanation for a seeding-induced loss is premature
+The standard explanation for a seeding-induced loss is premature
 convergence: a population of good, similar individuals collapses onto a
-local optimum. The data do not support it. We instrumented the GA and
+local optimum. It is the mechanism Burke et al.\ identified in evolutionary
+timetabling, where a seeding procedure returning similar solutions cost
+more in diversity than it gained in quality \cite{Burke1998}, and it is the
+first hypothesis to test here. The data do not support it. We instrumented the GA and
 ABCE3 with the mean pairwise Hamming distance of the population, sampled
 every 10\,s over 10 runs on four medium instances (normalised to $[0,1]$,
 where 0 denotes an identical population). Table~\ref{tab:hamming} reports
@@ -1658,6 +1718,10 @@ attainable two-sided sign-test $p$ is $0.125$, so this evidence is the size
 of the effect and its consistency, not a significance claim. ABCE3, which
 does not recombine, shows nothing in either direction ($-1.4\%$ under V2,
 $+0.4\%$ under MIX, two and one instances agreeing in sign).
+
+The diversity-collapse account therefore fails on its own terms here: the
+arm that loses ground is the more diverse one, not the less. Whatever costs
+the seeded GA its advantage, it is not the mechanism of \cite{Burke1998}.
 
 \begin{table}[htbp]
 \centering
