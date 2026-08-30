@@ -284,14 +284,24 @@ this gap from the published description and disclose it here.
 
 We take the published parameter settings verbatim, but that is a statement
 about the configuration, not a claim that our implementation is
-behaviourally identical to the authors' own. The ABCE3 gap above shows it
-need not be, and the local-search footnote to Table~\ref{tab:portfolio} shows
-where the two can diverge while the parameter file reads the same. Neither
-affects any conclusion of this paper, because every seeding comparison is
-within-solver: a seeded arm against the unseeded control of the same
-implementation, under the same budget, on the same instances.
+behaviourally identical to the authors' own. The ABCE3 gap shows it need
+not be, and the local-search footnote to Table~\ref{tab:portfolio} shows
+where the two can diverge while the parameter file reads the same.
 
-%% TODO: replication table in an appendix.
+No conclusion of this paper rests on matching the published figures, because
+every comparison is within-solver: a seeded arm against the unseeded control
+of the \emph{same} implementation, under the same budget, on the same
+instances. Any shortfall is shared by both sides of every contrast.
+
+One consequence does deserve stating, because it bears on how far the
+results generalise. ABCE3 is at once the weakest control in the portfolio,
+the solver seeding helps most, and the one whose replication falls short.
+The shortfall, $1.5$--$2.5$ points, is larger than the $1.14$-point gain
+seeding produces there. The within-solver contrast remains valid, but the
+headroom that seeding exploits on this solver may be headroom our
+implementation left, not headroom intrinsic to the algorithm. Read the
+finding as ``seeding helps a solver that leaves this much on the table'',
+which is what we measured, rather than as a claim about published ABCE3.
 
 %% =========================================================================
 \section{Seed pools and injection mechanism}\label{sec:seeding}
