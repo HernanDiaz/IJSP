@@ -15,7 +15,7 @@
 # GENERIC
 algorithm = ABCPSO
 seed = 1
-runs = 5
+runs = 10
 
 # PROBLEM
 problem.hasbounds = no

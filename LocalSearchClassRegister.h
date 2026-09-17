@@ -26,6 +26,7 @@
 
 
 #include "LocalSearchAmico.h"
+#include "LS_TabuBackJump.h"
 
 // ****************************************************************************
 //
@@ -145,6 +146,10 @@ public:
 			&createLocalSearchInstance<LS_Tabu>;
 		LocalSearchMap[toUpper("tabu")] =
 			&createLocalSearchInstance<LS_Tabu>;
+		LocalSearchMap[toUpper("tabu-backjump")] =
+			&createLocalSearchInstance<LS_TabuBackJump>;
+		LocalSearchMap[toUpper("tsab")] =
+			&createLocalSearchInstance<LS_TabuBackJump>;
 		LocalSearchMap[toUpper("amico")] =
 			&createLocalSearchInstance<LS_Tabu_Amico>;
 		LocalSearchMap[toUpper("amicofjsp")] =

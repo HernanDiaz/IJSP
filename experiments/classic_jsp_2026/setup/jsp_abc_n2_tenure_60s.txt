@@ -15,7 +15,7 @@
 # GENERIC
 algorithm = ABCPSO
 seed = 1
-runs = 3
+runs = 10
 
 # PROBLEM
 problem.hasbounds = no
@@ -74,13 +74,17 @@ statistics.2.value = ijsp.makespan
 localsearch = tabu-search
 localsearch.estimation-guide = no
 localsearch.filter = yes
-localsearch.max-time = 15
+localsearch.max-time = 2
 localsearch.neighbourhood = ijsp.makespan.n2
 neighbourhood.estimator = heads&tails
 localsearch.frequency = period
 localsearch.period = 1
 localsearch.target = 1.0
 localsearch.lamarckism = yes
-localsearch.bad-iterations = 2000
+localsearch.bad-iterations = 20
 localsearch.tabu-size.min = 3
+
+# Bounded tabu tenure. Without this the tabu list is unlimited: moves are never
+# released, so a long tabu run strangles itself and every isTabu() call scans a
+# list that keeps growing.
 localsearch.tabu-size.max = 12
