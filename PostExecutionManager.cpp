@@ -33,7 +33,13 @@ namespace PostExecution {
 	}
 
 	void PostExecutionManager::loadAnalyzers(const FuzzyFW::ParameterDB *params) {
-		std::string sgsType = params->getStringUpper("objective");
+		// An explicit analyzer overrides the objective-driven default. This
+		// keeps every existing setup file working while letting crisp (classic
+		// JSP) runs skip the robustness analysis, which is meaningless when
+		// all processing times are degenerate intervals.
+		std::string sgsType = params->getStringUpper("postexecution.analyzer");
+		if (sgsType.length() == 0)
+			sgsType = params->getStringUpper("objective");
 		if (sgsType.length() == 0) {
 			std::string errorMsg = "Objective function not found. Please, specify a obkective function to use";
 			errorMsg += " during the robustness analysis";

@@ -29,6 +29,7 @@
 #include "FJSPRobustnessAnalyzerMakespan.h"
 #include "IJSPRobustnessAnalyzerTardiness.h"
 #include "MakespanMRAnalyzer.h"
+#include "JSPCertificateAnalyzer.h"
 
 
 // ****************************************************************************
@@ -119,6 +120,7 @@ public:
 		SGSMap[toUpper("ijsp.makespan")] = &createRobustnessInstance<IJSPRobustnessAnalyzerMakespan>;
 		SGSMap[toUpper("ijsp.makespan.makespanMR")] = &createRobustnessInstance<MakespanMRAnalyzer>;
 		SGSMap[toUpper("makespan")] = &createRobustnessInstance<FJSPRobustnessAnalyzerMakespan>;
+		SGSMap[toUpper("jsp.certificate")] = &createRobustnessInstance<JSPCertificateAnalyzer>;
 	}
 
 };
