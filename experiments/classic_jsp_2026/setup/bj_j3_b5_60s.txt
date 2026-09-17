@@ -81,9 +81,10 @@ localsearch.frequency = period
 localsearch.period = 1
 localsearch.target = 1.0
 localsearch.lamarckism = yes
-localsearch.bad-iterations = 20
+localsearch.bad-iterations = 5
 localsearch.tabu-size.min = 3
 
-# Back-jump tracking: on stagnation, return to the most recent point where the
-# search left a best-quality solution and forbid the move it took there.
+# Back-jump: at most 3 jumps per call, 5 bad iterations per pass, so the
+# total work per call stays comparable to the 20 of the plain tabu baseline.
 localsearch.backjump.size = 5
+localsearch.backjump.max-jumps = 3

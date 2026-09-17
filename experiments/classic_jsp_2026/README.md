@@ -144,3 +144,35 @@ individual is taken from the number of generations.
 **Lesson for later comparisons in this directory: 3 runs cannot separate
 configurations on these instances. Differences below roughly half a percent
 need 10 runs or more before they mean anything.**
+
+### Back-jump tracking must be capped, or it starves the population
+
+`LS_TabuBackJump` implements Nowicki and Smutnicki's back-jump idea: remember
+the points where the search left a best-quality solution, and on stagnation
+return to the most recent one with the move it took there forbidden.
+
+Dropped into this hybrid unchanged, it is a disaster. On `ta01`-`ta10`, 10 runs
+of 60 s:
+
+| local search | mean best gap | mean gap per run |
+|---|---|---|
+| plain tabu | **0.280 %** | **1.011 %** |
+| back-jump, uncapped | 6.650 % | 9.224 % |
+
+The counters say why. Plain tabu search stops after 20 non-improving iterations
+and returns in about 1.3 ms, so a 60 s run completes **183 generations**. An
+uncapped back-jump search keeps jumping instead of stopping, so it spends its
+whole `localsearch.max-time` allowance on every call. With a population of 250
+one generation would need 500 s, and the run completes **one generation**: the
+algorithm degenerates into tabu search from a few random starting points and
+the population never evolves.
+
+This is not a defect of back-jump tracking, it is a defect of spending an
+unbounded amount of time per individual inside a population-based method. The
+class therefore caps the jumps per call with `localsearch.backjump.max-jumps`
+(default 3), which keeps the cost of a call within a small factor of plain tabu
+search.
+
+It is the same lesson as the local-search-length probe, in a sharper form: in
+this hybrid the total budget is the scarce resource, and anything that makes
+one local search longer is paid for in generations.

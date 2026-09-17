@@ -14,7 +14,7 @@ namespace FuzzyFW {
 //-----  Main constructor  ----------------------------------------------------
 LS_TabuBackJump::LS_TabuBackJump(ParameterDB *parameters)
 	: LS_Tabu(parameters), backJumpSizeLabel(FUZZYFW_BACKJUMP_SIZE),
-	maxBackJumpPoints(5)
+	maxBackJumpPoints(5), maxJumpsLabel(FUZZYFW_BACKJUMP_MAXJUMPS), maxJumps(3)
 {
 }
 
@@ -22,7 +22,8 @@ LS_TabuBackJump::LS_TabuBackJump(ParameterDB *parameters)
 //-----  Copy constructor  ----------------------------------------------------
 LS_TabuBackJump::LS_TabuBackJump(const LS_TabuBackJump &source)
 	: LS_Tabu(source), backJumpSizeLabel(source.backJumpSizeLabel),
-	maxBackJumpPoints(source.maxBackJumpPoints)
+	maxBackJumpPoints(source.maxBackJumpPoints),
+	maxJumpsLabel(source.maxJumpsLabel), maxJumps(source.maxJumps)
 {
 	// The stack holds the state of a run in progress, so a copy starts empty.
 }
@@ -41,6 +42,14 @@ void LS_TabuBackJump::setup(ParameterDB *parameters) {
 		size = 5;
 	}
 	this->maxBackJumpPoints = (unsigned int)size;
+
+	size = parameters->getInteger(this->maxJumpsLabel, -1);
+	if (size < 0) {
+		std::cout << "Warning: Max. back jumps per call not found. Taking 3";
+		std::cout << " by default" << std::endl;
+		size = 3;
+	}
+	this->maxJumps = (unsigned int)size;
 }
 
 
@@ -106,6 +115,7 @@ FullSolution LS_TabuBackJump::apply(const Solution *solution,
 	clock_gettime(CLOCK_MONOTONIC, &_lsWallStart);
 	double _lsWallLimit = (this->maxTime > 0) ? (this->maxTime * 4.0 + 5.0) : 15.0;
 	bool outOfTime = false;
+	unsigned int jumps = 0;
 
 	this->clearBackJumpStack();
 	bestSolution.first = solution->clone();
@@ -236,8 +246,9 @@ FullSolution LS_TabuBackJump::apply(const Solution *solution,
 		// evaluation budget shared by the whole call, so an exhausted budget
 		// ends the search rather than starting another pass.
 		if (outOfTime || LocalSearch::stoppingCriteria()
-			|| this->backJumpStack.empty())
+			|| this->backJumpStack.empty() || jumps >= this->maxJumps)
 			break;
+		jumps++;
 
 		BackJumpPoint point = this->backJumpStack.back();
 		this->backJumpStack.pop_back();
