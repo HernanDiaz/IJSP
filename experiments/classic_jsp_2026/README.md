@@ -176,3 +176,74 @@ search.
 It is the same lesson as the local-search-length probe, in a sharper form: in
 this hybrid the total budget is the scarce resource, and anything that makes
 one local search longer is paid for in generations.
+
+### Capped back-jump, at a matched budget
+
+With `max-jumps` capped and `bad-iterations` reduced so that the total work per
+call matches the baseline (the run completes 194 generations against the
+baseline's 183, so the budgets really are comparable), `ta01`-`ta10`, 10 runs of
+60 s:
+
+| local search | mean best gap | mean gap per run | solved to optimality |
+|---|---|---|---|
+| plain tabu, 20 bad iterations | 0.280 % | 1.011 % | 4 |
+| plain tabu, tenure 12 | 0.328 % | 1.049 % | 3 |
+| back-jump, 3 jumps, 5 bad iterations | **0.256 %** | 1.146 % | **6** |
+| back-jump, 1 jump, 10 bad iterations | 0.296 % | **0.895 %** | 4 |
+
+Read this carefully. The mean best gaps span 0.256 % to 0.328 %, which is well
+inside the spread this directory has already shown it cannot resolve, so **no
+configuration is demonstrably better than another on that measure**. The one
+signal that is not a fraction of a percent is the count of instances solved to
+optimality: capped back-jump with 3 jumps reaches 6 of 10 against the
+baseline's 4, adding `ta08` and `ta10`. That is suggestive, not established —
+separating it properly needs more runs than fit here.
+
+The two back-jump variants also trade off against each other in a readable way:
+more jumps with shorter passes finds better single solutions, fewer jumps with
+longer passes gives better average runs.
+
+## Verified solutions
+
+`solutions/` holds the best schedule found for each instance, as a certificate
+that passes `verify_certificate.py` against the published instance data.
+`solutions/index.csv` lists them. Every file can be rechecked with:
+
+```
+python3 experiments/classic_jsp_2026/scripts/verify_certificate.py \
+    --orlib experiments/classic_jsp_2026/reference/taillard_orlib.txt \
+    --instance ta01 \
+    --certificate experiments/classic_jsp_2026/solutions/ta01.csv \
+    --bounds experiments/classic_jsp_2026/taillard_bounds.csv
+```
+
+Current state, pooling every run made so far:
+
+| instance | makespan | LB | BKS | |
+|---|---|---|---|---|
+| ta01 | 1231 | 1231 | 1231 | optimal |
+| ta02 | 1244 | 1244 | 1244 | optimal |
+| ta03 | 1218 | 1218 | 1218 | optimal |
+| ta04 | 1175 | 1175 | 1175 | optimal |
+| ta05 | 1231 | 1224 | 1224 | 0.57 % |
+| ta06 | 1240 | 1238 | 1238 | 0.16 % |
+| ta07 | 1228 | 1227 | 1227 | 0.08 % |
+| ta08 | 1217 | 1217 | 1217 | optimal |
+| ta09 | 1291 | 1274 | 1274 | 1.33 % |
+| ta10 | 1241 | 1241 | 1241 | optimal |
+
+Six of the ten 15x15 instances are solved to proven optimality. None of these
+improves on a published result — all ten are closed instances, so matching the
+bound is the best outcome available on them. Improving a published best known
+solution requires the open instances (`ta18`, `ta22`-`ta50`), which are 20x20
+and 30x20 and need a far larger budget than the 60 s runs used here.
+
+## Next steps
+
+* Run the open instances (`taillard_bounds.csv`, status `open`) at a serious
+  time budget. Nothing above has been tried on them.
+* Settle the back-jump question with enough runs to resolve a tenth of a
+  percent, or accept it as undecided.
+* The population collapses: on `ta01` the average makespan reaches the best
+  one's value within 30 generations. Nothing here addresses that, and the
+  seeding-study branch suggests it is the binding constraint.

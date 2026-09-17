@@ -31,9 +31,10 @@ def summarise(directory, orlib, bounds, instances):
             continue
 
         routes, n_jobs, n_machines = load_orlib(orlib, instance)
-        makespans, broken = [], 0
+        makespans, broken, recorded = [], 0, 0
         for path in files:
             for run, rows in sorted(load_certificate(path).items()):
+                recorded += 1
                 makespan, errors = check_run(rows, routes, n_jobs, n_machines)
                 if errors:
                     broken += 1
@@ -41,7 +42,11 @@ def summarise(directory, orlib, bounds, instances):
                     makespans.append(makespan)
 
         if not makespans:
-            results.append((instance, None, None, None, None, "all runs infeasible"))
+            # A certificate with only a header belongs to a run still in
+            # progress; calling that infeasible would raise a false alarm.
+            note = ("all %d runs INFEASIBLE" % recorded if recorded
+                    else "no runs recorded yet")
+            results.append((instance, None, None, None, None, note))
             continue
 
         lb, bks = table.get(instance, (None, None))

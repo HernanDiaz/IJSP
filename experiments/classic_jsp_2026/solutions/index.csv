@@ -1,0 +1,11 @@
+instance,lb,bks,makespan,status,source
+ta01,1231,1231,1231.0,optimal,conf_bj_j1_b10_60s
+ta02,1244,1244,1244.0,optimal,conf_bj_j3_b5_60s
+ta03,1218,1218,1218.0,optimal,conf_bj_j3_b5_60s
+ta04,1175,1175,1175.0,optimal,baseline_quick
+ta05,1224,1224,1231.0,gap 0.57%,conf_bj_j1_b10_60s
+ta06,1238,1238,1240.0,gap 0.16%,conf_jsp_abc_n2_tenure_60s
+ta07,1227,1227,1228.0,gap 0.08%,baseline_quick
+ta08,1217,1217,1217.0,optimal,conf_bj_j1_b10_60s
+ta09,1274,1274,1291.0,gap 1.33%,baseline_quick
+ta10,1241,1241,1241.0,optimal,conf_bj_j1_b10_60s

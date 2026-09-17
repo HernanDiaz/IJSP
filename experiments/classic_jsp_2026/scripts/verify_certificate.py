@@ -64,8 +64,11 @@ def load_certificate(path):
     """Return {run: [row, ...]} with numeric fields already converted."""
     runs = defaultdict(list)
     with open(path) as handle:
-        for row in csv.DictReader(handle, delimiter=";"):
-            runs[int(row["run"])].append({
+        # Collected solutions carry '#' header comments; skip them so a file
+        # under solutions/ can be rechecked exactly as its header promises.
+        lines = [line for line in handle if not line.startswith("#")]
+        for row in csv.DictReader(lines, delimiter=";"):
+            runs[int(row.get("run") or 1)].append({
                 "task": int(row["task"]),
                 "job": int(row["job"]),
                 "operation": int(row["operation"]),
