@@ -110,24 +110,37 @@ Two things had to change before the tuned configuration made sense here:
   at generation 28 with the population average at 1259, i.e. collapsed onto the
   best individual. The setups here use the time budget instead.
 
-### The tabu list was unbounded
+### The tabu list is unbounded, but bounding it does not help
 
 `setup_N2_tuned.txt` sets `localsearch.tabu-size.min` but not
 `localsearch.tabu-size.max`, and `TabuList::setup` then defaults the maximum to
 infinity. Moves are therefore never released: a long tabu run forbids more and
 more of its own neighbourhood, and each `isTabu()` call scans a list that keeps
-growing. This barely shows with `bad-iterations = 20`, which is why the tuning
-did not surface it, but it blocks any attempt to search longer.
+growing. The mechanism is real, and worth knowing before anyone tries to search
+longer.
 
-Probe on the three hardest of the small instances, 3 runs of 60 s, best of 3:
+It does not, however, cost anything at this budget. A first probe on the three
+hardest small instances with **3 runs** suggested it did — bounding the tenure
+at 12 found the optimum of `ta01` where the unbounded list reached only 1240.
+Repeating the comparison properly, **10 runs of 60 s on `ta01`-`ta10`**, the
+effect disappears:
 
-| tenure | bad-iter | LS max-time | ta01 | ta05 | ta09 | mean gap |
-|---|---|---|---|---|---|---|
-| unbounded | 20 | 2 s | 1240 | 1240 | 1291 | 1.12 % |
-| **12** | 20 | 2 s | **1231** (optimal) | **1233** | 1296 | **0.82 %** |
-| 12 | 500 | 5 s | 1231 (optimal) | 1237 | 1298 | 0.98 % |
-| 12 | 2000 | 15 s | 1240 | 1237 | 1296 | 1.17 % |
+| tenure | mean best gap | mean gap per run | instances solved to optimality |
+|---|---|---|---|
+| unbounded | **0.280 %** | **1.011 %** | 4 (`ta01`-`ta04`) |
+| 12 | 0.328 % | 1.049 % | 3 (`ta01`, `ta02`, `ta04`) |
 
-Bounding the tenure finds the optimum of `ta01`; the unbounded list does not.
-Spending *longer* in each local search does not pay at a fixed total budget,
-because time spent on one individual is taken from the number of generations.
+The unbounded list is marginally ahead and the difference is well inside the
+run-to-run spread, so the honest reading is that the two are tied. The 3-run
+probe was simply underpowered: with 10 runs the unbounded configuration finds
+the optimum of `ta01` too.
+
+The reason the tenure does not bite is that `bad-iterations = 20` ends each
+local search long before the list has grown enough to matter. It would bite in
+a configuration that searches longer — and longer local searches were also
+tested, and also did not pay: at a fixed total budget, time spent on one
+individual is taken from the number of generations.
+
+**Lesson for later comparisons in this directory: 3 runs cannot separate
+configurations on these instances. Differences below roughly half a percent
+need 10 runs or more before they mean anything.**
