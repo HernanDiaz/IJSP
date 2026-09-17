@@ -83,3 +83,7 @@ experiments/statistical_results_exp9/*.csv
 
 # Classic-JSP experiment outputs (regenerate with experiments/classic_jsp_2026)
 experiments/classic_jsp_2026/results/
+
+# Python bytecode
+__pycache__/
+*.pyc

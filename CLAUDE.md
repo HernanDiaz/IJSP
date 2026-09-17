@@ -35,6 +35,7 @@ once at startup, then `getXxxObject("name")` to instantiate. Files:
 - `AlgorithmClassRegister` — algorithm names (GA, MA, ABC, ABCT, …) → `EvolutiveAlgorithm*`
 - `IJSPClassRegister` — SGS names (insertion, append, …) → `SGS_IJSP*`
 - `EvaluationClassRegister`, `StatisticsClassRegister`, `LocalSearchClassRegister`
+- `PostExecutionClassRegister` — post-run analyzers
 
 **Adding a new class:** include its `.h` in the register file, add one line in
 `registerClasses()`. No other file needs changing.
@@ -109,6 +110,8 @@ and PPX call it at the start of `applyJobPermutation()` to avoid the repeated
 | `ProblemIJSP.h/.cpp` | Loads IJSP instance file |
 | `ScheduleIJSP.h/.cpp` | Solution representation |
 | `Interval.h` | Interval arithmetic (core math type) |
+| `LS_TabuBackJump.h/.cpp` | Tabu search with back-jump tracking (`tabu-backjump`, alias `tsab`). Added on `experiment/classic-jsp` |
+| `JSPCertificateAnalyzer.h/.cpp` | Post-execution analyzer writing a verifiable schedule (`jsp.certificate`). Added on `experiment/classic-jsp` |
 
 ---
 
@@ -120,6 +123,13 @@ bash experiments/verify_refactor.sh
 Runs 6 instances × 5 configs (30 parallel jobs) against baseline in
 `experiments/statistical_results_exp7/runs_data.csv`. Exit 0 = all match.
 **Always run before committing changes to operators or their registration.**
+
+> **Out of date on `feature/IJSP`.** Neither `experiments/verify_refactor.sh`
+> nor `experiments/statistical_results_exp7/` exists any more; both went in the
+> cleanup commits (`493a3be`, `1fb4ae4`). There is currently no regression
+> check to run before touching an operator or a register. Restoring one, from
+> whichever branch still carries the baseline, is worth doing before the next
+> refactor.
 
 ---
 
@@ -155,3 +165,6 @@ Runs 6 instances × 5 configs (30 parallel jobs) against baseline in
 - Baseline for experiments lives in `experiments/statistical_results_exp7/` — do not modify
 - Generated results go to `experiments/statistical_results/` — ignored by `.gitignore`
 - Working branch: `feature/IJSP`
+- `experiment/classic-jsp` — classic (crisp) JSP on the Taillard instances; see
+  `experiments/classic_jsp_2026/README.md`. Adds two opt-in classes and changes
+  no existing behaviour.

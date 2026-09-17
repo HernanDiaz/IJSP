@@ -1,5 +1,40 @@
 # Classic JSP on the Taillard instances
 
+## About this branch
+
+Branch `experiment/classic-jsp`, taken from `feature/IJSP` at `20d622d`
+("ASOC resubmission: de-anonymize manuscript"). It follows the naming of the
+other exploratory branches in this repository (`experiment/qea`,
+`experiment/multiobjective`, ...) and is meant to be read the same way: a
+self-contained line of work with its own experiment directory, whose findings
+are recorded here whether they were positive or not.
+
+It changes nothing that existing setups depend on. Everything it adds is opt-in
+through a setup file, so `feature/IJSP` and the other experiment branches
+behave exactly as before if this branch is merged.
+
+**Files added or changed outside this directory:**
+
+| file | what and why |
+|---|---|
+| `JSPCertificateAnalyzer.{h,cpp}` | new post-execution analyzer writing a verifiable schedule; used only when a setup asks for `postexecution.analyzer = jsp.certificate` |
+| `LS_TabuBackJump.{h,cpp}` | new local search (tabu with back-jump tracking); used only when a setup asks for `localsearch = tabu-backjump` |
+| `PostExecutionClassRegister.h` | one line registering `jsp.certificate` |
+| `LocalSearchClassRegister.h` | two lines registering `tabu-backjump` and its alias `tsab` |
+| `PostExecutionManager.cpp` | reads the new optional `postexecution.analyzer` setting; falls back to the objective as before when it is absent, so existing setups are unaffected |
+| `Makefile` | the two new `.cpp` files added to `SOURCES` |
+| `.gitignore` | ignores this directory's `results/` and Python bytecode |
+| `TaillardJSP/` | the 80 Taillard instances converted to the framework's format |
+
+**New setup parameters,** all optional:
+
+| parameter | default | meaning |
+|---|---|---|
+| `postexecution.analyzer` | the objective, as before | which post-execution analyzer to run |
+| `localsearch.backjump.size` | 5 | how many decision points the back-jump stack holds |
+| `localsearch.backjump.max-jumps` | 3 | how many jumps one local search call may make |
+
+
 This directory holds a line of work on the **classic (crisp) job shop problem**,
 as opposed to the interval problem (IJSP) the rest of the repository targets.
 The goal is to close the gap to the published lower bounds of the Taillard
