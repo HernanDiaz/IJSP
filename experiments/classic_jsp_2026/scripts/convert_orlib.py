@@ -112,7 +112,7 @@ def main():
 
     written = 0
     with open(args.bounds_csv, "w", newline="") as handle:
-        writer = csv.writer(handle)
+        writer = csv.writer(handle, lineterminator="\n")
         writer.writerow(["instance", "jobs", "machines", "lb", "bks", "status"])
         for name, n_jobs, n_machines, rows, lb, bks in parse_instance_data(
                 args.instance_data):

@@ -60,7 +60,8 @@ def main():
                          "best known %d\n" % (instance, makespan, lb, bks))
             handle.write("# produced by %s run %d; recheck with "
                          "verify_certificate.py\n" % (source, run))
-            writer = csv.DictWriter(handle, fieldnames=FIELDS, delimiter=";")
+            writer = csv.DictWriter(handle, fieldnames=FIELDS, delimiter=";",
+                                    lineterminator="\n")
             writer.writeheader()
             for row in sorted(rows, key=lambda r: r["task"]):
                 writer.writerow({k: ("%g" % row[k] if isinstance(row[k], float)
@@ -73,7 +74,7 @@ def main():
               % (instance, makespan, lb, bks, status, source))
 
     with open(os.path.join(args.out_dir, "index.csv"), "w", newline="") as h:
-        writer = csv.writer(h)
+        writer = csv.writer(h, lineterminator="\n")
         writer.writerow(["instance", "lb", "bks", "makespan", "status",
                          "source"])
         writer.writerows(index)

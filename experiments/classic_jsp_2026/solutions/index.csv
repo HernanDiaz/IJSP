@@ -9,3 +9,13 @@ ta07,1227,1227,1228.0,gap 0.08%,baseline_quick
 ta08,1217,1217,1217.0,optimal,conf_bj_j1_b10_60s
 ta09,1274,1274,1291.0,gap 1.33%,baseline_quick
 ta10,1241,1241,1241.0,optimal,conf_bj_j1_b10_60s
+ta41,1906,2005,2086.0,gap 9.44%,open_backjump_300s
+ta42,1884,1937,2003.0,gap 6.32%,open_backjump_300s
+ta43,1809,1846,1913.0,gap 5.75%,open_baseline_300s
+ta44,1948,1979,2049.0,gap 5.18%,open_backjump_300s
+ta45,1997,2000,2042.0,gap 2.25%,open_baseline_300s
+ta46,1957,2004,2076.0,gap 6.08%,open_backjump_300s
+ta47,1807,1889,1954.0,gap 8.14%,open_backjump_300s
+ta48,1912,1937,2021.0,gap 5.70%,open_backjump_300s
+ta49,1931,1961,2003.0,gap 3.73%,open_backjump_300s
+ta50,1833,1923,2000.0,gap 9.11%,open_backjump_300s
