@@ -25,10 +25,7 @@
  * problem components
 =============================================================================*/
 
-#include "IJSPRobustnessAnalyzerMakespan.h"
 #include "FJSPRobustnessAnalyzerMakespan.h"
-#include "IJSPRobustnessAnalyzerTardiness.h"
-#include "MakespanMRAnalyzer.h"
 #include "JSPCertificateAnalyzer.h"
 
 
@@ -95,14 +92,6 @@ public:
 		return iter->second();
 	}
 
-	static PostExecutionAnalyzer * getMakespanMRObject(std::string name) {
-		std::map<std::string, PostExecutionAnalyzer*(*)()>::iterator iter;
-		iter = PostExecutionClassRegister::SGSMap.find(toUpper(name)+".MAKESPANMR");
-		if (iter == SGSMap.end())
-			return NULL;
-		return iter->second();
-	}
-		
 	// ************************************************************************
 	//
 	// ADD HERE ALL YOUR NEW CLASSES WITH THE NAME YOU WANT TO USE IN THE
@@ -116,9 +105,12 @@ public:
 	 */
 	static void registerClasses() {
 
-		SGSMap[toUpper("ijsp.tardiness")] = &createRobustnessInstance<IJSPRobustnessAnalyzerTardiness>;
-		SGSMap[toUpper("ijsp.makespan")] = &createRobustnessInstance<IJSPRobustnessAnalyzerMakespan>;
-		SGSMap[toUpper("ijsp.makespan.makespanMR")] = &createRobustnessInstance<MakespanMRAnalyzer>;
+		// The IJSP robustness analysers are gone with the interval machinery:
+		// they sampled durations inside [a, b], which is a no-op on a point.
+		// An IJSP setup therefore has to name an analyser explicitly, and the
+		// one that makes sense on crisp data is jsp.certificate below. Leaving
+		// the old names unregistered makes that a loud failure rather than a
+		// silent substitution.
 		SGSMap[toUpper("makespan")] = &createRobustnessInstance<FJSPRobustnessAnalyzerMakespan>;
 		SGSMap[toUpper("jsp.certificate")] = &createRobustnessInstance<JSPCertificateAnalyzer>;
 	}

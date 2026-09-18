@@ -109,7 +109,7 @@ and PPX call it at the start of `applyJobPermutation()` to avoid the repeated
 | `SharedVarsEvolutionary.h` | Shared-state container (rng, encoder, decoder, params) |
 | `ProblemIJSP.h/.cpp` | Loads IJSP instance file |
 | `ScheduleIJSP.h/.cpp` | Solution representation |
-| `Interval.h` | Interval arithmetic (core math type) |
+| `CrispTime.h/.cpp` | `Crisp`, the core time type: one `int`, all comparisons inline. Replaces `Interval` on `experiment/classic-jsp-crisp` |
 | `LS_TabuBackJump.h/.cpp` | Tabu search with back-jump tracking (`tabu-backjump`, alias `tsab`). Added on `experiment/classic-jsp` |
 | `JSPCertificateAnalyzer.h/.cpp` | Post-execution analyzer writing a verifiable schedule (`jsp.certificate`). Added on `experiment/classic-jsp` |
 

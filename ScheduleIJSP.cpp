@@ -241,10 +241,8 @@ void ScheduleIJSP::verifyHeads(const FuzzyFW::Crisp& expectedMakespan,
 		}
 
 		// Accumulate exact makespan using recomputed heads
-		double ct_a = expected.a + this->taskInfo[t].task->p.a;
-		double ct_b = expected.b + this->taskInfo[t].task->p.b;
-		if (ct_a > exactMakespan.a) exactMakespan.a = ct_a;
-		if (ct_b > exactMakespan.b) exactMakespan.b = ct_b;
+		int ct = expected.v + this->taskInfo[t].task->p.v;
+		if (ct > exactMakespan.v) exactMakespan.v = ct;
 
 		// Decrement remaining count for successors
 		int js = this->taskInfo[t].task->js;
@@ -265,12 +263,13 @@ void ScheduleIJSP::verifyHeads(const FuzzyFW::Crisp& expectedMakespan,
 			<< " nScheduledTasks=" << this->nScheduledTasks << std::endl;
 	}
 
-	// Compare exact makespan with neighbourhood-computed makespan
-	if (std::fabs(exactMakespan.a - expectedMakespan.a) > AccuracyError ||
-		std::fabs(exactMakespan.b - expectedMakespan.b) > AccuracyError) {
+	// Compare exact makespan with the neighbourhood-computed one. Crisp times
+	// are exact integers, so this is an equality check and not a tolerance
+	// one, matching the head check above.
+	if (exactMakespan.v != expectedMakespan.v) {
 		std::cerr << "[" << context << "] MAKESPAN MISMATCH"
-			<< " computed=[" << expectedMakespan.a << "," << expectedMakespan.b << "]"
-			<< " exact=[" << exactMakespan.a << "," << exactMakespan.b << "]"
+			<< " computed=" << expectedMakespan.v
+			<< " exact=" << exactMakespan.v
 			<< std::endl;
 	}
 }
@@ -344,15 +343,11 @@ bool ScheduleIJSP::adjustHead(const ScheduledTaskInfo currentTask, ScheduledTask
 	FuzzyFW::Crisp completionTime = currentTask.head + currentTask.task->p;
 	bool repairNeed = false;
 	
-	if (successor->head.a < 0 || successor->head.b < 0) return false;
+	if (successor->head.v < 0) return false;
 
-	if (completionTime.a > successor->head.a) {
-		successor->head.a = completionTime.a;
-	    repairNeed = true;
-	}
-	if (completionTime.b > successor->head.b) {
-	   successor->head.b = completionTime.b;
-    	repairNeed = true;
+	if (completionTime.v > successor->head.v) {
+		successor->head.v = completionTime.v;
+		repairNeed = true;
 	}
 
 	return repairNeed && successor->task;
