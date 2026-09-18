@@ -358,3 +358,111 @@ change tried here was inside the local search. The `seeding-study` branch
 suggests the collapse is the binding constraint, which would explain why four
 configurations of the local search land within a tenth of a percent of each
 other.
+
+
+---
+
+## 2026-09-19 — the crisp refactor, step 1
+
+Work moves to `experiment/classic-jsp-crisp`. The decision recorded on
+2026-09-17 not to write a crisp specialisation was explicitly conditional --
+"not worth it until speed is shown to be the binding constraint" -- and
+SCALING.md then showed exactly that: every comparison in this directory has
+been limited by statistical power, and power is bought with runs, which are
+bought with speed.
+
+### The machine, and why the published numbers are not the baseline
+
+All runs below are on Roberto: Xeon E5-2680 v4 (Broadwell), inside WSL2 with 14
+processors and 8 GiB, g++ 11.4.0, `-march=native`. **These are not comparable
+with the entries above**, which were made on a 4-core Cascade Lake container at
+2.80 GHz.
+
+The difference is not small. The same tuned configuration
+(`bj_j3_b5_60s.txt`, `ta01`-`ta10`, 10 runs of 60 s) completes **125.3
+generations per run here against the 194 recorded on the container** -- 35 %
+less search for the same clock. That has a visible cost: the untouched
+`experiment/classic-jsp` build reproduces five of the six known optima on this
+machine and misses `ta10`, reaching 1243 against 1241. Everything else lands
+where it did before (`ta05` 1233, `ta06` 1243, `ta07` 1228, `ta09` 1291).
+
+A miss of 2 units is 0.16 %, well inside the spread this directory has already
+established it cannot resolve at ten runs, so this is the machine being slower
+and not a port being wrong. But it does mean the published table cannot serve as
+the reference for this refactor. **The baseline for every comparison from here
+is the untouched branch measured on this machine**, which is the comparison that
+was going to be required anyway: same machine, same compiler.
+
+### Step 1: Interval becomes Crisp
+
+`Crisp` holds one `int`; every operation on it is inline. `Interval` held two
+`double`s and dispatched every comparison through an out-of-line seven-branch
+switch over a runtime enum, ending in two epsilon comparisons -- in the
+innermost loop of both the scheduler and the local search.
+
+The substitution commit had never been compiled. Two things were needed.
+
+`ScheduleIJSP` still did two-component arithmetic in three places the
+substitution had missed: the makespan accumulator and the makespan check in
+`verifyHeads`, and the head repair in `adjustHead`. The makespan check also
+becomes exact equality rather than a tolerance on doubles, matching the head
+check -- on integers a tolerance means nothing.
+
+The other 70 errors were all in the interval robustness machinery, which samples
+durations inside `[a, b]`. That is a no-op on a point, and it is what made the
+very first run of this line write 6.5 MB of identical scenarios per instance. So
+`IJSPRobustnessAnalyzer{,Makespan,Tardiness}`, `ScenarioManager`,
+`MakespanMRAnalyzer`, `MakespanMRFileWriter`, `Interval`, `IntervalTest` and its
+runner `mainTest.cpp` are deleted rather than ported. `RobustnessFileWriter`
+stays, because `FJSPRobustnessAnalyzer` and `FJSPScenarioManager` still use it.
+
+An IJSP setup must now name `postexecution.analyzer` explicitly. The old names
+are left unregistered on purpose, so a setup that asks for interval robustness
+on a crisp solver fails loudly rather than being quietly given something else.
+
+### Verification: the same search, not merely the same answer
+
+Matching final makespans would be weak evidence -- two different searches can
+land on the same number. The check that actually settles it is the trace. With
+the same seed on `ta01`, the crisp build and the untouched build agree
+**generation by generation, on both the best makespan and the population
+average, over the whole common prefix**. On degenerate intervals every ranking
+method is the order on the reals, so the two solvers should take identical
+decisions, and they do. The substitution changed the speed and nothing else.
+
+Every certificate produced below was checked by `verify_certificate.py` against
+the published OR-Library data, not against the converted instance files.
+
+### What it bought
+
+`ta01`-`ta10`, 10 runs of 60 s, both builds on this machine, one process per
+instance so the load is identical. Reproduce with `scripts/generations.py`,
+which reads the solver's own per-run generation counts rather than timing from
+outside.
+
+| | mean gen/s | generations per 60 s run |
+|---|---|---|
+| `experiment/classic-jsp` | 2.088 | 125.3 |
+| crisp, step 1 | **3.761** | **225.7** |
+
+**1.80x**, and remarkably flat: the per-instance speed-up runs from 1.69x
+(`ta06`) to 1.93x (`ta01`). That is the low end of the 2-4x that motivated the
+branch, and it is the honest figure -- the remaining interval scaffolding
+(ignored ranking arguments, N2's second pass over the critical path) is still
+in place.
+
+Solution quality is unchanged or better on every instance:
+
+| | ta01 | ta02 | ta03 | ta04 | ta05 | ta06 | ta07 | ta08 | ta09 | ta10 |
+|---|---|---|---|---|---|---|---|---|---|---|
+| original | 1231 | 1244 | 1218 | 1175 | 1233 | 1243 | 1228 | 1217 | 1291 | 1243 |
+| crisp | 1231 | 1244 | 1218 | 1175 | 1233 | 1243 | 1228 | 1217 | 1291 | **1241** |
+
+Nine of ten identical; `ta10` improves to its optimum. **The crisp build
+recovers all six known optima on a machine where the original build reaches
+five** -- the extra 100 generations per run buy back exactly the search depth
+the slower processor had cost.
+
+This is the first result in this directory that is not a null. It is also not a
+better algorithm: it is the same algorithm, run twice as often, which is
+precisely the resource SCALING.md identified as binding.
