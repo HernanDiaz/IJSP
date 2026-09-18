@@ -274,10 +274,54 @@ bound is the best outcome available on them. Improving a published best known
 solution requires the open instances (`ta18`, `ta22`-`ta50`), which are 20x20
 and 30x20 and need a far larger budget than the 60 s runs used here.
 
+## Where the benchmark is actually hard
+
+Run `scripts/analyze_hardness.py` to reproduce:
+
+| group | n/m | LB == trivial | LB above trivial | open | mean (BKS-LB)/LB |
+|---|---|---|---|---|---|
+| 15x15 | 1.0 | 0/10 | +31.23 % | 0/10 | - |
+| 20x15 | 1.3 | 0/10 | +15.34 % | 1/10 | 1.38 % |
+| 20x20 | 1.0 | 0/10 | +27.40 % | **7/10** | 2.86 % |
+| 30x15 | 2.0 | 5/10 | +3.43 % | 4/10 | 0.47 % |
+| **30x20** | 1.5 | 0/10 | +8.36 % | **10/10** | 2.65 % |
+| 50x15 | 3.3 | 9/10 | +0.15 % | 0/10 | - |
+| 50x20 | 2.5 | 5/10 | +0.26 % | 0/10 | - |
+| 100x20 | 5.0 | 9/10 | +0.03 % | 0/10 | - |
+
+Size does not predict difficulty. The `100x20` instances have 2000 operations
+and are all solved; the `30x20` instances have 600 and are all open.
+
+What predicts it is the jobs-to-machines ratio, through the strength of the
+trivial bound `max(busiest machine's workload, longest job)`. At `n/m = 5` that
+bound already *equals* the published lower bound in 9 instances out of 10 and
+is within 0.03 % of it in the rest: the bottleneck machine carries so much work
+that keeping it busy is essentially all there is to do, and any competent
+heuristic reaches the optimum. At `n/m = 1` the published bound sits 27-31 %
+above the trivial one -- establishing it took real branch-and-bound work, and
+the instance is combinatorially hard.
+
+Difficulty therefore lives where an instance is square *and* too large for exact
+methods. `15x15` is square and hard but only 225 operations, so branch and bound
+closed all ten. `20x20` (400 operations) and `30x20` (600) are square and out of
+reach: **17 of the 22 open instances are in those two groups**, and `ta41`-`ta50`
+is the hardest group in the benchmark -- all ten open, mean gap 2.65 %.
+
+Two cautions before competing against any of these numbers:
+
+* **"Closed" means the published lower bound and the best known solution
+  coincide**, so optimality is proven. It does not mean the instance is easy:
+  `ta01` took the literature decades.
+* **The bounds here are a snapshot of a literature survey**
+  (`thomasWeise/jsspInstancesAndResults`), not a live registry. Instances may
+  have been closed or best-known solutions improved since it was compiled. Any
+  claim to have improved a published result must be checked against the current
+  literature first -- this file is not sufficient evidence.
+
 ## Next steps
 
-* Run the open instances (`taillard_bounds.csv`, status `open`) at a serious
-  time budget. Nothing above has been tried on them.
+* **`ta41`-`ta50` (30x20)** is where a published result could move. `ta51`-`ta80`
+  are a waste of time however impressive their size.
 * Settle the back-jump question with enough runs to resolve a tenth of a
   percent, or accept it as undecided.
 * The population collapses: on `ta01` the average makespan reaches the best
