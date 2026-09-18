@@ -319,42 +319,48 @@ Two cautions before competing against any of these numbers:
   claim to have improved a published result must be checked against the current
   literature first -- this file is not sufficient evidence.
 
-## The 30x20 group (ta41-ta50)
+## The open instances (all 22)
 
-Both configurations, 5 runs of 300 s each, on the hardest group in the
-benchmark. Recomputed from certificates; compare with `scripts/compare.py`.
+Both configurations, 5 runs of 300 s each, on every open Taillard instance.
+Recomputed from certificates; reproduce with `scripts/compare.py`.
 
-| | mean best gap to LB | mean gap per run |
+| | mean best gap to LB |
+|---|---|
+| plain tabu | 5.289 % |
+| back-jump, 3 jumps | 5.173 % |
+
+**No published result is in reach.** Best known solutions on these instances sit
+3-5 % below anything produced here, and they are the product of decades of
+specialised work. The runs were made for a baseline and a comparison, not in the
+expectation of beating a record.
+
+### Back-jump: a promising subgroup that did not replicate
+
+The `30x20` group was run first, because it is the hardest, and back-jump led
+there on 8 of 10 instances. Extending to the remaining 12 open instances
+reversed it:
+
+| instances | back-jump better (per-instance mean) | Wilcoxon |
 |---|---|---|
-| plain tabu | 6.826 % | 7.891 % |
-| back-jump, 3 jumps | **6.380 %** | **7.604 %** |
+| `ta41`-`ta50`, looked at first | 8 of 10 | p = 0.084 |
+| the other 12 | **2 of 12** | **p = 0.022, favouring plain tabu** |
+| all 22 | 10 of 22 | p = 1.000 |
 
-Two things follow, and they pull in opposite directions.
+On the 12 instances added afterwards plain tabu is better at the 5 % level, and
+over the whole open set the two are indistinguishable.
 
-**The gap here is an order of magnitude larger than on `ta01`-`ta10`** -- 6.4 %
-against 0.26 %. Best known solutions on this group sit 3-5 % below anything
-produced here, and those numbers come from decades of specialised work. **No
-published result is within reach of this configuration**, and the runs were not
-made in the expectation that one would be.
+The parsimonious reading is that the first result was a selection effect: one
+group, chosen for being hardest, inspected after the fact, never significant on
+its own. The prediction it generated was then tested on 12 instances nobody had
+looked at, and failed in the other direction.
 
-**Hard instances discriminate between configurations where easy ones cannot.**
-Back-jump is ahead on 8 of 10 instances by per-instance mean and 7 of 10 by best
-run, with per-instance differences up to 29 makespan units. On `ta01`-`ta10` the
-same two configurations sat 0.024 percentage points apart and nothing could be
-said. That is a useful methodological result on its own: **a comparison run on
-closed 15x15 instances cannot detect a difference this algorithm actually has.**
+**Back-jump is therefore not carried forward as an improvement.** The class
+stays -- it is correct, capped, and inert unless a setup asks for it -- but the
+default configuration has no reason to use it.
 
-It is still not statistically established:
-
-```
-best-of-runs:      back-jump wins 7, loses 2, ties 1   sign test p = 0.180
-per-instance mean: back-jump better on 8 of 10         Wilcoxon p = 0.084
-```
-
-The direction is consistent across two measures and the effect is far larger
-than anything seen on the easy instances, but 10 instances at 5 runs does not
-reach the 5 % level. Settling it needs more paired samples -- more open
-instances, more runs, or both.
+This also retires the claim made when the `30x20` numbers first came in, that
+hard instances discriminate where easy ones cannot. The 12 added instances
+discriminated perfectly well; they just discriminated the other way.
 
 ## Choosing a time budget
 

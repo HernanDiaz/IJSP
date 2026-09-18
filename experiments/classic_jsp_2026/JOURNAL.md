@@ -291,6 +291,50 @@ setup's `runs` value, redoing an instance that has fewer.
 Also switched `MAX_PARALLEL` to default to `nproc` instead of a hardcoded 4, in
 preparation for running this on a larger machine.
 
+### The back-jump hypothesis does not survive the full sample
+
+Extended to all 22 open instances, 5 runs of 300 s. The result reverses.
+
+| instances | back-jump better (per-instance mean) | Wilcoxon |
+|---|---|---|
+| `ta41`-`ta50` (30x20), looked at first | 8 of 10 | p = 0.084 |
+| the other 12 open instances | **2 of 12** | **p = 0.022, favouring plain tabu** |
+| all 22 | 10 of 22 | p = 1.000 |
+
+On the 12 instances added afterwards, plain tabu is better at the 5 % level.
+Over the whole open set there is nothing: 10 of 22, p = 1.000, and the mean best
+gaps are 5.289 % against 5.173 %.
+
+The parsimonious reading is that the `ta41`-`ta50` result was a selection effect.
+It was one group, chosen because it was the hardest, inspected after the fact,
+and it never reached significance on its own. The prediction it generated --
+back-jump wins on hard instances -- was then tested on 12 instances that had not
+been looked at, and failed, significantly, in the other direction. That is the
+test doing its job.
+
+The alternative reading, that back-jump genuinely helps only at 30x20 and hurts
+below it, cannot be excluded from this data, but nothing here supports
+preferring it over the simpler explanation. **Back-jump is not carried forward
+as an improvement.** The class stays -- it is correct, capped, and costs nothing
+unless a setup asks for it -- but the default configuration has no reason to use
+it.
+
+What this also retires is the methodological claim made when the 30x20 numbers
+came in: that hard instances discriminate where easy ones cannot. The 12 added
+instances discriminated perfectly well -- they just discriminated the other way.
+
+### A bug in the comparison script, caught by the result
+
+`compare.py` printed "B is better at the 5% level" whenever `p < 0.05`, without
+checking the direction. On the 12 added instances it therefore announced
+back-jump as the winner of a test that back-jump had lost 2-10. The p-value says
+the two differ, not which way round.
+
+It was visible here only because the per-instance counts printed on the line
+above contradicted the verdict. A quieter version of this script would have put
+the wrong conclusion in this journal and nothing would have caught it. The
+verdict now names the side the counts actually favour.
+
 ## Where it stands
 
 Six of `ta01`-`ta10` solved to proven optimality: 1231, 1244, 1218, 1175, 1217,
@@ -298,9 +342,16 @@ Six of `ta01`-`ta10` solved to proven optimality: 1231, 1244, 1218, 1175, 1217,
 of this improves a published result and none of it could — all ten are closed
 instances.
 
-**Not started: the 22 open instances** (`ta18`, `ta22`-`ta50`). They are the only
-place a published best-known solution can be improved, they are 20x20 and 30x20,
-and 60 s runs on 4 cores will not touch them.
+All 22 open instances have now been run with both configurations, 5 runs of
+300 s: mean best gap to the lower bound 5.289 % for plain tabu, 5.173 % for
+back-jump, with best known solutions sitting 3-5 % below both. No published
+result is in reach from here.
+
+**Three changes were tried inside the local search and none of them helped**:
+bounding the tabu tenure, lengthening the local search, and back-jump tracking.
+The only clear gain in the whole line came from the stopping rule — letting runs
+use their time budget instead of stopping after 20 generations without
+improvement.
 
 **Not addressed: the population collapse** seen in the very first run. Every
 change tried here was inside the local search. The `seeding-study` branch

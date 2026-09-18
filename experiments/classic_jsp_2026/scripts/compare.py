@@ -138,8 +138,13 @@ def main():
     print("per-instance mean: B better on %d of %d  -- Wilcoxon W = %s, "
           "p = %.3f" % (positive, len(mean_differences), statistic, p))
 
+    # A significant p says the two differ, not which way round. Reading the
+    # verdict off the p-value alone reports the loser as the winner.
     if p < 0.05:
-        print("\nB is better at the 5%% level on the per-instance mean.")
+        winner, count = ((name_b, positive) if positive * 2 > len(mean_differences)
+                         else (name_a, len(mean_differences) - positive))
+        print("\n%s is better at the 5%% level on the per-instance mean "
+              "(%d of %d instances)." % (winner, count, len(mean_differences)))
     else:
         print("\nNot separable at the 5%% level. The direction may still be "
               "real; this many\ninstances and runs cannot establish it.")
