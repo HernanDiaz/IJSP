@@ -51,95 +51,77 @@ unsigned int NB_ParallelN2Inter_MakespanIJSP::findNewNeighbours(
 
 	this->numNeighbours = 0;
 
-	// boundary_m[x] = machine successor y of x if (x,y) is boundary in G-, else -1
-	// boundary_p[x] = same for G+
-	std::vector<int> boundary_m(nTasks, -1);
-	std::vector<int> boundary_p(nTasks, -1);
+	// boundary[x] = machine successor y of x if (x, y) is a boundary arc, else -1.
+	//
+	// This neighbourhood existed to intersect the boundary arcs of the two
+	// extreme graphs G- and G+, one per interval endpoint, and to fall back to
+	// their union when the intersection came out empty. On crisp times G- and
+	// G+ are the same graph: the second pass ran identical code over identical
+	// data and produced a second copy of the same vector, so the intersection,
+	// the union and either operand all coincide. One pass, one vector, and the
+	// empty-intersection fallback has nothing left to fall back to.
+	//
+	// What this means for a setup file is worth stating plainly: on crisp data
+	// ijsp.makespan.n2inter is the same neighbourhood as ijsp.makespan.n2.
+	std::vector<int> boundary(nTasks, -1);
+	std::vector<char> criticalPath(nTasks, false);
 
-	// Two passes: collect boundary arcs per extreme graph
-	for (short int comp = 1; comp <= 2; comp++) {
-		std::vector<int>  &boundary    = (comp == 1) ? boundary_m    : boundary_p;
-		std::vector<char>  criticalPath(nTasks, false);
+	// Seed queue: last tasks on each machine that achieve the makespan
+	while (!taskQueue.empty()) taskQueue.pop();
+	for (size_t i = 0; i < this->schedule->lastTaskMachine.size(); i++) {
+		if (this->schedule->getCTMachine(i) == currentMakespan) {
+			criticalPath[this->schedule->lastTaskMachine[i]] = true;
+			taskQueue.push(this->schedule->lastTaskMachine[i]);
+		}
+	}
 
-		// Seed queue: last tasks on each machine that achieve the makespan
-		while (!taskQueue.empty()) taskQueue.pop();
-		for (size_t i = 0; i < this->schedule->lastTaskMachine.size(); i++) {
-			if (this->schedule->getCTMachine(i).EqualComponent(currentMakespan, comp)) {
-				criticalPath[this->schedule->lastTaskMachine[i]] = true;
-				taskQueue.push(this->schedule->lastTaskMachine[i]);
+	while (taskQueue.size() > 0) {
+		taskId = taskQueue.front();
+		taskQueue.pop();
+		task = this->schedule->taskInfo[taskId];
+
+		if (task.mp != -1 && task.mp != task.task->jp) {
+			mp = this->schedule->taskInfo[task.mp];
+			if ((mp.head + mp.task->p) == task.head) {
+				taskQueue.push(task.mp);
+				criticalPath[task.mp] = true;
+
+				// Boundary check (same as N2)
+				if (mp.mp != -1)
+					mpmp = this->schedule->taskInfo[mp.mp];
+				if (task.ms != -1)
+					ms = this->schedule->taskInfo[task.ms];
+
+				bool isBoundary = (mp.mp == -1 || task.ms == -1
+					|| !((mpmp.head + mpmp.task->p) == mp.head)
+					|| (!((task.head + task.task->p) == ms.head)
+						|| criticalPath[task.ms] == false));
+
+				// Record first time only (BFS may visit the arc multiple times)
+				if (isBoundary && boundary[task.mp] == -1)
+					boundary[task.mp] = (int)taskId;
 			}
 		}
 
-		while (taskQueue.size() > 0) {
-			taskId = taskQueue.front();
-			taskQueue.pop();
-			task = this->schedule->taskInfo[taskId];
-
-			if (task.mp != -1 && task.mp != task.task->jp) {
-				mp = this->schedule->taskInfo[task.mp];
-				if ((mp.head + mp.task->p).EqualComponent(task.head, comp)) {
-					taskQueue.push(task.mp);
-					criticalPath[task.mp] = true;
-
-					// Boundary check (same as N2)
-					if (mp.mp != -1)
-						mpmp = this->schedule->taskInfo[mp.mp];
-					if (task.ms != -1)
-						ms = this->schedule->taskInfo[task.ms];
-
-					bool isBoundary = (mp.mp == -1 || task.ms == -1
-						|| !(mpmp.head + mpmp.task->p).EqualComponent(mp.head, comp)
-						|| (!(task.head + task.task->p).EqualComponent(ms.head, comp)
-							|| criticalPath[task.ms] == false));
-
-					// Record first time only (BFS may visit the arc multiple times)
-					if (isBoundary && boundary[task.mp] == -1)
-						boundary[task.mp] = (int)taskId;
-				}
-			}
-
-			if (task.task->jp != -1) {
-				jp = this->schedule->taskInfo[task.task->jp];
-				if ((jp.head + jp.task->p).EqualComponent(task.head, comp)) {
-					taskQueue.push(task.task->jp);
-					criticalPath[task.task->jp] = true;
-				}
+		if (task.task->jp != -1) {
+			jp = this->schedule->taskInfo[task.task->jp];
+			if ((jp.head + jp.task->p) == task.head) {
+				taskQueue.push(task.task->jp);
+				criticalPath[task.task->jp] = true;
 			}
 		}
 	}
 
-	// Build intersection
-	bool anyAdded = false;
-	std::vector<char> added(nTasks, false);
-
+	// Build the neighbourhood from the boundary arcs
 	for (unsigned int x = 0; x < nTasks; x++) {
-		if (boundary_m[x] >= 0 && boundary_p[x] >= 0 && !added[x]) {
-			int y = boundary_m[x];   // == boundary_p[x] (same machine order)
+		if (boundary[x] >= 0) {
+			int y = boundary[x];
 			if (this->numNeighbours < this->neighbours.size()
 				&& this->neighbours[this->numNeighbours] != nullptr)
 				this->neighbours[this->numNeighbours]->setValues(x, y);
 			else
 				this->neighbours.push_back(std::make_unique<NeighbourIJSP_Arc>(x, y));
 			this->numNeighbours++;
-			added[x] = true;
-			anyAdded = true;
-		}
-	}
-
-	// Fallback: intersection empty → use N2 union
-	if (!anyAdded) {
-		for (unsigned int x = 0; x < nTasks; x++) {
-			int y = (boundary_m[x] >= 0) ? boundary_m[x]
-			      : (boundary_p[x] >= 0) ? boundary_p[x] : -1;
-			if (y >= 0 && !added[x]) {
-				if (this->numNeighbours < this->neighbours.size()
-					&& this->neighbours[this->numNeighbours] != nullptr)
-					this->neighbours[this->numNeighbours]->setValues(x, y);
-				else
-					this->neighbours.push_back(std::make_unique<NeighbourIJSP_Arc>(x, y));
-				this->numNeighbours++;
-				added[x] = true;
-			}
 		}
 	}
 

@@ -34,7 +34,6 @@ namespace IJSP {
 		FuzzyFW::Crisp mtHead, mtPT;
 		char found;	// Big gap found in the schedule
 		// Maxims are made component by component
-		FuzzyFW::Crisp::Maximum maxComp = FuzzyFW::Crisp::M_COMPONENT;
 
 		int mac = task->machine;
 		int job = task->job;
@@ -56,7 +55,7 @@ namespace IJSP {
 		if (mp != -1)
 			mtHead = this->schedule->taskInfo[mp].head;
 
-		while (mp != -1 && mtHead.isGreaterEqualTo(Stime, this->cpComp)) {
+		while (mp != -1 && mtHead >= Stime) {
 			ms = mp;
 			mp = this->schedule->taskInfo[ms].mp;
 			if (mp != -1)
@@ -67,7 +66,7 @@ namespace IJSP {
 		if (mp != -1) {
 			mtHead = this->schedule->taskInfo[mp].head;
 			mtPT = this->schedule->taskInfo[mp].task->p;
-			Stime = maximum(Stime, mtHead + mtPT, maxComp);
+			Stime = std::max(Stime, mtHead + mtPT);
 		}
 
 
@@ -78,11 +77,11 @@ namespace IJSP {
 			mtHead = this->schedule->taskInfo[ms].head;
 			mtPT = this->schedule->taskInfo[ms].task->p;
 
-			if (mtHead.isGreaterEqualTo(Stime + task->p, this->cpComp))
+			if (mtHead >= (Stime + task->p))
 				found = true;
 			else {
 				mp = ms;
-				Stime = maximum(Stime, mtHead + mtPT, maxComp);
+				Stime = std::max(Stime, mtHead + mtPT);
 				ms = this->schedule->taskInfo[mp].ms;
 			}
 		}

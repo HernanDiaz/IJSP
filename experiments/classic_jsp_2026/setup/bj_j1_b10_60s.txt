@@ -1,11 +1,10 @@
 # Classic JSP (crisp) — ABCPSO + tabu search on N2.
 #
-# A classic JSP instance is an IJSP instance whose processing times are all
-# degenerate intervals [p, p]. With a == b every Interval ranking method
-# collapses to the order on the reals and the component-wise maximum is the
-# ordinary maximum, so this configuration optimises the classic makespan
-# exactly. LEX2 is kept because it is the comparison the irace tuning of the
-# COR-2026 study selected; on crisp data it is equivalent to EV.
+# Processing times are crisp integers. The interval machinery this branch grew
+# out of is gone: there is one order on the times and std::max is the maximum,
+# so the ranking strategy this file used to select (LEX2, from the irace tuning
+# of the COR-2026 study, equivalent to EV on crisp data) no longer names a
+# choice and is no longer set.
 #
 # Hyperparameters are those of experiments/cor_tabu_2026/setup/setup_N2_tuned.txt
 # except for the stopping rule: the tuned setup stops after 20 generations
@@ -22,20 +21,17 @@ problem.hasbounds = no
 
 # OBJECTIVE
 objective = ijsp.makespan
-evaluation.interval.comparison = LEX2
-evaluation.interval.maximum = Component
 evaluation.lamarckism = yes
 
 # POST EXECUTION
-# The robustness analysis samples durations inside each interval, which is a
-# no-op on degenerate intervals; emit a verifiable schedule instead.
+# The interval robustness analysers are gone with the intervals; a run emits a
+# verifiable schedule instead, which is what verify_certificate.py checks.
 postexecution.analyzer = jsp.certificate
 
 # CODIFICATION
 codification = ijsp.job-order
 decodification = ijsp.job-order
 decode.sgs = insertion
-sgs.interval.comparison = LEX2
 
 # CREATION
 creation = ijsp.random

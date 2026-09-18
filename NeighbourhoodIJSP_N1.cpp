@@ -31,41 +31,43 @@ unsigned int NB_ParallelN1_MakespanIJSP::findNewNeighbours(
 
 	this->numNeighbours = 0;
 	// Look for critical paths in each parallell graph:
-	for (short int comp = 1; comp <= 2; comp++) {
-		std::fill(inQueue.begin(), inQueue.end(), false);
-		// Look for the tasks defining the makespan value
-		for (size_t i = 0; i < this->schedule->lastTaskMachine.size(); i++) {
-			if (this->schedule->getCTMachine(i).EqualComponent(currentMakespan, comp)) {
-				int t = this->schedule->lastTaskMachine[i];
-				if (!inQueue[t]) { taskQueue.push(t); inQueue[t] = true; }
+	// One pass over the critical path. With interval durations this ran
+	// once per endpoint, because G- and G+ are different graphs; on crisp
+	// times they are the same graph, so the second pass re-asked the
+	// questions the first had answered and added[] discarded the answers.
+	std::fill(inQueue.begin(), inQueue.end(), false);
+	// Look for the tasks defining the makespan value
+	for (size_t i = 0; i < this->schedule->lastTaskMachine.size(); i++) {
+		if (this->schedule->getCTMachine(i) == currentMakespan) {
+			int t = this->schedule->lastTaskMachine[i];
+			if (!inQueue[t]) { taskQueue.push(t); inQueue[t] = true; }
+		}
+	}
+
+	while (taskQueue.size() > 0) {
+		taskId = taskQueue.front();
+		taskQueue.pop();
+		task = this->schedule->taskInfo[taskId];
+		if (task.mp != -1 && task.mp != task.task->jp) {
+			mp = this->schedule->taskInfo[task.mp];
+			if ((mp.head + mp.task->p) == task.head) {
+				if (!inQueue[task.mp]) { taskQueue.push(task.mp); inQueue[task.mp] = true; }
+				if (!added[task.mp]) {
+					if (this->numNeighbours < this->neighbours.size()
+						&& this->neighbours[this->numNeighbours] != nullptr)
+						this->neighbours[this->numNeighbours]->setValues(task.mp, taskId);
+					else
+						this->neighbours.push_back(std::make_unique<NeighbourIJSP_Arc>(task.mp, taskId));
+					this->numNeighbours++;
+					added[task.mp] = true;
+				}
 			}
 		}
 
-		while (taskQueue.size() > 0) {
-			taskId = taskQueue.front();
-			taskQueue.pop();
-			task = this->schedule->taskInfo[taskId];
-			if (task.mp != -1 && task.mp != task.task->jp) {
-				mp = this->schedule->taskInfo[task.mp];
-				if ((mp.head + mp.task->p).EqualComponent(task.head, comp)) {
-					if (!inQueue[task.mp]) { taskQueue.push(task.mp); inQueue[task.mp] = true; }
-					if (!added[task.mp]) {
-						if (this->numNeighbours < this->neighbours.size()
-							&& this->neighbours[this->numNeighbours] != nullptr)
-							this->neighbours[this->numNeighbours]->setValues(task.mp, taskId);
-						else
-							this->neighbours.push_back(std::make_unique<NeighbourIJSP_Arc>(task.mp, taskId));
-						this->numNeighbours++;
-						added[task.mp] = true;
-					}
-				}
-			}
-
-			if (task.task->jp != -1) {
-				jp = this->schedule->taskInfo[task.task->jp];
-				if ((jp.head + jp.task->p).EqualComponent(task.head, comp))
-					if (!inQueue[task.task->jp]) { taskQueue.push(task.task->jp); inQueue[task.task->jp] = true; }
-			}
+		if (task.task->jp != -1) {
+			jp = this->schedule->taskInfo[task.task->jp];
+			if ((jp.head + jp.task->p) == task.head)
+				if (!inQueue[task.task->jp]) { taskQueue.push(task.task->jp); inQueue[task.task->jp] = true; }
 		}
 	}
 	return this->numNeighbours;
@@ -96,7 +98,7 @@ FuzzyFW::Fitness *NB_ParallelN1_MakespanIJSP::evaluateNeighbour(
 
 	currentMakespan = this->currentFitness->getValue();
 	newSolution = new ScheduleIJSP(*this->schedule);
-	newMakespan = FuzzyFW::Crisp(0, 0);
+	newMakespan = FuzzyFW::Crisp(0);
 	lowerBound = dynamic_cast<FuzzyFW::FitnessCrisp *>(this->currentFitness->clone());
 
 	mac = newSolution->taskInfo[arc->x].task->machine;
@@ -153,18 +155,15 @@ FuzzyFW::Fitness *NB_ParallelN1_MakespanIJSP::evaluateNeighbour(
 		else jsz = newSolution->taskInfo[z].task->js;
 
 		if (jpz != -1 && mpz != -1)
-			newHead = maximum(newSolution->taskInfo[mpz].head + newSolution->taskInfo[mpz].task->p,
-				newSolution->taskInfo[jpz].head + newSolution->taskInfo[jpz].task->p,
-				FuzzyFW::Crisp::M_COMPONENT);
+			newHead = std::max(newSolution->taskInfo[mpz].head + newSolution->taskInfo[mpz].task->p, newSolution->taskInfo[jpz].head + newSolution->taskInfo[jpz].task->p);
 		else if (mpz != -1)
 			newHead = newSolution->taskInfo[mpz].head + newSolution->taskInfo[mpz].task->p;
 		else if (jpz != -1)
 			newHead = newSolution->taskInfo[jpz].head + newSolution->taskInfo[jpz].task->p;
 		else
-			newHead = FuzzyFW::Crisp(0, 0);
+			newHead = FuzzyFW::Crisp(0);
 
-		if (!(newSolution->taskInfo[z].head.isEqualTo(newHead,
-			FuzzyFW::Crisp::Compare::C_COMPONENT))) {
+		if (!(newSolution->taskInfo[z].head == newHead)) {
 			newSolution->taskInfo[z].head = newHead;
 
 			if (improvement && jsz == -1) {
@@ -183,8 +182,7 @@ FuzzyFW::Fitness *NB_ParallelN1_MakespanIJSP::evaluateNeighbour(
 	}
 
 	for (size_t i = 0; i < newSolution->lastTaskJob.size(); i++) {
-		newMakespan = maximum(newMakespan, newSolution->getCTJob(i),
-			FuzzyFW::Crisp::M_COMPONENT);
+		newMakespan = std::max(newMakespan, newSolution->getCTJob(i));
 	}
 
 	newSolution->setSorted(false);
@@ -235,15 +233,13 @@ void NB_ParallelN1_MakespanIJSP::acceptNeighbour(const unsigned int idx,
 		else jsz = this->schedule->taskInfo[z].task->js;
 
 		if (jsz != -1 && msz != -1)
-			newTail = maximum(this->schedule->taskInfo[msz].task->p + this->tails[msz],
-				this->schedule->taskInfo[jsz].task->p + this->tails[jsz],
-				FuzzyFW::Crisp::M_COMPONENT);
+			newTail = std::max(this->schedule->taskInfo[msz].task->p + this->tails[msz], this->schedule->taskInfo[jsz].task->p + this->tails[jsz]);
 		else if (msz != -1)
 			newTail = this->schedule->taskInfo[msz].task->p + this->tails[msz];
 		else if (jsz != -1)
 			newTail = this->schedule->taskInfo[jsz].task->p + this->tails[jsz];
 		if ((msz != -1 || jsz != -1) &&
-			!(this->tails[z].isEqualTo(newTail, FuzzyFW::Crisp::C_COMPONENT))) {
+			!(this->tails[z] == newTail)) {
 			this->tails[z] = newTail;
 			if (this->schedule->taskInfo[z].mp != -1 && !inQueue[this->schedule->taskInfo[z].mp]) {
 				taskQueue.push(this->schedule->taskInfo[z].mp);

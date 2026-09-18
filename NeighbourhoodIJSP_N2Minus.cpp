@@ -36,11 +36,11 @@ unsigned int NB_ParallelN2Minus_MakespanIJSP::findNewNeighbours(
 
 	this->numNeighbours = 0;
 
-	// Only G- (comp = 1)
-	short int comp = 1;
-
+	// This neighbourhood walked G- only, the critical graph of the lower
+	// endpoint. On crisp times there is one endpoint, so G- is the critical
+	// graph and this is the same neighbourhood as ijsp.makespan.n2.
 	for (size_t i = 0; i < this->schedule->lastTaskMachine.size(); i++) {
-		if (this->schedule->getCTMachine(i).EqualComponent(currentMakespan, comp)) {
+		if (this->schedule->getCTMachine(i) == currentMakespan) {
 			criticalPath[this->schedule->lastTaskMachine[i]] = true;
 			taskQueue.push(this->schedule->lastTaskMachine[i]);
 		}
@@ -53,7 +53,7 @@ unsigned int NB_ParallelN2Minus_MakespanIJSP::findNewNeighbours(
 
 		if (task.mp != -1 && task.mp != task.task->jp) {
 			mp = this->schedule->taskInfo[task.mp];
-			if ((mp.head + mp.task->p).EqualComponent(task.head, comp)) {
+			if ((mp.head + mp.task->p) == task.head) {
 				taskQueue.push(task.mp);
 				criticalPath[task.mp] = true;
 				if (!added[task.mp]) {
@@ -63,8 +63,8 @@ unsigned int NB_ParallelN2Minus_MakespanIJSP::findNewNeighbours(
 						ms = this->schedule->taskInfo[task.ms];
 
 					if (mp.mp == -1 || task.ms == -1
-						|| !(mpmp.head + mpmp.task->p).EqualComponent(mp.head, comp)
-						|| (!(task.head + task.task->p).EqualComponent(ms.head, comp)
+						|| !((mpmp.head + mpmp.task->p) == mp.head)
+						|| (!((task.head + task.task->p) == ms.head)
 							|| criticalPath[task.ms] == false)) {
 
 						if (this->numNeighbours < this->neighbours.size()
@@ -81,7 +81,7 @@ unsigned int NB_ParallelN2Minus_MakespanIJSP::findNewNeighbours(
 
 		if (task.task->jp != -1) {
 			jp = this->schedule->taskInfo[task.task->jp];
-			if ((jp.head + jp.task->p).EqualComponent(task.head, comp)) {
+			if ((jp.head + jp.task->p) == task.head) {
 				taskQueue.push(task.task->jp);
 				criticalPath[task.task->jp] = true;
 			}

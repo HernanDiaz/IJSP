@@ -29,12 +29,6 @@ namespace IJSP {
 *
 */
 
-/*
-* Parameters:
-*	How to compare objective functions that are Intervals
-*/
-#define IJSP_SGS_COMPARE "sgs.interval.comparison"
-
 class SGS_IJSP
 {
 	//=========================================================================
@@ -50,16 +44,6 @@ protected:
 	* Flag indicating if the schedule is initialized
 	*/
 	char isCreated;
-
-	/*
-	* Label to indicate the operator to compare intervals
-	*/
-	const std::string compareLabel;
-
-	/*
-	* Operator used to compare intervals in the SGS (component by default)
-	*/
-	FuzzyFW::Crisp::Compare cpComp;
 
 	//=========================================================================
 	//		CONSTRUCTORS / INITIALIZERS
@@ -84,25 +68,14 @@ public:
 
 
 	/*
-	* Read the user parameters if needed
+	* Read the user parameters if needed.
+	*
+	* There is nothing left to read. The SGS used to select a strategy for
+	* comparing intervals through sgs.interval.comparison; on crisp times there
+	* is one order, so the setting selected the only option there is. Setups
+	* that still carry the key load unchanged and it is ignored.
 	*/
-	virtual void setup(const FuzzyFW::ParameterDB *params) { 
-		// Load comparison strategy parameter
-		std::string compareName = params->getString(this->compareLabel);
-		
-		if (compareName.length() == 0) {
-			std::string errorMsg = this->compareLabel + " parameter not found.";
-			throw IJSPException("SGS_IJSP", errorMsg);
-		}
-		this->cpComp = FuzzyFW::Crisp::getComparison(compareName);
-		if (this->cpComp == FuzzyFW::Crisp::C_Err) {
-			std::string errorMsg = "Invalid value for parameter ";
-			errorMsg += "\'" + this->compareLabel + "\': \'";
-			errorMsg += compareName + "\'";
-			throw IJSPException("SGS", errorMsg);
-		}
-	
-	}
+	virtual void setup(const FuzzyFW::ParameterDB *params) { }
 
 
 	/*

@@ -22,7 +22,7 @@ namespace FuzzyFW {
 */
 class Fitness {
 public:
-	enum Type { INTEGER, DOUBLE, FUZZY, LEXICOGRAPHIC, INTERVAL };
+	enum Type { INTEGER, DOUBLE, FUZZY, LEXICOGRAPHIC, CRISP };
 
 protected:
 	bool maximize;

@@ -66,7 +66,7 @@ FuzzyFW::Crisp ScheduleIJSP::getCTMachine(const unsigned int machine) const {
 
 	int lastTask = this->lastTaskMachine[machine];
 	if (lastTask < 0)
-		return FuzzyFW::Crisp(0, 0);
+		return FuzzyFW::Crisp(0);
 	return this->taskInfo[lastTask].head + this->taskInfo[lastTask].task->p;
 }
 
@@ -81,7 +81,7 @@ FuzzyFW::Crisp ScheduleIJSP::getCTJob(const unsigned int job) const {
 
 	int lastTask = this->lastTaskJob[job];
 	if (lastTask < 0)
-		return FuzzyFW::Crisp(0, 0);
+		return FuzzyFW::Crisp(0);
 	return this->taskInfo[lastTask].head + this->taskInfo[lastTask].task->p;
 }
 
@@ -133,7 +133,6 @@ void ScheduleIJSP::addTask(const int taskIdx, FuzzyFW::Crisp & ST,
 	int mac = task->machine;
 	int job = task->job;
 	int macPred;
-	FuzzyFW::Crisp::Compare cev = FuzzyFW::Crisp::C_EV;
 
 	this->taskInfo[taskIdx].task = task;
 	this->taskInfo[taskIdx].head = ST;
@@ -163,13 +162,12 @@ void ScheduleIJSP::addTask(const int taskIdx, FuzzyFW::Crisp & ST,
 		for (i = this->nScheduledTasks; i > 0; i--) {
 			this->taskOrder[i] = this->taskOrder[i - 1];
 
-			if (this->taskInfo[this->taskOrder[i]].head.
-				isLesserThan(ST, cev)) {
+			if (this->taskInfo[this->taskOrder[i]].head < ST) {
 				this->taskOrder[i] = taskIdx;
 				break;
 			}
 
-			if (this->taskInfo[this->taskOrder[i]].head.isEqualTo(ST, cev)
+			if (this->taskInfo[this->taskOrder[i]].head == ST
 				&& taskIdx < this->taskOrder[i]) {
 				this->taskOrder[i] = taskIdx;
 				break;
@@ -191,8 +189,8 @@ void ScheduleIJSP::verifyHeads(const FuzzyFW::Crisp& expectedMakespan,
 	const std::string& context) const {
 
 	int n = (int)this->taskInfo.size();
-	std::vector<FuzzyFW::Crisp> computedHead(n, FuzzyFW::Crisp(0, 0));
-	FuzzyFW::Crisp exactMakespan(0, 0);
+	std::vector<FuzzyFW::Crisp> computedHead(n, FuzzyFW::Crisp(0));
+	FuzzyFW::Crisp exactMakespan(0);
 
 	// Count how many predecessors each task is waiting for
 	std::vector<int> remaining(n, 0);
@@ -222,7 +220,7 @@ void ScheduleIJSP::verifyHeads(const FuzzyFW::Crisp& expectedMakespan,
 		if (jp != -1 && mp != -1) {
 			FuzzyFW::Crisp fromJp = computedHead[jp] + this->taskInfo[jp].task->p;
 			FuzzyFW::Crisp fromMp = computedHead[mp] + this->taskInfo[mp].task->p;
-			expected = maximum(fromJp, fromMp, FuzzyFW::Crisp::M_COMPONENT);
+			expected = std::max(fromJp, fromMp);
 		} else if (jp != -1) {
 			expected = computedHead[jp] + this->taskInfo[jp].task->p;
 		} else if (mp != -1) {
@@ -284,7 +282,7 @@ void ScheduleIJSP::reset() {
 	this->isSorted = true;
 
 	for (size_t i = 0; i < this->taskInfo.size(); i++) {
-		this->taskInfo[i].head = FuzzyFW::Crisp(-1, -1);
+		this->taskInfo[i].head = FuzzyFW::Crisp(-1);
 		this->taskInfo[i].mp = this->taskInfo[i].mp = -1;
 		this->taskOrder[i] = -1;
 	}
@@ -356,12 +354,11 @@ bool ScheduleIJSP::adjustHead(const ScheduledTaskInfo currentTask, ScheduledTask
 
 void ScheduleIJSP::verifyScheduling() {
 	//We verify task by task that the job restrictions are correct
-	FuzzyFW::Crisp::Compare comp = FuzzyFW::Crisp::C_COMPONENT;
 	for (int i = 0; i < this->lastTaskJob.size(); i++) {
 		ScheduledTaskInfo currentTask = this->taskInfo[this->lastTaskJob[i]];
 		while (currentTask.task->jp >= 0 && currentTask.task->jp < this->taskInfo.size()) {
 			ScheduledTaskInfo jobPredeccessor = this->taskInfo[currentTask.task->jp];
-			if (currentTask.head.isLesserThan(jobPredeccessor.head + jobPredeccessor.task->p, comp)) {
+			if (currentTask.head < (jobPredeccessor.head + jobPredeccessor.task->p)) {
 				throw IJSPException("Schedule", "Error scheduling tasks in job number" + valueToString(jobPredeccessor.task->job) +
 					": id = " + valueToString(jobPredeccessor.task->id) + "; head = " + valueToString(jobPredeccessor.head) +
 					"; p = " + valueToString(jobPredeccessor.task->p) + "; total = " + valueToString(jobPredeccessor.head + jobPredeccessor.task->p) +
@@ -378,7 +375,7 @@ void ScheduleIJSP::verifyScheduling() {
 		ScheduledTaskInfo currentTask = this->taskInfo[this->lastTaskMachine[i]];
 		while (currentTask.mp >= 0 && currentTask.mp < this->taskInfo.size()) {
 			ScheduledTaskInfo machinePredeccessor = this->taskInfo[currentTask.mp];
-			if (currentTask.head.isLesserThan(machinePredeccessor.head + machinePredeccessor.task->p, comp)) {
+			if (currentTask.head < (machinePredeccessor.head + machinePredeccessor.task->p)) {
 				throw IJSPException("Schedule", "Error scheduling tasks in machine" + valueToString(machinePredeccessor.task->machine) +
 					": id = " + valueToString(machinePredeccessor.task->id) + "; head = " + valueToString(machinePredeccessor.head) +
 					"; p = " + valueToString(machinePredeccessor.task->p) + "; total = " + valueToString(machinePredeccessor.head + machinePredeccessor.task->p) +
@@ -395,7 +392,6 @@ void ScheduleIJSP::verifyScheduling() {
 void ScheduleIJSP::quicksortTasks(int left, int right, FuzzyFW::Random *rng) {
 	int pivot;
 	FuzzyFW::Crisp pivotValue;
-	FuzzyFW::Crisp::Compare cp = FuzzyFW::Crisp::C_EV;
 
 	if (left >= right)
 		return;
@@ -406,13 +402,11 @@ void ScheduleIJSP::quicksortTasks(int left, int right, FuzzyFW::Random *rng) {
 	std::swap(this->taskOrder[pivot], this->taskOrder[right]);
 	pivot = left;
 	for (int i = left; i < right; i++) {
-		if (this->taskInfo[this->taskOrder[i]].head.
-			isLesserThan(pivotValue, cp)) {
+		if (this->taskInfo[this->taskOrder[i]].head < pivotValue) {
 			std::swap(this->taskOrder[i], this->taskOrder[pivot]);
 			pivot++;
 		}
-		else if (this->taskInfo[this->taskOrder[i]].head.
-			isEqualTo(pivotValue, cp)
+		else if (this->taskInfo[this->taskOrder[i]].head == pivotValue
 			&& this->taskOrder[i] < this->taskOrder[right]) {
 			std::swap(this->taskOrder[i], this->taskOrder[pivot]);
 			pivot++;

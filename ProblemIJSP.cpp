@@ -283,8 +283,7 @@ namespace IJSP {
 		for (size_t i = 0; i < (int)preTasks.size(); i++) {
 			input >> preTasks[i]->p;
 
-			if (preTasks[i]->p.isGreaterEqualTo(FuzzyFW::Crisp(0, 0),
-				FuzzyFW::Crisp::C_COMPONENT)) {
+			if (preTasks[i]->p >= FuzzyFW::Crisp(0)) {
 				// Job predecessor
 				job = preTasks[i]->job;
 				if (this->taskSequence[job].size() > 0) {

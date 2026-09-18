@@ -36,28 +36,10 @@ class EvaluationIJSP_Makespan : public FuzzyFW::Evaluation {
 	//=============================================================================
 	//		FIELDS
 	//=============================================================================
-protected:
-	/*
-	* Label for the strategy to compute the maximum
-	*/
-	const std::string maximumLabel;
-
-	/*
-	* Strategy to use to compute the maximum of job completion times
-	*/
-	FuzzyFW::Crisp::Maximum intervalMaximum;
-
-	/*
-	* Label for the strategy to ccompare values
-	*/
-	const std::string compareLabel;
-
-	/*
-	* Strategy to use to compare the job completion times
-	*/
-	FuzzyFW::Crisp::Compare intervalCompare;
-
-
+	// The strategies for the maximum and for the comparison are gone with the
+	// intervals: on crisp completion times std::max is the maximum and there is
+	// one order. evaluation.interval.maximum and evaluation.interval.comparison
+	// are still accepted in a setup file and ignored.
 
 	//=============================================================================
 	//		CONSTRUCTORS / INITIALIZERS
@@ -129,10 +111,6 @@ public:
 	virtual std::vector<std::string> getName() const {
 		std::vector<std::string> name;
 		name.push_back("Makespan");
-		name.push_back(";Maximum:;"
-			+ FuzzyFW::Crisp::getMaximum(this->intervalMaximum));
-		name.push_back(";Comparisons:;"
-			+ FuzzyFW::Crisp::getComparison(this->intervalCompare));
 		return name;
 	}
 };

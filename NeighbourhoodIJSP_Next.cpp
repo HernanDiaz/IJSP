@@ -37,46 +37,37 @@ bool NB_ParallelNext_MakespanIJSP::isViableSwap(unsigned int x, unsigned int y) 
 
 	// New tail for x (x moves to y's machine slot, ms(y) becomes its machine successor)
 	if (jsx != -1 && msy != -1)
-		tailX = maximum(this->tails[jsx] + schedule->taskInfo[jsx].task->p,
-			this->tails[msy] + schedule->taskInfo[msy].task->p, FuzzyFW::Crisp::M_COMPONENT);
+		tailX = std::max(this->tails[jsx] + schedule->taskInfo[jsx].task->p, this->tails[msy] + schedule->taskInfo[msy].task->p);
 	else if (jsx != -1)
 		tailX = this->tails[jsx] + schedule->taskInfo[jsx].task->p;
 	else if (msy != -1)
 		tailX = this->tails[msy] + schedule->taskInfo[msy].task->p;
 	else
-		tailX = FuzzyFW::Crisp(0, 0);
+		tailX = FuzzyFW::Crisp(0);
 
 	// New tail for y (y moves behind x)
 	if (jsy != -1)
-		tailY = maximum(this->tails[jsy] + schedule->taskInfo[jsy].task->p,
-			tailX + schedule->taskInfo[x].task->p, FuzzyFW::Crisp::M_COMPONENT);
+		tailY = std::max(this->tails[jsy] + schedule->taskInfo[jsy].task->p, tailX + schedule->taskInfo[x].task->p);
 	else
 		tailY = tailX + schedule->taskInfo[x].task->p;
 
 	// New head for y (y takes x's predecessors)
 	if (mpx != -1 && jpy != -1)
-		headY = maximum(schedule->taskInfo[mpx].head + schedule->taskInfo[mpx].task->p,
-			schedule->taskInfo[jpy].head + schedule->taskInfo[jpy].task->p,
-			FuzzyFW::Crisp::M_COMPONENT);
+		headY = std::max(schedule->taskInfo[mpx].head + schedule->taskInfo[mpx].task->p, schedule->taskInfo[jpy].head + schedule->taskInfo[jpy].task->p);
 	else if (mpx != -1)
 		headY = schedule->taskInfo[mpx].head + schedule->taskInfo[mpx].task->p;
 	else if (jpy != -1)
 		headY = schedule->taskInfo[jpy].head + schedule->taskInfo[jpy].task->p;
 	else
-		headY = FuzzyFW::Crisp(0, 0);
+		headY = FuzzyFW::Crisp(0);
 
 	// New head for x (x goes after y)
 	if (jpx != -1)
-		headX = maximum(headY + schedule->taskInfo[y].task->p,
-			schedule->taskInfo[jpx].head + schedule->taskInfo[jpx].task->p,
-			FuzzyFW::Crisp::M_COMPONENT);
+		headX = std::max(headY + schedule->taskInfo[y].task->p, schedule->taskInfo[jpx].head + schedule->taskInfo[jpx].task->p);
 	else
 		headX = headY + schedule->taskInfo[y].task->p;
 
-	FuzzyFW::Crisp estimate = maximum(
-		headX + schedule->taskInfo[x].task->p + tailX,
-		headY + schedule->taskInfo[y].task->p + tailY,
-		FuzzyFW::Crisp::M_COMPONENT);
+	FuzzyFW::Crisp estimate = std::max(headX + schedule->taskInfo[x].task->p + tailX, headY + schedule->taskInfo[y].task->p + tailY);
 
 	FuzzyFW::FitnessCrisp estimatedFit(estimate, false);
 	return estimatedFit.isBetterThan(this->currentFitness);
@@ -113,58 +104,60 @@ unsigned int NB_ParallelNext_MakespanIJSP::findNewNeighbours(
 	this->numNeighbours = 0;
 
 	// Look for critical paths in each parallel graph:
-	for (short int comp = 1; comp <= 2; comp++) {
-		for (size_t i = 0; i < this->schedule->lastTaskMachine.size(); i++) {
-			if (this->schedule->getCTMachine(i).EqualComponent(currentMakespan, comp)) {
-				criticalPath[this->schedule->lastTaskMachine[i]] = true;
-				taskQueue.push(this->schedule->lastTaskMachine[i]);
-			}
+	// One pass over the critical path. With interval durations this ran
+	// once per endpoint, because G- and G+ are different graphs; on crisp
+	// times they are the same graph, so the second pass re-asked the
+	// questions the first had answered and added[] discarded the answers.
+	for (size_t i = 0; i < this->schedule->lastTaskMachine.size(); i++) {
+		if (this->schedule->getCTMachine(i) == currentMakespan) {
+			criticalPath[this->schedule->lastTaskMachine[i]] = true;
+			taskQueue.push(this->schedule->lastTaskMachine[i]);
 		}
+	}
 
-		while (taskQueue.size() > 0) {
-			taskId = taskQueue.front();
-			taskQueue.pop();
-			task = this->schedule->taskInfo[taskId];
+	while (taskQueue.size() > 0) {
+		taskId = taskQueue.front();
+		taskQueue.pop();
+		task = this->schedule->taskInfo[taskId];
 
-			if (task.mp != -1 && task.mp != task.task->jp) {
-				mp = this->schedule->taskInfo[task.mp];
-				if ((mp.head + mp.task->p).EqualComponent(task.head, comp)) {
-					taskQueue.push(task.mp);
-					criticalPath[task.mp] = true;
-					if (!added[task.mp]) {
-						if (mp.mp != -1) {
-							mpmp = this->schedule->taskInfo[mp.mp];
-						}
-						if (task.ms != -1) {
-							ms = this->schedule->taskInfo[task.ms];
-						}
+		if (task.mp != -1 && task.mp != task.task->jp) {
+			mp = this->schedule->taskInfo[task.mp];
+			if ((mp.head + mp.task->p) == task.head) {
+				taskQueue.push(task.mp);
+				criticalPath[task.mp] = true;
+				if (!added[task.mp]) {
+					if (mp.mp != -1) {
+						mpmp = this->schedule->taskInfo[mp.mp];
+					}
+					if (task.ms != -1) {
+						ms = this->schedule->taskInfo[task.ms];
+					}
 
-						bool isBoundary = (mp.mp == -1 || task.ms == -1
-							|| !(mpmp.head + mpmp.task->p).EqualComponent(mp.head, comp)
-							|| (!(task.head + task.task->p).EqualComponent(ms.head, comp)
-								|| criticalPath[task.ms] == false));
+					bool isBoundary = (mp.mp == -1 || task.ms == -1
+						|| !((mpmp.head + mpmp.task->p) == mp.head)
+						|| (!((task.head + task.task->p) == ms.head)
+							|| criticalPath[task.ms] == false));
 
-						bool viable = !isBoundary && isViableSwap(task.mp, taskId);
+					bool viable = !isBoundary && isViableSwap(task.mp, taskId);
 
-						if (isBoundary || viable) {
-							if (this->numNeighbours < this->neighbours.size()
-								&& this->neighbours[this->numNeighbours] != nullptr)
-								this->neighbours[this->numNeighbours]->setValues(task.mp, taskId);
-							else
-								this->neighbours.push_back(std::make_unique<NeighbourIJSP_Arc>(task.mp, taskId));
-							this->numNeighbours++;
-							added[task.mp] = true;
-						}
+					if (isBoundary || viable) {
+						if (this->numNeighbours < this->neighbours.size()
+							&& this->neighbours[this->numNeighbours] != nullptr)
+							this->neighbours[this->numNeighbours]->setValues(task.mp, taskId);
+						else
+							this->neighbours.push_back(std::make_unique<NeighbourIJSP_Arc>(task.mp, taskId));
+						this->numNeighbours++;
+						added[task.mp] = true;
 					}
 				}
 			}
+		}
 
-			if (task.task->jp != -1) {
-				jp = this->schedule->taskInfo[task.task->jp];
-				if ((jp.head + jp.task->p).EqualComponent(task.head, comp)) {
-					taskQueue.push(task.task->jp);
-					criticalPath[task.task->jp] = true;
-				}
+		if (task.task->jp != -1) {
+			jp = this->schedule->taskInfo[task.task->jp];
+			if ((jp.head + jp.task->p) == task.head) {
+				taskQueue.push(task.task->jp);
+				criticalPath[task.task->jp] = true;
 			}
 		}
 	}

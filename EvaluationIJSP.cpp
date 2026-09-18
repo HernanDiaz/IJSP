@@ -21,11 +21,7 @@ namespace IJSP {
 //-----  Default constructor  -------------------------------------------------
 EvaluationIJSP_Makespan::EvaluationIJSP_Makespan(
 	FuzzyFW::ParameterDB *parameters)
-	: maximumLabel(IJSP_EVALUATION_MAXIMUM),
-	intervalMaximum(FuzzyFW::Crisp::M_COMPONENT),
-	compareLabel(IJSP_EVALUATION_COMPARE), 
-	intervalCompare(FuzzyFW::Crisp::C_EV),
-	Evaluation(parameters) {
+	: Evaluation(parameters) {
 	IJSP::IJSPClassRegister::registerClasses();
 }
 
@@ -33,46 +29,13 @@ EvaluationIJSP_Makespan::EvaluationIJSP_Makespan(
 //-----  Copy constructor  ----------------------------------------------------
 EvaluationIJSP_Makespan::EvaluationIJSP_Makespan(
 	const EvaluationIJSP_Makespan & source)
-	: maximumLabel(source.maximumLabel), intervalMaximum(source.intervalMaximum),
-	compareLabel(source.compareLabel), intervalCompare(source.intervalCompare),
-	Evaluation(source) { }
+	: Evaluation(source) { }
 
 
 
 //-----  Setup method  --------------------------------------------------------
 void EvaluationIJSP_Makespan::setup(FuzzyFW::ParameterDB *parameters) {
 	Evaluation::setup(parameters);
-
-	std::string compareName, maxName;
-
-	// Load maximum type parameter
-	maxName = parameters->getString(this->maximumLabel);
-	if (maxName.length() == 0) {
-		std::string errorMsg = this->maximumLabel + " parameter not found.";
-		throw IJSPException("Evaluation", errorMsg);
-	}
-	this->intervalMaximum = FuzzyFW::Crisp::getMaximum(maxName);
-	if (this->intervalMaximum == FuzzyFW::Crisp::M_Err) {
-		std::string errorMsg = "Invalid value for parameter ";
-		errorMsg += "\'" + this->maximumLabel + "\': \'";
-		errorMsg += maxName + "\'";
-		throw IJSPException("Evaluation", errorMsg);
-	}
-
-	// Load comparison strategy parameter
-	compareName = parameters->getString(this->compareLabel);
-	if (compareName.length() == 0) {
-		std::string errorMsg = this->compareLabel + " parameter not found.";
-		throw IJSPException("Evaluation", errorMsg);
-	}
-	this->intervalCompare = FuzzyFW::Crisp::getComparison(compareName);
-	if (this->intervalCompare == FuzzyFW::Crisp::C_Err) {
-		std::string errorMsg = "Invalid value for parameter ";
-		errorMsg += "\'" + this->compareLabel + "\': \'";
-		errorMsg += compareName + "\'";
-		throw IJSPException("Evaluation", errorMsg);
-	}
-	FuzzyFW::FitnessCrisp::FitnessCompareStrategy = this->intervalCompare;
 }
 
 
@@ -88,7 +51,7 @@ FuzzyFW::Objective * EvaluationIJSP_Makespan::getObjectiveFunction(
 	FuzzyFW::Solution * solution;
 	ScheduleIJSP * schedule;
 	ProblemIJSP *fuzzyProb;
-	FuzzyFW::Crisp makespan = FuzzyFW::Crisp(0, 0);
+	FuzzyFW::Crisp makespan = FuzzyFW::Crisp(0);
 
 	// Evaluate the individual to find the phenotype
 	if (individual->isPhenotypeUpdated())
@@ -113,7 +76,7 @@ FuzzyFW::Objective * EvaluationIJSP_Makespan::getObjectiveFunction(
 
 	// Compute the makespan
 	for (unsigned int i = 0; i < fuzzyProb->getNumberJobs(); i++) {
-		makespan = maximum(makespan, schedule->getCTJob(i), this->intervalMaximum);
+		makespan = std::max(makespan, schedule->getCTJob(i));
 	}
 
 	return new FuzzyFW::FitnessCrisp(makespan, false);
@@ -129,7 +92,7 @@ FuzzyFW::Fitness * EvaluationIJSP_Makespan::evaluate(
 	FuzzyFW::Solution * solution;
 	ScheduleIJSP * schedule;
 	ProblemIJSP *fuzzyProb;
-	FuzzyFW::Crisp makespan = FuzzyFW::Crisp(0, 0);
+	FuzzyFW::Crisp makespan = FuzzyFW::Crisp(0);
 
 	// Evaluate the individual to find the phenotype
 	if (individual->isPhenotypeUpdated())
@@ -154,7 +117,7 @@ FuzzyFW::Fitness * EvaluationIJSP_Makespan::evaluate(
 
 	// Compute the makespan
 	for (unsigned int i = 0; i < fuzzyProb->getNumberJobs(); i++) {
-		makespan = maximum(makespan, schedule->getCTJob(i), this->intervalMaximum);
+		makespan = std::max(makespan, schedule->getCTJob(i));
 	}
 
 	if (this->lamarckism)
@@ -176,11 +139,7 @@ FuzzyFW::Fitness * EvaluationIJSP_Makespan::evaluate(
 //-----  Default constructor  -------------------------------------------------
 EvaluationIJSP_Tardiness::EvaluationIJSP_Tardiness(
 	FuzzyFW::ParameterDB *parameters)
-	: maximumLabel(IJSP_EVALUATION_MAXIMUM),
-	intervalMaximum(FuzzyFW::Crisp::M_COMPONENT),
-	compareLabel(IJSP_EVALUATION_COMPARE),
-	intervalCompare(FuzzyFW::Crisp::C_EV),
-	Evaluation(parameters) {
+	: Evaluation(parameters) {
 	IJSP::IJSPClassRegister::registerClasses();
 }
 
@@ -188,46 +147,13 @@ EvaluationIJSP_Tardiness::EvaluationIJSP_Tardiness(
 //-----  Copy constructor  ----------------------------------------------------
 EvaluationIJSP_Tardiness::EvaluationIJSP_Tardiness(
 	const EvaluationIJSP_Tardiness & source)
-	: maximumLabel(source.maximumLabel), intervalMaximum(source.intervalMaximum),
-	compareLabel(source.compareLabel), intervalCompare(source.intervalCompare),
-	Evaluation(source) { }
+	: Evaluation(source) { }
 
 
 
 //-----  Setup method  --------------------------------------------------------
 void EvaluationIJSP_Tardiness::setup(FuzzyFW::ParameterDB *parameters) {
 	Evaluation::setup(parameters);
-
-	std::string compareName, maxName;
-
-	// Load maximum type parameter
-	maxName = parameters->getString(this->maximumLabel);
-	if (maxName.length() == 0) {
-		std::string errorMsg = this->maximumLabel + " parameter not found.";
-		throw IJSPException("Evaluation", errorMsg);
-	}
-	this->intervalMaximum = FuzzyFW::Crisp::getMaximum(maxName);
-	if (this->intervalMaximum == FuzzyFW::Crisp::M_Err) {
-		std::string errorMsg = "Invalid value for parameter ";
-		errorMsg += "\'" + this->maximumLabel + "\': \'";
-		errorMsg += maxName + "\'";
-		throw IJSPException("Evaluation", errorMsg);
-	}
-
-	// Load comparison strategy parameter
-	compareName = parameters->getString(this->compareLabel);
-	if (compareName.length() == 0) {
-		std::string errorMsg = this->compareLabel + " parameter not found.";
-		throw IJSPException("Evaluation", errorMsg);
-	}
-	this->intervalCompare = FuzzyFW::Crisp::getComparison(compareName);
-	if (this->intervalCompare == FuzzyFW::Crisp::C_Err) {
-		std::string errorMsg = "Invalid value for parameter ";
-		errorMsg += "\'" + this->compareLabel + "\': \'";
-		errorMsg += compareName + "\'";
-		throw IJSPException("Evaluation", errorMsg);
-	}
-	FuzzyFW::FitnessCrisp::FitnessCompareStrategy = this->intervalCompare;
 }
 
 
@@ -244,7 +170,7 @@ FuzzyFW::Objective * EvaluationIJSP_Tardiness::getObjectiveFunction(
 	ScheduleIJSP * schedule;
 	ProblemIJSP *fuzzyProb;
 	const FuzzyFW::TimeWindowLinear* timeWindow;
-	FuzzyFW::Crisp tardiness = FuzzyFW::Crisp(0, 0);
+	FuzzyFW::Crisp tardiness = FuzzyFW::Crisp(0);
 
 	// Evaluate the individual to find the phenotype
 	if (individual->isPhenotypeUpdated())
@@ -302,7 +228,7 @@ FuzzyFW::Fitness * EvaluationIJSP_Tardiness::evaluate(
 	ScheduleIJSP * schedule;
 	ProblemIJSP *fuzzyProb;
 	const FuzzyFW::TimeWindowLinear* timeWindow;
-	FuzzyFW::Crisp tardiness = FuzzyFW::Crisp(0, 0);
+	FuzzyFW::Crisp tardiness = FuzzyFW::Crisp(0);
 
 	// Evaluate the individual to find the phenotype
 	if (individual->isPhenotypeUpdated())

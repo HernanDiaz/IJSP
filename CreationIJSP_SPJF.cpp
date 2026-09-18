@@ -56,7 +56,7 @@ FuzzyFW::Individual * CreationSPJFIntervalMkSchedule::createIndividual(
 
 		// Update machine and job makespan.
 		const IJSP::TaskIJSP * task = fuzzyProb->getTask(taskid);
-		FuzzyFW::Crisp localMaxMkspan = maximum(mMkspan[task->machine], jMkspan[task->job], FuzzyFW::Crisp::M_COMPONENT) + task->p;
+		FuzzyFW::Crisp localMaxMkspan = std::max(mMkspan[task->machine], jMkspan[task->job]) + task->p;
 		mMkspan[task->machine] = localMaxMkspan;
 		jMkspan[task->job] = localMaxMkspan;
 

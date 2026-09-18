@@ -38,77 +38,79 @@ unsigned int NB_ParallelN3_MakespanIJSP::findNewNeighbours(
 
 	this->numNeighbours = 0;
 
-	for (short int comp = 1; comp <= 2; comp++) {
-		for (size_t i = 0; i < this->schedule->lastTaskMachine.size(); i++) {
-			if (this->schedule->getCTMachine(i).EqualComponent(currentMakespan, comp)) {
-				taskQueue.push(this->schedule->lastTaskMachine[i]);
+	// One pass over the critical path. With interval durations this ran
+	// once per endpoint, because G- and G+ are different graphs; on crisp
+	// times they are the same graph, so the second pass re-asked the
+	// questions the first had answered and added[] discarded the answers.
+	for (size_t i = 0; i < this->schedule->lastTaskMachine.size(); i++) {
+		if (this->schedule->getCTMachine(i) == currentMakespan) {
+			taskQueue.push(this->schedule->lastTaskMachine[i]);
+		}
+	}
+
+	while (taskQueue.size() > 0) {
+		taskId = taskQueue.front();
+		taskQueue.pop();
+
+		task = this->schedule->taskInfo[taskId];
+		if (task.mp != -1) {
+			mp = this->schedule->taskInfo[task.mp];
+			if ((mp.head + mp.task->p) == task.head) {
+				if (!criticalPath[task.mp]) { taskQueue.push(task.mp); criticalPath[task.mp] = true; }
+				if (mp.mp != -1) {
+					mpmp = this->schedule->taskInfo[mp.mp];
+				}
+				if (task.ms != -1) {
+					ms = this->schedule->taskInfo[task.ms];
+				}
+				if (!added0[task.mp] && task.mp != task.task->jp) {
+					if (task.mp != task.task->jp) {
+						if (mp.mp == -1 || task.ms == -1
+							|| !((mpmp.head + mpmp.task->p) == mp.head)
+							|| !((task.head + task.task->p) == ms.head)) {
+
+							this->addNeighbour(task.mp, taskId);
+							added0[task.mp] = true;
+						}
+					}
+				}
+
+				if (mp.mp != -1 && mpmp.mp!=-1) {
+					mpmpmp = this->schedule->taskInfo[mpmp.mp];
+				}
+				if (mp.mp !=-1 && (mpmp.head + mpmp.task->p) == mp.head
+					&& ((mpmp.mp == -1 || !((mpmpmp.head + mpmpmp.task->p) == mpmp.head))
+					|| (task.ms == -1 || !((task.head + task.task->p) == ms.head))))  {
+					if (!added3[task.mp]) {
+						this->addNeighbour(mp.mp, task.mp, taskId, 3);
+						if (this->evaluateNeighbour(this->numNeighbours - 1, svars) == nullptr) {
+							this->discardNeighbour(this->numNeighbours - 1);
+						}
+						else added3[task.mp] = true;
+					}
+
+					if (!added1[task.mp] && (mpmp.mp == -1 || !((mpmpmp.head + mpmpmp.task->p) == mpmp.head))) {
+						this->addNeighbour(mp.mp, task.mp, taskId, 1);
+						if (this->evaluateNeighbour(this->numNeighbours - 1, svars) == nullptr) {
+							this->discardNeighbour(this->numNeighbours - 1);
+						}
+						else added1[task.mp] = true;
+					}
+					if (!added2[task.mp] && (task.ms == -1 || !((task.head + task.task->p) == ms.head))) {
+						this->addNeighbour(mp.mp, task.mp, taskId, 2);
+						if (this->evaluateNeighbour(this->numNeighbours - 1, svars) == nullptr) {
+							this->discardNeighbour(this->numNeighbours - 1);
+						}
+						else added2[task.mp] = true;
+					}
+				}
 			}
 		}
 
-		while (taskQueue.size() > 0) {
-			taskId = taskQueue.front();
-			taskQueue.pop();
-
-			task = this->schedule->taskInfo[taskId];
-			if (task.mp != -1) {
-				mp = this->schedule->taskInfo[task.mp];
-				if ((mp.head + mp.task->p).EqualComponent(task.head, comp)) {
-					if (!criticalPath[task.mp]) { taskQueue.push(task.mp); criticalPath[task.mp] = true; }
-					if (mp.mp != -1) {
-						mpmp = this->schedule->taskInfo[mp.mp];
-					}
-					if (task.ms != -1) {
-						ms = this->schedule->taskInfo[task.ms];
-					}
-					if (!added0[task.mp] && task.mp != task.task->jp) {
-						if (task.mp != task.task->jp) {
-							if (mp.mp == -1 || task.ms == -1
-								|| !(mpmp.head + mpmp.task->p).EqualComponent(mp.head, comp)
-								|| !(task.head + task.task->p).EqualComponent(ms.head, comp)) {
-
-								this->addNeighbour(task.mp, taskId);
-								added0[task.mp] = true;
-							}
-						}
-					}
-
-					if (mp.mp != -1 && mpmp.mp!=-1) {
-						mpmpmp = this->schedule->taskInfo[mpmp.mp];
-					}
-					if (mp.mp !=-1 && (mpmp.head + mpmp.task->p).EqualComponent(mp.head, comp)
-						&& ((mpmp.mp == -1 || !(mpmpmp.head + mpmpmp.task->p).EqualComponent(mpmp.head, comp))
-						|| (task.ms == -1 || !(task.head + task.task->p).EqualComponent(ms.head, comp))))  {
-						if (!added3[task.mp]) {
-							this->addNeighbour(mp.mp, task.mp, taskId, 3);
-							if (this->evaluateNeighbour(this->numNeighbours - 1, svars) == nullptr) {
-								this->discardNeighbour(this->numNeighbours - 1);
-							}
-							else added3[task.mp] = true;
-						}
-
-						if (!added1[task.mp] && (mpmp.mp == -1 || !(mpmpmp.head + mpmpmp.task->p).EqualComponent(mpmp.head, comp))) {
-							this->addNeighbour(mp.mp, task.mp, taskId, 1);
-							if (this->evaluateNeighbour(this->numNeighbours - 1, svars) == nullptr) {
-								this->discardNeighbour(this->numNeighbours - 1);
-							}
-							else added1[task.mp] = true;
-						}
-						if (!added2[task.mp] && (task.ms == -1 || !(task.head + task.task->p).EqualComponent(ms.head, comp))) {
-							this->addNeighbour(mp.mp, task.mp, taskId, 2);
-							if (this->evaluateNeighbour(this->numNeighbours - 1, svars) == nullptr) {
-								this->discardNeighbour(this->numNeighbours - 1);
-							}
-							else added2[task.mp] = true;
-						}
-					}
-				}
-			}
-
-			if (task.task->jp != -1) {
-				jp = this->schedule->taskInfo[task.task->jp];
-				if ((jp.head + jp.task->p).EqualComponent(task.head, comp)) {
-					if (!criticalPath[task.task->jp]) { taskQueue.push(task.task->jp); criticalPath[task.task->jp] = true; }
-				}
+		if (task.task->jp != -1) {
+			jp = this->schedule->taskInfo[task.task->jp];
+			if ((jp.head + jp.task->p) == task.head) {
+				if (!criticalPath[task.task->jp]) { taskQueue.push(task.task->jp); criticalPath[task.task->jp] = true; }
 			}
 		}
 	}
@@ -142,7 +144,7 @@ FuzzyFW::Fitness * NB_ParallelN3_MakespanIJSP::evaluateNeighbour(
 
 	currentMakespan = this->currentFitness->getValue();
 	newSolution = new ScheduleIJSP(*this->schedule);
-	newMakespan = FuzzyFW::Crisp(0, 0);
+	newMakespan = FuzzyFW::Crisp(0);
 	lowerBound = dynamic_cast<FuzzyFW::FitnessCrisp *>(this->currentFitness->clone());
 
 	if (arc->tipo == 0) {
@@ -250,18 +252,15 @@ FuzzyFW::Fitness * NB_ParallelN3_MakespanIJSP::evaluateNeighbour(
 		else jsz = newSolution->taskInfo[z].task->js;
 
 		if (jpz != -1 && mpz != -1)
-			newHead = maximum(newSolution->taskInfo[mpz].head + newSolution->taskInfo[mpz].task->p,
-				newSolution->taskInfo[jpz].head + newSolution->taskInfo[jpz].task->p,
-				FuzzyFW::Crisp::M_COMPONENT);
+			newHead = std::max(newSolution->taskInfo[mpz].head + newSolution->taskInfo[mpz].task->p, newSolution->taskInfo[jpz].head + newSolution->taskInfo[jpz].task->p);
 		else if (mpz != -1)
 			newHead = newSolution->taskInfo[mpz].head + newSolution->taskInfo[mpz].task->p;
 		else if (jpz != -1)
 			newHead = newSolution->taskInfo[jpz].head + newSolution->taskInfo[jpz].task->p;
 		else
-			newHead = FuzzyFW::Crisp(0, 0);
+			newHead = FuzzyFW::Crisp(0);
 
-		if (!(newSolution->taskInfo[z].head.isEqualTo(newHead,
-			FuzzyFW::Crisp::Compare::C_COMPONENT))) {
+		if (!(newSolution->taskInfo[z].head == newHead)) {
 			newSolution->taskInfo[z].head = newHead;
 			if (improvement && jsz == -1) {
 				lowerBound->setValue(newSolution->taskInfo[z].head
@@ -279,8 +278,7 @@ FuzzyFW::Fitness * NB_ParallelN3_MakespanIJSP::evaluateNeighbour(
 	}
 
 	for (size_t i = 0; i < newSolution->lastTaskJob.size(); i++) {
-		newMakespan = maximum(newMakespan, newSolution->getCTJob(i),
-			FuzzyFW::Crisp::M_COMPONENT);
+		newMakespan = std::max(newMakespan, newSolution->getCTJob(i));
 	}
 
 	newSolution->setSorted(false);
@@ -350,15 +348,13 @@ void NB_ParallelN3_MakespanIJSP::acceptNeighbour(const unsigned int idx,
 		else jsz = this->schedule->taskInfo[z].task->js;
 
 		if (jsz != -1 && msz != -1)
-			newTail = maximum(this->schedule->taskInfo[msz].task->p + this->tails[msz],
-				this->schedule->taskInfo[jsz].task->p + this->tails[jsz],
-				FuzzyFW::Crisp::M_COMPONENT);
+			newTail = std::max(this->schedule->taskInfo[msz].task->p + this->tails[msz], this->schedule->taskInfo[jsz].task->p + this->tails[jsz]);
 		else if (msz != -1)
 			newTail = this->schedule->taskInfo[msz].task->p + this->tails[msz];
 		else if (jsz != -1)
 			newTail = this->schedule->taskInfo[jsz].task->p + this->tails[jsz];
 		if ((msz != -1 || jsz != -1) &&
-			!(this->tails[z].isEqualTo(newTail, FuzzyFW::Crisp::C_COMPONENT))) {
+			!(this->tails[z] == newTail)) {
 			this->tails[z] = newTail;
 			if (this->schedule->taskInfo[z].mp != -1 && !inQueue[this->schedule->taskInfo[z].mp]) {
 				taskQueue.push(this->schedule->taskInfo[z].mp);
@@ -436,40 +432,32 @@ void NB_ParallelN3_MakespanIJSP::estimateHeadsTails(const unsigned int idx) {
 			jsy = schedule->taskInfo[y].task->js;
 
 		if (jsx != -1 && msy != -1)
-			tailX = maximum(this->tails[jsx] + schedule->taskInfo[jsx].task->p,
-				this->tails[msy] + schedule->taskInfo[msy].task->p, FuzzyFW::Crisp::M_COMPONENT);
+			tailX = std::max(this->tails[jsx] + schedule->taskInfo[jsx].task->p, this->tails[msy] + schedule->taskInfo[msy].task->p);
 		else if (jsx != -1)
 			tailX = this->tails[jsx] + schedule->taskInfo[jsx].task->p;
 		else if (msy != -1)
 			tailX = this->tails[msy] + schedule->taskInfo[msy].task->p;
 		else
-			tailX = FuzzyFW::Crisp(0, 0);
+			tailX = FuzzyFW::Crisp(0);
 
 		if (jsy != -1)
-			tailY = maximum(this->tails[jsy] + schedule->taskInfo[jsy].task->p,
-				tailX + schedule->taskInfo[x].task->p, FuzzyFW::Crisp::M_COMPONENT);
+			tailY = std::max(this->tails[jsy] + schedule->taskInfo[jsy].task->p, tailX + schedule->taskInfo[x].task->p);
 		else
 			tailY = tailX + schedule->taskInfo[x].task->p;
 
 		if (mpx != -1 && jpy != -1)
-			headY = maximum(schedule->taskInfo[mpx].head + schedule->taskInfo[mpx].task->p,
-				schedule->taskInfo[jpy].head + schedule->taskInfo[jpy].task->p,
-				FuzzyFW::Crisp::M_COMPONENT);
+			headY = std::max(schedule->taskInfo[mpx].head + schedule->taskInfo[mpx].task->p, schedule->taskInfo[jpy].head + schedule->taskInfo[jpy].task->p);
 		else if (mpx != -1)
 			headY = schedule->taskInfo[mpx].head + schedule->taskInfo[mpx].task->p;
 		else if (jpy != -1)
 			headY = schedule->taskInfo[jpy].head + schedule->taskInfo[jpy].task->p;
-		else headY = FuzzyFW::Crisp(0, 0);
+		else headY = FuzzyFW::Crisp(0);
 
 		if (jpx != -1)
-			headX = maximum(headY + schedule->taskInfo[y].task->p,
-				schedule->taskInfo[jpx].head + schedule->taskInfo[jpx].task->p,
-				FuzzyFW::Crisp::M_COMPONENT);
+			headX = std::max(headY + schedule->taskInfo[y].task->p, schedule->taskInfo[jpx].head + schedule->taskInfo[jpx].task->p);
 		else headX = headY + schedule->taskInfo[y].task->p;
 
-		makespan = maximum(headX + schedule->taskInfo[x].task->p + tailX,
-			headY + schedule->taskInfo[y].task->p + tailY,
-			FuzzyFW::Crisp::M_COMPONENT);
+		makespan = std::max(headX + schedule->taskInfo[x].task->p + tailX, headY + schedule->taskInfo[y].task->p + tailY);
 
 		arc->setEstimatedQuality(new FuzzyFW::FitnessCrisp(makespan, false));
 		return;
@@ -501,55 +489,41 @@ void NB_ParallelN3_MakespanIJSP::estimateHeadsTails(const unsigned int idx) {
 			jsz = schedule->taskInfo[z].task->js;
 
 		if (jsx != -1 && msz != -1)
-			tailX = maximum(this->tails[jsx] + schedule->taskInfo[jsx].task->p,
-				this->tails[msz] + schedule->taskInfo[msz].task->p, FuzzyFW::Crisp::M_COMPONENT);
+			tailX = std::max(this->tails[jsx] + schedule->taskInfo[jsx].task->p, this->tails[msz] + schedule->taskInfo[msz].task->p);
 		else if (jsx != -1)
 			tailX = this->tails[jsx] + schedule->taskInfo[jsx].task->p;
 		else if (msz != -1)
 			tailX = this->tails[msz] + schedule->taskInfo[msz].task->p;
 		else
-			tailX = FuzzyFW::Crisp(0, 0);
+			tailX = FuzzyFW::Crisp(0);
 
 		if (jsz != -1)
-			tailZ = maximum(this->tails[jsz] + schedule->taskInfo[jsz].task->p,
-				tailX + schedule->taskInfo[x].task->p, FuzzyFW::Crisp::M_COMPONENT);
+			tailZ = std::max(this->tails[jsz] + schedule->taskInfo[jsz].task->p, tailX + schedule->taskInfo[x].task->p);
 		else
 			tailZ = tailX + schedule->taskInfo[x].task->p;
 
 		if (jsy != -1)
-			tailY = maximum(this->tails[jsy] + schedule->taskInfo[jsy].task->p,
-				tailZ + schedule->taskInfo[z].task->p, FuzzyFW::Crisp::M_COMPONENT);
+			tailY = std::max(this->tails[jsy] + schedule->taskInfo[jsy].task->p, tailZ + schedule->taskInfo[z].task->p);
 		else
 			tailY = tailZ + schedule->taskInfo[z].task->p;
 
 		if (mpx != -1 && jpy != -1)
-			headY = maximum(schedule->taskInfo[mpx].head + schedule->taskInfo[mpx].task->p,
-				schedule->taskInfo[jpy].head + schedule->taskInfo[jpy].task->p,
-				FuzzyFW::Crisp::M_COMPONENT);
+			headY = std::max(schedule->taskInfo[mpx].head + schedule->taskInfo[mpx].task->p, schedule->taskInfo[jpy].head + schedule->taskInfo[jpy].task->p);
 		else if (mpx != -1)
 			headY = schedule->taskInfo[mpx].head + schedule->taskInfo[mpx].task->p;
 		else if (jpy != -1)
 			headY = schedule->taskInfo[jpy].head + schedule->taskInfo[jpy].task->p;
-		else headY = FuzzyFW::Crisp(0, 0);
+		else headY = FuzzyFW::Crisp(0);
 
 		if (jpz != -1)
-			headZ = maximum(headY + schedule->taskInfo[y].task->p,
-				schedule->taskInfo[jpz].head + schedule->taskInfo[jpz].task->p,
-				FuzzyFW::Crisp::M_COMPONENT);
+			headZ = std::max(headY + schedule->taskInfo[y].task->p, schedule->taskInfo[jpz].head + schedule->taskInfo[jpz].task->p);
 		else headZ = headY + schedule->taskInfo[y].task->p;
 
 		if (jpx != -1)
-			headX = maximum(headZ + schedule->taskInfo[z].task->p,
-				schedule->taskInfo[jpx].head + schedule->taskInfo[jpx].task->p,
-				FuzzyFW::Crisp::M_COMPONENT);
+			headX = std::max(headZ + schedule->taskInfo[z].task->p, schedule->taskInfo[jpx].head + schedule->taskInfo[jpx].task->p);
 		else headX = headZ + schedule->taskInfo[z].task->p;
 
-		makespan = maximum(
-			maximum(headX + schedule->taskInfo[x].task->p + tailX,
-				headY + schedule->taskInfo[y].task->p + tailY,
-				FuzzyFW::Crisp::M_COMPONENT),
-			headZ + schedule->taskInfo[z].task->p + tailZ,
-			FuzzyFW::Crisp::M_COMPONENT);
+		makespan = std::max(std::max(headX + schedule->taskInfo[x].task->p + tailX, headY + schedule->taskInfo[y].task->p + tailY), headZ + schedule->taskInfo[z].task->p + tailZ);
 
 		arc->setEstimatedQuality(new FuzzyFW::FitnessCrisp(makespan, false));
 		return;
@@ -581,55 +555,41 @@ void NB_ParallelN3_MakespanIJSP::estimateHeadsTails(const unsigned int idx) {
 			jsz = schedule->taskInfo[z].task->js;
 
 		if (jsy != -1 && msz != -1)
-			tailY = maximum(this->tails[jsy] + schedule->taskInfo[jsy].task->p,
-				this->tails[msz] + schedule->taskInfo[msz].task->p, FuzzyFW::Crisp::M_COMPONENT);
+			tailY = std::max(this->tails[jsy] + schedule->taskInfo[jsy].task->p, this->tails[msz] + schedule->taskInfo[msz].task->p);
 		else if (jsy != -1)
 			tailY = this->tails[jsy] + schedule->taskInfo[jsy].task->p;
 		else if (msz != -1)
 			tailY = this->tails[msz] + schedule->taskInfo[msz].task->p;
 		else
-			tailY = FuzzyFW::Crisp(0, 0);
+			tailY = FuzzyFW::Crisp(0);
 
 		if (jsx != -1)
-			tailX = maximum(this->tails[jsx] + schedule->taskInfo[jsx].task->p,
-				tailY + schedule->taskInfo[y].task->p, FuzzyFW::Crisp::M_COMPONENT);
+			tailX = std::max(this->tails[jsx] + schedule->taskInfo[jsx].task->p, tailY + schedule->taskInfo[y].task->p);
 		else
 			tailX = tailY + schedule->taskInfo[y].task->p;
 
 		if (jsz != -1)
-			tailZ = maximum(this->tails[jsz] + schedule->taskInfo[jsz].task->p,
-				tailX + schedule->taskInfo[x].task->p, FuzzyFW::Crisp::M_COMPONENT);
+			tailZ = std::max(this->tails[jsz] + schedule->taskInfo[jsz].task->p, tailX + schedule->taskInfo[x].task->p);
 		else
 			tailZ = tailX + schedule->taskInfo[x].task->p;
 
 		if (mpx != -1 && jpz != -1)
-			headZ = maximum(schedule->taskInfo[mpx].head + schedule->taskInfo[mpx].task->p,
-				schedule->taskInfo[jpz].head + schedule->taskInfo[jpz].task->p,
-				FuzzyFW::Crisp::M_COMPONENT);
+			headZ = std::max(schedule->taskInfo[mpx].head + schedule->taskInfo[mpx].task->p, schedule->taskInfo[jpz].head + schedule->taskInfo[jpz].task->p);
 		else if (mpx != -1)
 			headZ = schedule->taskInfo[mpx].head + schedule->taskInfo[mpx].task->p;
 		else if (jpz != -1)
 			headZ = schedule->taskInfo[jpz].head + schedule->taskInfo[jpz].task->p;
-		else headZ = FuzzyFW::Crisp(0, 0);
+		else headZ = FuzzyFW::Crisp(0);
 
 		if (jpx != -1)
-			headX = maximum(headZ + schedule->taskInfo[z].task->p,
-				schedule->taskInfo[jpx].head + schedule->taskInfo[jpx].task->p,
-				FuzzyFW::Crisp::M_COMPONENT);
+			headX = std::max(headZ + schedule->taskInfo[z].task->p, schedule->taskInfo[jpx].head + schedule->taskInfo[jpx].task->p);
 		else headX = headZ + schedule->taskInfo[z].task->p;
 
 		if (jpy != -1)
-			headY = maximum(headX + schedule->taskInfo[x].task->p,
-				schedule->taskInfo[jpy].head + schedule->taskInfo[jpy].task->p,
-				FuzzyFW::Crisp::M_COMPONENT);
+			headY = std::max(headX + schedule->taskInfo[x].task->p, schedule->taskInfo[jpy].head + schedule->taskInfo[jpy].task->p);
 		else headY = headX + schedule->taskInfo[x].task->p;
 
-		makespan = maximum(
-			maximum(headX + schedule->taskInfo[x].task->p + tailX,
-				headY + schedule->taskInfo[y].task->p + tailY,
-				FuzzyFW::Crisp::M_COMPONENT),
-			headZ + schedule->taskInfo[z].task->p + tailZ,
-			FuzzyFW::Crisp::M_COMPONENT);
+		makespan = std::max(std::max(headX + schedule->taskInfo[x].task->p + tailX, headY + schedule->taskInfo[y].task->p + tailY), headZ + schedule->taskInfo[z].task->p + tailZ);
 
 		arc->setEstimatedQuality(new FuzzyFW::FitnessCrisp(makespan, false));
 		return;
@@ -661,55 +621,41 @@ void NB_ParallelN3_MakespanIJSP::estimateHeadsTails(const unsigned int idx) {
 			jsz = schedule->taskInfo[z].task->js;
 
 		if (jsx != -1 && msz != -1)
-			tailX = maximum(this->tails[jsx] + schedule->taskInfo[jsx].task->p,
-				this->tails[msz] + schedule->taskInfo[msz].task->p, FuzzyFW::Crisp::M_COMPONENT);
+			tailX = std::max(this->tails[jsx] + schedule->taskInfo[jsx].task->p, this->tails[msz] + schedule->taskInfo[msz].task->p);
 		else if (jsx != -1)
 			tailX = this->tails[jsx] + schedule->taskInfo[jsx].task->p;
 		else if (msz != -1)
 			tailX = this->tails[msz] + schedule->taskInfo[msz].task->p;
 		else
-			tailX = FuzzyFW::Crisp(0, 0);
+			tailX = FuzzyFW::Crisp(0);
 
 		if (jsy != -1)
-			tailY = maximum(this->tails[jsy] + schedule->taskInfo[jsy].task->p,
-				tailX + schedule->taskInfo[x].task->p, FuzzyFW::Crisp::M_COMPONENT);
+			tailY = std::max(this->tails[jsy] + schedule->taskInfo[jsy].task->p, tailX + schedule->taskInfo[x].task->p);
 		else
 			tailY = tailX + schedule->taskInfo[x].task->p;
 
 		if (jsz != -1)
-			tailZ = maximum(this->tails[jsz] + schedule->taskInfo[jsz].task->p,
-				tailY + schedule->taskInfo[y].task->p, FuzzyFW::Crisp::M_COMPONENT);
+			tailZ = std::max(this->tails[jsz] + schedule->taskInfo[jsz].task->p, tailY + schedule->taskInfo[y].task->p);
 		else
 			tailZ = tailY + schedule->taskInfo[y].task->p;
 
 		if (mpx != -1 && jpz != -1)
-			headZ = maximum(schedule->taskInfo[mpx].head + schedule->taskInfo[mpx].task->p,
-				schedule->taskInfo[jpz].head + schedule->taskInfo[jpz].task->p,
-				FuzzyFW::Crisp::M_COMPONENT);
+			headZ = std::max(schedule->taskInfo[mpx].head + schedule->taskInfo[mpx].task->p, schedule->taskInfo[jpz].head + schedule->taskInfo[jpz].task->p);
 		else if (mpx != -1)
 			headZ = schedule->taskInfo[mpx].head + schedule->taskInfo[mpx].task->p;
 		else if (jpz != -1)
 			headZ = schedule->taskInfo[jpz].head + schedule->taskInfo[jpz].task->p;
-		else headZ = FuzzyFW::Crisp(0, 0);
+		else headZ = FuzzyFW::Crisp(0);
 
 		if (jpy != -1)
-			headY = maximum(headZ + schedule->taskInfo[z].task->p,
-				schedule->taskInfo[jpy].head + schedule->taskInfo[jpy].task->p,
-				FuzzyFW::Crisp::M_COMPONENT);
+			headY = std::max(headZ + schedule->taskInfo[z].task->p, schedule->taskInfo[jpy].head + schedule->taskInfo[jpy].task->p);
 		else headY = headZ + schedule->taskInfo[z].task->p;
 
 		if (jpx != -1)
-			headX = maximum(headY + schedule->taskInfo[y].task->p,
-				schedule->taskInfo[jpx].head + schedule->taskInfo[jpx].task->p,
-				FuzzyFW::Crisp::M_COMPONENT);
+			headX = std::max(headY + schedule->taskInfo[y].task->p, schedule->taskInfo[jpx].head + schedule->taskInfo[jpx].task->p);
 		else headX = headY + schedule->taskInfo[y].task->p;
 
-		makespan = maximum(
-			maximum(headX + schedule->taskInfo[x].task->p + tailX,
-				headY + schedule->taskInfo[y].task->p + tailY,
-				FuzzyFW::Crisp::M_COMPONENT),
-			headZ + schedule->taskInfo[z].task->p + tailZ,
-			FuzzyFW::Crisp::M_COMPONENT);
+		makespan = std::max(std::max(headX + schedule->taskInfo[x].task->p + tailX, headY + schedule->taskInfo[y].task->p + tailY), headZ + schedule->taskInfo[z].task->p + tailZ);
 
 		arc->setEstimatedQuality(new FuzzyFW::FitnessCrisp(makespan, false));
 		return;

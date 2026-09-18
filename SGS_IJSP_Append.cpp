@@ -19,35 +19,18 @@ namespace IJSP {
 //=============================================================================
 //=====  Default constructor  =================================================
 SGS_IJSP_Append::SGS_IJSP_Append(const FuzzyFW::ParameterDB *params)
-	: maximumLabel(FJSP_SGS_APPEND_MAXIMUM), intervalMaximum(FuzzyFW::Crisp::M_JIANG),
-	SGS_IJSP(params) {
+	: SGS_IJSP(params) {
 }
 
 
 //=====  Copy constructor  ====================================================
 SGS_IJSP_Append::SGS_IJSP_Append(const SGS_IJSP_Append &source)
-	: maximumLabel(source.maximumLabel),
-	intervalMaximum(source.intervalMaximum),
-	SGS_IJSP(source) { }
+	: SGS_IJSP(source) { }
 
 
 //=====  Setup method  ========================================================
 void SGS_IJSP_Append::setup(const FuzzyFW::ParameterDB *params) {
 	SGS_IJSP::setup(params);
-
-	// Load maximum type parameter
-	std::string maxName = params->getStringUpper(this->maximumLabel);
-	if (maxName.length() == 0) {
-		std::string errorMsg = this->maximumLabel + " parameter not found.";
-		throw IJSPException("SGS", errorMsg);
-	}
-	this->intervalMaximum = FuzzyFW::Crisp::getMaximum(maxName);
-	if (this->intervalMaximum == FuzzyFW::Crisp::M_Err) {
-		std::string errorMsg = "Invalid value for parameter";
-		errorMsg += "\'" + this->maximumLabel + "\': \'";
-		errorMsg += maxName + "\'";
-		throw IJSPException("SGS", errorMsg);
-	}
 }
 
 
@@ -75,14 +58,14 @@ FuzzyFW::Crisp SGS_IJSP_Append::scheduleTask(const TaskIJSP *task,
 	}
 
 	// Starting time
-	FuzzyFW::Crisp Stime = FuzzyFW::Crisp(0, 0);
+	FuzzyFW::Crisp Stime = FuzzyFW::Crisp(0);
 	if (jp != -1)
 		Stime = this->schedule->taskInfo[jp].head +
 		this->schedule->taskInfo[jp].task->p;
 
 	if (mp != -1)
-		Stime = maximum(Stime, this->schedule->taskInfo[mp].head +
-			this->schedule->taskInfo[mp].task->p, this->intervalMaximum);
+		Stime = std::max(Stime, this->schedule->taskInfo[mp].head +
+			this->schedule->taskInfo[mp].task->p);
 
 	// Update the schedule
 	this->schedule->addTask(taskIdx, Stime, -1);

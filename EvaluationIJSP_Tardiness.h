@@ -37,28 +37,8 @@ class EvaluationIJSP_Tardiness : public FuzzyFW::Evaluation {
 	//=============================================================================
 	//		FIELDS
 	//=============================================================================
-protected:
-	/*
-	* Label for the strategy to compute the maximum
-	*/
-	const std::string maximumLabel;
-
-	/*
-	* Strategy to use to compute the maximum of job completion times
-	*/
-	FuzzyFW::Crisp::Maximum intervalMaximum;
-
-	/*
-	* Label for the strategy to ccompare values
-	*/
-	const std::string compareLabel;
-
-	/*
-	* Strategy to use to compare the job completion times
-	*/
-	FuzzyFW::Crisp::Compare intervalCompare;
-
-
+	// As in EvaluationIJSP_Makespan: no maximum strategy and no comparison
+	// strategy survive the move to crisp times.
 
 	//=============================================================================
 	//		CONSTRUCTORS / INITIALIZERS
@@ -130,10 +110,6 @@ public:
 	virtual std::vector<std::string> getName() const {
 		std::vector<std::string> name;
 		name.push_back("Tardiness");
-		name.push_back(";Maximum:;"
-			+ FuzzyFW::Crisp::getMaximum(this->intervalMaximum));
-		name.push_back(";Comparisons:;"
-			+ FuzzyFW::Crisp::getComparison(this->intervalCompare));
 		return name;
 	}
 };

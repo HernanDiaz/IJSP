@@ -47,18 +47,8 @@ class SGS_IJSP_Append : public SGS_IJSP
 	//=========================================================================
 	//		FIELDS
 	//=========================================================================
-public:
-	/*
-	* Name of the parameter with the type of maximum to use
-	*/
-	const std::string maximumLabel;
-
-	/*
-	* Type of maximum to use during the scheduling process
-	*/
-	FuzzyFW::Crisp::Maximum intervalMaximum;
-
-
+	// No maximum strategy: on crisp times std::max is the maximum. The
+	// sgs.append.maximum key is still accepted in a setup file and ignored.
 
 	//=========================================================================
 	//		CONSTRUCTORS / INITIALIZERS
@@ -107,8 +97,6 @@ public:
 	virtual std::vector<std::string> getName() const {
 		std::vector<std::string> setup;
 		setup.push_back("Append");
-		setup.push_back(";Maximum;"+
-			FuzzyFW::Crisp::getMaximum(this->intervalMaximum));
 		return setup;
 	}
 

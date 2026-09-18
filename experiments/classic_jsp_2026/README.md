@@ -55,10 +55,23 @@ degenerate intervals `[p, p]`.
 
 So the existing solver optimises the classic makespan exactly, and no new
 Problem, Schedule, SGS, Encoder or Decoder is needed. The cost is that the
-arithmetic runs on two `double` components instead of one integer; a crisp
-specialisation would be faster, but it would also be a second implementation to
-keep correct, so it is not worth it until speed is shown to be the binding
-constraint.
+arithmetic runs on two `double` components instead of one integer.
+
+**On `experiment/classic-jsp-crisp` that cost has been paid off.** The original
+decision not to specialise was conditional -- "not worth it until speed is shown
+to be the binding constraint" -- and SCALING.md then showed exactly that: every
+comparison here has been limited by statistical power, which is bought with runs,
+which are bought with speed. `Interval` is replaced by `Crisp`, one `int` with
+inline comparisons, and the ranking machinery, the robustness analysers and the
+second pass over the critical path are gone with it.
+
+It is not a second implementation to keep correct, because it is not a second
+implementation: the interval code was refactored in place, and the two branches
+are checked against each other by running both with the same seed and comparing
+the search traces generation by generation. **1.80x**, same trajectory, and on
+this machine it reaches all six known optima of `ta01`-`ta10` where the interval
+build reaches five. The journal entries for 2026-09-19 have the numbers, the
+method, and the parts of the refactor that bought nothing.
 
 **Sanity check.** The converted `ta01` reproduces the machine routes of
 `SelectosYTaillardIntervalos/tai15_15_01.F.15_01.txt`, and its processing times

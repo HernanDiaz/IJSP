@@ -466,3 +466,122 @@ the slower processor had cost.
 This is the first result in this directory that is not a null. It is also not a
 better algorithm: it is the same algorithm, run twice as often, which is
 precisely the resource SCALING.md identified as binding.
+
+
+## 2026-09-19 — the crisp refactor, steps 2 and 3
+
+### Step 2: the ranking arguments go
+
+`Crisp` had kept `Interval`'s method names and still accepted the `Compare` and
+`Maximum` arguments, which it ignored, so that step 1 could be a pure type
+substitution. Both enums are now gone, with the arguments that selected them:
+
+* `isGreaterThan`, `isLesserThan`, `isEqualTo`, `isGreaterEqualTo`,
+  `isLesserEqualTo` and `EqualComponent` become `>`, `<`, `==`, `>=`, `<=`
+  and `==`;
+* `maximum(a, b, strategy)` and `minimum(a, b, strategy)` become `std::max`
+  and `std::min`;
+* `FitnessCrisp::FitnessCompareStrategy`, the static that carried the choice
+  from the setup file into every fitness comparison, is gone, and
+  `Fitness::Type::INTERVAL` is renamed `CRISP`;
+* `evaluation.interval.comparison`, `evaluation.interval.maximum` and
+  `sgs.interval.comparison` are removed from the setup files. The solver
+  ignores them rather than rejecting them, so an old setup still runs, but a
+  file that claims to select a ranking strategy which no longer exists is the
+  kind of thing that gets believed later.
+
+The rewrite was done by script rather than by hand, over the files whose names
+contain `IJSP` -- no FJSP or FVRP file does, so the TFN ranking strategies, which
+are genuinely different from each other, were never in scope. The one trap worth
+recording is precedence: `!(a + b).EqualComponent(c, comp)` has to become
+`!((a + b) == c)` and not `!(a + b) == c`, so a replacement sitting under a unary
+`!` is parenthesised and every other context is left bare.
+
+### Step 3: one pass over the critical path
+
+`for (short int comp = 1; comp <= 2; comp++)` walked the critical path once per
+interval endpoint, because with proper intervals G- and G+ are different graphs.
+After step 2 the loop body does not mention `comp` at all. The loop is removed in
+N1, N2, N3, N8, NH and Next.
+
+Two things this turned up.
+
+**N2Inter was not the same kind of loop.** It collects the boundary arcs of G-
+and G+ into two separate vectors and returns their *intersection*, with the union
+as a fallback when the intersection comes out empty, and it rebuilds
+`criticalPath` on each pass -- so unlike the others its second pass was not
+structurally inert. On crisp times it is still vacuous, because the two passes
+run identical code over identical data and produce two copies of one vector, and
+then intersection, union and either operand all coincide. It is rewritten by hand
+to one pass, one vector, no fallback.
+
+**On crisp data N2, N2Plus, N2Minus and N2Inter are the same neighbourhood.**
+N2Plus walked G+ only, N2Minus G- only; with one endpoint there is one critical
+graph. Their dead `comp` constants are removed and each carries a comment saying
+so. Nothing in this directory selects them -- every setup uses
+`ijsp.makespan.n2` -- but anyone choosing between them on crisp instances should
+know they are choosing between four names for one thing.
+
+### Verification
+
+Same check as step 1, and it still holds: on `ta01` with the same seed the crisp
+build agrees with the untouched `experiment/classic-jsp` build generation by
+generation, on both the best makespan and the population average, over the whole
+common prefix.
+
+That check only covers what the tuned setup runs -- N2, the insertion SGS, the
+makespan evaluation -- and the rewrite touched every neighbourhood. So each was
+run on both builds with the same seed, at a population of 20 to keep the cost
+down. **Seven of the eight produce identical traces**: N1, N2, N3, N8, N2Plus,
+N2Minus and N2Inter, the last three despite now being N2.
+
+**NH could not be checked.** It does not complete a single generation within 180 s
+even at a population of 4 with a 1 s local-search budget -- *on either build*.
+The time limit is only tested between generations, so a neighbourhood this
+expensive overruns any budget by an unbounded amount; it is the same failure mode
+as the uncapped back-jump search recorded above, and it is pre-existing rather
+than a regression. NH is not used by any setup here. It is the one code path in
+this refactor that no run has exercised, and that should be said plainly rather
+than left implied.
+
+### What steps 2 and 3 bought: nothing measurable
+
+`ta01`-`ta10`, 10 runs of 60 s, identical protocol and identical load:
+
+| | mean gen/s | generations per run | vs original |
+|---|---|---|---|
+| `experiment/classic-jsp` | 2.088 | 125.3 | - |
+| crisp, step 1 | 3.761 | 225.7 | 1.802x |
+| crisp, steps 1-3 | 3.767 | 226.0 | **1.805x** |
+
+0.2 % apart, which is noise by any standard this directory has used. **The whole
+of the speed-up came from step 1**, the type substitution and the inlining it
+allowed; removing the ignored arguments and the second critical-path pass changed
+the code for the better and the clock not at all.
+
+That is less surprising on inspection than it was in prospect. The ignored
+arguments were enum values passed by value into functions that were already being
+inlined, so the optimiser had been deleting them all along. And the second pass
+over the critical path was never the full walk it looks like: `added[]` and
+`criticalPath[]` are not reset between passes, so the second pass re-seeded the
+queue, popped the seeds, found every predecessor already marked, and stopped. It
+cost one scan of `lastTaskMachine` -- fifteen machines -- not a second traversal.
+
+The lesson is the same one this directory keeps relearning in different clothes:
+the mechanism was real and the effect was not, and only measuring told the two
+apart. Solution quality is unchanged: the same six optima, `ta10` included, and
+the same makespans on all ten instances as the step-1 build.
+
+### Where the branch stands
+
+The interval machinery is gone: `Interval`, `IntervalTest`, the ranking enums,
+the strategy arguments, the robustness analysers that sampled inside `[a, b]`,
+and the setup keys that configured them. What is left is a crisp solver that
+does the same search as the interval one, 1.8x faster, and reaches all six known
+optima of `ta01`-`ta10` on a machine where the interval build reaches five.
+
+The 2-4x that motivated the branch was optimistic at the top end; 1.8x is the
+figure. Against SCALING.md's costings that is still worth having, since every
+comparison in this directory has been limited by statistical power: the 6.7
+CPU-hour screen it prices now costs 3.7, and the 50 CPU-hour budget experiment
+costs 28.

@@ -18,9 +18,6 @@ namespace FuzzyFW {
 * Fitness backed by an Crisp value.
 */
 class FitnessCrisp : public Fitness {
-public:
-	static Crisp::Compare FitnessCompareStrategy;
-
 protected:
 	Crisp value;
 
@@ -40,7 +37,7 @@ public:
 	}
 
 	virtual Fitness::Type getType() const {
-		return Fitness::Type::INTERVAL;
+		return Fitness::Type::CRISP;
 	}
 
 	Crisp getValue() const {
