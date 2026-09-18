@@ -111,6 +111,7 @@ duration, changing a machine or deleting a task are all rejected.
 | `taillard_bounds.csv` | lower bound, best known solution and open/closed status |
 | `results/` | run output (not tracked) |
 | `JOURNAL.md` | chronological record of what was tried, dead ends included |
+| `SCALING.md` | what to run first on a machine with more cores, and what more cores will not fix |
 
 Instances and bounds come from
 <https://github.com/thomasWeise/jsspInstancesAndResults>.
