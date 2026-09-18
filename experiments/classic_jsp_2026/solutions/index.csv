@@ -9,6 +9,18 @@ ta07,1227,1227,1228.0,gap 0.08%,baseline_quick
 ta08,1217,1217,1217.0,optimal,conf_bj_j1_b10_60s
 ta09,1274,1274,1291.0,gap 1.33%,baseline_quick
 ta10,1241,1241,1241.0,optimal,conf_bj_j1_b10_60s
+ta18,1377,1396,1423.0,gap 3.34%,open_baseline_300s
+ta22,1561,1600,1619.0,gap 3.72%,open_backjump_300s
+ta23,1518,1557,1580.0,gap 4.08%,open_backjump_300s
+ta25,1558,1595,1622.0,gap 4.11%,open_backjump_300s
+ta26,1591,1643,1681.0,gap 5.66%,open_baseline_300s
+ta27,1652,1680,1711.0,gap 3.57%,open_backjump_300s
+ta29,1573,1625,1629.0,gap 3.56%,open_baseline_300s
+ta30,1519,1584,1608.0,gap 5.86%,open_backjump_300s
+ta32,1774,1784,1835.0,gap 3.44%,open_baseline_300s
+ta33,1788,1791,1849.0,gap 3.41%,open_backjump_300s
+ta34,1828,1829,1875.0,gap 2.57%,open_baseline_300s
+ta40,1651,1669,1703.0,gap 3.15%,open_baseline_300s
 ta41,1906,2005,2086.0,gap 9.44%,open_backjump_300s
 ta42,1884,1937,2003.0,gap 6.32%,open_backjump_300s
 ta43,1809,1846,1913.0,gap 5.75%,open_baseline_300s
