@@ -318,12 +318,52 @@ Two cautions before competing against any of these numbers:
   claim to have improved a published result must be checked against the current
   literature first -- this file is not sufficient evidence.
 
+## The 30x20 group (ta41-ta50)
+
+Both configurations, 5 runs of 300 s each, on the hardest group in the
+benchmark. Recomputed from certificates; compare with `scripts/compare.py`.
+
+| | mean best gap to LB | mean gap per run |
+|---|---|---|
+| plain tabu | 6.826 % | 7.891 % |
+| back-jump, 3 jumps | **6.380 %** | **7.604 %** |
+
+Two things follow, and they pull in opposite directions.
+
+**The gap here is an order of magnitude larger than on `ta01`-`ta10`** -- 6.4 %
+against 0.26 %. Best known solutions on this group sit 3-5 % below anything
+produced here, and those numbers come from decades of specialised work. **No
+published result is within reach of this configuration**, and the runs were not
+made in the expectation that one would be.
+
+**Hard instances discriminate between configurations where easy ones cannot.**
+Back-jump is ahead on 8 of 10 instances by per-instance mean and 7 of 10 by best
+run, with per-instance differences up to 29 makespan units. On `ta01`-`ta10` the
+same two configurations sat 0.024 percentage points apart and nothing could be
+said. That is a useful methodological result on its own: **a comparison run on
+closed 15x15 instances cannot detect a difference this algorithm actually has.**
+
+It is still not statistically established:
+
+```
+best-of-runs:      back-jump wins 7, loses 2, ties 1   sign test p = 0.180
+per-instance mean: back-jump better on 8 of 10         Wilcoxon p = 0.084
+```
+
+The direction is consistent across two measures and the effect is far larger
+than anything seen on the easy instances, but 10 instances at 5 runs does not
+reach the 5 % level. Settling it needs more paired samples -- more open
+instances, more runs, or both.
+
 ## Next steps
 
-* **`ta41`-`ta50` (30x20)** is where a published result could move. `ta51`-`ta80`
-  are a waste of time however impressive their size.
-* Settle the back-jump question with enough runs to resolve a tenth of a
-  percent, or accept it as undecided.
+* Settle the back-jump question. The 30x20 runs put it at p = 0.084; the cheapest
+  way to more power is more paired instances rather than more runs, since the
+  test pairs by instance -- the other 12 open instances (`ta18`, the seven open
+  `20x20`, and four open `30x15`) would roughly double the sample.
+* A published result is not in reach on the open instances from this
+  configuration, at 3-5 % above the best known. Closing that needs a different
+  algorithm, not a longer run.
 * The population collapses: on `ta01` the average makespan reaches the best
   one's value within 30 generations. Nothing here addresses that, and the
   seeding-study branch suggests it is the binding constraint.
