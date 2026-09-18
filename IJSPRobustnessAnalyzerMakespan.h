@@ -24,7 +24,7 @@ public:
 
 protected:
 
-	void analyzeObjectiveFunction(const IJSP::ProblemIJSP *problemIJSP, IJSP::ScheduleIJSP * schedule, FuzzyFW::FitnessInterval * fitness, const FuzzyFW::ParameterDB *params, int numRun);
+	void analyzeObjectiveFunction(const IJSP::ProblemIJSP *problemIJSP, IJSP::ScheduleIJSP * schedule, FuzzyFW::FitnessCrisp * fitness, const FuzzyFW::ParameterDB *params, int numRun);
 
 };
 }

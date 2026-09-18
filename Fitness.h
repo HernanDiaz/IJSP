@@ -6,7 +6,7 @@
 #pragma once
 
 #include "TFN.h"
-#include "Interval.h"
+#include "CrispTime.h"
 
 namespace FuzzyFW {
 
@@ -18,7 +18,7 @@ namespace FuzzyFW {
 /**
 * Abstract wrapper for fitness values that hides the maximization/minimization
 * logic from callers. Concrete types: FitnessDouble, FitnessInteger,
-* FitnessTFN, FitnessInterval.
+* FitnessTFN, FitnessCrisp.
 */
 class Fitness {
 public:
@@ -62,4 +62,4 @@ public:
 #include "FitnessDouble.h"
 #include "FitnessInteger.h"
 #include "FitnessTFN.h"
-#include "FitnessInterval.h"
+#include "FitnessCrisp.h"

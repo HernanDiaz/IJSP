@@ -27,7 +27,7 @@ namespace IJSP {
 */
 struct ScheduledTaskInfo {
 	const TaskIJSP *task;	// Scheduled task
-	FuzzyFW::Interval head;		// Starting time (head)
+	FuzzyFW::Crisp head;		// Starting time (head)
 	int mp;		// Machine predecessor
 	int ms;		// Machine successor
 };
@@ -149,12 +149,12 @@ public:
 	/**
 	* Get the completion time of a machine
 	*/
-	FuzzyFW::Interval getCTMachine(const unsigned int machine) const;
+	FuzzyFW::Crisp getCTMachine(const unsigned int machine) const;
 
 	/**
 	* Get the completion time of a job
 	*/
-	FuzzyFW::Interval getCTJob(const unsigned int job) const;
+	FuzzyFW::Crisp getCTJob(const unsigned int job) const;
 
 
 	/**
@@ -204,7 +204,7 @@ public:
 	/**
 	* Add a new task to the schedule
 	*/
-	void addTask(const int taskIdx, FuzzyFW::Interval & ST, const int macSuc);
+	void addTask(const int taskIdx, FuzzyFW::Crisp & ST, const int macSuc);
 	/**
 	* repair times of the sheduling after the task so there is no overlapping
 	*/
@@ -221,7 +221,7 @@ public:
 	* Also compares the exact makespan with expectedMakespan.
 	* Activated by #define DEBUG_VERIFY in heading.h
 	*/
-	void verifyHeads(const FuzzyFW::Interval& expectedMakespan,
+	void verifyHeads(const FuzzyFW::Crisp& expectedMakespan,
 		const std::string& context) const;
 
 	/**

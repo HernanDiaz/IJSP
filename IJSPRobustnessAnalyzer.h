@@ -44,7 +44,7 @@ public:
 
 	void open(FuzzyFW::Problem *problem, std::string outputPrefix, std::string signature);
 
-	virtual void analyzeObjectiveFunction(const IJSP::ProblemIJSP *problemIJSP, IJSP::ScheduleIJSP * schedule, FuzzyFW::FitnessInterval * fitness, const FuzzyFW::ParameterDB *params, int numRun) = 0;
+	virtual void analyzeObjectiveFunction(const IJSP::ProblemIJSP *problemIJSP, IJSP::ScheduleIJSP * schedule, FuzzyFW::FitnessCrisp * fitness, const FuzzyFW::ParameterDB *params, int numRun) = 0;
 
 	void analyze(FuzzyFW::Problem *problem, FuzzyFW::Solution * solution, FuzzyFW::Fitness* objective, const  FuzzyFW::ParameterDB *params, int numRun);
 	
@@ -52,6 +52,6 @@ public:
 
 	IJSP::ProblemIJSP* castProblem(FuzzyFW::Problem* problem);
 
-	FuzzyFW::FitnessInterval* castFitness(FuzzyFW::Fitness* objective);
+	FuzzyFW::FitnessCrisp* castFitness(FuzzyFW::Fitness* objective);
 };
 }

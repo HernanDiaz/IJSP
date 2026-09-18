@@ -22,9 +22,9 @@ namespace IJSP {
 EvaluationIJSP_Makespan::EvaluationIJSP_Makespan(
 	FuzzyFW::ParameterDB *parameters)
 	: maximumLabel(IJSP_EVALUATION_MAXIMUM),
-	intervalMaximum(FuzzyFW::Interval::M_COMPONENT),
+	intervalMaximum(FuzzyFW::Crisp::M_COMPONENT),
 	compareLabel(IJSP_EVALUATION_COMPARE), 
-	intervalCompare(FuzzyFW::Interval::C_EV),
+	intervalCompare(FuzzyFW::Crisp::C_EV),
 	Evaluation(parameters) {
 	IJSP::IJSPClassRegister::registerClasses();
 }
@@ -51,8 +51,8 @@ void EvaluationIJSP_Makespan::setup(FuzzyFW::ParameterDB *parameters) {
 		std::string errorMsg = this->maximumLabel + " parameter not found.";
 		throw IJSPException("Evaluation", errorMsg);
 	}
-	this->intervalMaximum = FuzzyFW::Interval::getMaximum(maxName);
-	if (this->intervalMaximum == FuzzyFW::Interval::M_Err) {
+	this->intervalMaximum = FuzzyFW::Crisp::getMaximum(maxName);
+	if (this->intervalMaximum == FuzzyFW::Crisp::M_Err) {
 		std::string errorMsg = "Invalid value for parameter ";
 		errorMsg += "\'" + this->maximumLabel + "\': \'";
 		errorMsg += maxName + "\'";
@@ -65,14 +65,14 @@ void EvaluationIJSP_Makespan::setup(FuzzyFW::ParameterDB *parameters) {
 		std::string errorMsg = this->compareLabel + " parameter not found.";
 		throw IJSPException("Evaluation", errorMsg);
 	}
-	this->intervalCompare = FuzzyFW::Interval::getComparison(compareName);
-	if (this->intervalCompare == FuzzyFW::Interval::C_Err) {
+	this->intervalCompare = FuzzyFW::Crisp::getComparison(compareName);
+	if (this->intervalCompare == FuzzyFW::Crisp::C_Err) {
 		std::string errorMsg = "Invalid value for parameter ";
 		errorMsg += "\'" + this->compareLabel + "\': \'";
 		errorMsg += compareName + "\'";
 		throw IJSPException("Evaluation", errorMsg);
 	}
-	FuzzyFW::FitnessInterval::FitnessCompareStrategy = this->intervalCompare;
+	FuzzyFW::FitnessCrisp::FitnessCompareStrategy = this->intervalCompare;
 }
 
 
@@ -88,7 +88,7 @@ FuzzyFW::Objective * EvaluationIJSP_Makespan::getObjectiveFunction(
 	FuzzyFW::Solution * solution;
 	ScheduleIJSP * schedule;
 	ProblemIJSP *fuzzyProb;
-	FuzzyFW::Interval makespan = FuzzyFW::Interval(0, 0);
+	FuzzyFW::Crisp makespan = FuzzyFW::Crisp(0, 0);
 
 	// Evaluate the individual to find the phenotype
 	if (individual->isPhenotypeUpdated())
@@ -99,7 +99,7 @@ FuzzyFW::Objective * EvaluationIJSP_Makespan::getObjectiveFunction(
 	schedule = dynamic_cast<ScheduleIJSP *>(solution);
 	if (schedule == NULL) {
 		std::string errorMsg = "This evaluation function is valid only ";
-		errorMsg += "for Interval Job Shop Problems.";
+		errorMsg += "for Crisp Job Shop Problems.";
 		throw IJSPException("Evaluation", errorMsg);
 	}
 
@@ -107,7 +107,7 @@ FuzzyFW::Objective * EvaluationIJSP_Makespan::getObjectiveFunction(
 		dynamic_cast<ProblemIJSP *>(svars->problem);
 	if (fuzzyProb == NULL) {
 		std::string errorMsg = "This evaluation function works only with ";
-		errorMsg += "Interval problems.";
+		errorMsg += "Crisp problems.";
 		throw IJSPException("Evaluation", errorMsg);
 	}
 
@@ -116,7 +116,7 @@ FuzzyFW::Objective * EvaluationIJSP_Makespan::getObjectiveFunction(
 		makespan = maximum(makespan, schedule->getCTJob(i), this->intervalMaximum);
 	}
 
-	return new FuzzyFW::FitnessInterval(makespan, false);
+	return new FuzzyFW::FitnessCrisp(makespan, false);
 }
 
 
@@ -129,7 +129,7 @@ FuzzyFW::Fitness * EvaluationIJSP_Makespan::evaluate(
 	FuzzyFW::Solution * solution;
 	ScheduleIJSP * schedule;
 	ProblemIJSP *fuzzyProb;
-	FuzzyFW::Interval makespan = FuzzyFW::Interval(0, 0);
+	FuzzyFW::Crisp makespan = FuzzyFW::Crisp(0, 0);
 
 	// Evaluate the individual to find the phenotype
 	if (individual->isPhenotypeUpdated())
@@ -140,7 +140,7 @@ FuzzyFW::Fitness * EvaluationIJSP_Makespan::evaluate(
 	schedule = dynamic_cast<ScheduleIJSP *>(solution);
 	if (schedule == NULL) {
 		std::string errorMsg = "This evaluation function is valid only ";
-		errorMsg += "for Interval Job Shop Problems.";
+		errorMsg += "for Crisp Job Shop Problems.";
 		throw IJSPException("Evaluation", errorMsg);
 	}
 
@@ -148,7 +148,7 @@ FuzzyFW::Fitness * EvaluationIJSP_Makespan::evaluate(
 		dynamic_cast<ProblemIJSP *>(svars->problem);
 	if (fuzzyProb == NULL) {
 		std::string errorMsg = "This evaluation function works only with ";
-		errorMsg += "Interval problems.";
+		errorMsg += "Crisp problems.";
 		throw IJSPException("Evaluation", errorMsg);
 	}
 
@@ -161,7 +161,7 @@ FuzzyFW::Fitness * EvaluationIJSP_Makespan::evaluate(
 		svars->encoder->encode(schedule, individual, svars);
 	if (!individual->isPhenotypeUpdated())
 		individual->updatePhenotype(schedule->clone());
- 	return new FuzzyFW::FitnessInterval(makespan, false);
+ 	return new FuzzyFW::FitnessCrisp(makespan, false);
 }
 
 
@@ -177,9 +177,9 @@ FuzzyFW::Fitness * EvaluationIJSP_Makespan::evaluate(
 EvaluationIJSP_Tardiness::EvaluationIJSP_Tardiness(
 	FuzzyFW::ParameterDB *parameters)
 	: maximumLabel(IJSP_EVALUATION_MAXIMUM),
-	intervalMaximum(FuzzyFW::Interval::M_COMPONENT),
+	intervalMaximum(FuzzyFW::Crisp::M_COMPONENT),
 	compareLabel(IJSP_EVALUATION_COMPARE),
-	intervalCompare(FuzzyFW::Interval::C_EV),
+	intervalCompare(FuzzyFW::Crisp::C_EV),
 	Evaluation(parameters) {
 	IJSP::IJSPClassRegister::registerClasses();
 }
@@ -206,8 +206,8 @@ void EvaluationIJSP_Tardiness::setup(FuzzyFW::ParameterDB *parameters) {
 		std::string errorMsg = this->maximumLabel + " parameter not found.";
 		throw IJSPException("Evaluation", errorMsg);
 	}
-	this->intervalMaximum = FuzzyFW::Interval::getMaximum(maxName);
-	if (this->intervalMaximum == FuzzyFW::Interval::M_Err) {
+	this->intervalMaximum = FuzzyFW::Crisp::getMaximum(maxName);
+	if (this->intervalMaximum == FuzzyFW::Crisp::M_Err) {
 		std::string errorMsg = "Invalid value for parameter ";
 		errorMsg += "\'" + this->maximumLabel + "\': \'";
 		errorMsg += maxName + "\'";
@@ -220,14 +220,14 @@ void EvaluationIJSP_Tardiness::setup(FuzzyFW::ParameterDB *parameters) {
 		std::string errorMsg = this->compareLabel + " parameter not found.";
 		throw IJSPException("Evaluation", errorMsg);
 	}
-	this->intervalCompare = FuzzyFW::Interval::getComparison(compareName);
-	if (this->intervalCompare == FuzzyFW::Interval::C_Err) {
+	this->intervalCompare = FuzzyFW::Crisp::getComparison(compareName);
+	if (this->intervalCompare == FuzzyFW::Crisp::C_Err) {
 		std::string errorMsg = "Invalid value for parameter ";
 		errorMsg += "\'" + this->compareLabel + "\': \'";
 		errorMsg += compareName + "\'";
 		throw IJSPException("Evaluation", errorMsg);
 	}
-	FuzzyFW::FitnessInterval::FitnessCompareStrategy = this->intervalCompare;
+	FuzzyFW::FitnessCrisp::FitnessCompareStrategy = this->intervalCompare;
 }
 
 
@@ -244,7 +244,7 @@ FuzzyFW::Objective * EvaluationIJSP_Tardiness::getObjectiveFunction(
 	ScheduleIJSP * schedule;
 	ProblemIJSP *fuzzyProb;
 	const FuzzyFW::TimeWindowLinear* timeWindow;
-	FuzzyFW::Interval tardiness = FuzzyFW::Interval(0, 0);
+	FuzzyFW::Crisp tardiness = FuzzyFW::Crisp(0, 0);
 
 	// Evaluate the individual to find the phenotype
 	if (individual->isPhenotypeUpdated())
@@ -255,7 +255,7 @@ FuzzyFW::Objective * EvaluationIJSP_Tardiness::getObjectiveFunction(
 	schedule = dynamic_cast<ScheduleIJSP *>(solution);
 	if (schedule == NULL) {
 		std::string errorMsg = "This evaluation function is valid only ";
-		errorMsg += "for Interval Job Shop Problems.";
+		errorMsg += "for Crisp Job Shop Problems.";
 		throw IJSPException("EvaluationIJSP", errorMsg);
 	}
 
@@ -263,7 +263,7 @@ FuzzyFW::Objective * EvaluationIJSP_Tardiness::getObjectiveFunction(
 		dynamic_cast<ProblemIJSP *>(svars->problem);
 	if (fuzzyProb == NULL) {
 		std::string errorMsg = "This evaluation function works only with ";
-		errorMsg += "Interval problems.";
+		errorMsg += "Crisp problems.";
 		throw IJSPException("EvaluationIJSP", errorMsg);
 	}
 
@@ -276,10 +276,19 @@ FuzzyFW::Objective * EvaluationIJSP_Tardiness::getObjectiveFunction(
 			throw IJSPException("EvaluationIJSP", errorMsg);
 		}
 
-		tardiness += FuzzyFW::Interval(std::max(0.0, schedule->getCTJob(i).a - timeWindow->d2), std::max(0.0, schedule->getCTJob(i).b - timeWindow->d1));
+		// Tardiness against a linear time window is [max(0, C - d2),
+		// max(0, C - d1)], which is a proper interval whenever d1 != d2 even
+		// though C is a point. It is therefore not a crisp quantity, and
+		// collapsing it onto either endpoint would be a modelling decision
+		// dressed up as an implementation detail. This branch targets the
+		// classic makespan; the objective is refused rather than guessed.
+		std::string errorMsg = "Tardiness against a linear time window is not ";
+		errorMsg += "a crisp quantity. Use ijsp.makespan on this branch, or ";
+		errorMsg += "the interval solver on feature/IJSP.";
+		throw IJSPException("EvaluationIJSP", errorMsg);
 	}
 
-	return new FuzzyFW::FitnessInterval(tardiness, false);
+	return new FuzzyFW::FitnessCrisp(tardiness, false);
 }
 
 
@@ -293,7 +302,7 @@ FuzzyFW::Fitness * EvaluationIJSP_Tardiness::evaluate(
 	ScheduleIJSP * schedule;
 	ProblemIJSP *fuzzyProb;
 	const FuzzyFW::TimeWindowLinear* timeWindow;
-	FuzzyFW::Interval tardiness = FuzzyFW::Interval(0, 0);
+	FuzzyFW::Crisp tardiness = FuzzyFW::Crisp(0, 0);
 
 	// Evaluate the individual to find the phenotype
 	if (individual->isPhenotypeUpdated())
@@ -304,7 +313,7 @@ FuzzyFW::Fitness * EvaluationIJSP_Tardiness::evaluate(
 	schedule = dynamic_cast<ScheduleIJSP *>(solution);
 	if (schedule == NULL) {
 		std::string errorMsg = "This evaluation function is valid only ";
-		errorMsg += "for Interval Job Shop Problems.";
+		errorMsg += "for Crisp Job Shop Problems.";
 		throw IJSPException("Evaluation", errorMsg);
 	}
 
@@ -312,7 +321,7 @@ FuzzyFW::Fitness * EvaluationIJSP_Tardiness::evaluate(
 		dynamic_cast<ProblemIJSP *>(svars->problem);
 	if (fuzzyProb == NULL) {
 		std::string errorMsg = "This evaluation function works only with ";
-		errorMsg += "Interval problems.";
+		errorMsg += "Crisp problems.";
 		throw IJSPException("Evaluation", errorMsg);
 	}
 
@@ -326,7 +335,12 @@ FuzzyFW::Fitness * EvaluationIJSP_Tardiness::evaluate(
 			throw IJSPException("EvaluationIJSP", errorMsg);
 		}
 
-		tardiness += FuzzyFW::Interval(std::max(0.0, schedule->getCTJob(i).a - timeWindow->d2), std::max(0.0, schedule->getCTJob(i).b - timeWindow->d1));
+		// See the note in the evaluation above: tardiness against a linear
+		// time window is an interval even when the completion time is a point.
+		std::string errorMsg = "Tardiness against a linear time window is not ";
+		errorMsg += "a crisp quantity. Use ijsp.makespan on this branch, or ";
+		errorMsg += "the interval solver on feature/IJSP.";
+		throw IJSPException("EvaluationIJSP", errorMsg);
 	}
 
 
@@ -335,6 +349,6 @@ FuzzyFW::Fitness * EvaluationIJSP_Tardiness::evaluate(
 	if (!individual->isPhenotypeUpdated())
 		individual->updatePhenotype(schedule->clone());
 
-	return new FuzzyFW::FitnessInterval(tardiness, false);
+	return new FuzzyFW::FitnessCrisp(tardiness, false);
 }
 }

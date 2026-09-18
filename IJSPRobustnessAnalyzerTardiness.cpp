@@ -15,7 +15,7 @@ namespace PostExecution {
 	//====  Default constructor  ==================================================
 	IJSPRobustnessAnalyzerTardiness::IJSPRobustnessAnalyzerTardiness():IJSPRobustnessAnalyzer(){}
 
-	void IJSPRobustnessAnalyzerTardiness::analyzeObjectiveFunction(const IJSP::ProblemIJSP *problemIJSP, IJSP::ScheduleIJSP * schedule, FuzzyFW::FitnessInterval * fitness, const FuzzyFW::ParameterDB *params, int numRun)
+	void IJSPRobustnessAnalyzerTardiness::analyzeObjectiveFunction(const IJSP::ProblemIJSP *problemIJSP, IJSP::ScheduleIJSP * schedule, FuzzyFW::FitnessCrisp * fitness, const FuzzyFW::ParameterDB *params, int numRun)
 	{
 		std::vector<unsigned int> mMkspan(problemIJSP->getNumberMachines());
 		std::vector<unsigned int> jMkspan(problemIJSP->getNumberJobs());
@@ -62,7 +62,7 @@ namespace PostExecution {
 			   throw IJSP::IJSPException("EvaluationIJSP", errorMsg);
 		   }
 
-		   FuzzyFW::Interval I = FuzzyFW::Interval(std::max(0.0, schedule->getCTJob(i).a - dueDate->d2), std::max(0.0, schedule->getCTJob(i).b - dueDate->d1));
+		   FuzzyFW::Crisp I = FuzzyFW::Crisp(std::max(0.0, schedule->getCTJob(i).a - dueDate->d2), std::max(0.0, schedule->getCTJob(i).b - dueDate->d1));
 		   if (I.a == 0) numJobs++;
 	   }
 	   this->writer.write(problemIJSP->getNumberJobs());

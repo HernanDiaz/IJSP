@@ -49,25 +49,21 @@ void JSPCertificateAnalyzer::analyze(FuzzyFW::Problem *problem,
 	// recovered by walking the job chain from the task's predecessors.
 	for (unsigned int t = 0; t < problemIJSP->getNumberTasks(); t++) {
 		const IJSP::TaskIJSP *task = problemIJSP->getTask(t);
-		const FuzzyFW::Interval &start = schedule->taskInfo[t].head;
-		FuzzyFW::Interval completion = start + task->p;
+		const FuzzyFW::Crisp &start = schedule->taskInfo[t].head;
+		FuzzyFW::Crisp completion = start + task->p;
 		unsigned int operation = 0;
 
 		for (int pred = task->jp; pred >= 0;
 			pred = problemIJSP->getTask(pred)->jp)
 			operation++;
 
+		// One row per task. Times are exact integers, so the row carries the
+		// whole truth about the task and there are no upper endpoints left to
+		// append, as there were while durations were intervals.
 		this->output << numRun + 1 << ";" << t << ";" << task->job << ";"
 			<< operation << ";" << task->machine << ";"
-			<< start.a << ";" << task->p.a << ";" << completion.a;
-
-		// For a genuine interval instance the upper endpoints differ from the
-		// lower ones; append them so the row stays a complete description.
-		if (start.a != start.b || task->p.a != task->p.b)
-			this->output << ";" << start.b << ";" << task->p.b << ";"
-				<< completion.b;
-
-		this->output << std::endl;
+			<< start.v << ";" << task->p.v << ";" << completion.v
+			<< std::endl;
 	}
 }
 

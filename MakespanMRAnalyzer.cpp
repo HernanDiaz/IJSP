@@ -41,7 +41,7 @@ namespace PostExecution {
 		IJSP::ScheduleIJSP * schedule =
 			dynamic_cast<IJSP::ScheduleIJSP *>(solution);
 		if (schedule == NULL) {
-			std::string errorMsg = "The Robustness analyzer can be only used on Interval Problems.";
+			std::string errorMsg = "The Robustness analyzer can be only used on Crisp Problems.";
 			throw PostExecutionException("RobustnessAnalyzer", errorMsg);
 		}
 		return schedule;
@@ -51,15 +51,15 @@ namespace PostExecution {
 		IJSP::ProblemIJSP * problemIJSP =
 			dynamic_cast<IJSP::ProblemIJSP *>(problem);
 		if (problemIJSP == NULL) {
-			std::string errorMsg = "The Robustness analyzer can be only used on Interval Problems.";
+			std::string errorMsg = "The Robustness analyzer can be only used on Crisp Problems.";
 			throw PostExecutionException("RobustnessAnalyzer", errorMsg);
 		}
 		return problemIJSP;
 	}
 
-	FuzzyFW::FitnessInterval * MakespanMRAnalyzer::castFitness(FuzzyFW::Fitness* objective) {
-		FuzzyFW::FitnessInterval * fitness =
-			dynamic_cast<FuzzyFW::FitnessInterval *>(objective);
+	FuzzyFW::FitnessCrisp * MakespanMRAnalyzer::castFitness(FuzzyFW::Fitness* objective) {
+		FuzzyFW::FitnessCrisp * fitness =
+			dynamic_cast<FuzzyFW::FitnessCrisp *>(objective);
 		if (fitness == NULL) {
 			std::string errorMsg = "The Robustness analyzer can only use a IJSP tardiness evaluator to analyze IJSP tardiness.";
 			throw PostExecutionException("RobustnessAnalyzer", errorMsg);
@@ -67,7 +67,7 @@ namespace PostExecution {
 		return fitness;
 	}
 
-void MakespanMRAnalyzer::analyzeObjectiveFunction(const IJSP::ProblemIJSP *problemIJSP, IJSP::ScheduleIJSP * schedule, FuzzyFW::FitnessInterval * fitness, const FuzzyFW::ParameterDB *params, int numRun)
+void MakespanMRAnalyzer::analyzeObjectiveFunction(const IJSP::ProblemIJSP *problemIJSP, IJSP::ScheduleIJSP * schedule, FuzzyFW::FitnessCrisp * fitness, const FuzzyFW::ParameterDB *params, int numRun)
 {
 	this->writer.write("Run " + numRun);
 	this->writer.endline();
@@ -86,7 +86,7 @@ void MakespanMRAnalyzer::analyzeObjectiveFunction(const IJSP::ProblemIJSP *probl
 	this->writer.write("Task Times Distributions:");
 	this->writer.endline();
 	for (int i = 0; i < tailsDistro.size(); i++) {
-		FuzzyFW::Interval tail = schedule->taskInfo[i].head + schedule->taskInfo[i].task->p;
+		FuzzyFW::Crisp tail = schedule->taskInfo[i].head + schedule->taskInfo[i].task->p;
 		this->writer.write(tail.a);
 		this->writer.write(tail.b);
 		double sum = 0;
@@ -137,14 +137,14 @@ void MakespanMRAnalyzer::calculateMakespanDistribution(const IJSP::ScheduleIJSP 
 		return;
 	}
 	else if (lastTasks.size() >= 2) {
-		FuzzyFW::Interval tailA = schedule->taskInfo[lastTasks[0]].head + schedule->taskInfo[lastTasks[0]].task->p;
-		FuzzyFW::Interval tailB = schedule->taskInfo[lastTasks[1]].head + schedule->taskInfo[lastTasks[1]].task->p;
+		FuzzyFW::Crisp tailA = schedule->taskInfo[lastTasks[0]].head + schedule->taskInfo[lastTasks[0]].task->p;
+		FuzzyFW::Crisp tailB = schedule->taskInfo[lastTasks[1]].head + schedule->taskInfo[lastTasks[1]].task->p;
 		makespanDistro = combineDistributions(
 			(*tailsDistro[lastTasks[0]]),
 			(*tailsDistro[lastTasks[1]]),
 			tailA,
 			tailB);
-		FuzzyFW::Interval makespanTail(max(tailA.a, tailB.a), max(tailA.b, tailB.b));
+		FuzzyFW::Crisp makespanTail(max(tailA.a, tailB.a), max(tailA.b, tailB.b));
 
 		for (int i = 2; i < lastTasks.size(); i++) {
 			tailB = schedule->taskInfo[lastTasks[i]].head + schedule->taskInfo[lastTasks[i]].task->p;
@@ -153,7 +153,7 @@ void MakespanMRAnalyzer::calculateMakespanDistribution(const IJSP::ScheduleIJSP 
 				(*tailsDistro[lastTasks[i]]),
 				makespanTail,
 				tailB);
-			makespanTail = FuzzyFW::Interval(max(makespanTail.a, tailB.a), max(makespanTail.b, tailB.b));
+			makespanTail = FuzzyFW::Crisp(max(makespanTail.a, tailB.a), max(makespanTail.b, tailB.b));
 		}
 	}
 }
@@ -164,8 +164,8 @@ std::vector<int> MakespanMRAnalyzer::orderLastTasks(const IJSP::ScheduleIJSP * s
 	for (int i = 0; i < schedule->lastTaskMachine.size(); i++) {
 		int token = schedule->lastTaskMachine[i];
 		for (int j = 0; j < i ; j++) {
-			FuzzyFW::Interval tailA = schedule->taskInfo[orderedTasks[j]].head + schedule->taskInfo[orderedTasks[j]].task->p;
-			FuzzyFW::Interval tailB = schedule->taskInfo[token].head + schedule->taskInfo[token].task->p;
+			FuzzyFW::Crisp tailA = schedule->taskInfo[orderedTasks[j]].head + schedule->taskInfo[orderedTasks[j]].task->p;
+			FuzzyFW::Crisp tailB = schedule->taskInfo[token].head + schedule->taskInfo[token].task->p;
 				if (tailB.b > tailA.b || (tailB.b == tailA.b) && (tailB.a > tailA.a)){
 					int aux = token;
 					token = orderedTasks[j];
@@ -179,7 +179,7 @@ std::vector<int> MakespanMRAnalyzer::orderLastTasks(const IJSP::ScheduleIJSP * s
 
 
 	void MakespanMRAnalyzer::calculateTailDistribution(int taskId, IJSP::ScheduleIJSP * schedule, std::vector<std::vector<double>*> & tailsDistro){
-		FuzzyFW::Interval tail = schedule->taskInfo[taskId].head + schedule->taskInfo[taskId].task->p;
+		FuzzyFW::Crisp tail = schedule->taskInfo[taskId].head + schedule->taskInfo[taskId].task->p;
 		//cout << endl << "Taskid: " << taskId << endl;
 		int mp = schedule->taskInfo[taskId].mp;
 		int jp = schedule->taskInfo[taskId].task->jp;
@@ -200,7 +200,7 @@ std::vector<int> MakespanMRAnalyzer::orderLastTasks(const IJSP::ScheduleIJSP * s
 		}
 	}
 
-	std::vector<double> MakespanMRAnalyzer::combineDistributions(const std::vector<double> & distA,const  std::vector<double> & distB, const FuzzyFW::Interval & tailA, const FuzzyFW::Interval & tailB) {
+	std::vector<double> MakespanMRAnalyzer::combineDistributions(const std::vector<double> & distA,const  std::vector<double> & distB, const FuzzyFW::Crisp & tailA, const FuzzyFW::Crisp & tailB) {
 		//all predecessors > 0, there is no intersection
 		if (tailA.a >= tailB.b) {
 			return distA;
@@ -231,9 +231,9 @@ std::vector<int> MakespanMRAnalyzer::orderLastTasks(const IJSP::ScheduleIJSP * s
 	}
 
 	std::vector<double> MakespanMRAnalyzer::getPreviousTailDistribution(IJSP::ScheduleIJSP * schedule, const int taskId, std::vector<std::vector<double>*> & tailsDistro) {
-		FuzzyFW::Interval mpTail;
+		FuzzyFW::Crisp mpTail;
 		std::vector<double>* mpDist = 0;
-		FuzzyFW::Interval jpTail;
+		FuzzyFW::Crisp jpTail;
 		std::vector<double>* jpDist = 0;
 
 		int mp = schedule->taskInfo[taskId].mp;

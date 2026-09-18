@@ -57,7 +57,7 @@ std::vector<int> & ScheduleIJSP::getTaskOrder(FuzzyFW::Random *rng) {
 
 
 //====  Get Machine Completion Time  ==========================================
-FuzzyFW::Interval ScheduleIJSP::getCTMachine(const unsigned int machine) const {
+FuzzyFW::Crisp ScheduleIJSP::getCTMachine(const unsigned int machine) const {
 	if (machine < 0 || machine >= this->problem->getNumberMachines()) {
 		std::string errorMsg = "Trying to access unexisting machine: ";
 		errorMsg += valueToString(machine);
@@ -66,13 +66,13 @@ FuzzyFW::Interval ScheduleIJSP::getCTMachine(const unsigned int machine) const {
 
 	int lastTask = this->lastTaskMachine[machine];
 	if (lastTask < 0)
-		return FuzzyFW::Interval(0, 0);
+		return FuzzyFW::Crisp(0, 0);
 	return this->taskInfo[lastTask].head + this->taskInfo[lastTask].task->p;
 }
 
 
 //====  Get Job Completion Time  ==============================================
-FuzzyFW::Interval ScheduleIJSP::getCTJob(const unsigned int job) const {
+FuzzyFW::Crisp ScheduleIJSP::getCTJob(const unsigned int job) const {
 	if (job < 0 || job >= this->problem->getNumberJobs()) {
 		std::string errorMsg = "Trying to access unexisting job: ";
 		errorMsg += valueToString(job);
@@ -81,7 +81,7 @@ FuzzyFW::Interval ScheduleIJSP::getCTJob(const unsigned int job) const {
 
 	int lastTask = this->lastTaskJob[job];
 	if (lastTask < 0)
-		return FuzzyFW::Interval(0, 0);
+		return FuzzyFW::Crisp(0, 0);
 	return this->taskInfo[lastTask].head + this->taskInfo[lastTask].task->p;
 }
 
@@ -126,14 +126,14 @@ const TaskIJSP * ScheduleIJSP::operator[](const unsigned int index) const {
 //		METHODS
 //=============================================================================
 //====  addTask Method  =======================================================
-void ScheduleIJSP::addTask(const int taskIdx, FuzzyFW::Interval & ST,
+void ScheduleIJSP::addTask(const int taskIdx, FuzzyFW::Crisp & ST,
 	const int macSuc) {
 
 	const TaskIJSP * task = (*(this->problem))[taskIdx];
 	int mac = task->machine;
 	int job = task->job;
 	int macPred;
-	FuzzyFW::Interval::Compare cev = FuzzyFW::Interval::C_EV;
+	FuzzyFW::Crisp::Compare cev = FuzzyFW::Crisp::C_EV;
 
 	this->taskInfo[taskIdx].task = task;
 	this->taskInfo[taskIdx].head = ST;
@@ -187,12 +187,12 @@ void ScheduleIJSP::addTask(const int taskIdx, FuzzyFW::Interval & ST,
 
 
 //====  verifyHeads Method  ===================================================
-void ScheduleIJSP::verifyHeads(const FuzzyFW::Interval& expectedMakespan,
+void ScheduleIJSP::verifyHeads(const FuzzyFW::Crisp& expectedMakespan,
 	const std::string& context) const {
 
 	int n = (int)this->taskInfo.size();
-	std::vector<FuzzyFW::Interval> computedHead(n, FuzzyFW::Interval(0, 0));
-	FuzzyFW::Interval exactMakespan(0, 0);
+	std::vector<FuzzyFW::Crisp> computedHead(n, FuzzyFW::Crisp(0, 0));
+	FuzzyFW::Crisp exactMakespan(0, 0);
 
 	// Count how many predecessors each task is waiting for
 	std::vector<int> remaining(n, 0);
@@ -218,13 +218,11 @@ void ScheduleIJSP::verifyHeads(const FuzzyFW::Interval& expectedMakespan,
 		int jp = this->taskInfo[t].task->jp;
 		int mp = this->taskInfo[t].mp;
 
-		FuzzyFW::Interval expected(0, 0);
+		FuzzyFW::Crisp expected(0);
 		if (jp != -1 && mp != -1) {
-			FuzzyFW::Interval fromJp = computedHead[jp] + this->taskInfo[jp].task->p;
-			FuzzyFW::Interval fromMp = computedHead[mp] + this->taskInfo[mp].task->p;
-			expected = FuzzyFW::Interval(
-				std::max(fromJp.a, fromMp.a),
-				std::max(fromJp.b, fromMp.b));
+			FuzzyFW::Crisp fromJp = computedHead[jp] + this->taskInfo[jp].task->p;
+			FuzzyFW::Crisp fromMp = computedHead[mp] + this->taskInfo[mp].task->p;
+			expected = maximum(fromJp, fromMp, FuzzyFW::Crisp::M_COMPONENT);
 		} else if (jp != -1) {
 			expected = computedHead[jp] + this->taskInfo[jp].task->p;
 		} else if (mp != -1) {
@@ -233,13 +231,12 @@ void ScheduleIJSP::verifyHeads(const FuzzyFW::Interval& expectedMakespan,
 
 		computedHead[t] = expected;
 
-		// Compare stored head with recomputed head
-		if (std::fabs(this->taskInfo[t].head.a - expected.a) > AccuracyError ||
-			std::fabs(this->taskInfo[t].head.b - expected.b) > AccuracyError) {
+		// Compare stored head with recomputed head. Crisp times are exact
+		// integers, so this is an equality check and not a tolerance one.
+		if (this->taskInfo[t].head.v != expected.v) {
 			std::cerr << "[" << context << "] HEAD MISMATCH task " << t
-				<< " stored=[" << this->taskInfo[t].head.a << ","
-				<< this->taskInfo[t].head.b << "]"
-				<< " expected=[" << expected.a << "," << expected.b << "]"
+				<< " stored=" << this->taskInfo[t].head.v
+				<< " expected=" << expected.v
 				<< std::endl;
 		}
 
@@ -288,7 +285,7 @@ void ScheduleIJSP::reset() {
 	this->isSorted = true;
 
 	for (size_t i = 0; i < this->taskInfo.size(); i++) {
-		this->taskInfo[i].head = FuzzyFW::Interval(-1, -1);
+		this->taskInfo[i].head = FuzzyFW::Crisp(-1, -1);
 		this->taskInfo[i].mp = this->taskInfo[i].mp = -1;
 		this->taskOrder[i] = -1;
 	}
@@ -344,7 +341,7 @@ void ScheduleIJSP::repairScheduledTimes(const int taskIdx, int _depth) {
 
 //====  adjusts head of a succcessor after completion of the current task===========================
 bool ScheduleIJSP::adjustHead(const ScheduledTaskInfo currentTask, ScheduledTaskInfo* successor) {
-	FuzzyFW::Interval completionTime = currentTask.head + currentTask.task->p;
+	FuzzyFW::Crisp completionTime = currentTask.head + currentTask.task->p;
 	bool repairNeed = false;
 	
 	if (successor->head.a < 0 || successor->head.b < 0) return false;
@@ -364,7 +361,7 @@ bool ScheduleIJSP::adjustHead(const ScheduledTaskInfo currentTask, ScheduledTask
 
 void ScheduleIJSP::verifyScheduling() {
 	//We verify task by task that the job restrictions are correct
-	FuzzyFW::Interval::Compare comp = FuzzyFW::Interval::C_COMPONENT;
+	FuzzyFW::Crisp::Compare comp = FuzzyFW::Crisp::C_COMPONENT;
 	for (int i = 0; i < this->lastTaskJob.size(); i++) {
 		ScheduledTaskInfo currentTask = this->taskInfo[this->lastTaskJob[i]];
 		while (currentTask.task->jp >= 0 && currentTask.task->jp < this->taskInfo.size()) {
@@ -402,8 +399,8 @@ void ScheduleIJSP::verifyScheduling() {
 //====  apply quicksort to sort tasks  ========================================
 void ScheduleIJSP::quicksortTasks(int left, int right, FuzzyFW::Random *rng) {
 	int pivot;
-	FuzzyFW::Interval pivotValue;
-	FuzzyFW::Interval::Compare cp = FuzzyFW::Interval::C_EV;
+	FuzzyFW::Crisp pivotValue;
+	FuzzyFW::Crisp::Compare cp = FuzzyFW::Crisp::C_EV;
 
 	if (left >= right)
 		return;

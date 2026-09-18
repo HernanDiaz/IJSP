@@ -33,7 +33,7 @@ FuzzyFW::Individual * CreationLRTFIntervalMkSchedule::createIndividual(
 	}
 
 	// Find the first task of each job and count remaining time for each job
-	std::vector<FuzzyFW::Interval> jobRemainingTime(fuzzyProb->getNumberJobs());
+	std::vector<FuzzyFW::Crisp> jobRemainingTime(fuzzyProb->getNumberJobs());
 	std::vector<int> jobOrderByRemainingTime;
 	for (unsigned int i = 0; i < fuzzyProb->getNumberJobs(); i++) {
 		unsigned int numberOfTasks = fuzzyProb->getNumberTasks(i);

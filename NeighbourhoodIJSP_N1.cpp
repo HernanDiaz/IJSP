@@ -14,7 +14,7 @@ unsigned int NB_ParallelN1_MakespanIJSP::findNewNeighbours(
 	const FuzzyFW::SharedVars *svars) {
 
 	unsigned int taskId, nTasks;
-	FuzzyFW::Interval currentMakespan;
+	FuzzyFW::Crisp currentMakespan;
 	ScheduledTaskInfo task, mp, jp;
 	std::queue<int> taskQueue;
 	std::vector<char> added;
@@ -77,13 +77,13 @@ FuzzyFW::Fitness *NB_ParallelN1_MakespanIJSP::evaluateNeighbour(
 	const unsigned int idx, const FuzzyFW::SharedVars *svars,
 	const bool improvement) {
 
-	FuzzyFW::FitnessInterval *lowerBound;
-	FuzzyFW::Interval currentMakespan, newMakespan;
+	FuzzyFW::FitnessCrisp *lowerBound;
+	FuzzyFW::Crisp currentMakespan, newMakespan;
 	ScheduleIJSP *newSolution;
 	int job, mac;
 	int jsx, jsy, jpx, jpy, mpx, msy;
 	int z, mpz, jpz, msz, jsz;
-	FuzzyFW::Interval newHead, lower;
+	FuzzyFW::Crisp newHead, lower;
 	std::queue<int> taskQueue;
 	if (idx < 0 || idx > this->numNeighbours || this->neighbours[idx] == nullptr) {
 		std::string errorMsg = "Trying to access a non-existing neighbour";
@@ -96,8 +96,8 @@ FuzzyFW::Fitness *NB_ParallelN1_MakespanIJSP::evaluateNeighbour(
 
 	currentMakespan = this->currentFitness->getValue();
 	newSolution = new ScheduleIJSP(*this->schedule);
-	newMakespan = FuzzyFW::Interval(0, 0);
-	lowerBound = dynamic_cast<FuzzyFW::FitnessInterval *>(this->currentFitness->clone());
+	newMakespan = FuzzyFW::Crisp(0, 0);
+	lowerBound = dynamic_cast<FuzzyFW::FitnessCrisp *>(this->currentFitness->clone());
 
 	mac = newSolution->taskInfo[arc->x].task->machine;
 	msy = newSolution->taskInfo[arc->y].ms;
@@ -155,16 +155,16 @@ FuzzyFW::Fitness *NB_ParallelN1_MakespanIJSP::evaluateNeighbour(
 		if (jpz != -1 && mpz != -1)
 			newHead = maximum(newSolution->taskInfo[mpz].head + newSolution->taskInfo[mpz].task->p,
 				newSolution->taskInfo[jpz].head + newSolution->taskInfo[jpz].task->p,
-				FuzzyFW::Interval::M_COMPONENT);
+				FuzzyFW::Crisp::M_COMPONENT);
 		else if (mpz != -1)
 			newHead = newSolution->taskInfo[mpz].head + newSolution->taskInfo[mpz].task->p;
 		else if (jpz != -1)
 			newHead = newSolution->taskInfo[jpz].head + newSolution->taskInfo[jpz].task->p;
 		else
-			newHead = FuzzyFW::Interval(0, 0);
+			newHead = FuzzyFW::Crisp(0, 0);
 
 		if (!(newSolution->taskInfo[z].head.isEqualTo(newHead,
-			FuzzyFW::Interval::Compare::C_COMPONENT))) {
+			FuzzyFW::Crisp::Compare::C_COMPONENT))) {
 			newSolution->taskInfo[z].head = newHead;
 
 			if (improvement && jsz == -1) {
@@ -184,12 +184,12 @@ FuzzyFW::Fitness *NB_ParallelN1_MakespanIJSP::evaluateNeighbour(
 
 	for (size_t i = 0; i < newSolution->lastTaskJob.size(); i++) {
 		newMakespan = maximum(newMakespan, newSolution->getCTJob(i),
-			FuzzyFW::Interval::M_COMPONENT);
+			FuzzyFW::Crisp::M_COMPONENT);
 	}
 
 	newSolution->setSorted(false);
 	this->neighbours[idx]->setEvaluation(newSolution,
-		new FuzzyFW::FitnessInterval(newMakespan, false));
+		new FuzzyFW::FitnessCrisp(newMakespan, false));
 
 	delete lowerBound;
 	return this->neighbours[idx]->getEvaluatedFitness();
@@ -201,7 +201,7 @@ void NB_ParallelN1_MakespanIJSP::acceptNeighbour(const unsigned int idx,
 	const FuzzyFW::SharedVars *svars) {
 	int job;
 	int z, msz, jsz;
-	FuzzyFW::Interval newTail;
+	FuzzyFW::Crisp newTail;
 	std::queue<int> taskQueue;
 
 	if (idx < 0 || idx > this->numNeighbours || this->neighbours[idx] == nullptr) {
@@ -217,7 +217,7 @@ void NB_ParallelN1_MakespanIJSP::acceptNeighbour(const unsigned int idx,
 		(this->neighbours[idx]->getEvaluation()->clone());
 	if (this->currentFitness != nullptr)
 		delete this->currentFitness;
-	this->currentFitness = dynamic_cast<FuzzyFW::FitnessInterval *>
+	this->currentFitness = dynamic_cast<FuzzyFW::FitnessCrisp *>
 		(this->neighbours[idx]->getEvaluatedFitness()->clone());
 
 	NeighbourIJSP_Arc *arc = this->neighbours[idx].get();
@@ -237,13 +237,13 @@ void NB_ParallelN1_MakespanIJSP::acceptNeighbour(const unsigned int idx,
 		if (jsz != -1 && msz != -1)
 			newTail = maximum(this->schedule->taskInfo[msz].task->p + this->tails[msz],
 				this->schedule->taskInfo[jsz].task->p + this->tails[jsz],
-				FuzzyFW::Interval::M_COMPONENT);
+				FuzzyFW::Crisp::M_COMPONENT);
 		else if (msz != -1)
 			newTail = this->schedule->taskInfo[msz].task->p + this->tails[msz];
 		else if (jsz != -1)
 			newTail = this->schedule->taskInfo[jsz].task->p + this->tails[jsz];
 		if ((msz != -1 || jsz != -1) &&
-			!(this->tails[z].isEqualTo(newTail, FuzzyFW::Interval::C_COMPONENT))) {
+			!(this->tails[z].isEqualTo(newTail, FuzzyFW::Crisp::C_COMPONENT))) {
 			this->tails[z] = newTail;
 			if (this->schedule->taskInfo[z].mp != -1 && !inQueue[this->schedule->taskInfo[z].mp]) {
 				taskQueue.push(this->schedule->taskInfo[z].mp);

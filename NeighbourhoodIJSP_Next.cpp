@@ -16,7 +16,7 @@ namespace IJSP {
 
 //-----  Check viability of an interior-block swap using heads & tails  -------
 bool NB_ParallelNext_MakespanIJSP::isViableSwap(unsigned int x, unsigned int y) {
-	FuzzyFW::Interval tailX, tailY, headX, headY;
+	FuzzyFW::Crisp tailX, tailY, headX, headY;
 	int mpx, jpx, jsx;
 	int jpy, msy, jsy;
 
@@ -38,18 +38,18 @@ bool NB_ParallelNext_MakespanIJSP::isViableSwap(unsigned int x, unsigned int y) 
 	// New tail for x (x moves to y's machine slot, ms(y) becomes its machine successor)
 	if (jsx != -1 && msy != -1)
 		tailX = maximum(this->tails[jsx] + schedule->taskInfo[jsx].task->p,
-			this->tails[msy] + schedule->taskInfo[msy].task->p, FuzzyFW::Interval::M_COMPONENT);
+			this->tails[msy] + schedule->taskInfo[msy].task->p, FuzzyFW::Crisp::M_COMPONENT);
 	else if (jsx != -1)
 		tailX = this->tails[jsx] + schedule->taskInfo[jsx].task->p;
 	else if (msy != -1)
 		tailX = this->tails[msy] + schedule->taskInfo[msy].task->p;
 	else
-		tailX = FuzzyFW::Interval(0, 0);
+		tailX = FuzzyFW::Crisp(0, 0);
 
 	// New tail for y (y moves behind x)
 	if (jsy != -1)
 		tailY = maximum(this->tails[jsy] + schedule->taskInfo[jsy].task->p,
-			tailX + schedule->taskInfo[x].task->p, FuzzyFW::Interval::M_COMPONENT);
+			tailX + schedule->taskInfo[x].task->p, FuzzyFW::Crisp::M_COMPONENT);
 	else
 		tailY = tailX + schedule->taskInfo[x].task->p;
 
@@ -57,28 +57,28 @@ bool NB_ParallelNext_MakespanIJSP::isViableSwap(unsigned int x, unsigned int y) 
 	if (mpx != -1 && jpy != -1)
 		headY = maximum(schedule->taskInfo[mpx].head + schedule->taskInfo[mpx].task->p,
 			schedule->taskInfo[jpy].head + schedule->taskInfo[jpy].task->p,
-			FuzzyFW::Interval::M_COMPONENT);
+			FuzzyFW::Crisp::M_COMPONENT);
 	else if (mpx != -1)
 		headY = schedule->taskInfo[mpx].head + schedule->taskInfo[mpx].task->p;
 	else if (jpy != -1)
 		headY = schedule->taskInfo[jpy].head + schedule->taskInfo[jpy].task->p;
 	else
-		headY = FuzzyFW::Interval(0, 0);
+		headY = FuzzyFW::Crisp(0, 0);
 
 	// New head for x (x goes after y)
 	if (jpx != -1)
 		headX = maximum(headY + schedule->taskInfo[y].task->p,
 			schedule->taskInfo[jpx].head + schedule->taskInfo[jpx].task->p,
-			FuzzyFW::Interval::M_COMPONENT);
+			FuzzyFW::Crisp::M_COMPONENT);
 	else
 		headX = headY + schedule->taskInfo[y].task->p;
 
-	FuzzyFW::Interval estimate = maximum(
+	FuzzyFW::Crisp estimate = maximum(
 		headX + schedule->taskInfo[x].task->p + tailX,
 		headY + schedule->taskInfo[y].task->p + tailY,
-		FuzzyFW::Interval::M_COMPONENT);
+		FuzzyFW::Crisp::M_COMPONENT);
 
-	FuzzyFW::FitnessInterval estimatedFit(estimate, false);
+	FuzzyFW::FitnessCrisp estimatedFit(estimate, false);
 	return estimatedFit.isBetterThan(this->currentFitness);
 }
 
@@ -94,7 +94,7 @@ unsigned int NB_ParallelNext_MakespanIJSP::findNewNeighbours(
 	const FuzzyFW::SharedVars *svars) {
 
 	unsigned int taskId, nTasks;
-	FuzzyFW::Interval currentMakespan;
+	FuzzyFW::Crisp currentMakespan;
 	ScheduledTaskInfo task, mp, jp;
 	ScheduledTaskInfo  mpmp, ms;
 	std::queue<int> taskQueue;

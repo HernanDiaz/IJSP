@@ -26,15 +26,15 @@ namespace IJSP {
 
 
 	//=====  Schedule a task  =====================================================
-	FuzzyFW::Interval SGS_IJSP_Insertion::scheduleTask(const TaskIJSP *task,
+	FuzzyFW::Crisp SGS_IJSP_Insertion::scheduleTask(const TaskIJSP *task,
 		const int taskIdx) {
 
 		int mp, ms; // Machine predecessor and successor
-		FuzzyFW::Interval Stime;	// Starting time
-		FuzzyFW::Interval mtHead, mtPT;
+		FuzzyFW::Crisp Stime;	// Starting time
+		FuzzyFW::Crisp mtHead, mtPT;
 		char found;	// Big gap found in the schedule
 		// Maxims are made component by component
-		FuzzyFW::Interval::Maximum maxComp = FuzzyFW::Interval::M_COMPONENT;
+		FuzzyFW::Crisp::Maximum maxComp = FuzzyFW::Crisp::M_COMPONENT;
 
 		int mac = task->machine;
 		int job = task->job;

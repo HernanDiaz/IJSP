@@ -44,7 +44,7 @@ namespace PostExecution {
 		IJSP::ProblemIJSP * problemIJSP =
 			dynamic_cast<IJSP::ProblemIJSP *>(problem);
 		if (problemIJSP == NULL) {
-			std::string errorMsg = "The Robustness analyzer can be only used on Interval Problems.";
+			std::string errorMsg = "The Robustness analyzer can be only used on Crisp Problems.";
 			throw IJSP::IJSPException("PostExecutionAnalyzer", errorMsg);
 		}
 
@@ -57,7 +57,7 @@ namespace PostExecution {
 		IJSP::ScheduleIJSP * schedule =
 			dynamic_cast<IJSP::ScheduleIJSP *>(solution);
 		if (schedule == NULL) {
-			std::string errorMsg = "The Robustness analyzer can be only used on Interval Problems.";
+			std::string errorMsg = "The Robustness analyzer can be only used on Crisp Problems.";
 			throw PostExecutionException("PostExecutionAnalyzer", errorMsg);
 		}
 		return schedule;
@@ -67,15 +67,15 @@ namespace PostExecution {
 		IJSP::ProblemIJSP * problemIJSP =
 			dynamic_cast<IJSP::ProblemIJSP *>(problem);
 		if (problemIJSP == NULL) {
-			std::string errorMsg = "The Robustness analyzer can be only used on Interval Problems.";
+			std::string errorMsg = "The Robustness analyzer can be only used on Crisp Problems.";
 			throw PostExecutionException("PostExecutionAnalyzer", errorMsg);
 		}
 		return problemIJSP;
 	}
 
-	FuzzyFW::FitnessInterval * IJSPRobustnessAnalyzer::castFitness(FuzzyFW::Fitness* objective) {
-		FuzzyFW::FitnessInterval * fitness =
-			dynamic_cast<FuzzyFW::FitnessInterval *>(objective);
+	FuzzyFW::FitnessCrisp * IJSPRobustnessAnalyzer::castFitness(FuzzyFW::Fitness* objective) {
+		FuzzyFW::FitnessCrisp * fitness =
+			dynamic_cast<FuzzyFW::FitnessCrisp *>(objective);
 		if (fitness == NULL) {
 			std::string errorMsg = "The Robustness analyzer can only use a IJSP tardiness evaluator to analyze IJSP tardiness.";
 			throw PostExecutionException("PostExecutionAnalyzer", errorMsg);

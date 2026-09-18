@@ -59,7 +59,7 @@ protected:
 	/*
 	* Operator used to compare intervals in the SGS (component by default)
 	*/
-	FuzzyFW::Interval::Compare cpComp;
+	FuzzyFW::Crisp::Compare cpComp;
 
 	//=========================================================================
 	//		CONSTRUCTORS / INITIALIZERS
@@ -94,8 +94,8 @@ public:
 			std::string errorMsg = this->compareLabel + " parameter not found.";
 			throw IJSPException("SGS_IJSP", errorMsg);
 		}
-		this->cpComp = FuzzyFW::Interval::getComparison(compareName);
-		if (this->cpComp == FuzzyFW::Interval::C_Err) {
+		this->cpComp = FuzzyFW::Crisp::getComparison(compareName);
+		if (this->cpComp == FuzzyFW::Crisp::C_Err) {
 			std::string errorMsg = "Invalid value for parameter ";
 			errorMsg += "\'" + this->compareLabel + "\': \'";
 			errorMsg += compareName + "\'";
@@ -155,7 +155,7 @@ protected:
 	* strategies to do this, so this method must be adapted for each SGS.
 	* Returns the starting time assigned to the operation
 	*/
-	virtual FuzzyFW::Interval scheduleTask(const TaskIJSP *task,
+	virtual FuzzyFW::Crisp scheduleTask(const TaskIJSP *task,
 		const int taskIdx) = 0;
 
 	/*

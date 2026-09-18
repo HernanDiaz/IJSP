@@ -38,7 +38,7 @@ unsigned int NB_ParallelN2Inter_MakespanIJSP::findNewNeighbours(
 	const FuzzyFW::SharedVars *svars) {
 
 	unsigned int taskId, nTasks;
-	FuzzyFW::Interval currentMakespan;
+	FuzzyFW::Crisp currentMakespan;
 	ScheduledTaskInfo task, mp, jp;
 	ScheduledTaskInfo mpmp, ms;
 	std::queue<int> taskQueue;

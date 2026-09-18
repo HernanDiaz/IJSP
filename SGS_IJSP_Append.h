@@ -56,7 +56,7 @@ public:
 	/*
 	* Type of maximum to use during the scheduling process
 	*/
-	FuzzyFW::Interval::Maximum intervalMaximum;
+	FuzzyFW::Crisp::Maximum intervalMaximum;
 
 
 
@@ -108,7 +108,7 @@ public:
 		std::vector<std::string> setup;
 		setup.push_back("Append");
 		setup.push_back(";Maximum;"+
-			FuzzyFW::Interval::getMaximum(this->intervalMaximum));
+			FuzzyFW::Crisp::getMaximum(this->intervalMaximum));
 		return setup;
 	}
 
@@ -123,7 +123,7 @@ protected:
 	* Schedules a specific task just after the last task scheduled in its
 	* required machine and the last task of its job
 	*/
-	virtual FuzzyFW::Interval scheduleTask(const TaskIJSP *task,
+	virtual FuzzyFW::Crisp scheduleTask(const TaskIJSP *task,
 		const int taskIdx);
 };
 

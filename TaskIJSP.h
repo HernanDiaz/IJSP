@@ -6,7 +6,7 @@
 */
 #pragma once
 
-#include "Interval.h"
+#include "CrispTime.h"
 
 
 namespace IJSP {
@@ -19,7 +19,7 @@ namespace IJSP {
 /**
 * Objects of this class contain the constant values for operations
 * of an interval job shop scheduling instance. That is, it represents operation
-* such that processing times are Intervals (Interval in this versions)
+* such that processing times are Intervals (Crisp in this versions)
 *
 * @author hdiaz
 *
@@ -59,7 +59,7 @@ public:
 	/**
 	* Task processing time
 	*/
-	FuzzyFW::Interval p;
+	FuzzyFW::Crisp p;
 
 
 
@@ -81,7 +81,7 @@ public:
 	* Duration constructor
 	*/
 	TaskIJSP(int id, int job, int machine, int jobPred, int jobSuc, 
-		FuzzyFW::Interval pt);
+		FuzzyFW::Crisp pt);
 
 	/**
 	* Copy constructor

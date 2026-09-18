@@ -79,7 +79,7 @@ private:
     // Heads&tails lower-bound estimate for a reinsertion move
     // Returns estimated makespan if T (=arc->x) is inserted after newMp (=arc->y)
     // before newMs (=arc->z). Used for neighbourhood clipping.
-    FuzzyFW::Interval estimateReinsertion(unsigned int T, int newMp, int newMs);
+    FuzzyFW::Crisp estimateReinsertion(unsigned int T, int newMp, int newMs);
 };
 
 } // namespace IJSP

@@ -46,7 +46,7 @@ ScheduleIJSP * SGS_IJSP::buildSchedule(const FuzzyFW::SharedVars * svars,
 
 	ProblemIJSP *prob = dynamic_cast<ProblemIJSP *>(svars->problem);
 	if (prob == nullptr)
-		throw IJSPException("SGS", "This SGS can be only used on Interval Problems.");
+		throw IJSPException("SGS", "This SGS can be only used on Crisp Problems.");
 
 	if (this->isCreated)
 		this->schedule->reset();

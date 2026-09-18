@@ -114,7 +114,7 @@ void Crossover_GPMXBierwirth::applyJobPermutation(FuzzyFW::IndividualArrayInt *i
 
 	ProblemIJSP *fuzzyProb = dynamic_cast<ProblemIJSP *>(svars->problem);
 	if (fuzzyProb == nullptr)
-		throw IJSPException("Creation", "This encoding function works only with Interval problems.");
+		throw IJSPException("Creation", "This encoding function works only with Crisp problems.");
 	std::vector<int> genotype1 = buildTaskGenotype(ind1, fuzzyProb);
 	std::vector<int> genotype2 = buildTaskGenotype(ind2, fuzzyProb);
 

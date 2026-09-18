@@ -7,17 +7,17 @@
 #pragma once
 
 #include "Fitness.h"
-#include "Interval.h"
+#include "CrispTime.h"
 
 namespace {
 
-inline bool fiBetter(const FuzzyFW::Interval& a, const FuzzyFW::Interval& b) {
-	FuzzyFW::FitnessInterval fa(a, false), fb(b, false);
+inline bool fiBetter(const FuzzyFW::Crisp& a, const FuzzyFW::Crisp& b) {
+	FuzzyFW::FitnessCrisp fa(a, false), fb(b, false);
 	return fa.isBetterThan(&fb);
 }
 
-inline bool fiWorse(const FuzzyFW::Interval& a, const FuzzyFW::Interval& b) {
-	FuzzyFW::FitnessInterval fa(a, false), fb(b, false);
+inline bool fiWorse(const FuzzyFW::Crisp& a, const FuzzyFW::Crisp& b) {
+	FuzzyFW::FitnessCrisp fa(a, false), fb(b, false);
 	return fa.isWorseThan(&fb);
 }
 

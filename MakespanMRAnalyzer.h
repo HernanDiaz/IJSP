@@ -32,7 +32,7 @@ public:
 
 	void open(FuzzyFW::Problem *problem, std::string outputPrefix, std::string signature);
 
-	void analyzeObjectiveFunction(const IJSP::ProblemIJSP *problemIJSP, IJSP::ScheduleIJSP * schedule, FuzzyFW::FitnessInterval * fitness, const FuzzyFW::ParameterDB *params, int numRun);
+	void analyzeObjectiveFunction(const IJSP::ProblemIJSP *problemIJSP, IJSP::ScheduleIJSP * schedule, FuzzyFW::FitnessCrisp * fitness, const FuzzyFW::ParameterDB *params, int numRun);
 
 	void analyze(FuzzyFW::Problem *problem, FuzzyFW::Solution * solution, FuzzyFW::Fitness* objective, const  FuzzyFW::ParameterDB *params, int numRun);
 	
@@ -40,14 +40,14 @@ public:
 
 	IJSP::ProblemIJSP* castProblem(FuzzyFW::Problem* problem);
 
-	FuzzyFW::FitnessInterval* castFitness(FuzzyFW::Fitness* objective);
+	FuzzyFW::FitnessCrisp* castFitness(FuzzyFW::Fitness* objective);
 
 private:
 	void calculateTailDistribution(int taskId, IJSP::ScheduleIJSP * schedule, std::vector<std::vector<double>*> & tailsDistro);
 
 	std::vector<double> getPreviousTailDistribution(IJSP::ScheduleIJSP * schedule, const int taskId, std::vector<std::vector<double>*> & tailsDistro);
 
-	std::vector<double> combineDistributions(const std::vector<double> & distA, const  std::vector<double> & distB, const FuzzyFW::Interval & tailA, const FuzzyFW::Interval & tailB);
+	std::vector<double> combineDistributions(const std::vector<double> & distA, const  std::vector<double> & distB, const FuzzyFW::Crisp & tailA, const FuzzyFW::Crisp & tailB);
 
 	void calculateMakespanDistribution(const IJSP::ScheduleIJSP * schedule, const std::vector<std::vector<double>*> & tailsDistro, std::vector<double> & makespanDistro);
 

@@ -32,11 +32,11 @@ FuzzyFW::Individual * CreationLCTFIntervalMkSchedule::createIndividual(
 		errorMsg += "interval problems.";
 		throw IJSPException("Creation", errorMsg);
 	}
-	std::vector<FuzzyFW::Interval> mMkspan(fuzzyProb->getNumberMachines());
-	std::vector<FuzzyFW::Interval> jMkspan(fuzzyProb->getNumberJobs());
+	std::vector<FuzzyFW::Crisp> mMkspan(fuzzyProb->getNumberMachines());
+	std::vector<FuzzyFW::Crisp> jMkspan(fuzzyProb->getNumberJobs());
 
 	// Find the first task of each job and count remaining time for each job
-	std::vector<FuzzyFW::Interval> jobRemainingTime(fuzzyProb->getNumberJobs());
+	std::vector<FuzzyFW::Crisp> jobRemainingTime(fuzzyProb->getNumberJobs());
 	std::vector<int> jobOrderByRemainingTime;
 	for (unsigned int i = 0; i < fuzzyProb->getNumberJobs(); i++) {
 		unsigned int numberOfTasks = fuzzyProb->getNumberTasks(i);
@@ -64,7 +64,7 @@ FuzzyFW::Individual * CreationLCTFIntervalMkSchedule::createIndividual(
 		jobRemainingTime[rand] -= fuzzyProb->getTask(taskid)->p;
 
 		const IJSP::TaskIJSP * task = fuzzyProb->getTask(taskid);
-		FuzzyFW::Interval localMaxMkspan = maximum(mMkspan[task->machine], jMkspan[task->job], FuzzyFW::Interval::M_COMPONENT) + task->p;
+		FuzzyFW::Crisp localMaxMkspan = maximum(mMkspan[task->machine], jMkspan[task->job], FuzzyFW::Crisp::M_COMPONENT) + task->p;
 		mMkspan[task->machine] = localMaxMkspan;
 		jMkspan[task->job] = localMaxMkspan;
 

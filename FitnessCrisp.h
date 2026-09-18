@@ -1,5 +1,5 @@
 /*
-* FitnessInterval.h
+* FitnessCrisp.h
 *
 *  Created on: June 7, 2017
 */
@@ -11,43 +11,43 @@ namespace FuzzyFW {
 
 //=============================================================================
 //
-//	Class FitnessInterval
+//	Class FitnessCrisp
 //
 //=============================================================================
 /**
-* Fitness backed by an Interval value.
+* Fitness backed by an Crisp value.
 */
-class FitnessInterval : public Fitness {
+class FitnessCrisp : public Fitness {
 public:
-	static Interval::Compare FitnessCompareStrategy;
+	static Crisp::Compare FitnessCompareStrategy;
 
 protected:
-	Interval value;
+	Crisp value;
 
 public:
-	FitnessInterval(bool maxim = true) : Fitness(maxim) { }
+	FitnessCrisp(bool maxim = true) : Fitness(maxim) { }
 
-	FitnessInterval(const Interval & tfn, bool maxim = true)
+	FitnessCrisp(const Crisp & tfn, bool maxim = true)
 		: Fitness(maxim), value(tfn) { }
 
-	FitnessInterval(const FitnessInterval &fitness)
+	FitnessCrisp(const FitnessCrisp &fitness)
 		: Fitness(fitness), value(fitness.value) { }
 
-	virtual ~FitnessInterval() { }
+	virtual ~FitnessCrisp() { }
 
 	virtual Fitness* clone() const {
-		return new FitnessInterval(*this);
+		return new FitnessCrisp(*this);
 	}
 
 	virtual Fitness::Type getType() const {
 		return Fitness::Type::INTERVAL;
 	}
 
-	Interval getValue() const {
+	Crisp getValue() const {
 		return this->value;
 	}
 
-	void setValue(const Interval source) {
+	void setValue(const Crisp source) {
 		this->value = source;
 	}
 
@@ -66,7 +66,7 @@ public:
 	virtual bool isWorseOrEqualTo(const Fitness * f) const;
 
 private:
-	const FitnessInterval * convertType(const Fitness *f) const;
+	const FitnessCrisp * convertType(const Fitness *f) const;
 };
 
 }

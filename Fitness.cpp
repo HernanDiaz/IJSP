@@ -200,17 +200,17 @@ const FitnessTFN * FitnessTFN::convertType(const Fitness *f) const {
 
 //=============================================================================
 //
-//	Class FitnessInterval
+//	Class FitnessCrisp
 //
 //=============================================================================
-Interval::Compare FitnessInterval::FitnessCompareStrategy = Interval::C_EV;
+Crisp::Compare FitnessCrisp::FitnessCompareStrategy = Crisp::C_EV;
 
 //=============================================================================
 //		METHODS
 //=============================================================================
 //=====  Better than or equal to  =============================================
-bool FitnessInterval::isBetterOrEqualTo(const Fitness * f) const {
-	const FitnessInterval *ft = this->convertType(f);
+bool FitnessCrisp::isBetterOrEqualTo(const Fitness * f) const {
+	const FitnessCrisp *ft = this->convertType(f);
 	if (this->maximize)
 		return this->value.isGreaterEqualTo(ft->value,
 			this->FitnessCompareStrategy);
@@ -220,8 +220,8 @@ bool FitnessInterval::isBetterOrEqualTo(const Fitness * f) const {
 
 
 //=====  Better than  =========================================================
-bool FitnessInterval::isBetterThan(const Fitness * f) const {
-	const FitnessInterval *ft = this->convertType(f);
+bool FitnessCrisp::isBetterThan(const Fitness * f) const {
+	const FitnessCrisp *ft = this->convertType(f);
 	if (this->maximize)
 		return this->value.isGreaterThan(ft->value,this->FitnessCompareStrategy);
 	return this->value.isLesserThan(ft->value,
@@ -229,15 +229,15 @@ bool FitnessInterval::isBetterThan(const Fitness * f) const {
 }
 
 //=====  Better than or equal to  =============================================
-bool FitnessInterval::isEqualTo(const Fitness * f) const {
-	const FitnessInterval *ft = this->convertType(f);
+bool FitnessCrisp::isEqualTo(const Fitness * f) const {
+	const FitnessCrisp *ft = this->convertType(f);
 	return this->value.isEqualTo(ft->value,
 		this->FitnessCompareStrategy);
 }
 
 //=====  Better than or equal to  =============================================
-bool FitnessInterval::isWorseThan(const Fitness * f) const {
-	const FitnessInterval *ft = this->convertType(f);
+bool FitnessCrisp::isWorseThan(const Fitness * f) const {
+	const FitnessCrisp *ft = this->convertType(f);
 	if (this->maximize)
 		return this->value.isLesserThan(ft->value,
 			this->FitnessCompareStrategy);
@@ -246,8 +246,8 @@ bool FitnessInterval::isWorseThan(const Fitness * f) const {
 }
 
 //=====  Better than or equal to  =============================================
-bool FitnessInterval::isWorseOrEqualTo(const Fitness * f) const {
-	const FitnessInterval *ft = this->convertType(f);
+bool FitnessCrisp::isWorseOrEqualTo(const Fitness * f) const {
+	const FitnessCrisp *ft = this->convertType(f);
 	if (this->maximize)
 		return this->value.isLesserEqualTo(ft->value,
 			this->FitnessCompareStrategy);
@@ -257,9 +257,9 @@ bool FitnessInterval::isWorseOrEqualTo(const Fitness * f) const {
 
 
 //=====  Conversion to double  ================================================
-const FitnessInterval * FitnessInterval::convertType(const Fitness *f) const {
+const FitnessCrisp * FitnessCrisp::convertType(const Fitness *f) const {
 	if (f->getType() == Fitness::Type::INTERVAL)
-		return dynamic_cast<const FitnessInterval *>(f);
+		return dynamic_cast<const FitnessCrisp *>(f);
 	throw FuzzyFWException("Fitness",
 		"Comparison of incompatible fitness values");
 }

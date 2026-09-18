@@ -27,7 +27,7 @@ unsigned int NB_ParallelN8_MakespanIJSP::findNewNeighbours(
     if (nTasks < 3)
         return this->numNeighbours;
 
-    FuzzyFW::Interval currentMakespan = this->currentFitness->getValue();
+    FuzzyFW::Crisp currentMakespan = this->currentFitness->getValue();
 
     // --- 2. Identify critical tasks and critical-block membership ----------
     // criticalBlock[t] = true  ↔  task t is on a critical path in G⁻ or G⁺
@@ -123,8 +123,8 @@ unsigned int NB_ParallelN8_MakespanIJSP::findNewNeighbours(
             // Skip if this is blockStart's current position (blockStart is not blockEnd.ms)
             // Also check the move makes a structural change
             if (newMp != (int)blockStart && newMs != (int)blockStart) {
-                FuzzyFW::Interval estMs = estimateReinsertion(blockStart, newMp, newMs);
-                if (estMs.isLesserThan(currentMakespan, FuzzyFW::Interval::C_COMPONENT)) {
+                FuzzyFW::Crisp estMs = estimateReinsertion(blockStart, newMp, newMs);
+                if (estMs.isLesserThan(currentMakespan, FuzzyFW::Crisp::C_COMPONENT)) {
                     if (this->numNeighbours < this->neighbours.size()
                         && this->neighbours[this->numNeighbours] != nullptr)
                         this->neighbours[this->numNeighbours]->setValues(
@@ -143,8 +143,8 @@ unsigned int NB_ParallelN8_MakespanIJSP::findNewNeighbours(
             int newMp = beforeBlock_mp;
             int newMs = blockStart;
             if (newMp != blockEnd && newMs != blockEnd) {
-                FuzzyFW::Interval estMs = estimateReinsertion(blockEnd, newMp, newMs);
-                if (estMs.isLesserThan(currentMakespan, FuzzyFW::Interval::C_COMPONENT)) {
+                FuzzyFW::Crisp estMs = estimateReinsertion(blockEnd, newMp, newMs);
+                if (estMs.isLesserThan(currentMakespan, FuzzyFW::Crisp::C_COMPONENT)) {
                     if (this->numNeighbours < this->neighbours.size()
                         && this->neighbours[this->numNeighbours] != nullptr)
                         this->neighbours[this->numNeighbours]->setValues(
@@ -168,8 +168,8 @@ unsigned int NB_ParallelN8_MakespanIJSP::findNewNeighbours(
                 machineHead = this->schedule->taskInfo[machineHead].mp;
             // machineHead is the first task on the machine
             if (machineHead != blockStart) {
-                FuzzyFW::Interval estMs = estimateReinsertion(blockStart, newMp_int, machineHead);
-                if (estMs.isLesserThan(currentMakespan, FuzzyFW::Interval::C_COMPONENT)) {
+                FuzzyFW::Crisp estMs = estimateReinsertion(blockStart, newMp_int, machineHead);
+                if (estMs.isLesserThan(currentMakespan, FuzzyFW::Crisp::C_COMPONENT)) {
                     if (this->numNeighbours < this->neighbours.size()
                         && this->neighbours[this->numNeighbours] != nullptr)
                         this->neighbours[this->numNeighbours]->setValues(
@@ -188,8 +188,8 @@ unsigned int NB_ParallelN8_MakespanIJSP::findNewNeighbours(
             while (this->schedule->taskInfo[machineTail].ms != -1)
                 machineTail = this->schedule->taskInfo[machineTail].ms;
             if (machineTail != blockEnd) {
-                FuzzyFW::Interval estMs = estimateReinsertion(blockEnd, machineTail, -1);
-                if (estMs.isLesserThan(currentMakespan, FuzzyFW::Interval::C_COMPONENT)) {
+                FuzzyFW::Crisp estMs = estimateReinsertion(blockEnd, machineTail, -1);
+                if (estMs.isLesserThan(currentMakespan, FuzzyFW::Crisp::C_COMPONENT)) {
                     if (this->numNeighbours < this->neighbours.size()
                         && this->neighbours[this->numNeighbours] != nullptr)
                         this->neighbours[this->numNeighbours]->setValues(
@@ -212,7 +212,7 @@ unsigned int NB_ParallelN8_MakespanIJSP::findNewNeighbours(
 //  Heads-and-tails lower bound for inserting task T after newMp, before newMs.
 //  Uses the current tails[] array (from the parent class).
 // ============================================================================
-FuzzyFW::Interval NB_ParallelN8_MakespanIJSP::estimateReinsertion(
+FuzzyFW::Crisp NB_ParallelN8_MakespanIJSP::estimateReinsertion(
     unsigned int T, int newMp, int newMs)
 {
     ScheduledTaskInfo &tInfo = this->schedule->taskInfo[T];
@@ -222,39 +222,39 @@ FuzzyFW::Interval NB_ParallelN8_MakespanIJSP::estimateReinsertion(
 
     // Estimated head of T at the new position:
     //   max(head[newMp] + p[newMp],  head[jpT] + p[jpT])
-    FuzzyFW::Interval newHeadT(0.0, 0.0);
+    FuzzyFW::Crisp newHeadT(0.0, 0.0);
     if (newMp != -1) {
         ScheduledTaskInfo &mpInfo = this->schedule->taskInfo[newMp];
         newHeadT = maximum(newHeadT, mpInfo.head + mpInfo.task->p,
-                           FuzzyFW::Interval::M_COMPONENT);
+                           FuzzyFW::Crisp::M_COMPONENT);
     }
     if (jpT != -1) {
         ScheduledTaskInfo &jpInfo = this->schedule->taskInfo[jpT];
         newHeadT = maximum(newHeadT, jpInfo.head + jpInfo.task->p,
-                           FuzzyFW::Interval::M_COMPONENT);
+                           FuzzyFW::Crisp::M_COMPONENT);
     }
 
     // Estimated tail of T at the new position:
     //   tail[T] as stored (a lower bound — the job-chain tail does not change)
-    FuzzyFW::Interval tailT = this->tails[T];
+    FuzzyFW::Crisp tailT = this->tails[T];
 
     // If newMs is not -1, the new machine successor of T must wait for T to finish.
     // Its estimated new head: max(newHeadT + p[T], head[newMs.jp] + p[newMs.jp])
     // We compute a lower bound on the new makespan contributed by newMs:
-    FuzzyFW::Interval makespan = newHeadT + tInfo.task->p + tailT;
+    FuzzyFW::Crisp makespan = newHeadT + tInfo.task->p + tailT;
 
     if (newMs != -1) {
         ScheduledTaskInfo &msInfo = this->schedule->taskInfo[newMs];
         int jpMs = msInfo.task->jp;
-        FuzzyFW::Interval newHeadMs = newHeadT + tInfo.task->p;
+        FuzzyFW::Crisp newHeadMs = newHeadT + tInfo.task->p;
         if (jpMs != -1) {
             ScheduledTaskInfo &jpMsInfo = this->schedule->taskInfo[jpMs];
             newHeadMs = maximum(newHeadMs, jpMsInfo.head + jpMsInfo.task->p,
-                                FuzzyFW::Interval::M_COMPONENT);
+                                FuzzyFW::Crisp::M_COMPONENT);
         }
         // Use existing tail of newMs as a lower bound
         makespan = maximum(makespan, newHeadMs + msInfo.task->p + this->tails[newMs],
-                           FuzzyFW::Interval::M_COMPONENT);
+                           FuzzyFW::Crisp::M_COMPONENT);
     }
 
     // Also consider the position opened by removing T:
@@ -263,22 +263,22 @@ FuzzyFW::Interval NB_ParallelN8_MakespanIJSP::estimateReinsertion(
     if (currentMs != -1) {
         ScheduledTaskInfo &csInfo = this->schedule->taskInfo[currentMs];
         int jpCs = csInfo.task->jp;
-        FuzzyFW::Interval newHeadCs(0.0, 0.0);
+        FuzzyFW::Crisp newHeadCs(0.0, 0.0);
         if (currentMp != -1) {
             ScheduledTaskInfo &cpInfo = this->schedule->taskInfo[currentMp];
             newHeadCs = maximum(newHeadCs, cpInfo.head + cpInfo.task->p,
-                                FuzzyFW::Interval::M_COMPONENT);
+                                FuzzyFW::Crisp::M_COMPONENT);
         }
         if (jpCs != -1) {
             ScheduledTaskInfo &jpCsInfo = this->schedule->taskInfo[jpCs];
             newHeadCs = maximum(newHeadCs, jpCsInfo.head + jpCsInfo.task->p,
-                                FuzzyFW::Interval::M_COMPONENT);
+                                FuzzyFW::Crisp::M_COMPONENT);
         }
         // newHeadCs could be LESS than csInfo.head (that's the improvement we hope for)
         // Use the better of the two as our lower bound estimate
-        FuzzyFW::Interval usedHead = newHeadCs;
+        FuzzyFW::Crisp usedHead = newHeadCs;
         makespan = maximum(makespan, usedHead + csInfo.task->p + this->tails[currentMs],
-                           FuzzyFW::Interval::M_COMPONENT);
+                           FuzzyFW::Crisp::M_COMPONENT);
     }
 
     return makespan;
@@ -309,8 +309,8 @@ FuzzyFW::Fitness * NB_ParallelN8_MakespanIJSP::getEstimation(
     if (!arc->isEstimated()) {
         int newMp = (arc->y == (unsigned int)(-1)) ? -1 : (int)arc->y;
         int newMs = (arc->z == (unsigned int)(-1)) ? -1 : (int)arc->z;
-        FuzzyFW::Interval estMakespan = estimateReinsertion(arc->x, newMp, newMs);
-        arc->setEstimatedQuality(new FuzzyFW::FitnessInterval(estMakespan, false));
+        FuzzyFW::Crisp estMakespan = estimateReinsertion(arc->x, newMp, newMs);
+        arc->setEstimatedQuality(new FuzzyFW::FitnessCrisp(estMakespan, false));
     }
     return arc->getEstimatedQuality();
 }
@@ -342,10 +342,10 @@ FuzzyFW::Fitness * NB_ParallelN8_MakespanIJSP::evaluateNeighbour(
     int newMp = (arc->y == (unsigned int)(-1)) ? -1 : (int)arc->y;
     int newMs = (arc->z == (unsigned int)(-1)) ? -1 : (int)arc->z;
 
-    FuzzyFW::Interval currentMakespan = this->currentFitness->getValue();
+    FuzzyFW::Crisp currentMakespan = this->currentFitness->getValue();
     ScheduleIJSP *newSolution = new ScheduleIJSP(*this->schedule);
-    FuzzyFW::FitnessInterval *lowerBound =
-        dynamic_cast<FuzzyFW::FitnessInterval *>(this->currentFitness->clone());
+    FuzzyFW::FitnessCrisp *lowerBound =
+        dynamic_cast<FuzzyFW::FitnessCrisp *>(this->currentFitness->clone());
 
     // Current neighbours of T
     int oldMp = newSolution->taskInfo[T].mp;
@@ -395,18 +395,18 @@ FuzzyFW::Fitness * NB_ParallelN8_MakespanIJSP::evaluateNeighbour(
         int jsz = (newSolution->lastTaskJob[job] == z) ? -1 : zi.task->js;
         int msz = zi.ms;
 
-        FuzzyFW::Interval newHead(0.0, 0.0);
+        FuzzyFW::Crisp newHead(0.0, 0.0);
         if (jpz != -1 && mpz != -1)
             newHead = maximum(newSolution->taskInfo[mpz].head + newSolution->taskInfo[mpz].task->p,
                               newSolution->taskInfo[jpz].head + newSolution->taskInfo[jpz].task->p,
-                              FuzzyFW::Interval::M_COMPONENT);
+                              FuzzyFW::Crisp::M_COMPONENT);
         else if (mpz != -1)
             newHead = newSolution->taskInfo[mpz].head + newSolution->taskInfo[mpz].task->p;
         else if (jpz != -1)
             newHead = newSolution->taskInfo[jpz].head + newSolution->taskInfo[jpz].task->p;
 
         if (!newSolution->taskInfo[z].head.isEqualTo(newHead,
-                FuzzyFW::Interval::Compare::C_COMPONENT)) {
+                FuzzyFW::Crisp::Compare::C_COMPONENT)) {
             newSolution->taskInfo[z].head = newHead;
 
             // Early termination if improvement=true and lower bound already worse
@@ -425,14 +425,14 @@ FuzzyFW::Fitness * NB_ParallelN8_MakespanIJSP::evaluateNeighbour(
     }
 
     // --- Compute new makespan ---
-    FuzzyFW::Interval newMakespan(0.0, 0.0);
+    FuzzyFW::Crisp newMakespan(0.0, 0.0);
     for (size_t i = 0; i < newSolution->lastTaskJob.size(); i++)
         newMakespan = maximum(newMakespan, newSolution->getCTJob(i),
-                              FuzzyFW::Interval::M_COMPONENT);
+                              FuzzyFW::Crisp::M_COMPONENT);
 
     newSolution->setSorted(false);
     this->neighbours[idx]->setEvaluation(newSolution,
-        new FuzzyFW::FitnessInterval(newMakespan, false));
+        new FuzzyFW::FitnessCrisp(newMakespan, false));
 
     delete lowerBound;
     return this->neighbours[idx]->getEvaluatedFitness();
@@ -473,7 +473,7 @@ void NB_ParallelN8_MakespanIJSP::acceptNeighbour(const unsigned int idx,
     this->schedule = dynamic_cast<ScheduleIJSP *>(
         this->neighbours[idx]->getEvaluation()->clone());
     if (this->currentFitness != nullptr) delete this->currentFitness;
-    this->currentFitness = dynamic_cast<FuzzyFW::FitnessInterval *>(
+    this->currentFitness = dynamic_cast<FuzzyFW::FitnessCrisp *>(
         this->neighbours[idx]->getEvaluatedFitness()->clone());
 
     // Recompute tails for the three affected tasks:
@@ -506,13 +506,13 @@ void NB_ParallelN8_MakespanIJSP::acceptNeighbour(const unsigned int idx,
         int jsz  = (this->schedule->lastTaskJob[job] == z) ? -1
                  : this->schedule->taskInfo[z].task->js;
 
-        FuzzyFW::Interval newTail(0.0, 0.0);
+        FuzzyFW::Crisp newTail(0.0, 0.0);
         bool hasSuc = false;
         if (jsz != -1 && msz != -1) {
             newTail = maximum(
                 this->schedule->taskInfo[msz].task->p + this->tails[msz],
                 this->schedule->taskInfo[jsz].task->p + this->tails[jsz],
-                FuzzyFW::Interval::M_COMPONENT);
+                FuzzyFW::Crisp::M_COMPONENT);
             hasSuc = true;
         } else if (msz != -1) {
             newTail = this->schedule->taskInfo[msz].task->p + this->tails[msz];
@@ -523,7 +523,7 @@ void NB_ParallelN8_MakespanIJSP::acceptNeighbour(const unsigned int idx,
         }
 
         if (hasSuc && !this->tails[z].isEqualTo(newTail,
-                FuzzyFW::Interval::C_COMPONENT)) {
+                FuzzyFW::Crisp::C_COMPONENT)) {
             this->tails[z] = newTail;
             if (this->schedule->taskInfo[z].mp != -1)
                 enqueue(this->schedule->taskInfo[z].mp);

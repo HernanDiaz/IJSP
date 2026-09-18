@@ -33,7 +33,7 @@ namespace IJSP {
 	  //
 	  //=========================================================================
 	  /**
-	  * Objects of this class contain all data defining an instance of a Interval
+	  * Objects of this class contain all data defining an instance of a Crisp
 	  * Problem (IJSP in this version). The data is contained withing a file
 	  * that must be provided to the class, either at creation time or using a
 	  * specific method. The files contain all the same format:

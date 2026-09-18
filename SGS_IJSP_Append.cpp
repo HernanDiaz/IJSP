@@ -19,7 +19,7 @@ namespace IJSP {
 //=============================================================================
 //=====  Default constructor  =================================================
 SGS_IJSP_Append::SGS_IJSP_Append(const FuzzyFW::ParameterDB *params)
-	: maximumLabel(FJSP_SGS_APPEND_MAXIMUM), intervalMaximum(FuzzyFW::Interval::M_JIANG),
+	: maximumLabel(FJSP_SGS_APPEND_MAXIMUM), intervalMaximum(FuzzyFW::Crisp::M_JIANG),
 	SGS_IJSP(params) {
 }
 
@@ -41,8 +41,8 @@ void SGS_IJSP_Append::setup(const FuzzyFW::ParameterDB *params) {
 		std::string errorMsg = this->maximumLabel + " parameter not found.";
 		throw IJSPException("SGS", errorMsg);
 	}
-	this->intervalMaximum = FuzzyFW::Interval::getMaximum(maxName);
-	if (this->intervalMaximum == FuzzyFW::Interval::M_Err) {
+	this->intervalMaximum = FuzzyFW::Crisp::getMaximum(maxName);
+	if (this->intervalMaximum == FuzzyFW::Crisp::M_Err) {
 		std::string errorMsg = "Invalid value for parameter";
 		errorMsg += "\'" + this->maximumLabel + "\': \'";
 		errorMsg += maxName + "\'";
@@ -56,7 +56,7 @@ void SGS_IJSP_Append::setup(const FuzzyFW::ParameterDB *params) {
 //		METHODS
 //=============================================================================
 //=====  Schedule a task  =====================================================
-FuzzyFW::Interval SGS_IJSP_Append::scheduleTask(const TaskIJSP *task,
+FuzzyFW::Crisp SGS_IJSP_Append::scheduleTask(const TaskIJSP *task,
 	const int taskIdx) {
 
 	// Machine predecessor
@@ -75,7 +75,7 @@ FuzzyFW::Interval SGS_IJSP_Append::scheduleTask(const TaskIJSP *task,
 	}
 
 	// Starting time
-	FuzzyFW::Interval Stime = FuzzyFW::Interval(0, 0);
+	FuzzyFW::Crisp Stime = FuzzyFW::Crisp(0, 0);
 	if (jp != -1)
 		Stime = this->schedule->taskInfo[jp].head +
 		this->schedule->taskInfo[jp].task->p;

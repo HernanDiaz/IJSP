@@ -45,7 +45,7 @@ protected:
 	/*
 	* Strategy to use to compute the maximum of job completion times
 	*/
-	FuzzyFW::Interval::Maximum intervalMaximum;
+	FuzzyFW::Crisp::Maximum intervalMaximum;
 
 	/*
 	* Label for the strategy to ccompare values
@@ -55,7 +55,7 @@ protected:
 	/*
 	* Strategy to use to compare the job completion times
 	*/
-	FuzzyFW::Interval::Compare intervalCompare;
+	FuzzyFW::Crisp::Compare intervalCompare;
 
 
 
@@ -130,9 +130,9 @@ public:
 		std::vector<std::string> name;
 		name.push_back("Makespan");
 		name.push_back(";Maximum:;"
-			+ FuzzyFW::Interval::getMaximum(this->intervalMaximum));
+			+ FuzzyFW::Crisp::getMaximum(this->intervalMaximum));
 		name.push_back(";Comparisons:;"
-			+ FuzzyFW::Interval::getComparison(this->intervalCompare));
+			+ FuzzyFW::Crisp::getComparison(this->intervalCompare));
 		return name;
 	}
 };

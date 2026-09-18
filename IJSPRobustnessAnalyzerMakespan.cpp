@@ -15,7 +15,7 @@ namespace PostExecution {
 	//====  Default constructor  ==================================================
 	IJSPRobustnessAnalyzerMakespan::IJSPRobustnessAnalyzerMakespan():IJSPRobustnessAnalyzer(){}
 
-	void IJSPRobustnessAnalyzerMakespan::analyzeObjectiveFunction(const IJSP::ProblemIJSP *problemIJSP, IJSP::ScheduleIJSP * schedule, FuzzyFW::FitnessInterval * fitness, const FuzzyFW::ParameterDB *params, int numRun)
+	void IJSPRobustnessAnalyzerMakespan::analyzeObjectiveFunction(const IJSP::ProblemIJSP *problemIJSP, IJSP::ScheduleIJSP * schedule, FuzzyFW::FitnessCrisp * fitness, const FuzzyFW::ParameterDB *params, int numRun)
 	{
 		std::vector<unsigned int> mMkspan(problemIJSP->getNumberMachines());
 		std::vector<unsigned int> jMkspan(problemIJSP->getNumberJobs());

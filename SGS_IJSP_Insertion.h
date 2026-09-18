@@ -98,7 +98,7 @@ protected:
 	* scheduled without delaying any other in any scenario. If there is no
 	* such a space, schedules the new task at the end.
 	*/
-	virtual FuzzyFW::Interval scheduleTask(const TaskIJSP *task,
+	virtual FuzzyFW::Crisp scheduleTask(const TaskIJSP *task,
 		const int taskIdx);
 };
 

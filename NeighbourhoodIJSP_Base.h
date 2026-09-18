@@ -38,9 +38,9 @@ protected:
 	std::string estimatorLabel;
 	Estimator estimator;
 	ScheduleIJSP *schedule;
-	FuzzyFW::FitnessInterval *currentFitness;
+	FuzzyFW::FitnessCrisp *currentFitness;
 	std::vector<std::unique_ptr<NeighbourIJSP_Arc>> neighbours;
-	std::vector<FuzzyFW::Interval> tails;
+	std::vector<FuzzyFW::Crisp> tails;
 
 	//=========================================================================
 	//		CONSTRUCTORS / INITIALIZERS

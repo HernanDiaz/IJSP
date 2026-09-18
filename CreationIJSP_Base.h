@@ -9,7 +9,7 @@
 #include "Creation.h"
 #include "Encoder.h"
 #include "IJSPClassRegister.h"
-#include "Interval.h"
+#include "CrispTime.h"
 #include "Fitness.h"
 #include "ProblemIJSP.h"
 #include "IJSPException.h"
