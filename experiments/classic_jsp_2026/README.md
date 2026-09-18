@@ -110,6 +110,7 @@ duration, changing a machine or deleting a task are all rejected.
 | `reference/taillard_orlib.txt` | published instance data, as downloaded |
 | `taillard_bounds.csv` | lower bound, best known solution and open/closed status |
 | `results/` | run output (not tracked) |
+| `JOURNAL.md` | chronological record of what was tried, dead ends included |
 
 Instances and bounds come from
 <https://github.com/thomasWeise/jsspInstancesAndResults>.
