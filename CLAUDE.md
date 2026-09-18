@@ -117,19 +117,17 @@ and PPX call it at the start of `applyJobPermutation()` to avoid the repeated
 
 ## Verification after refactoring
 
-```bash
-bash experiments/verify_refactor.sh
-```
-Runs 6 instances × 5 configs (30 parallel jobs) against baseline in
-`experiments/statistical_results_exp7/runs_data.csv`. Exit 0 = all match.
-**Always run before committing changes to operators or their registration.**
+There is no standing regression check. `experiments/verify_refactor.sh` and its
+baseline `experiments/statistical_results_exp7/` were written for one specific
+refactoring campaign and removed with it in the cleanup commits `493a3be` and
+`1fb4ae4`; they are not expected back.
 
-> **Out of date on `feature/IJSP`.** Neither `experiments/verify_refactor.sh`
-> nor `experiments/statistical_results_exp7/` exists any more; both went in the
-> cleanup commits (`493a3be`, `1fb4ae4`). There is currently no regression
-> check to run before touching an operator or a register. Restoring one, from
-> whichever branch still carries the baseline, is worth doing before the next
-> refactor.
+So changes to an operator or to a register are verified by whatever the change
+itself calls for -- a targeted comparison against the configuration being
+changed, rather than a fixed suite. `experiments/classic_jsp_2026/` is an
+example: it re-verifies every schedule it produces against the published
+instance data, so a regression shows up as an infeasible or worse result rather
+than going unnoticed.
 
 ---
 
@@ -162,7 +160,6 @@ Runs 6 instances × 5 configs (30 parallel jobs) against baseline in
 ## Git / Session Notes
 
 - Commits: `git commit` with `--author="HernanDiaz_ <hernan.diaz.rodriguez@gmail.com>"`
-- Baseline for experiments lives in `experiments/statistical_results_exp7/` — do not modify
 - Generated results go to `experiments/statistical_results/` — ignored by `.gitignore`
 - Working branch: `feature/IJSP`
 - `experiment/classic-jsp` — classic (crisp) JSP on the Taillard instances; see
