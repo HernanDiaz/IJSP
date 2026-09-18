@@ -183,6 +183,52 @@ that costs an afternoon. Now reads "no runs recorded yet".
 
 ---
 
+---
+
+## 2026-09-18 — the open instances
+
+### Locating the difficulty first
+
+Before spending compute, compared each instance's published lower bound against
+the trivial `max(busiest machine's workload, longest job)`. Size turns out not
+to predict difficulty at all: `100x20` has 2000 operations and is fully solved,
+`30x20` has 600 and is fully open. The predictor is the jobs-to-machines ratio
+(table in the README, reproduce with `scripts/analyze_hardness.py`).
+
+That redirected the target to `ta41`-`ta50`, and ruled out `ta51`-`ta80`, which
+would otherwise have looked like the impressive thing to attack.
+
+### Calibration on ta41, and a first real separation
+
+One run of 300 s each on `ta41` (30x20, 600 operations; LB 1906, BKS 2005):
+
+| config | generations | makespan | over LB | over BKS |
+|---|---|---|---|---|
+| plain tabu | 494 | 2168 | +13.7 % | +8.1 % |
+| back-jump, 3 jumps, 5 bad iterations | 520 | **2106** | +10.5 % | +5.0 % |
+
+62 units apart, 2.9 %. On `ta01`-`ta10` the four configurations sat within 0.07
+percentage points of each other and nothing could be concluded; here a single
+run separates them by two orders of magnitude more. **Hard instances
+discriminate between configurations; easy ones do not.** If this holds across the
+group it also explains the earlier null results -- they were measured on
+instances with no room left to differ.
+
+First mistake of the day, for the record: the two calibration runs were pointed
+at the same log folder and started in the same second, so their signatures
+collided and one overwrote the other. Separate folders per configuration.
+
+### What is and is not on the table
+
+At 2106 against a best known of 2005, this configuration is 5 % away from the
+published result. Improving a BKS on this group is not going to happen from
+here; those numbers are the product of decades of specialised algorithms.
+
+What is worth having: a baseline for this algorithm family on the hardest group
+in the benchmark, where it has never been run, and a proper test of whether the
+back-jump advantage seen above is real. Launched both configurations, 5 runs of
+300 s on `ta41`-`ta50`, about two hours on four cores.
+
 ## Where it stands
 
 Six of `ta01`-`ta10` solved to proven optimality: 1231, 1244, 1218, 1175, 1217,
