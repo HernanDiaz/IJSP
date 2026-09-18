@@ -355,6 +355,37 @@ than anything seen on the easy instances, but 10 instances at 5 runs does not
 reach the 5 % level. Settling it needs more paired samples -- more open
 instances, more runs, or both.
 
+## Choosing a time budget
+
+Every setup here stops on wall-clock time, so **a run costs its full budget
+regardless of instance size** -- a 15x15 instance does not finish sooner than a
+30x20 one, it just does more generations in the same 300 s. The budget is a free
+parameter, and `scripts/convergence.py` prices it by reporting what fraction of
+runs were still improving past a given point:
+
+| budget spent | `ta01`-`ta10` (15x15, 60 s) still improving | `ta41`-`ta50` (30x20, 300 s) still improving |
+|---|---|---|
+| 40 % | 13 % | 52 % |
+| 50 % | 12 % | 42 % |
+| 75 % | 4 % | 22 % |
+| 90 % | 2 % | **16 %** |
+
+The answer is opposite in the two groups.
+
+On the easy instances the search is done early -- the last improvement lands at
+12 % of the budget for the median run -- so **half the budget could be cut while
+touching only about one run in eight**, and the same CPU spent on twice as many
+runs. Since every comparison in this directory has been limited by statistical
+power rather than by solution quality, that trade is worth taking.
+
+On the hard instances the opposite holds: **16 % of runs were still improving in
+the final 10 % of their budget**, so 300 s is if anything too short there, and
+shortening it would throw away results rather than time.
+
+The budget of an experiment already running must not be changed -- the 22 open
+instances are being compared at one budget and have to stay that way -- but this
+is how the next one should be sized.
+
 ## Next steps
 
 * Settle the back-jump question. The 30x20 runs put it at p = 0.084; the cheapest
