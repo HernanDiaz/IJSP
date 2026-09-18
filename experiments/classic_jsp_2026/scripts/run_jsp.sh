@@ -6,8 +6,18 @@
 # Usage: run_jsp.sh <setup-file> <results-subdir> <instance> [instance ...]
 #
 # Each instance runs as its own process; at most MAX_PARALLEL run at a time.
-# An instance whose certificate already exists is skipped, so the script is
-# safe to re-run after an interruption.
+#
+# Re-running the script resumes: an instance is skipped only when its
+# certificate already holds every run the setup asks for. A certificate left
+# behind by a killed process holds fewer, and counting them rather than merely
+# checking that the file exists is what keeps a half-finished instance from
+# being mistaken for a finished one -- which is how a comparison ends up with
+# 54 runs on one configuration and 50 on the other without anything looking
+# wrong.
+#
+# MAX_PARALLEL defaults to the number of cores. Each solver process is
+# single-threaded, so one per core is the right setting; override it to leave
+# headroom on a shared machine.
 #
 set -u
 
@@ -16,7 +26,7 @@ EXE="${ROOT}/../FuzzyFW"
 INSTANCES_DIR="${ROOT}/TaillardJSP"
 EXPERIMENT_DIR="${ROOT}/experiments/classic_jsp_2026"
 SCRIPTS_DIR="${EXPERIMENT_DIR}/scripts"
-MAX_PARALLEL="${MAX_PARALLEL:-4}"
+MAX_PARALLEL="${MAX_PARALLEL:-$(nproc 2>/dev/null || echo 4)}"
 
 if [ $# -lt 3 ]; then
     echo "usage: $0 <setup-file> <results-subdir> <instance> [instance ...]" >&2
@@ -37,10 +47,32 @@ fi
 
 mkdir -p "${RESULTS}"
 
+# How many runs this setup performs, so a partial certificate can be spotted.
+EXPECTED_RUNS=$(sed -n 's/^[[:space:]]*runs[[:space:]]*=[[:space:]]*\([0-9]*\).*/\1/p' \
+    "${SETUP}" | head -1)
+: "${EXPECTED_RUNS:=1}"
+
+completed_runs() {
+    local pattern="$1" total=0 file count
+    for file in ${pattern}; do
+        [ -f "${file}" ] || continue
+        count=$(awk -F';' 'NR > 1 { print $1 }' "${file}" | sort -u | wc -l)
+        total=$((total + count))
+    done
+    echo "${total}"
+}
+
 for instance in "$@"; do
-    if compgen -G "${RESULTS}/${instance}_*_Certificate.csv" > /dev/null; then
-        echo "skip ${instance} (already has a certificate)"
+    done_runs=$(completed_runs "${RESULTS}/${instance}_*_Certificate.csv")
+    if [ "${done_runs}" -ge "${EXPECTED_RUNS}" ]; then
+        echo "skip ${instance} (${done_runs}/${EXPECTED_RUNS} runs done)"
         continue
+    fi
+    if [ "${done_runs}" -gt 0 ]; then
+        echo "redo ${instance} (only ${done_runs}/${EXPECTED_RUNS} runs; a "\
+            "previous attempt was interrupted)"
+        rm -f "${RESULTS}/${instance}"_*_Certificate.csv \
+              "${RESULTS}/${instance}"_*_Sols.csv
     fi
     while [ "$(jobs -rp | wc -l)" -ge "${MAX_PARALLEL}" ]; do wait -n; done
     echo "start ${instance}"

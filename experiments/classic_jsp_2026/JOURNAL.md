@@ -229,6 +229,68 @@ in the benchmark, where it has never been run, and a proper test of whether the
 back-jump advantage seen above is real. Launched both configurations, 5 runs of
 300 s on `ta41`-`ta50`, about two hours on four cores.
 
+### ta41-ta50, both configurations
+
+5 runs of 300 s each. Mean best gap to the lower bound: plain tabu 6.826 %,
+back-jump 6.380 %. Per-instance differences up to 29 makespan units, against
+0.024 percentage points between the same two configurations on `ta01`-`ta10`.
+
+`compare.py` pairs by instance -- instances differ from each other far more than
+configurations do, so an unpaired test over pooled makespans would mostly
+measure which instances are hard:
+
+```
+best-of-runs:      back-jump wins 7, loses 2, ties 1   sign test p = 0.180
+per-instance mean: back-jump better on 8 of 10         Wilcoxon  p = 0.084
+```
+
+Consistent direction, far larger effect than on the easy instances, still not
+significant. Extended the comparison to the other 12 open instances -- the test
+pairs by instance, so 22 pairs buys more power than doubling the runs would.
+
+**The methodological point is the one worth keeping: a comparison run on closed
+15x15 instances cannot detect a difference this algorithm actually has.** Any
+tuning calibrated only on those instances is measuring noise.
+
+### Budget: too long on easy instances, too short on hard ones
+
+Every setup stops on wall-clock time, so a run costs its full budget whatever
+the instance size -- a 15x15 does not finish sooner than a 30x20, it does more
+generations in the same seconds. `convergence.py` prices the budget by asking
+what fraction of runs were still improving past a given point:
+
+| budget spent | 15x15 @ 60 s | 30x20 @ 300 s |
+|---|---|---|
+| 50 % | 12 % still improving | 42 % |
+| 75 % | 4 % | 22 % |
+| 90 % | 2 % | **16 %** |
+
+Opposite conclusions. On the easy instances the median run's last improvement
+lands at 12 % of the budget, so half of it could go while touching about one run
+in eight -- and every comparison here has been limited by statistical power, not
+by solution quality, so that CPU is better spent on more runs. On the hard
+instances 16 % of runs were still improving in the final tenth, so 300 s is if
+anything too short.
+
+Did **not** change the budget of the running comparison. The 22 open instances
+have to be compared at one budget or the pairing is worthless.
+
+### A killed batch, and a flaw it exposed
+
+The second batch died after four instances -- `rest.log` empty, `ta18` cut off at
+"Run 2", almost certainly a container worker restart. The runs themselves were
+fine; the problem was what happened next.
+
+`run_jsp.sh` skipped any instance whose certificate file *existed*. Four
+certificates held one run out of five. On a re-run those would have been skipped
+as finished, and the comparison would have ended with 54 runs on one
+configuration and 50 on the other, with nothing in the output looking wrong. The
+script now counts the runs inside each certificate and compares against the
+setup's `runs` value, redoing an instance that has fewer.
+
+Also switched `MAX_PARALLEL` to default to `nproc` instead of a hardcoded 4, in
+preparation for running this on a larger machine.
+
 ## Where it stands
 
 Six of `ta01`-`ta10` solved to proven optimality: 1231, 1244, 1218, 1175, 1217,
