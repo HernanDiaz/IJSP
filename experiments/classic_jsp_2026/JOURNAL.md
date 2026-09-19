@@ -1085,3 +1085,41 @@ Verified the same way as every change on this branch: same seed on `ta01`, the
 build agrees with the untouched `experiment/classic-jsp` generation by
 generation under both the ABC and the memetic; every neighbourhood identical on
 the cross-check; certificates verify.
+
+
+## 2026-09-19 — IJSP becomes JSP
+
+With the intervals gone the `I` in every class name was a fossil. Renamed, in
+one mechanical pass over the source tree: 88 files (`ProblemIJSP` ->
+`ProblemJSP`, `NeighbourhoodIJSP_N2` -> `NeighbourhoodJSP_N2`,
+`IJSPClassRegister` -> `JSPClassRegister`, `IJSPException` -> `JSPException`,
+and so on), the `IJSP` namespace, the leftover `FJSP_SGS_*` macros in the append
+SGS, and the registered names a setup file uses: `ijsp.makespan` is
+`jsp.makespan`, `ijsp.makespan.n2` is `jsp.makespan.n2`, `ijsp.job-order` is
+`jsp.job-order`, `ijsp.jox` is `jsp.jox`. The setups in this directory are
+updated; the ones under `experiments/cor_tabu_2026/` belong to the interval
+study, target the interval solver, and are left as they were.
+
+The word is not replaced in prose. In README, JOURNAL and SCALING "IJSP" means
+the interval problem, and the sentences would stop being true. `CLAUDE.md` is
+rewritten where it described the interval and fuzzy code.
+
+Two stale files went with it: `Makefile.asan` and `build_asan.sh`, an
+address-sanitiser build that listed `Interval.cpp` and a dozen other sources
+that no longer exist on any recent commit, and could not have been run.
+
+A defect of the prune surfaced here and is fixed here: `TimeWindow.h` had no
+include of its own and reached the standard headers through `TFN.h`, so with
+`TFN.h` gone it no longer compiled from a clean tree. It had not shown because
+the prune was built on top of the previous objects. The prune commit therefore
+does not build on its own; the include is restored in this one.
+
+One trap for whoever renames or removes sources next: the Makefile `include`s
+the generated `*.d` dependency files before any rule runs, `make clean`
+included, so a stale `.d` naming a header that no longer exists stops `make`
+before it can clean. Delete `*.d` by hand first.
+
+Verified as everything else: same seed on `ta01`, trace identical to the
+untouched build under the ABC and under the memetic; every neighbourhood
+identical on the cross-check, the crisp side now asking for `jsp.makespan.*`
+and the original for `ijsp.makespan.*`; certificates verify.

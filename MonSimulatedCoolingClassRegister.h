@@ -26,8 +26,8 @@
 =============================================================================*/
 
 
-#include "SGS_IJSP_Insertion.h"
-#include "SGS_IJSP_Append.h"
+#include "SGS_JSP_Insertion.h"
+#include "SGS_JSP_Append.h"
 #include "MonotonicAdaptativeCooling.h"
 
 

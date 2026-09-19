@@ -8,7 +8,7 @@
 #include <fstream>
 #include "PostExecutionAnalyzer.h"
 #include "PostExecutionException.h"
-#include "ScheduleIJSP.h"
+#include "ScheduleJSP.h"
 
 namespace PostExecution {
 

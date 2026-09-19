@@ -79,7 +79,7 @@ public:
 	* configuration file
 	*
 	* @param name Name of the SGS to use
-	* @return An object of the specified type of SGS_FJSP. Null if the
+	* @return An object of the specified type of SGS_JSP. Null if the
 	* type is not registered
 	*/
 
@@ -104,9 +104,9 @@ public:
 	 */
 	static void registerClasses() {
 
-		// The IJSP robustness analysers are gone with the interval machinery:
+		// The JSP robustness analysers are gone with the interval machinery:
 		// they sampled durations inside [a, b], which is a no-op on a point.
-		// An IJSP setup therefore has to name an analyser explicitly, and the
+		// A JSP setup therefore has to name an analyser explicitly, and the
 		// one that makes sense on crisp data is jsp.certificate below. Leaving
 		// the old names unregistered makes that a loud failure rather than a
 		// silent substitution.

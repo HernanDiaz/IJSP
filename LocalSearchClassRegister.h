@@ -33,8 +33,8 @@
 // ADD HERE ALL THE HEADER FILES OF THE OPERATORS YOU HAVE CREATED
 //
 // ****************************************************************************
-#include "NeighbourhoodIJSP_Cmax.h"
-#include "NeighbourhoodIJSP_N8.h"
+#include "NeighbourhoodJSP_Cmax.h"
+#include "NeighbourhoodJSP_N8.h"
 
 
 
@@ -151,25 +151,25 @@ public:
 
 
 
-		// -----  NEIGHBOURHOOD STRUCTURES  IJSP---------------------------------------
-		NeighbourhoodMap[toUpper("ijsp.makespan.n1")] =
-			&createNeighbourhoodInstance<IJSP::NB_ParallelN1_MakespanIJSP>;
-		NeighbourhoodMap[toUpper("ijsp.makespan.n2")] =
-			&createNeighbourhoodInstance<IJSP::NB_ParallelN2_MakespanIJSP>;
-		NeighbourhoodMap[toUpper("ijsp.makespan.n3")] =
-			&createNeighbourhoodInstance<IJSP::NB_ParallelN3_MakespanIJSP>;
-		NeighbourhoodMap[toUpper("ijsp.makespan.nh")] =
-			&createNeighbourhoodInstance<IJSP::NB_ParallelNH_MakespanIJSP>;
-		NeighbourhoodMap[toUpper("ijsp.makespan.next")] =
-			&createNeighbourhoodInstance<IJSP::NB_ParallelNext_MakespanIJSP>;
-		NeighbourhoodMap[toUpper("ijsp.makespan.n2inter")] =
-			&createNeighbourhoodInstance<IJSP::NB_ParallelN2Inter_MakespanIJSP>;
-		NeighbourhoodMap[toUpper("ijsp.makespan.n2minus")] =
-			&createNeighbourhoodInstance<IJSP::NB_ParallelN2Minus_MakespanIJSP>;
-		NeighbourhoodMap[toUpper("ijsp.makespan.n2plus")] =
-			&createNeighbourhoodInstance<IJSP::NB_ParallelN2Plus_MakespanIJSP>;
-		NeighbourhoodMap[toUpper("ijsp.makespan.n8")] =
-			&createNeighbourhoodInstance<IJSP::NB_ParallelN8_MakespanIJSP>;
+		// -----  NEIGHBOURHOOD STRUCTURES  JSP---------------------------------------
+		NeighbourhoodMap[toUpper("jsp.makespan.n1")] =
+			&createNeighbourhoodInstance<JSP::NB_ParallelN1_MakespanJSP>;
+		NeighbourhoodMap[toUpper("jsp.makespan.n2")] =
+			&createNeighbourhoodInstance<JSP::NB_ParallelN2_MakespanJSP>;
+		NeighbourhoodMap[toUpper("jsp.makespan.n3")] =
+			&createNeighbourhoodInstance<JSP::NB_ParallelN3_MakespanJSP>;
+		NeighbourhoodMap[toUpper("jsp.makespan.nh")] =
+			&createNeighbourhoodInstance<JSP::NB_ParallelNH_MakespanJSP>;
+		NeighbourhoodMap[toUpper("jsp.makespan.next")] =
+			&createNeighbourhoodInstance<JSP::NB_ParallelNext_MakespanJSP>;
+		NeighbourhoodMap[toUpper("jsp.makespan.n2inter")] =
+			&createNeighbourhoodInstance<JSP::NB_ParallelN2Inter_MakespanJSP>;
+		NeighbourhoodMap[toUpper("jsp.makespan.n2minus")] =
+			&createNeighbourhoodInstance<JSP::NB_ParallelN2Minus_MakespanJSP>;
+		NeighbourhoodMap[toUpper("jsp.makespan.n2plus")] =
+			&createNeighbourhoodInstance<JSP::NB_ParallelN2Plus_MakespanJSP>;
+		NeighbourhoodMap[toUpper("jsp.makespan.n8")] =
+			&createNeighbourhoodInstance<JSP::NB_ParallelN8_MakespanJSP>;
 	}
 
 };

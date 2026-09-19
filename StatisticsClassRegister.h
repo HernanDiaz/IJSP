@@ -32,7 +32,7 @@
 //
 // ****************************************************************************
 #include "StatisticsDiversity.h"
-#include "StatisticsIJSP.h"
+#include "StatisticsJSP.h"
 
 
 
@@ -113,9 +113,9 @@ public:
 		StatsMap[toUpper("neri-best")] = &createStatsInstance<StatisticsNeriBest>;
 
 
-		// -----  IJSP OBJECTS  -----------------------------------------------
-		StatsMap[toUpper("ijsp.makespan")] = &createStatsInstance<IJSP::StatisticsMakespan>;
-		StatsMap[toUpper("ijsp.cmax")] = &createStatsInstance<IJSP::StatisticsMakespan>;
+		// -----  JSP OBJECTS  -----------------------------------------------
+		StatsMap[toUpper("jsp.makespan")] = &createStatsInstance<JSP::StatisticsMakespan>;
+		StatsMap[toUpper("jsp.cmax")] = &createStatsInstance<JSP::StatisticsMakespan>;
 	
 	}
 };

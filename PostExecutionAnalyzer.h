@@ -5,8 +5,8 @@
 *      Author: Hernan Diaz Rodriguez
 */
 #pragma once
-#include "ScheduleIJSP.h"
-#include "EvaluationIJSP.h"
+#include "ScheduleJSP.h"
+#include "EvaluationJSP.h"
 
 namespace PostExecution {
 	   

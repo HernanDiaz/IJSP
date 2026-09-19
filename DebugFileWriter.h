@@ -8,7 +8,7 @@
 #include "heading.h"
 #include "FuzzyFWException.h"
 
-namespace IJSP {
+namespace JSP {
 	// Name for sets of solutions
 #define COL_SEPARATOR "\n"
 	   

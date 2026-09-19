@@ -28,17 +28,17 @@ void JSPCertificateAnalyzer::open(FuzzyFW::Problem *problem,
 void JSPCertificateAnalyzer::analyze(FuzzyFW::Problem *problem,
 	FuzzyFW::Solution *solution, FuzzyFW::Fitness *objective,
 	const FuzzyFW::ParameterDB *params, int numRun) {
-	IJSP::ProblemIJSP *problemIJSP;
-	IJSP::ScheduleIJSP *schedule;
+	JSP::ProblemJSP *problemJSP;
+	JSP::ScheduleJSP *schedule;
 
-	problemIJSP = dynamic_cast<IJSP::ProblemIJSP *>(problem);
-	if (problemIJSP == NULL) {
+	problemJSP = dynamic_cast<JSP::ProblemJSP *>(problem);
+	if (problemJSP == NULL) {
 		std::string errorMsg = "The certificate analyzer can only be used on";
 		errorMsg += " interval job shop problems.";
 		throw PostExecutionException("Certificate", errorMsg);
 	}
 
-	schedule = dynamic_cast<IJSP::ScheduleIJSP *>(solution);
+	schedule = dynamic_cast<JSP::ScheduleJSP *>(solution);
 	if (schedule == NULL) {
 		std::string errorMsg = "The certificate analyzer can only be used on";
 		errorMsg += " interval job shop schedules.";
@@ -47,14 +47,14 @@ void JSPCertificateAnalyzer::analyze(FuzzyFW::Problem *problem,
 
 	// The operation index inside its job is not stored in the task, so it is
 	// recovered by walking the job chain from the task's predecessors.
-	for (unsigned int t = 0; t < problemIJSP->getNumberTasks(); t++) {
-		const IJSP::TaskIJSP *task = problemIJSP->getTask(t);
+	for (unsigned int t = 0; t < problemJSP->getNumberTasks(); t++) {
+		const JSP::TaskJSP *task = problemJSP->getTask(t);
 		const FuzzyFW::Crisp &start = schedule->taskInfo[t].head;
 		FuzzyFW::Crisp completion = start + task->p;
 		unsigned int operation = 0;
 
 		for (int pred = task->jp; pred >= 0;
-			pred = problemIJSP->getTask(pred)->jp)
+			pred = problemJSP->getTask(pred)->jp)
 			operation++;
 
 		// One row per task. Times are exact integers, so the row carries the

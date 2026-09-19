@@ -33,7 +33,7 @@
 // ADD HERE ALL THE HEADER FILES OF THE OPERATORS YOU HAVE CREATED
 //
 // ****************************************************************************
-#include "EvaluationIJSP.h"
+#include "EvaluationJSP.h"
 
 
 
@@ -105,10 +105,10 @@ public:
 
 
 
-		// -----  IJSP EVALUATION FUNCTIONS  ----------------------------------
-		EvaluationMap[toUpper("ijsp.makespan")] = &createEvaluationInstance<IJSP::EvaluationIJSP_Makespan>;
-		EvaluationMap[toUpper("ijsp.cmax")] = &createEvaluationInstance<IJSP::EvaluationIJSP_Makespan>;
-		EvaluationMap[toUpper("ijsp.tardiness")] = &createEvaluationInstance<IJSP::EvaluationIJSP_Tardiness>;
+		// -----  JSP EVALUATION FUNCTIONS  ----------------------------------
+		EvaluationMap[toUpper("jsp.makespan")] = &createEvaluationInstance<JSP::EvaluationJSP_Makespan>;
+		EvaluationMap[toUpper("jsp.cmax")] = &createEvaluationInstance<JSP::EvaluationJSP_Makespan>;
+		EvaluationMap[toUpper("jsp.tardiness")] = &createEvaluationInstance<JSP::EvaluationJSP_Tardiness>;
 	
 	}
 

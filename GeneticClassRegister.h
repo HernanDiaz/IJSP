@@ -33,9 +33,9 @@
 // ADD HERE ALL THE HEADER FILES OF THE OPERATORS YOU HAVE CREATED
 //
 // ****************************************************************************
-#include "CrossoverIJSP.h"
-#include "DecoderIJSP.h"
-#include "CreationIJSP.h"
+#include "CrossoverJSP.h"
+#include "DecoderJSP.h"
+#include "CreationJSP.h"
 
 
 
@@ -282,46 +282,46 @@ public:
 
 
 		// --------------------------------------------------------------------
-		//			IJSP
+		//			JSP
 		// --------------------------------------------------------------------
 		// -----  ENCODING FUNCTION  ------------------------------------------
-		EncoderMap[toUpper("ijsp.permutation")] = &createEncoderInstance<IJSP::EncoderIJSP_Order>;
-		EncoderMap[toUpper("ijsp.task-order")] = &createEncoderInstance<IJSP::EncoderIJSP_Order>;
-		EncoderMap[toUpper("ijsp.taskorder")] = &createEncoderInstance<IJSP::EncoderIJSP_Order>;
-		EncoderMap[toUpper("ijsp.permutation-reap")] = &createEncoderInstance<IJSP::EncoderIJSP_JobOrder>;
-		EncoderMap[toUpper("ijsp.permutationreap")] = &createEncoderInstance<IJSP::EncoderIJSP_JobOrder>;
-		EncoderMap[toUpper("ijsp.job-order")] = &createEncoderInstance<IJSP::EncoderIJSP_JobOrder>;
-		EncoderMap[toUpper("ijsp.joborder")] = &createEncoderInstance<IJSP::EncoderIJSP_JobOrder>;
+		EncoderMap[toUpper("jsp.permutation")] = &createEncoderInstance<JSP::EncoderJSP_Order>;
+		EncoderMap[toUpper("jsp.task-order")] = &createEncoderInstance<JSP::EncoderJSP_Order>;
+		EncoderMap[toUpper("jsp.taskorder")] = &createEncoderInstance<JSP::EncoderJSP_Order>;
+		EncoderMap[toUpper("jsp.permutation-reap")] = &createEncoderInstance<JSP::EncoderJSP_JobOrder>;
+		EncoderMap[toUpper("jsp.permutationreap")] = &createEncoderInstance<JSP::EncoderJSP_JobOrder>;
+		EncoderMap[toUpper("jsp.job-order")] = &createEncoderInstance<JSP::EncoderJSP_JobOrder>;
+		EncoderMap[toUpper("jsp.joborder")] = &createEncoderInstance<JSP::EncoderJSP_JobOrder>;
 
 		// -----  DECODING FUNCTION  ------------------------------------------
-		DecoderMap[toUpper("ijsp.permutation")] = &createDecoderInstance<IJSP::DecoderIJSP_Order>;
-		DecoderMap[toUpper("ijsp.task-order")] = &createDecoderInstance<IJSP::DecoderIJSP_Order>;
-		DecoderMap[toUpper("ijsp.taskorder")] = &createDecoderInstance<IJSP::DecoderIJSP_Order>;
-		DecoderMap[toUpper("ijsp.permutation-reap")] = &createDecoderInstance<IJSP::DecoderIJSP_JobOrder>;
-		DecoderMap[toUpper("ijsp.permutationreap")] = &createDecoderInstance<IJSP::DecoderIJSP_JobOrder>;
-		DecoderMap[toUpper("ijsp.job-order")] = &createDecoderInstance<IJSP::DecoderIJSP_JobOrder>;
-		DecoderMap[toUpper("ijsp.joborder")] = &createDecoderInstance<IJSP::DecoderIJSP_JobOrder>;
+		DecoderMap[toUpper("jsp.permutation")] = &createDecoderInstance<JSP::DecoderJSP_Order>;
+		DecoderMap[toUpper("jsp.task-order")] = &createDecoderInstance<JSP::DecoderJSP_Order>;
+		DecoderMap[toUpper("jsp.taskorder")] = &createDecoderInstance<JSP::DecoderJSP_Order>;
+		DecoderMap[toUpper("jsp.permutation-reap")] = &createDecoderInstance<JSP::DecoderJSP_JobOrder>;
+		DecoderMap[toUpper("jsp.permutationreap")] = &createDecoderInstance<JSP::DecoderJSP_JobOrder>;
+		DecoderMap[toUpper("jsp.job-order")] = &createDecoderInstance<JSP::DecoderJSP_JobOrder>;
+		DecoderMap[toUpper("jsp.joborder")] = &createDecoderInstance<JSP::DecoderJSP_JobOrder>;
 
 		// -----  CREATION OPERATORS  -----------------------------------------
-    	CreationMap[toUpper("ijsp-random")] = &createCreationInstance<IJSP::CreationRandomSchedule>;
-		CreationMap[toUpper("ijsp.random")] = &createCreationInstance<IJSP::CreationRandomSchedule>;
-		CreationMap[toUpper("ijsp.SRT.makespan")] = &createCreationInstance<IJSP::CreationSRTIntervalMkSchedule>;
-		CreationMap[toUpper("ijsp.SNTF.makespan")] = &createCreationInstance<IJSP::CreationSNTFIntervalMkSchedule>;
+    	CreationMap[toUpper("ijsp-random")] = &createCreationInstance<JSP::CreationRandomSchedule>;
+		CreationMap[toUpper("jsp.random")] = &createCreationInstance<JSP::CreationRandomSchedule>;
+		CreationMap[toUpper("jsp.SRT.makespan")] = &createCreationInstance<JSP::CreationSRTIntervalMkSchedule>;
+		CreationMap[toUpper("jsp.SNTF.makespan")] = &createCreationInstance<JSP::CreationSNTFIntervalMkSchedule>;
 		
-		CreationMap[toUpper("ijsp.SPJF.makespan")] = &createCreationInstance<IJSP::CreationSPJFIntervalMkSchedule>;		   //Shortest processed time job first
-		CreationMap[toUpper("ijsp.LPJF.makespan")] = &createCreationInstance<IJSP::CreationSPJFInverseIntervalMkSchedule>; //Longest processed time job first
-		CreationMap[toUpper("ijsp.SRTF.makespan")] = &createCreationInstance<IJSP::CreationLRTFInverseIntervalMkSchedule>; //Shortest remaining time first
-		CreationMap[toUpper("ijsp.LRTF.makespan")] = &createCreationInstance<IJSP::CreationLRTFIntervalMkSchedule>;        //Longest remaining time first
-		CreationMap[toUpper("ijsp.STPT.makespan")] = &createCreationInstance<IJSP::CreationSCTFIntervalMkSchedule>;        //Shortest total processing time
-		CreationMap[toUpper("ijsp.LTPT.makespan")] = &createCreationInstance<IJSP::CreationLCTFIntervalMkSchedule>;		   //Longest total processing time
-		CreationMap[toUpper("ijsp.Manager.makespan")] = &createCreationInstance<IJSP::CreationManagerIntervalMkSchedule>;
+		CreationMap[toUpper("jsp.SPJF.makespan")] = &createCreationInstance<JSP::CreationSPJFIntervalMkSchedule>;		   //Shortest processed time job first
+		CreationMap[toUpper("jsp.LPJF.makespan")] = &createCreationInstance<JSP::CreationSPJFInverseIntervalMkSchedule>; //Longest processed time job first
+		CreationMap[toUpper("jsp.SRTF.makespan")] = &createCreationInstance<JSP::CreationLRTFInverseIntervalMkSchedule>; //Shortest remaining time first
+		CreationMap[toUpper("jsp.LRTF.makespan")] = &createCreationInstance<JSP::CreationLRTFIntervalMkSchedule>;        //Longest remaining time first
+		CreationMap[toUpper("jsp.STPT.makespan")] = &createCreationInstance<JSP::CreationSCTFIntervalMkSchedule>;        //Shortest total processing time
+		CreationMap[toUpper("jsp.LTPT.makespan")] = &createCreationInstance<JSP::CreationLCTFIntervalMkSchedule>;		   //Longest total processing time
+		CreationMap[toUpper("jsp.Manager.makespan")] = &createCreationInstance<JSP::CreationManagerIntervalMkSchedule>;
 		
 		// -----  CROSSOVER OPERATORS  ----------------------------------------
-		CrossoverMap[toUpper("ijsp.jox")] = &createCrossoverInstance<IJSP::Crossover_JOX>;
-		CrossoverMap[toUpper("ijsp.gox")] = &createCrossoverInstance<IJSP::Crossover_GOXBierwirth>;
-		CrossoverMap[toUpper("ijsp.biertwirth")] = &createCrossoverInstance<IJSP::Crossover_GOXBierwirth>;
-		CrossoverMap[toUpper("ijsp.gpmx")] = &createCrossoverInstance<IJSP::Crossover_GPMXBierwirth>;
-		CrossoverMap[toUpper("ijsp.ppx")] = &createCrossoverInstance<IJSP::Crossover_PPXBierwirth>;
+		CrossoverMap[toUpper("jsp.jox")] = &createCrossoverInstance<JSP::Crossover_JOX>;
+		CrossoverMap[toUpper("jsp.gox")] = &createCrossoverInstance<JSP::Crossover_GOXBierwirth>;
+		CrossoverMap[toUpper("jsp.biertwirth")] = &createCrossoverInstance<JSP::Crossover_GOXBierwirth>;
+		CrossoverMap[toUpper("jsp.gpmx")] = &createCrossoverInstance<JSP::Crossover_GPMXBierwirth>;
+		CrossoverMap[toUpper("jsp.ppx")] = &createCrossoverInstance<JSP::Crossover_PPXBierwirth>;
 
 
 		// -----  MUTATION OPERATORS  -----------------------------------------

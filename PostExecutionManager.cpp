@@ -23,13 +23,13 @@ namespace PostExecution {
 
 	void PostExecutionManager::analyze(FuzzyFW::Problem *problem, FuzzyFW::Solution * solution, FuzzyFW::Fitness* objective, const FuzzyFW::ParameterDB *params, int numRun) {
 		this->robustnessAnalyzer->analyze(problem, solution, objective, params, numRun);
-		//this->IJSPTardinessAnalyzer->analyze(problem, solution, objective, params, numRun);
+		//this->JSPTardinessAnalyzer->analyze(problem, solution, objective, params, numRun);
 	}
 		
 	void PostExecutionManager::open(FuzzyFW::Problem *problem, std::string outputPrefix, std::string signature, const FuzzyFW::ParameterDB *params) {
 	    this->loadAnalyzers(params);
 		this->robustnessAnalyzer->open(problem, outputPrefix, signature);
-		//this->IJSPTardinessAnalyzer->open(problem, outputPrefix, signature);
+		//this->JSPTardinessAnalyzer->open(problem, outputPrefix, signature);
 	}
 
 	void PostExecutionManager::loadAnalyzers(const FuzzyFW::ParameterDB *params) {
@@ -52,8 +52,8 @@ namespace PostExecution {
 			throw PostExecutionException("Robustness", errorMsg);
 		}
 		/*
-		this->IJSPTardinessAnalyzer = PostExecutionClassRegister::getMakespanMRObject(sgsType);
-		if (this->IJSPTardinessAnalyzer == NULL) {
+		this->JSPTardinessAnalyzer = PostExecutionClassRegister::getMakespanMRObject(sgsType);
+		if (this->JSPTardinessAnalyzer == NULL) {
 			std::string errorMsg = "The introduced objective function is not";
 			errorMsg += " recognised: \'" + sgsType + "\'";
 			throw PostExecutionException("Robustness", errorMsg);
@@ -62,6 +62,6 @@ namespace PostExecution {
 
 	void PostExecutionManager::close() {
 		this->robustnessAnalyzer->close();
-		//this->IJSPTardinessAnalyzer->close();
+		//this->JSPTardinessAnalyzer->close();
 	}
 }

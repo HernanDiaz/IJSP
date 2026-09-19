@@ -7,10 +7,10 @@
 #pragma once
 #include "Problem.h"
 #include "Solution.h"
-#include "ScheduleIJSP.h"
+#include "ScheduleJSP.h"
 
 #include "Evaluation.h"
-#include "EvaluationIJSP.h"
+#include "EvaluationJSP.h"
 #include "PostExecutionException.h"
 #include "PostExecutionClassRegister.h"
 #include "PostExecutionAnalyzer.h"
@@ -37,7 +37,7 @@ private:
 
 	PostExecutionAnalyzer* robustnessAnalyzer;
 
-	PostExecutionAnalyzer* IJSPTardinessAnalyzer;
+	PostExecutionAnalyzer* JSPTardinessAnalyzer;
 
 	void loadAnalyzers(const FuzzyFW::ParameterDB *params);
 };

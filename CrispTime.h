@@ -18,8 +18,8 @@ namespace FuzzyFW {
 /**
 * A processing time, head or completion time of the classic (crisp) job shop.
 *
-* This replaces Interval on this branch. A classic JSP instance is an IJSP
-* instance whose processing times are degenerate intervals [p, p], and every
+* This replaces Interval on this branch. A classic JSP instance is an interval
+* JSP instance whose processing times are degenerate intervals [p, p], and every
 * Interval ranking method collapses to the order on the reals when a == b, so
 * nothing is lost by storing one exact integer instead of two doubles.
 *

@@ -5,6 +5,7 @@
 */
 #pragma once
 
+#include "heading.h"
 
 namespace FuzzyFW {
 

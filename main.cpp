@@ -1,5 +1,5 @@
 /*
- * MetaFJSP.cpp
+ * MetaJSP.cpp
  *
  *  Created on: Sep 22, 2017
  */
@@ -8,17 +8,17 @@ using namespace std;
 
 
 #include "EvoLauncher.h"
-#include "ProblemIJSP.h"
-#include "ProblemIJSP.h"
+#include "ProblemJSP.h"
+#include "ProblemJSP.h"
 //#include "mainTest.cpp"
 
 int main(int argc, const char *argv[]) {
 	FuzzyFW::EvoLauncher *launcher;
-	IJSP::ProblemIJSP *problem;
+	JSP::ProblemJSP *problem;
 
 	if(argc < 3) {
 		std::cout << "ERROR: Not enough input arguments." << std::endl;
-		std::cout << "\t Use: MetaIJSP <setup_file> <problem_file> [log_folder]" << std::endl;
+		std::cout << "\t Use: MetaJSP <setup_file> <problem_file> [log_folder]" << std::endl;
 		return 0;
 	}
 
@@ -33,11 +33,11 @@ int main(int argc, const char *argv[]) {
 			return 0;
 		}*/
 
-		problem = new IJSP::ProblemIJSP(argv[2]);
+		problem = new JSP::ProblemJSP(argv[2]);
 		launcher->optimise(problem);
 
-	} catch(IJSP::IJSPException &ex) {
-		std::cout << "IJSP Error: " << ex.what() << std::endl << std::endl;
+	} catch(JSP::JSPException &ex) {
+		std::cout << "JSP Error: " << ex.what() << std::endl << std::endl;
 		return -2;
 	} catch(FuzzyFW::FuzzyFWException &ex) {
 		std::cout << "FuzzyFW Error: " << ex.what() << std::endl << std::endl;
