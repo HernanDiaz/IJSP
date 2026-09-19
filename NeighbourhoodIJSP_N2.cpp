@@ -94,7 +94,6 @@ FuzzyFW::Fitness *NB_ParallelN2_MakespanIJSP::evaluateNeighbour(
 	const unsigned int idx, const FuzzyFW::SharedVars *svars,
 	const bool improvement) {
 
-	FuzzyFW::FitnessCrisp *lowerBound;
 	FuzzyFW::Crisp currentMakespan, newMakespan;
 	ScheduleIJSP *newSolution;
 	int job, mac;
@@ -115,7 +114,10 @@ FuzzyFW::Fitness *NB_ParallelN2_MakespanIJSP::evaluateNeighbour(
 	currentMakespan = this->currentFitness->getValue();
 	newSolution = new ScheduleIJSP(*this->schedule);
 	newMakespan = FuzzyFW::Crisp(0);
-	lowerBound = dynamic_cast<FuzzyFW::FitnessCrisp *>(this->currentFitness->clone());
+	// Pruning bound, on the stack: a FitnessCrisp is an int and a flag, so
+	// cloning it onto the heap cost an allocation, a free and a virtual
+	// call per neighbour evaluated.
+	FuzzyFW::FitnessCrisp lowerBound(*this->currentFitness);
 
 	mac = newSolution->taskInfo[arc->x].task->machine;
 	msy = newSolution->taskInfo[arc->y].ms;
@@ -156,7 +158,6 @@ FuzzyFW::Fitness *NB_ParallelN2_MakespanIJSP::evaluateNeighbour(
 	while (!taskQueue.empty()) {
 		_bfsCount++;
 		if (_bfsCount > _bfsLimit) {
-			delete lowerBound;
 			delete newSolution;
 			return NULL;
 		}
@@ -184,10 +185,9 @@ FuzzyFW::Fitness *NB_ParallelN2_MakespanIJSP::evaluateNeighbour(
 			newSolution->taskInfo[z].head = newHead;
 
 			if (improvement && jsz == -1) {
-				lowerBound->setValue(newSolution->taskInfo[z].head
+				lowerBound.setValue(newSolution->taskInfo[z].head
 					+ newSolution->taskInfo[z].task->p);
-				if (lowerBound->isWorseThan(currentFitness)) {
-					delete lowerBound;
+				if (lowerBound.isWorseThan(currentFitness)) {
 					delete newSolution;
 					return NULL;
 				}
@@ -206,7 +206,6 @@ FuzzyFW::Fitness *NB_ParallelN2_MakespanIJSP::evaluateNeighbour(
 	this->neighbours[idx]->setEvaluation(newSolution,
 		new FuzzyFW::FitnessCrisp(newMakespan, false));
 
-	delete lowerBound;
 	return this->neighbours[idx]->getEvaluatedFitness();
 }
 

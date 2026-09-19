@@ -761,3 +761,107 @@ Paired against the untouched `experiment/classic-jsp`, `ta01`-`ta10`, 10 runs of
 **1.999x.** The crisp build does exactly twice the search in the same wall clock,
 and reaches the optimum of `ta10` (1241) where the original build stops at 1243 --
 six known optima against five, reproduced now in three separate paired runs.
+
+
+## 2026-09-19 — two more nulls around evaluateNeighbour, and where that leaves it
+
+The `convertType` result made the obvious next move look obvious: there are more
+`dynamic_cast`s on the hot path, and more heap traffic. Both turned out to be
+worth nothing, and the reason is worth recording because it says where the
+remaining cost actually is.
+
+### The selection phase fixed itself
+
+Before the `convertType` change the phase timers read:
+
+| phase | ms per generation, original -> crisp | |
+|---|---|---|
+| local search | 401 -> 208 | 1.93x |
+| **selection** | **41.8 -> 34.8** | **1.20x** |
+
+Selection was the phase the refactor had barely improved, and it had grown from
+8.7 % to 13.1 % of the run. The plan was to attack the deep copies in it.
+
+After the `convertType` change, with nothing else touched:
+
+| phase | ms per generation, original -> crisp | |
+|---|---|---|
+| local search | 429 -> 211 | 2.03x |
+| **selection** | **44.5 -> 22.2** | **2.01x** |
+
+Selection is back to 8.6 % of the run and scaling like everything else. It was
+never bound by copying: ABCPSO re-sorts the population inside the per-individual
+loop, every sort is a few thousand fitness comparisons, and every comparison was
+doing an RTTI walk. **The candidate disappeared when the cause was removed
+somewhere else entirely**, which is an argument for fixing the measured thing
+rather than the plausible one.
+
+(The sort itself is not removable. `replaceIndividual` is called inside that
+loop, so the population really does change between iterations and the re-sort is
+not loop-invariant. Changing it would change the algorithm, and the trace check
+that guards this whole refactor would rightly reject it.)
+
+### Dead end 5: the other dynamic_casts, and the heap-allocated pruning bound
+
+`evaluateNeighbour` -- 35 % of the run, entered 2.1 million times per 30 s --
+began with
+
+    lowerBound = dynamic_cast<FitnessCrisp *>(this->currentFitness->clone());
+
+a virtual call, a heap allocation and an RTTI walk, for a scratch value used to
+abort the evaluation early when the partial schedule is already worse than the
+incumbent. `currentFitness` is declared `FitnessCrisp *`, so the cast decides
+nothing; and a `FitnessCrisp` is an int and a flag, so it belongs on the stack.
+Both were changed, in N1, N2, N3, N8 and NH.
+
+| | mean gen/s | |
+|---|---|---|
+| before | 4.199 | |
+| after | 4.210 | **1.003x** |
+
+Nothing, paired, 100 runs each side. An earlier paired run of the cast alone had
+already come out at 0.997x.
+
+The explanation is that the allocation being removed sits next to a much larger
+one that stays: the line above it is `new ScheduleIJSP(*this->schedule)`, a deep
+copy of the whole schedule -- four vectors, about 6 KB for a 15x15 instance --
+and the allocator is being asked for that on every call regardless. Removing a
+small fixed-size allocation from beside a large variable-size one buys nothing.
+
+**Both changes are kept**, and the distinction from the reverted `-flto` matters:
+those added a build flag for no benefit, these remove code. A static cast is
+simpler than a dynamic one, and a stack object cannot be leaked down an exit path
+that forgets to free it -- the heap version had three such paths to get right.
+They are simplifications that measured zero, not optimisations, and the commit
+message says so.
+
+### Where this leaves the remaining 20 %
+
+What is left of the profile's schedule-copying cost is the copying itself: 6.3
+million whole-schedule copies per 30 s, from `evaluateNeighbour` (2.1 M),
+`ScheduleIJSP::clone` (3.1 M) and `acceptNeighbour` (1.1 M). Two attempts to
+shave the overhead *around* those copies have now measured zero each, which is
+evidence that the memcpy is the cost and not the bookkeeping.
+
+Removing it is an architectural change, not a micro-optimisation. `evaluateNeighbour`
+materialises a full schedule for every neighbour it evaluates and hands it to
+`Neighbour::setEvaluation`, which owns it; `acceptNeighbour` then *clones that
+again* into the neighbourhood's own schedule. There are two separate things to do:
+
+1. **Transfer ownership on accept** instead of cloning -- the neighbour's
+   evaluated solution is discarded immediately afterwards anyway. This is
+   contained: one `release` method on `Neighbour` and one line in each
+   `acceptNeighbour`. It addresses 1.1 M of the 6.3 M copies, so expect about
+   3 % -- which is barely above what the paired design can resolve, and on this
+   directory's record that means it will probably measure as nothing.
+2. **Do not materialise a schedule to evaluate a neighbour at all**, only to
+   accept one. This addresses 2.1 M copies and is the only change here with a
+   double-digit prospect. It also changes the interface between the local search,
+   the neighbourhood and `Neighbour`, which is shared with the FJSP
+   neighbourhoods, and the trace check would have to be extended to every
+   neighbourhood before any of it could be believed.
+
+The second is worth doing by someone with a morning in front of them, not at the
+end of a session. It is the last item in this directory with a plausible
+double-digit gain, and it is also the one most likely to break the search in a
+way that only shows up as a worse makespan three hours later.
