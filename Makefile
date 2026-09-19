@@ -1,4 +1,9 @@
 # flags de compilacion
+#
+# No -flto here, and that is a measured decision rather than an oversight: it
+# looked like a clear win (+9.4 %) in a block comparison and turned out to be
+# nothing at all when the two builds were run side by side. See the journal
+# entry for 2026-09-19.
 CXXFLAGS = -O3 -march=native -mtune=native -ffast-math -std=c++14 -I.. -I. -I /usr/local/src
 
 # flags de enlazado
@@ -13,7 +18,7 @@ objetos = $(SOURCES:.cpp=.o)
 dependencias = $(SOURCES:.cpp=.d)
 
 # regla del ejecutable
-$(EXE): $(objetos) 
+$(EXE): $(objetos)
 	g++ $^ -o $@ $(LDFLAGS)
 
 # regla para limpiar el directorio y dejar solo los ficheros fuentes

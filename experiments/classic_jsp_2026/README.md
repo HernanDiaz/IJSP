@@ -68,10 +68,17 @@ second pass over the critical path are gone with it.
 It is not a second implementation to keep correct, because it is not a second
 implementation: the interval code was refactored in place, and the two branches
 are checked against each other by running both with the same seed and comparing
-the search traces generation by generation. **1.80x**, same trajectory, and on
+the search traces generation by generation. **1.85x**, same trajectory, and on
 this machine it reaches all six known optima of `ta01`-`ta10` where the interval
 build reaches five. The journal entries for 2026-09-19 have the numbers, the
 method, and the parts of the refactor that bought nothing.
+
+**Comparing two builds needs `scripts/paired_compare.sh`.** One binary, identical
+by md5, measured 4.122 gen/s in one batch and 3.812 in another on this machine: a
+9 % swing from machine state, with 100 runs behind each figure. Running
+configuration A and then configuration B cannot resolve anything smaller than
+that, and a link-time-optimisation build that looked like a 9.4 % win under that
+design turned out to be worth nothing when the two were run side by side.
 
 **Sanity check.** The converted `ta01` reproduces the machine routes of
 `SelectosYTaillardIntervalos/tai15_15_01.F.15_01.txt`, and its processing times

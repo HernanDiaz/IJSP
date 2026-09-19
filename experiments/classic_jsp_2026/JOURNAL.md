@@ -446,7 +446,9 @@ outside.
 | crisp, step 1 | **3.761** | **225.7** |
 
 **1.80x**, and remarkably flat: the per-instance speed-up runs from 1.69x
-(`ta06`) to 1.93x (`ta01`). That is the low end of the 2-4x that motivated the
+(`ta06`) to 1.93x (`ta01`). (This figure comes from a block design and is
+superseded by the paired measurement of 1.85x in the last entry below; the
+substance is unchanged, the precision was not justified.) That is the low end of the 2-4x that motivated the
 branch, and it is the honest figure -- the remaining interval scaffolding
 (ignored ranking arguments, N2's second pass over the critical path) is still
 in place.
@@ -585,3 +587,124 @@ figure. Against SCALING.md's costings that is still worth having, since every
 comparison in this directory has been limited by statistical power: the 6.7
 CPU-hour screen it prices now costs 3.7, and the 50 CPU-hour budget experiment
 costs 28.
+
+
+## 2026-09-19 — what is left to optimise, and a measurement that was wrong
+
+### Where the time actually goes
+
+Phase timers, `ta01`-`ta10`, 10 runs of 60 s, from the solver's own Runtimes
+block. Percentages of a fixed budget are misleading when one build does more
+generations in it, so the third column divides by the generations actually
+completed:
+
+| phase | original | crisp | ms per generation, original -> crisp |
+|---|---|---|---|
+| local search | 83.7 % | 78.5 % | 401 -> 208  (**1.93x**) |
+| selection | 8.7 % | 13.1 % | 41.8 -> 34.8  (1.20x) |
+| crossover | 5.9 % | 5.7 % | 28.4 -> 15.1  (1.88x) |
+| replacement | 1.0 % | 1.8 % | 4.9 -> 4.6  (1.05x) |
+
+Selection barely moved, and so grew from 8.7 % to 13.1 % of the run.
+`SelectionShuffle::apply` clones all 250 individuals every generation, and a
+clone is a deep copy of the schedule; it is bound by allocation and memcpy, not
+by the comparisons the refactor made cheap. It sped up 1.20x only because
+`ScheduledTaskInfo` shrank from 32 to 24 bytes when `Interval` became `Crisp`.
+
+A gprof profile (`-O2 -pg`, 30 s on `ta01`) puts 35 % in
+`NB_ParallelN2_MakespanIJSP::evaluateNeighbour` and about 20 % in the
+`ScheduleIJSP` copy constructor -- 6.3 million whole-schedule copies in 30 s,
+from `evaluateNeighbour` (2.1 M), `ScheduleIJSP::clone` (3.1 M) and
+`acceptNeighbour` (1.1 M).
+
+**One warning about that profile.** gprof attributed those copies to
+`ProblemIJSP::clone`, and even showed it calling the random number generator.
+It cannot: `ScheduleIJSP`'s copy constructor copies the problem *pointer*, as
+the source plainly shows. Both are one-line `clone()` methods defined in
+headers and the symbol resolution picked the wrong one. The call counts are
+usable, the names are not, and the source has to be read before any of it is
+believed.
+
+### Dead end 4: link-time optimisation
+
+The Makefile has no `-flto`, and the hot path is full of one-line accessors
+declared in a header and defined in a `.cpp` -- `Individual::getFitness` is
+called 171 million times in a 30 s profile -- which no amount of `-O3` can
+inline, because the definition is in another translation unit. An obvious win.
+
+Measured against the step-3 build on `ta01`-`ta10`, 10 runs of 60 s: 4.122 gen/s
+against 3.767, **+9.4 %**, faster on all ten instances. It went into the
+Makefile.
+
+Then the same build was measured again, in its own tree, and reported 3.812
+gen/s. Same source, same flags. **The two binaries had the same md5.**
+
+So one identical binary measured 4.122 and 3.812 gen/s in two batches, a 9 %
+swing, with 100 runs behind each number. That is not run-to-run variance in the
+algorithm -- the seeds are the same and the search is deterministic -- it is the
+state of the machine between one batch and the next. **Every comparison in this
+directory made by running configuration A and then configuration B is confounded
+with when each one ran, and cannot resolve anything below about 10 %.**
+
+Re-run properly, with both builds running *at the same time* on the same
+instances, five processes each so the ten fit in fourteen cores:
+
+| | mean gen/s | per-instance wins |
+|---|---|---|
+| no LTO | **3.922** | 7 of 10 |
+| LTO | 3.858 | 3 of 10 |
+
+**0.984x. Link-time optimisation buys nothing here**, and the `+9.4 %` was an
+artefact of the design. The flag is reverted; the mechanism is real and the
+effect is not, which makes it the fourth entry on that list after the tenure
+bound, the longer local search and back-jump tracking.
+
+`scripts/paired_compare.sh` runs two builds side by side and should be used for
+every comparison of builds from now on. It does not help with comparisons of
+*configurations*, which need separate processes anyway, but those are compared
+by solution quality rather than by speed.
+
+### The headline figure, re-measured
+
+The 1.80x reported earlier came from the same block design, so it was re-run
+paired, both builds at once on the same instances:
+
+| | mean gen/s | generations per 60 s run |
+|---|---|---|
+| `experiment/classic-jsp` | 2.071 | 124.3 |
+| crisp | **3.837** | **230.2** |
+
+**1.85x**, and the crisp build is ahead on all ten instances. The block-design
+figure of 1.80x was not wrong in substance -- the effect is far larger than the
+9 % band that design cannot see -- but the number to quote is 1.85x, and it is
+worth saying why the earlier one should not be quoted to three decimals.
+
+Quality reproduces too: under the paired design the original build again stops
+at 1243 on `ta10` while the crisp build reaches the optimum of 1241, so the
+five-optima / six-optima difference is not an artefact of one batch either.
+
+### What is still on the table, and what it would cost
+
+Measured sizes, not guesses:
+
+* **Whole-schedule copying, about 20 %.** `evaluateNeighbour` copies the entire
+  schedule to try one move. Applying the move in place and undoing it would
+  remove most of 6.3 million copies per 30 s. This is the biggest remaining
+  item and also the most dangerous change in the file: it rewrites the code
+  that decides which neighbours are accepted, and the trace check would have to
+  be extended to every neighbourhood before it could be believed.
+* **Selection, 13 %,** and the least improved by the refactor. The 250 clones
+  per generation are mostly overwritten by crossover immediately afterwards.
+  Reusing a buffer population instead of allocating a new one is a contained
+  change with a clear mechanism -- which, on this directory's record, is exactly
+  the kind of thing that then measures at zero. Worth trying, worth measuring
+  paired.
+* **`FitnessCrisp::convertType`,** a virtual `getType()` plus a `dynamic_cast`
+  on every fitness comparison, 113 million calls in a 30 s profile, to compare
+  two integers. The type check already guarantees the type, so the cast can be
+  static. Small, safe, and cheap to try.
+* **Profile-guided optimisation** is the other build-flag idea. After the LTO
+  result it should be assumed worthless until measured paired.
+
+None of these is needed for the refactor to stand. They are what a second pass
+would look at, in that order.
