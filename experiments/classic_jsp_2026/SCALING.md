@@ -7,6 +7,23 @@ other on `ta01`-`ta10` and nothing could be concluded; the 30x20 comparison
 reached p = 0.084 and still could not close. More cores buy exactly the thing
 that was missing.
 
+> **Two things have changed since this file was written.**
+>
+> `experiment/classic-jsp-crisp` replaced the interval arithmetic with a crisp
+> integer time and runs **2.00x** as many generations in the same wall clock.
+> That does *not* make the experiments below cheaper: they stop on wall-clock
+> time, so they cost the same CPU-hours and spend them on twice the search. It
+> is realisable as a saving only by taking step 2's advice and halving the
+> budget, which now buys what the full budget used to.
+>
+> More important for the plans below: **two builds compared one after the other
+> cannot be told apart on this machine below about 10 %.** The same binary,
+> identical by md5, measured 4.122 and 3.812 gen/s in two batches. Comparisons
+> of *builds* must use `scripts/paired_compare.sh`. Comparisons of
+> *configurations* are safer -- they are judged on solution quality, which does
+> not drift with the machine -- but their run counts still have to be decided in
+> advance.
+
 ## Nothing needs changing to scale
 
 `run_jsp.sh` sets `MAX_PARALLEL` from `nproc`, and each solver process is
