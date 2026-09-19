@@ -246,10 +246,21 @@ bool FitnessCrisp::isWorseOrEqualTo(const Fitness * f) const {
 }
 
 
-//=====  Conversion to double  ================================================
+//=====  Checked conversion to the crisp fitness  =============================
+/**
+* The cast is static because the guard above it already decides the question a
+* dynamic_cast would decide again: FitnessCrisp is the only class in the Fitness
+* hierarchy that returns Type::CRISP, and nothing derives from it. (TimeWindow
+* also has a CRISP enumerator, but that is TimeWindow::Type, an unrelated enum.)
+*
+* It is worth the care because this sits under every fitness comparison in the
+* solver, which after the crisp refactor is a comparison of two integers.
+* dynamic_cast is a call into the runtime that walks the RTTI graph and never
+* inlines, so it cost more than the comparison it was guarding.
+*/
 const FitnessCrisp * FitnessCrisp::convertType(const Fitness *f) const {
 	if (f->getType() == Fitness::Type::CRISP)
-		return dynamic_cast<const FitnessCrisp *>(f);
+		return static_cast<const FitnessCrisp *>(f);
 	throw FuzzyFWException("Fitness",
 		"Comparison of incompatible fitness values");
 }

@@ -708,3 +708,56 @@ Measured sizes, not guesses:
 
 None of these is needed for the refactor to stand. They are what a second pass
 would look at, in that order.
+
+
+## 2026-09-19 — the dynamic_cast under every comparison
+
+`FitnessCrisp::convertType` guarded its downcast with `f->getType() ==
+Type::CRISP` and then did the downcast with `dynamic_cast`, which asks the same
+question a second time by walking the RTTI graph at runtime. It sits under every
+fitness comparison in the solver -- `isBetterThan`, `isWorseThan` and the three
+others all start with it -- and after the crisp refactor the thing it guards is
+a comparison of two integers.
+
+The guard is sufficient on its own: `FitnessCrisp` is the only class in the
+`Fitness` hierarchy that returns `Type::CRISP`, and nothing derives from it.
+(`TimeWindow` also has a `CRISP` enumerator; that is `TimeWindow::Type`, an
+unrelated enum.) So the cast becomes `static_cast`.
+
+### Measured, and then measured again
+
+Following the rule from the LTO retraction above, this was measured with
+`scripts/paired_compare.sh` and then replicated with the two builds' roles
+swapped, in case the launch order mattered:
+
+| | dynamic_cast | static_cast | ratio |
+|---|---|---|---|
+| first run | 3.603 gen/s | 3.880 gen/s | **1.077x** |
+| replication, roles swapped | 3.827 gen/s | 4.190 gen/s | **1.095x** |
+
+`static_cast` is ahead on all ten instances in both runs -- twenty paired
+comparisons, twenty wins.
+
+The two runs are also a clean demonstration of why the paired design is
+necessary. The absolute rate of the *same* binary moved by 6 % between the two
+twenty-minute windows (3.603 to 3.827 for the old build, 3.880 to 4.190 for the
+new one), which is the same drift that produced the phantom LTO result. The
+ratio moved by 1.7 %. A block design measures the drift; a paired design
+measures the change.
+
+Call it **+8 %**. The trace check holds: same seed, same trajectory, generation
+by generation.
+
+### The branch, end to end
+
+Paired against the untouched `experiment/classic-jsp`, `ta01`-`ta10`, 10 runs of
+60 s:
+
+| | mean gen/s | generations per 60 s run |
+|---|---|---|
+| `experiment/classic-jsp` | 1.951 | 117.1 |
+| crisp | **3.900** | **234.0** |
+
+**1.999x.** The crisp build does exactly twice the search in the same wall clock,
+and reaches the optimum of `ta10` (1241) where the original build stops at 1243 --
+six known optima against five, reproduced now in three separate paired runs.
