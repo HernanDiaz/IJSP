@@ -128,6 +128,21 @@ void ReplacementElitist::apply(Population *oldPopulation,
 void ReplacementParents::apply(Population *oldPopulation,
 	Population *newPopulation, const SharedVars *svars) const {
 
+	// The pairwise loops below take offspring two at a time, as the crossover
+	// produced them. With an odd population the last offspring has no
+	// partner, and reading one past the end is a crash (found by irace on
+	// its first random configuration). It is compared with its own parent
+	// alone: the better of the two survives. Even populations are unaffected.
+	unsigned int n = newPopulation->size();
+	if (n % 2 == 1) {
+		Individual *child = newPopulation->getIndividual(n - 1);
+		Individual *parent = oldPopulation->getIndividual(child->id);
+		if (parent->getFitness()->isBetterThan(child->getFitness())) {
+			Individual *replaced = newPopulation->replaceIndividual(n - 1, parent);
+			oldPopulation->replaceIndividual(child->id, replaced);
+		}
+	}
+
 	if (this->allowRepeated)
 		this->applyRepeat(oldPopulation, newPopulation);
 	else
@@ -145,7 +160,7 @@ void ReplacementParents::applyRepeat(Population *oldPopulation,
 	Individual *replaced;
 	unsigned int best, best2, pos2, pos3;
 
-	for (unsigned int i = 0; i < newPopulation->size(); i += 2) {
+	for (unsigned int i = 0; i + 1 < newPopulation->size(); i += 2) {
 		family[0] = newPopulation->getIndividual(i);
 		family[1] = newPopulation->getIndividual(i + 1);
 		family[2] = oldPopulation->getIndividual(family[0]->id);
@@ -199,7 +214,7 @@ void ReplacementParents::applyNoRepeat(Population *oldPopulation,
 	unsigned int pos2, pos3;
 	char isRepeated;
 
-	for (unsigned int i = 0; i < newPopulation->size(); i += 2) {
+	for (unsigned int i = 0; i + 1 < newPopulation->size(); i += 2) {
 		family[0] = newPopulation->getIndividual(i);
 		family[1] = newPopulation->getIndividual(i + 1);
 		family[2] = oldPopulation->getIndividual(family[0]->id);

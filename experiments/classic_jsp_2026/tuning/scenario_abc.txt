@@ -4,7 +4,8 @@ targetRunner       = "./target-runner.sh"
 parameterFile      = "./parameters_abc.txt"
 trainInstancesFile = "./instances.txt"
 execDir            = "./results_abc"
-logFile            = "./results_abc/irace_abc.Rdata"
+# logFile is resolved relative to execDir, not to this file
+logFile            = "./irace_abc.Rdata"
 
 # 1000 runs of 300 s: about 83 CPU-hours, about 6 hours on 14 cores.
 maxExperiments     = 1000

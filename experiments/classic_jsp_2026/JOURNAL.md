@@ -1255,3 +1255,23 @@ each on 14 cores.
 
 Neither tuning has been started. The parameter spaces are recorded here for
 review first.
+
+
+### What exercising the runner turned up before any tuning ran
+
+irace's `--check` runs the target runner on one random configuration per
+scenario. The memetic one crashed the solver: `ReplacementParents` walks the
+offspring two at a time and, with an odd population (57), reads one past the
+end. Every setup in this repository uses a population of 250, so it had never
+happened. Fixed: the loop stops at the last pair and the unpaired offspring is
+compared with its own parent alone. Even populations are untouched -- the
+memetic's trace at population 250 is identical to the original build's
+before and after -- and the odd sizes now run.
+
+Two smaller things: `logFile` in an irace scenario is resolved relative to
+`execDir`, not to the scenario file; and the shell's "Segmentation fault"
+notice lands on the runner's output, which irace reads as the answer, unless
+the solver is run in a subshell whose output goes to the log. Both checks
+pass now. R 4.1.2 and irace 4.5 are installed in the WSL distro; `fs`, an
+irace dependency, would not build from source without `libuv` and comes from
+`r-cran-fs` instead.

@@ -42,7 +42,12 @@ done
 sed -i '/IRACE_/d' "$SETUP"
 
 # The solver stops on its own time limit; the guard is for a hung process.
-timeout --signal=KILL "${GUARD:-1800}" "$EXE" "$SETUP" "$INSTANCE" "$OUT" > "$WORK/run.log" 2>&1
+# Run it in a subshell so that a crash ("Segmentation fault", printed by the
+# shell that waited on it) goes to run.log and not to irace, which reads
+# everything this script prints as its answer.
+( timeout --signal=KILL "${GUARD:-1800}" "$EXE" "$SETUP" "$INSTANCE" "$OUT" ) > "$WORK/run.log" 2>&1
+STATUS=$?
+[ "$STATUS" -ne 0 ] && echo "solver exit status $STATUS" >> "$WORK/run.log"
 
 CERT=$(ls "$OUT"/*_Certificate.csv 2>/dev/null | head -1)
 if [ -z "$CERT" ] || [ "$(wc -l < "$CERT")" -lt 2 ]; then
