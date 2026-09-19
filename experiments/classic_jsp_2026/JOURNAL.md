@@ -1123,3 +1123,70 @@ Verified as everything else: same seed on `ta01`, trace identical to the
 untouched build under the ABC and under the memetic; every neighbourhood
 identical on the cross-check, the crisp side now asking for `jsp.makespan.*`
 and the original for `ijsp.makespan.*`; certificates verify.
+
+
+## 2026-09-19 — measuring the collapse, and pre-registering the next experiment
+
+### The diversity statistic reported zero for everything
+
+`StatisticsHamming` compared every individual with itself: the inner loop
+fetched `getIndividual(i)` where it meant `getIndividual(j)`. Any population,
+however spread, measured as fully collapsed. The Kendall variant next to it was
+written correctly but costs O(n^2) per pair, which at 250 individuals of 225
+genes is a billion operations per generation and unusable. Fixed the Hamming
+one; the `neri` statistic (`1 - (avg - best) / (worst - best)` on the fitness,
+1 when the population sits on its best individual) was already fine.
+
+### What the collapse looks like, measured
+
+One run per algorithm, seed 1, with both statistics on
+(`scripts/collapse.py` prints these from the stats CSV):
+
+`ta01`, 60 s:
+
+| gen | ABC best | ABC avg | Hamming | Neri | | MA best | MA avg | Hamming | Neri |
+|---|---|---|---|---|---|---|---|---|---|
+| 10 | 1258 | 1274 | 0.75 | 0.76 | | 1285 | 1331 | 0.91 | 0.45 |
+| 20 | 1258 | 1260 | 0.65 | 0.94 | | 1271 | 1304 | 0.90 | 0.64 |
+| 50 | 1254 | 1273 | 0.71 | 0.97 | | 1248 | 1271 | 0.88 | 0.63 |
+| 100 | 1254 | 1271 | 0.54 | 0.97 | | 1243 | 1255 | 0.77 | 0.80 |
+| 300 | 1254 | 1303 | 0.70 | 0.93 | | 1243 | 1250 | 0.58 | 0.78 |
+| end | 1254 (323 gen) | | | | | 1243 (587 gen) | | | |
+
+`ta41`, 300 s:
+
+| gen | ABC best | Hamming | Neri | | MA best | Hamming | Neri |
+|---|---|---|---|---|---|---|---|
+| 30 | 2177 | 0.91 | 0.97 | | 2235 | 0.95 | 0.43 |
+| 75 | 2168 | 0.69 | 0.99 | | 2190 | 0.94 | 0.59 |
+| 150 | 2168 | 0.81 | 0.94 | | 2149 | 0.92 | 0.67 |
+| 300 | 2168 | 0.81 | 0.95 | | 2126 | 0.86 | 0.85 |
+| 400 | 2168 | 0.81 | 0.95 | | **2102** | 0.71 | 0.87 |
+| end | 2168 (569 gen) | | | | 2102 (1087 gen) | 0.61 | 0.95 |
+
+Three things are now measured rather than inferred.
+
+The ABC's population sits on its best individual by generation 20-30 (Neri
+above 0.9) and the best makespan never moves again: 1254 from generation 50 on
+`ta01`, 2168 from generation 75 on `ta41` -- with four minutes of budget left.
+The Hamming distance then *rises* again, to 0.7-0.8, because the ABC's scout
+phase replaces exhausted food sources with random individuals; that keeps the
+genotypes apart without ever producing a better one. Diversity by injection is
+not the same thing as a search that is still going.
+
+The memetic collapses later and more gradually (Neri 0.6-0.8 for most of the
+run), completes about twice the generations, and on `ta41` keeps improving
+until generation 400, two and a half minutes in. It then stops too: 2102 at
+generation 400, 2102 at generation 1087.
+
+So in both algorithms the run is over well before the budget is, and what
+differs is how long the population stays alive before that. This is one run
+each and decides nothing; it is what the experiment below is for.
+
+### Pre-registered: memetic against ABC on the 22 open instances
+
+`PREREG_ma_vs_abc.md` fixes instances, runs, budget, arms, execution, endpoints
+and decision rule, and is committed before any run starts. The two setups
+differ in one line. `scripts/paired_setups.sh` runs both arms at the same time
+on the same instances, because on this machine a wall-clock budget is only
+equal if the two runs share the clock.

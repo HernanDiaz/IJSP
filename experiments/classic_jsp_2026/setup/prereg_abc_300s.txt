@@ -1,0 +1,81 @@
+# Pre-registered comparison, arm A: ABCPSO + plain tabu search on N2.
+# See ../PREREG_ma_vs_abc.md. open_baseline_300s.txt with runs = 10 and the
+# two population-diversity statistics (Hamming on the genotype, Neri on the
+# fitness spread) added, so the collapse is measured rather than inferred.
+
+
+algorithm = ABCPSO
+seed = 1
+runs = 10
+
+# PROBLEM
+problem.hasbounds = no
+
+# OBJECTIVE
+objective = jsp.makespan
+evaluation.lamarckism = yes
+
+# POST EXECUTION
+# The interval robustness analysers are gone with the intervals; a run emits a
+# verifiable schedule instead, which is what verify_certificate.py checks.
+postexecution.analyzer = jsp.certificate
+
+# CODIFICATION
+codification = jsp.job-order
+decodification = jsp.job-order
+decode.sgs = insertion
+
+# CREATION
+creation = jsp.random
+creation.sgs = insertion
+
+# CROSSOVER
+crossover = jsp.jox
+crossover.probability = 0.9
+
+# MUTATION
+mutation = insertion
+mutation.probability = 0.10
+
+# SELECTION / REPLACEMENT
+selection = shuffle
+replacement = parents
+replacement.allow-repeated = no
+
+# STOPPING CRITERION
+noimprovement = 100000
+timelimit = 300
+
+# POPULATION
+population.size = 250
+maxnumtrials = 24
+elite.selection = 6
+elite.size = 50
+
+# STATISTICS
+statistics.1.metric = best
+statistics.1.value = jsp.makespan
+statistics.2.metric = average
+statistics.2.value = jsp.makespan
+statistics.3.metric = average
+statistics.3.value = hamming
+statistics.4.metric = average
+statistics.4.value = neri
+
+# LOCAL SEARCH
+localsearch = tabu-search
+localsearch.estimation-guide = no
+localsearch.filter = yes
+localsearch.max-time = 2
+localsearch.neighbourhood = jsp.makespan.n2
+neighbourhood.estimator = heads&tails
+localsearch.frequency = period
+localsearch.period = 1
+localsearch.target = 1.0
+localsearch.lamarckism = yes
+localsearch.bad-iterations = 20
+localsearch.tabu-size.min = 3
+
+# 30x20 open instances (ta41-ta50): the hardest group in the benchmark.
+# 300 s is the budget at which the 15x15 runs had long since converged; on 600
+# operations it buys about 500 generations.
