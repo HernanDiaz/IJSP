@@ -119,6 +119,17 @@ typedef std::pair<FuzzyFW::Solution *, FuzzyFW::Fitness *> FullSolution;
 		virtual void setEvaluation(Solution *sol, Fitness *fitness);
 
 		/*
+		* Record an evaluation whose solution was never materialised: the
+		* neighbourhood applied the move in place, read the fitness off it and
+		* undid it. The neighbour then carries a fitness and no solution, so
+		* cloning it -- which the tabu list does for every move it records --
+		* copies an int instead of a whole schedule. getEvaluation() returns
+		* NULL for such a neighbour; a neighbourhood that evaluates this way
+		* must re-apply the move in acceptNeighbour instead of cloning it.
+		*/
+		virtual void setEvaluatedFitness(Fitness *fitness);
+
+		/*
 		* Gets the fitness value of the neighbour
 		*/
 		virtual Fitness * getEvaluatedFitness() {

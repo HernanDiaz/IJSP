@@ -927,3 +927,73 @@ about 10 %.** Every figure above comes from `scripts/paired_compare.sh`, and the
 one result that was adopted was replicated with the two builds' roles swapped.
 The first version of this pass reported `-flto` as a 9.4 % win. It was worth
 nothing.
+
+
+## 2026-09-19 — evaluating a neighbour without copying the schedule: +10 %
+
+The last item on the list, and the one held back for a morning with someone in
+the room. Done now, with the trace check as the guard.
+
+### What the copy was for
+
+`evaluateNeighbour` in N2 deep-copied the whole schedule, reversed the arc on the
+copy, propagated the heads, read the makespan off it, and handed the copy to
+`Neighbour::setEvaluation`, which owns it. `acceptNeighbour` then *cloned that
+copy again* to make it the current schedule. And `LS_TabuBackJump` clones the
+chosen `Neighbour` twice more -- once for `lastNeighbour`, once into the tabu
+list -- and `Neighbour`'s copy constructor clones the solution it carries. So
+one accepted move cost four schedule copies, and every evaluated-but-rejected
+neighbour cost one, whose only reader was a tabu list that needed the arc.
+
+That was the 6.3 million copies per 30 s in the profile: 2.1 M from evaluate,
+1.1 M from accept, and most of the 3.1 M attributed to `ScheduleIJSP::clone`
+from the two neighbour clones.
+
+### What replaces it
+
+The move is applied to the live schedule and undone. `applyArc` reverses the arc
+and runs the same head propagation the copy used to get, logging every write --
+the six link fields, the machine's last task if it changes, and each head before
+it is overwritten; `revertArc` plays the log back in reverse, so a task whose
+head rose in several steps ends on the value it started with. `evaluateNeighbour`
+is now apply, read the makespan, revert, and store *only the fitness* in the
+neighbour through a new `Neighbour::setEvaluatedFitness`. `acceptNeighbour`
+applies the move again for real. Nothing is copied on the hot path at all, and
+the neighbours the tabu list clones now carry an int instead of a schedule.
+
+The propagation is a fixpoint computation -- heads are longest paths from the
+source, which are unique -- so re-running it on accept lands on the heads the
+copy would have held. That is the argument; the trace check is the evidence.
+
+### Verification
+
+* Same seed on `ta01`, full tuned configuration: the crisp build agrees with the
+  untouched `experiment/classic-jsp` build generation by generation, best and
+  population average, over the whole common prefix.
+* Every neighbourhood re-run on both builds at a population of 20 (`Neighbour`
+  is a base class they all share): N1, N2, N3, N8, N2Plus, N2Minus and N2Inter
+  identical over about 200 generations each. NH still completes no generation on
+  either build.
+* All certificates verified; the same six optima.
+
+Only N2 was converted. N1, N3, N8 and NH keep the copying protocol; each
+neighbourhood's evaluate and accept are a matched pair and nothing outside them
+reads the stored solution, so the two protocols coexist.
+
+### Measured
+
+Paired, then replicated with the roles swapped:
+
+| | copy | in place | ratio |
+|---|---|---|---|
+| first run | 4.042 gen/s | 4.420 gen/s | **1.093x** |
+| replication, roles swapped | 3.957 gen/s | 4.365 gen/s | **1.103x** |
+
+In place is ahead on all ten instances in both runs: twenty paired comparisons,
+twenty wins. **+10 %**, and after the two nulls that nibbled at the edges of
+this copy, the confirmation that the memcpy itself was the cost.
+
+Where the branch stands against the original, by composition of paired ratios:
+2.00x from the crisp type and the static cast, times 1.10 from this, about
+**2.2x**. A direct paired measurement against the original is the number to
+quote and is the next thing to run.

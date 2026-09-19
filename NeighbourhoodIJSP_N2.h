@@ -45,6 +45,29 @@ public:
 
 	virtual void acceptNeighbour(const unsigned int idx,
 		const FuzzyFW::SharedVars *svars);
+
+private:
+	/**
+	* Everything applyArc() writes to the schedule, so that revertArc() can
+	* put it back exactly. Evaluating a neighbour used to mean deep-copying
+	* the whole schedule, reversing the arc on the copy, propagating the heads
+	* and handing the copy to the neighbour, which the tabu list then cloned
+	* again for every move it recorded; that copying was about a fifth of the
+	* run. The move is now applied to the live schedule and undone.
+	*
+	* The head log can hold the same task more than once, because the
+	* propagation may raise a head in several steps. Restoring in reverse
+	* order therefore ends on the value the task had before the move.
+	*/
+	struct ArcUndo {
+		int x, y, mpx, msy, mac;
+		int old_mpx_ms, old_msy_mp, old_last;
+		int old_y_mp, old_y_ms, old_x_mp, old_x_ms;
+		std::vector<std::pair<int, FuzzyFW::Crisp>> heads;
+	} undo;
+
+	bool applyArc(const NeighbourIJSP_Arc *arc, const bool improvement);
+	void revertArc();
 };
 
 } // namespace IJSP

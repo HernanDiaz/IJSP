@@ -64,4 +64,18 @@ void Neighbour::setEvaluation(Solution *sol, Fitness *fitness) {
 	else
 		this->estimated = false;
 }
+
+
+
+//-----  Record a fitness without a solution  ---------------------------------
+void Neighbour::setEvaluatedFitness(Fitness *fitness) {
+	if (this->solution.first != NULL) {
+		delete this->solution.first;
+		this->solution.first = NULL;
+	}
+	if (this->solution.second != NULL)
+		delete this->solution.second;
+	this->solution.second = fitness;
+	this->evaluated = true;
+}
 }

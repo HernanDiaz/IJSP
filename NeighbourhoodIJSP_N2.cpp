@@ -89,18 +89,134 @@ unsigned int NB_ParallelN2_MakespanIJSP::findNewNeighbours(
 }
 
 
+//-----  Reverse an arc on the live schedule  ---------------------------------
+// Reverses the disjunctive arc (x, y) on this->schedule and propagates the new
+// heads forward. Every write is logged in `undo`, so revertArc() restores the
+// schedule exactly. Returns false when the propagation trips the cycle guard
+// or -- with `improvement` -- when a partial completion time already exceeds
+// the incumbent; either way the caller has to revert.
+//
+// This is the code that used to run on a deep copy of the schedule. It is the
+// same algorithm on the same data, so the heads it leaves behind are the ones
+// the copy would have held.
+bool NB_ParallelN2_MakespanIJSP::applyArc(const NeighbourIJSP_Arc *arc,
+	const bool improvement) {
+
+	ScheduleIJSP *s = this->schedule;
+	const int x = arc->x, y = arc->y;
+	int job, z, mpz, jpz, msz, jsz;
+	FuzzyFW::Crisp newHead;
+	std::queue<int> taskQueue;
+	FuzzyFW::FitnessCrisp lowerBound(*this->currentFitness);
+
+	this->undo.x = x;
+	this->undo.y = y;
+	this->undo.mac = s->taskInfo[x].task->machine;
+	this->undo.msy = s->taskInfo[y].ms;
+	this->undo.mpx = s->taskInfo[x].mp;
+	this->undo.old_y_mp = s->taskInfo[y].mp;
+	this->undo.old_y_ms = s->taskInfo[y].ms;
+	this->undo.old_x_mp = s->taskInfo[x].mp;
+	this->undo.old_x_ms = s->taskInfo[x].ms;
+	this->undo.heads.clear();
+
+	const int mpx = this->undo.mpx, msy = this->undo.msy, mac = this->undo.mac;
+	if (mpx != -1) {
+		this->undo.old_mpx_ms = s->taskInfo[mpx].ms;
+		s->taskInfo[mpx].ms = y;
+	}
+	s->taskInfo[y].mp = mpx;
+	s->taskInfo[y].ms = x;
+	s->taskInfo[x].mp = y;
+	s->taskInfo[x].ms = msy;
+	if (msy != -1) {
+		this->undo.old_msy_mp = s->taskInfo[msy].mp;
+		s->taskInfo[msy].mp = x;
+	}
+	else {
+		this->undo.old_last = s->lastTaskMachine[mac];
+		s->lastTaskMachine[mac] = x;
+	}
+
+	// Update heads (SPFA; cycle -> infeasible swap)
+	int _nTasks = (int)s->getScheduledTasks();
+	int _bfsLimit = _nTasks * 20;
+	std::vector<bool> inQueue(_nTasks, false);
+	taskQueue.push(y); inQueue[y] = true;
+	taskQueue.push(x); inQueue[x] = true;
+	int _bfsCount = 0;
+
+	while (!taskQueue.empty()) {
+		_bfsCount++;
+		if (_bfsCount > _bfsLimit)
+			return false;
+		z = taskQueue.front();
+		taskQueue.pop();
+		inQueue[z] = false;
+		jpz = s->taskInfo[z].task->jp;
+		mpz = s->taskInfo[z].mp;
+		msz = s->taskInfo[z].ms;
+		job = s->taskInfo[z].task->job;
+		if (s->lastTaskJob[job] == z)
+			jsz = -1;
+		else jsz = s->taskInfo[z].task->js;
+
+		if (jpz != -1 && mpz != -1)
+			newHead = std::max(s->taskInfo[mpz].head + s->taskInfo[mpz].task->p, s->taskInfo[jpz].head + s->taskInfo[jpz].task->p);
+		else if (mpz != -1)
+			newHead = s->taskInfo[mpz].head + s->taskInfo[mpz].task->p;
+		else if (jpz != -1)
+			newHead = s->taskInfo[jpz].head + s->taskInfo[jpz].task->p;
+		else
+			newHead = FuzzyFW::Crisp(0);
+
+		if (!(s->taskInfo[z].head == newHead)) {
+			this->undo.heads.push_back(std::make_pair(z, s->taskInfo[z].head));
+			s->taskInfo[z].head = newHead;
+
+			if (improvement && jsz == -1) {
+				lowerBound.setValue(s->taskInfo[z].head
+					+ s->taskInfo[z].task->p);
+				if (lowerBound.isWorseThan(currentFitness))
+					return false;
+			}
+			if (msz != -1 && !inQueue[msz]) { taskQueue.push(msz); inQueue[msz] = true; }
+			if (jsz != -1 && !inQueue[jsz]) { taskQueue.push(jsz); inQueue[jsz] = true; }
+		}
+	}
+	return true;
+}
+
+
+//-----  Undo the last applyArc  ----------------------------------------------
+void NB_ParallelN2_MakespanIJSP::revertArc() {
+	ScheduleIJSP *s = this->schedule;
+
+	// Heads in reverse, so a task logged twice ends on its original value.
+	for (size_t i = this->undo.heads.size(); i-- > 0; )
+		s->taskInfo[this->undo.heads[i].first].head = this->undo.heads[i].second;
+	this->undo.heads.clear();
+
+	if (this->undo.mpx != -1)
+		s->taskInfo[this->undo.mpx].ms = this->undo.old_mpx_ms;
+	s->taskInfo[this->undo.y].mp = this->undo.old_y_mp;
+	s->taskInfo[this->undo.y].ms = this->undo.old_y_ms;
+	s->taskInfo[this->undo.x].mp = this->undo.old_x_mp;
+	s->taskInfo[this->undo.x].ms = this->undo.old_x_ms;
+	if (this->undo.msy != -1)
+		s->taskInfo[this->undo.msy].mp = this->undo.old_msy_mp;
+	else
+		s->lastTaskMachine[this->undo.mac] = this->undo.old_last;
+}
+
+
 //-----  Fully evaluate the neighbour  ----------------------------------------
+// Applies the move to the live schedule, reads the makespan off it and undoes
+// it. The neighbour keeps the fitness and no solution; acceptNeighbour applies
+// the move again for real.
 FuzzyFW::Fitness *NB_ParallelN2_MakespanIJSP::evaluateNeighbour(
 	const unsigned int idx, const FuzzyFW::SharedVars *svars,
 	const bool improvement) {
-
-	FuzzyFW::Crisp currentMakespan, newMakespan;
-	ScheduleIJSP *newSolution;
-	int job, mac;
-	int jsx, jsy, jpx, jpy, mpx, msy;
-	int z, mpz, jpz, msz, jsz;
-	FuzzyFW::Crisp newHead, lower;
-	std::queue<int> taskQueue;
 
 	if (idx < 0 || idx > this->numNeighbours || this->neighbours[idx] == nullptr) {
 		std::string errorMsg = "Trying to access a non-existing neighbour";
@@ -111,101 +227,19 @@ FuzzyFW::Fitness *NB_ParallelN2_MakespanIJSP::evaluateNeighbour(
 	if (arc->x < 0 || arc->y < 0)
 		return NULL;
 
-	currentMakespan = this->currentFitness->getValue();
-	newSolution = new ScheduleIJSP(*this->schedule);
-	newMakespan = FuzzyFW::Crisp(0);
-	// Pruning bound, on the stack: a FitnessCrisp is an int and a flag, so
-	// cloning it onto the heap cost an allocation, a free and a virtual
-	// call per neighbour evaluated.
-	FuzzyFW::FitnessCrisp lowerBound(*this->currentFitness);
-
-	mac = newSolution->taskInfo[arc->x].task->machine;
-	msy = newSolution->taskInfo[arc->y].ms;
-	mpx = newSolution->taskInfo[arc->x].mp;
-	job = newSolution->taskInfo[arc->x].task->job;
-	jpx = newSolution->taskInfo[arc->x].task->jp;
-	if (newSolution->lastTaskJob[job] == arc->x)
-		jsx = -1;
-	else
-		jsx = newSolution->taskInfo[arc->x].task->js;
-	job = newSolution->taskInfo[arc->y].task->job;
-	jpy = newSolution->taskInfo[arc->y].task->jp;
-	if (newSolution->lastTaskJob[job] == arc->y)
-		jsy = -1;
-	else
-		jsy = newSolution->taskInfo[arc->y].task->js;
-
-	if (mpx != -1)
-		newSolution->taskInfo[mpx].ms = arc->y;
-	newSolution->taskInfo[arc->y].mp = mpx;
-	newSolution->taskInfo[arc->y].ms = arc->x;
-	newSolution->taskInfo[arc->x].mp = arc->y;
-	newSolution->taskInfo[arc->x].ms = msy;
-	if (msy != -1)
-		newSolution->taskInfo[msy].mp = arc->x;
-	else
-		newSolution->lastTaskMachine[mac] = arc->x;
-
-	// Update heads (SPFA; cycle → infeasible swap → return NULL)
-	{
-	int _nTasks = (int)newSolution->getScheduledTasks();
-	int _bfsLimit = _nTasks * 20;
-	std::vector<bool> inQueue(_nTasks, false);
-	taskQueue.push(arc->y); inQueue[arc->y] = true;
-	taskQueue.push(arc->x); inQueue[arc->x] = true;
-	int _bfsCount = 0;
-
-	while (!taskQueue.empty()) {
-		_bfsCount++;
-		if (_bfsCount > _bfsLimit) {
-			delete newSolution;
-			return NULL;
-		}
-		z = taskQueue.front();
-		taskQueue.pop();
-		inQueue[z] = false;
-		jpz = newSolution->taskInfo[z].task->jp;
-		mpz = newSolution->taskInfo[z].mp;
-		msz = newSolution->taskInfo[z].ms;
-		job = newSolution->taskInfo[z].task->job;
-		if (newSolution->lastTaskJob[job] == z)
-			jsz = -1;
-		else jsz = newSolution->taskInfo[z].task->js;
-
-		if (jpz != -1 && mpz != -1)
-			newHead = std::max(newSolution->taskInfo[mpz].head + newSolution->taskInfo[mpz].task->p, newSolution->taskInfo[jpz].head + newSolution->taskInfo[jpz].task->p);
-		else if (mpz != -1)
-			newHead = newSolution->taskInfo[mpz].head + newSolution->taskInfo[mpz].task->p;
-		else if (jpz != -1)
-			newHead = newSolution->taskInfo[jpz].head + newSolution->taskInfo[jpz].task->p;
-		else
-			newHead = FuzzyFW::Crisp(0);
-
-		if (!(newSolution->taskInfo[z].head == newHead)) {
-			newSolution->taskInfo[z].head = newHead;
-
-			if (improvement && jsz == -1) {
-				lowerBound.setValue(newSolution->taskInfo[z].head
-					+ newSolution->taskInfo[z].task->p);
-				if (lowerBound.isWorseThan(currentFitness)) {
-					delete newSolution;
-					return NULL;
-				}
-			}
-			if (msz != -1 && !inQueue[msz]) { taskQueue.push(msz); inQueue[msz] = true; }
-			if (jsz != -1 && !inQueue[jsz]) { taskQueue.push(jsz); inQueue[jsz] = true; }
-		}
-	}
+	if (!this->applyArc(arc, improvement)) {
+		this->revertArc();
+		return NULL;
 	}
 
-	for (size_t i = 0; i < newSolution->lastTaskJob.size(); i++) {
-		newMakespan = std::max(newMakespan, newSolution->getCTJob(i));
-	}
+	FuzzyFW::Crisp newMakespan(0);
+	for (size_t i = 0; i < this->schedule->lastTaskJob.size(); i++)
+		newMakespan = std::max(newMakespan, this->schedule->getCTJob(i));
 
-	newSolution->setSorted(false);
-	this->neighbours[idx]->setEvaluation(newSolution,
+	this->revertArc();
+
+	this->neighbours[idx]->setEvaluatedFitness(
 		new FuzzyFW::FitnessCrisp(newMakespan, false));
-
 	return this->neighbours[idx]->getEvaluatedFitness();
 }
 
@@ -224,16 +258,27 @@ void NB_ParallelN2_MakespanIJSP::acceptNeighbour(const unsigned int idx,
 
 	if (!this->neighbours[idx]->isEvaluated())
 		this->evaluateNeighbour(idx, svars, false);
-	if (this->schedule != nullptr)
-		delete this->schedule;
-	this->schedule = dynamic_cast<ScheduleIJSP *>
-		(this->neighbours[idx]->getEvaluation()->clone());
+	if (!this->neighbours[idx]->isEvaluated()) {
+		std::string errorMsg = "Accepting a neighbour whose move is infeasible";
+		throw IJSPException("Neighbourhood", errorMsg);
+	}
+
+	NeighbourIJSP_Arc *arc = this->neighbours[idx].get();
+
+	// The move was feasible when it was evaluated on this same schedule, so
+	// it is feasible now; the guard is only there to make a broken invariant
+	// loud rather than silent.
+	if (!this->applyArc(arc, false)) {
+		this->revertArc();
+		std::string errorMsg = "A move that evaluated as feasible failed on accept";
+		throw IJSPException("Neighbourhood", errorMsg);
+	}
+	this->schedule->setSorted(false);
+
 	if (this->currentFitness != nullptr)
 		delete this->currentFitness;
 	this->currentFitness = dynamic_cast<FuzzyFW::FitnessCrisp *>
 		(this->neighbours[idx]->getEvaluatedFitness()->clone());
-
-	NeighbourIJSP_Arc *arc = this->neighbours[idx].get();
 	std::vector<int> tailsUpdated;
 	tailsUpdated.resize(this->schedule->getScheduledTasks(), 0);
 
