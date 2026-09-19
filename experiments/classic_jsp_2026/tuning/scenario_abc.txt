@@ -2,13 +2,16 @@
 #   TEMPLATE=$PWD/template_abc.txt irace --scenario scenario_abc.txt
 targetRunner       = "./target-runner.sh"
 parameterFile      = "./parameters_abc.txt"
-trainInstancesFile = "./instances.txt"
+# The two size classes where the open instances have room: 20x20 (7 of 10
+# open, mean BKS-LB gap 2.9 %) and 30x20 (all 10 open, 2.7 %). The 20x15 and
+# 30x15 classes sit at 0.5-1.4 % and are not tuned for.
+trainInstancesFile = "./instances_hard.txt"
 execDir            = "./results_abc"
 # logFile is resolved relative to execDir, not to this file
 logFile            = "./irace_abc.Rdata"
 
-# 1000 runs of 300 s: about 83 CPU-hours, about 6 hours on 14 cores.
-maxExperiments     = 1000
+# 1500 runs of 300 s: about 125 CPU-hours, about 9 hours on 14 cores.
+maxExperiments     = 1500
 parallel           = 14
 testType           = "friedman"
 minNbSurvival      = 3

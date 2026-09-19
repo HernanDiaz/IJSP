@@ -1275,3 +1275,23 @@ the solver is run in a subshell whose output goes to the log. Both checks
 pass now. R 4.1.2 and irace 4.5 are installed in the WSL distro; `fs`, an
 irace dependency, would not build from source without `libuv` and comes from
 `r-cran-fs` instead.
+
+
+### Tuning decisions, recorded before the first irace run
+
+Taken with the PI on 2026-09-19:
+
+* **Budget: about nine hours per arm**, 1500 runs of 300 s each on 14 cores,
+  the run count the COR-2026 tuning used.
+* **Tune where the open instances have room, and nowhere else.** The README's
+  hardness table puts it at 20x20 (7 of 10 open, mean BKS-LB gap 2.9 %) and
+  30x20 (all 10 open, 2.7 %); 20x15 and 30x15 sit at 0.5-1.4 %. Each arm gets
+  one configuration tuned on the ten generated instances of those two classes,
+  `tuning/instances_hard.txt`. The 20x15 and 30x15 open instances will be run
+  with it too, but were not tuned for.
+* **The local search stays at every generation** in the memetic
+  (`localsearch.frequency = period`, `period = 1`), as in the ABC; the
+  frequency is not a tuned parameter.
+
+The ABC tuning runs first, the memetic after it, sequentially, so that each
+arm has the machine to itself the way the other did.
