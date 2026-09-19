@@ -134,7 +134,6 @@ int Population::whoIsBest(const SharedVars *svars, const unsigned int k) {
 //===== Get Average Fitness  ==================================================
 double Population::getAverageFitness() const {
 	double sum=0.0;
-	TFN tfnValue;
 	for(size_t i=0; i < this->individual.size(); i++) {
 		if(!this->individual[i]->isEvaluated())
 			return -1.0;

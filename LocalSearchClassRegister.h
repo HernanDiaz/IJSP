@@ -33,12 +33,8 @@
 // ADD HERE ALL THE HEADER FILES OF THE OPERATORS YOU HAVE CREATED
 //
 // ****************************************************************************
-#include "NeighbourhoodFJSP_Cmax.h"
 #include "NeighbourhoodIJSP_Cmax.h"
 #include "NeighbourhoodIJSP_N8.h"
-#include "NeighbourhoodFJSP_AI.h"
-#include "NeighbourhoodFJSP_ESD.h"
-#include "LocalSearchAmicoFJSP.h"
 
 
 
@@ -152,23 +148,8 @@ public:
 			&createLocalSearchInstance<LS_TabuBackJump>;
 		LocalSearchMap[toUpper("amico")] =
 			&createLocalSearchInstance<LS_Tabu_Amico>;
-		LocalSearchMap[toUpper("amicofjsp")] =
-			&createLocalSearchInstance<FJSP::LS_Tabu_Amico_FJSP>;
 
 
-		// -----  NEIGHBOURHOOD STRUCTURES  FJSP---------------------------------------
-		NeighbourhoodMap[toUpper("fjsp.makespan.n1")] =
-			&createNeighbourhoodInstance<FJSP::NB_ParallelN1_MakespanFJSP>;
-		NeighbourhoodMap[toUpper("fjsp.aiavg.n1")] =
-			&createNeighbourhoodInstance<FJSP::NB_ParallelN1_AIavgFJSP>;
-		NeighbourhoodMap[toUpper("fjsp.aimin.n1")] =
-			&createNeighbourhoodInstance<FJSP::NB_ParallelN1_AIminFJSP>;
-		NeighbourhoodMap[toUpper("fjsp.aimin.ICAE")] =
-			&createNeighbourhoodInstance<FJSP::NB_ParallelN1_AIminICAE>;
-		NeighbourhoodMap[toUpper("fjsp.esdavg.n1")] =
-			&createNeighbourhoodInstance<FJSP::NB_ParallelN1_ESDavgFJSP>;
-		NeighbourhoodMap[toUpper("fjsp.esdmin.n1")] =
-			&createNeighbourhoodInstance<FJSP::NB_ParallelN1_ESDminFJSP>;
 
 		// -----  NEIGHBOURHOOD STRUCTURES  IJSP---------------------------------------
 		NeighbourhoodMap[toUpper("ijsp.makespan.n1")] =

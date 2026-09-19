@@ -5,7 +5,6 @@
 */
 #pragma once
 
-#include "TFN.h"
 
 namespace FuzzyFW {
 
@@ -94,13 +93,6 @@ public:
 	//		METHODS
 	//=========================================================================
 public:
-	/**
-	* Degree of satisfaction of the time window given a TFN. In this case, is
-	* measured as the intersection between both values divided by the area
-	* of the completion time.
-	* Warning! Some Time Windows types may not have this option
-	*/
-	virtual double agreementIndex(const TFN c) const;
 
 	/**
 	* Degree of satisfaction of the time window given a crisp value. In this case,
@@ -110,12 +102,6 @@ public:
 	*/
 	virtual double agreementIndex(const double c) const;
 
-	/**
-	* Delay of a TFN with respect to the time window
-	* Warning! Some Time Window types may not have this option
-	* Takes a negative value in case of being out of the window
-	*/
-	virtual TFN delay(const TFN c) const;
 
 	/**
 	* Delay of a crisp value with respect to the time window
@@ -237,11 +223,6 @@ public:
 	//		METHODS
 	//=========================================================================
 public:
-	/**
-	* In this case, the agreement index is the poportion of the area of
-	* the TFN that is below the time window
-	*/
-	virtual double agreementIndex(const TFN c) const;
 
 	/**
 	* In this case the agreement index does not make sense, being 1.0 if
@@ -249,10 +230,6 @@ public:
 	*/
 	virtual double agreementIndex(const double c) const;
 
-	/**
-	* Absolute delay of a TFN with respect to the time window (difference)
-	*/
-	virtual TFN delay(const TFN c) const;
 
 	/**
 	* Absolute delay of a TFN with respect to the time window (difference)
@@ -360,11 +337,6 @@ public:
 	//		METHODS
 	//=========================================================================
 public:
-	/**
-	* In this case, the agreement index is the poportion of the area of
-	* the TFN that is below the time window
-	*/
-	virtual double agreementIndex(const TFN c) const;
 
 	/**
 	* In this case the agreement index does not make sense, being 1.0 if
@@ -372,10 +344,6 @@ public:
 	*/
 	virtual double agreementIndex(const double c) const;
 
-	/**
-	* Absolute delay of a TFN with respect to the time window (difference)
-	*/
-	virtual TFN delay(const TFN c) const;
 
 	/**
 	* Absolute delay of a TFN with respect to the time window (difference)
@@ -486,20 +454,12 @@ public:
 	//		METHODS
 	//=========================================================================
 public:
-	/**
-	* Degree of satisfaction of the time window given a TFN.
-	*/
-	virtual double agreementIndex(const TFN c) const;
 
 	/**
 	* Degree of satisfaction of the time window given a crisp value.
 	*/
 	virtual double agreementIndex(const double c) const;
 
-	/**
-	* delay functions do not apply to this kind of time window
-	*/
-	//virtual TFN delay(const TFN c);
 	//virtual double delay(const double c);
 
 

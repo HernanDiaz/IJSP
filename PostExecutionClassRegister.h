@@ -25,7 +25,6 @@
  * problem components
 =============================================================================*/
 
-#include "FJSPRobustnessAnalyzerMakespan.h"
 #include "JSPCertificateAnalyzer.h"
 
 
@@ -111,7 +110,6 @@ public:
 		// one that makes sense on crisp data is jsp.certificate below. Leaving
 		// the old names unregistered makes that a loud failure rather than a
 		// silent substitution.
-		SGSMap[toUpper("makespan")] = &createRobustnessInstance<FJSPRobustnessAnalyzerMakespan>;
 		SGSMap[toUpper("jsp.certificate")] = &createRobustnessInstance<JSPCertificateAnalyzer>;
 	}
 

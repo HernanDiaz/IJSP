@@ -16,13 +16,6 @@ namespace FuzzyFW {
 //=============================================================================
 //		METHODS
 //=============================================================================
-//=====  Agreement index (TFN)  ===============================================
-double TimeWindow::agreementIndex(const TFN c)  const {
-	std::string errorMsg;
-	errorMsg = "Agreement index cannot be computed for this type of time window";
-	throw FuzzyFWException("Time Window", errorMsg);
-	return -1.0;
-}
 
 
 //=====  Agreement index (crips value)  =======================================
@@ -31,15 +24,6 @@ double TimeWindow::agreementIndex(const double c)  const {
 	errorMsg = "Agreement index cannot be computed for this type of time window";
 	throw FuzzyFWException("Time Window", errorMsg);
 	return -1.0;
-}
-
-
-//=====  Delay (TFN)  =========================================================
-TFN TimeWindow::delay(const TFN c)  const {
-	std::string errorMsg;
-	errorMsg = "Tardiness cannot be computed for this type of timw window";
-	throw FuzzyFWException("Time Window", errorMsg);
-	return TFN(-1, -1, -1);
 }
 
 
@@ -120,38 +104,6 @@ TimeWindow * TimeWindowDeadline::clone() const {
 //=============================================================================
 //		METHODS
 //=============================================================================
-//=====  Agreement index (TFN)  ===============================================
-double TimeWindowDeadline::agreementIndex(const TFN c)  const {
-	if (!this->loadedData) {
-		std::string errorMsg = "Agreement index cannot be computed. ";
-		errorMsg += "Invalid time window";
-		throw FuzzyFWException("Time Window", errorMsg);
-	}
-
-	double c1 = c.a;
-	double c2 = c.b;
-	double c3 = c.c;
-	double dd = this->timeLimit;
-
-	// c3 <= d
-	if (compareDouble(c3, dd) < 1)
-		return 1.0;
-	// c1 >= d (and c2 >= d and c3 > d)
-	if (compareDouble(c1, dd) > -1)
-		return 0.0;
-	// c2 >= d (and c3 > d and c1 < d)
-	if (compareDouble(c2, dd) > -1)
-		return ((dd - c1)*(dd - c1)) / ((c2 - c1)*(c3 - c1));
-
-	// (c3 > d and c1 < d and c2 < d)
-	else {
-		return (c3*(dd - c2) + dd*(c3 - dd) - c1*(c3 - c2)) /
-			((c3 - c2) * (c3 - c1));
-	}
-
-	// Case not controlled
-	return -1.0;
-}
 
 
 //=====  Agreement index (crips value)  =======================================
@@ -166,20 +118,6 @@ double TimeWindowDeadline::agreementIndex(const double c)  const {
 	if (compareDouble(c, this->timeLimit) < 1)
 		return 1.0;
 	return 0.0;
-}
-
-
-//=====  Delay (TFN)  =========================================================
-TFN TimeWindowDeadline::delay(const TFN c)  const {
-	if (!this->loadedData) {
-		std::string errorMsg = "Agreement index cannot be computed. ";
-		errorMsg += "Invalid time window";
-		throw FuzzyFWException("Time Window", errorMsg);
-	}
-	double x = std::max(0.0, c.a - this->timeLimit);
-	double y = std::max(0.0, c.b - this->timeLimit);
-	double z = std::max(0.0, c.c - this->timeLimit);
-	return TFN(x, y, z);
 }
 
 
@@ -276,57 +214,6 @@ TimeWindow * TimeWindowCrisp::clone() const {
 //=============================================================================
 //		METHODS
 //=============================================================================
-//=====  Agreement index (TFN)  ===============================================
-double TimeWindowCrisp::agreementIndex(const TFN c)  const {
-	if (!this->loadedData) {
-		std::string errorMsg = "Agreement index cannot be computed. ";
-		errorMsg += "Invalid time window";
-		throw FuzzyFWException("Time Window", errorMsg);
-	}
-
-	double c1 = c.a;
-	double c2 = c.b;
-	double c3 = c.c;
-	double ag1, ag2;
-	double dd = this->earlyTime;
-
-	// c3 <= d
-	if (compareDouble(c3, dd) < 1)
-		ag1 = 1.0;
-	// c1 >= d (and c2 >= d and c3 > d)
-	else if (compareDouble(c1, dd) > -1)
-		ag1 = 0.0;
-	// c2 >= d (and c3 > d and c1 < d)
-	else if (compareDouble(c2, dd) > -1)
-		ag1 = ((dd - c1)*(dd - c1)) / ((c2 - c1)*(c3 - c1));
-
-	// (c3 > d and c1 < d and c2 < d)
-	else {
-		ag1 = (c3*(dd - c2) + dd*(c3 - dd) - c1*(c3 - c2)) /
-			((c3 - c2) * (c3 - c1));
-	}
-
-	
-	dd = this->lateTime;
-
-	// c3 <= d
-	if (compareDouble(c3, dd) < 1)
-		ag2 = 1.0;
-	// c1 >= d (and c2 >= d and c3 > d)
-	else if (compareDouble(c1, dd) > -1)
-		ag2 = 0.0;
-	// c2 >= d (and c3 > d and c1 < d)
-	else if (compareDouble(c2, dd) > -1)
-		ag2 = ((dd - c1)*(dd - c1)) / ((c2 - c1)*(c3 - c1));
-
-	// (c3 > d and c1 < d and c2 < d)
-	else {
-		ag2 = (c3*(dd - c2) + dd*(c3 - dd) - c1*(c3 - c2)) /
-			((c3 - c2) * (c3 - c1));
-	}
-
-	return ag2 - ag1;
-}
 
 
 
@@ -343,39 +230,6 @@ double TimeWindowCrisp::agreementIndex(const double c)  const {
 		&& compareDouble(c, this->earlyTime) >= 0)
 		return 1.0;
 	return 0.0;
-}
-
-
-//=====  Delay (TFN)  =========================================================
-TFN TimeWindowCrisp::delay(const TFN c)  const {
-	if (!this->loadedData) {
-		std::string errorMsg = "Agreement index cannot be computed. ";
-		errorMsg += "Invalid time window";
-		throw FuzzyFWException("Time Window", errorMsg);
-	}
-	double x, y, z;
-	if (compareDouble(c.a, this->lateTime) > 0)
-		x = c.a - this->lateTime;
-	else if (compareDouble(c.a, this->earlyTime) < 0)
-		x = c.a - this->earlyTime;
-	else
-		x = 0.0;
-
-	if (compareDouble(c.b, this->lateTime) > 0)
-		y = c.b - this->lateTime;
-	else if (compareDouble(c.b, this->earlyTime) < 0)
-		y = c.b - this->earlyTime;
-	else
-		y = 0.0;
-
-	if (compareDouble(c.c, this->lateTime) > 0)
-		z = c.c - this->lateTime;
-	else if (compareDouble(c.c, this->earlyTime) < 0)
-		z = c.c - this->earlyTime;
-	else
-		z = 0.0;
-
-	return TFN(x, y, z);
 }
 
 
@@ -479,52 +333,6 @@ TimeWindow * TimeWindowLinear::clone() const {
 //=============================================================================
 //		METHODS
 //=============================================================================
-//=====  Agreement index (TFN)  ===============================================
-double TimeWindowLinear::agreementIndex(const TFN c)  const {
-	if (!this->loadedData) {
-		std::string errorMsg = "Agreement index cannot be computed. ";
-		errorMsg += "Invalid time window";
-		throw FuzzyFWException("Time Window", errorMsg);
-	}
-
-	double c1 = c.a;
-	double c2 = c.b;
-	double c3 = c.c;
-
-	double ip1, ip2;	// Intersection points
-
-	// c2 <= d1 and c3 <= d2
-	if (compareDouble(c2, d1) < 1 && compareDouble(c3, d2) < 1)
-		return 1.0;
-	// c1 >= d2
-	if (compareDouble(c1, d2) > -1)
-		return 0.0;
-	// c2 >= d1 and c3 >= d2
-	if (compareDouble(c2, d1) > -1 && compareDouble(c3, d2) > -1) {
-		ip1 = ((c2*d2) - (c1*d1)) / (c2 - c1 + d2 - d1);
-		if (compareDouble(c1, c2) == 0)
-			return ((ip1 - d2)*(d2 - c1)) / ((d1 - d2)*(c3 - c1));
-		else
-			return ((ip1 - c1)*(d2 - c1)) / ((c2 - c1)*(c3 - c1));
-	}
-	// c2 < d1 and c3 > d2
-	if (compareDouble(c2, d1) < 0 && compareDouble(c3, d2) > 0) {
-		ip2 = ((c3*d1) - (c2*d2)) / (c3 - c2 + d1 - d2);
-		return (c3*(ip2 - c2) + d2*(c3 - ip2) - c1*(c3 - c2)) /
-			((c3 - c2) * (c3 - c1));
-	}
-	else {
-		ip1 = ((c2*d2) - (c1*d1)) / (c2 - c1 + d2 - d1);
-		if (compareDouble(c1, c3) == 0)
-			return (ip1 - d2) / (d1 - d2);
-		else {
-			ip2 = ((c3*d1) - (c2*d2)) / (c3 - c2 + d1 - d2);
-			return (ip1*(c1 - d2) + ip2*(d2 - c3) + d2*(c3 - c1)) /
-				((d2 - d1) * (c3 - c1));
-		}
-	}
-	return -1.0;
-}
 
 
 

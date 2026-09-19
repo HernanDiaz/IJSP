@@ -1057,3 +1057,31 @@ That is a comparison of two algorithms on ten instances at ten runs, made on the
 way to something else, and this directory's own rule says what that is worth:
 a hypothesis for a pre-registered run, not a result. It goes here so it is not
 rediscovered as a surprise.
+
+
+## 2026-09-19 — pruning the other problem domains
+
+The repository carried three problem domains in one source tree: the interval
+job shop this branch grew out of, the fuzzy job shop (FJSP, triangular fuzzy
+numbers), and the fuzzy vehicle routing problem (FVRP). On a branch whose
+solver reads crisp integers, the second and third are dead weight that still
+has to compile, and that every reader has to step around.
+
+Removed: every `*FJSP*` and `*FVRP*` file, `TFN` and `FitnessTFN`, and
+`RobustnessFileWriter`, whose only remaining users were the FJSP analysers --
+77 tracked files. Then the shared code that reached into them: the FJSP and
+FVRP registrations in the five class registers, the `FitnessTFN` class and the
+`FUZZY` fitness type, the `agreementIndex(TFN)` and `delay(TFN)` overloads of
+the four time-window classes (the `double` overloads, which the crisp tardiness
+uses, stay), and an unused `TFN` local in `Population`.
+
+What stays, deliberately: every algorithm (GA, memetic, Neri, the four ABC
+variants, simulated cooling), every selection and replacement operator, and the
+whole JSP domain including the creation heuristics and crossovers no setup here
+selects. Those are alternatives a setup file can reach; the fuzzy domains were
+not reachable from any crisp instance at all.
+
+Verified the same way as every change on this branch: same seed on `ta01`, the
+build agrees with the untouched `experiment/classic-jsp` generation by
+generation under both the ABC and the memetic; every neighbourhood identical on
+the cross-check; certificates verify.
