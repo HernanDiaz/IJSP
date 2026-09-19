@@ -1,0 +1,16 @@
+# irace scenario, arm A (ABCPSO). Run from this directory:
+#   TEMPLATE=$PWD/template_abc.txt irace --scenario scenario_abc.txt
+targetRunner       = "./target-runner.sh"
+parameterFile      = "./parameters_abc.txt"
+trainInstancesFile = "./instances.txt"
+execDir            = "./results_abc"
+logFile            = "./results_abc/irace_abc.Rdata"
+
+# 1000 runs of 300 s: about 83 CPU-hours, about 6 hours on 14 cores.
+maxExperiments     = 1000
+parallel           = 14
+testType           = "friedman"
+minNbSurvival      = 3
+firstTest          = 5
+debugLevel         = 1
+seed               = 20260919

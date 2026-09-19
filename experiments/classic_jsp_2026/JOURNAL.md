@@ -1208,3 +1208,50 @@ itself, on the crisp solver, at the budget it will be run with -- and a
 decision, recorded before tuning, on whether that tuning is done on the target
 instances or on separate ones. The irace scenario under
 `experiments/cor_tabu_2026/irace/` is the starting point.
+
+
+## 2026-09-19 — tuning each algorithm for itself, on instances that are not the targets
+
+### The decision, and why it is two decisions
+
+The goal is a better solution on an open Taillard instance. That is proved by
+the solution itself -- a schedule anyone can recompute -- and how the
+parameters that found it were chosen does not enter into it. So for the record
+attempts, tuning on the target instances is legitimate, provided it is
+declared.
+
+Choosing *which* algorithm to make those attempts with is a different kind of
+claim, one that is supposed to generalise, and there tuning on the targets
+would make the comparison measure the tuning. So that step is done on
+instances that are not the targets, and the winner's configuration then goes
+into the record attempts as the starting point.
+
+There is a practical obstacle: all ten 30x20 Taillard instances are open, so
+there is no closed 30x20 instance to train on. `scripts/generate_taillard.py`
+draws new instances from Taillard's recipe -- durations uniform in 1..99,
+random machine order per job -- with Python's generator rather than his, so
+they are fresh draws from the same distribution. Twenty of them, five per size
+class of the open set (20x15, 20x20, 30x15, 30x20), seed 20260919, under
+`tuning/instances/`.
+
+### The irace setup
+
+`tuning/` holds the scenario for each arm. The runner substitutes irace's
+parameters into a template setup and scores a configuration by the makespan of
+the schedule it wrote, recomputed from the schedule. The budget per run is
+300 s, the budget the tuned configuration will be used with: the journal's
+first finding on this line was that parameters tuned under one stopping rule
+stopped the run early under another, and the solver has since become 2.2x
+faster, so the old values carry no presumption.
+
+The ABC space is the COR-2026 one widened: population size and the two
+operator probabilities, fixed there at 250 / 0.9 / 0.10, are tuned here. The
+memetic has never been tuned in this repository, so every knob the GA and the
+memetic read is open, restricted to the operators registered for the job-order
+encoding. Two replacement operators are left out: `generational` and `simple`
+abort the memetic with "Population: Access to a non-existing individual", found
+by exercising the runner before trusting it. 1000 runs per arm, about six hours
+each on 14 cores.
+
+Neither tuning has been started. The parameter spaces are recorded here for
+review first.

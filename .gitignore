@@ -87,3 +87,6 @@ experiments/classic_jsp_2026/results/
 # Python bytecode
 __pycache__/
 *.pyc
+
+# irace output
+experiments/classic_jsp_2026/tuning/results_*/

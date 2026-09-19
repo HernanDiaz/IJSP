@@ -1,0 +1,24 @@
+# irace parameter space, arm A: ABCPSO + tabu search on N2, crisp solver.
+#
+# Starts from the space irace searched for the COR-2026 study on the interval
+# instances (experiments/cor_tabu_2026/irace/parameters.txt) and widens it
+# where that study had fixed a value: the population size and the two operator
+# probabilities are tuned here rather than held at 250 / 0.9 / 0.10, because
+# the solver is now 2.2x faster and the stopping rule is the time budget, and
+# nothing says the old values survive either change.
+#
+# name         switch              type   range / values
+pop_size       "--pop_size "       i      (50, 400)
+elite_size     "--elite_size "     i      (5, 100)
+elite_sel      "--elite_sel "      i      (1, 10)
+maxtrials      "--maxtrials "      i      (5, 60)
+cross_prob     "--cross_prob "     r      (0.5, 1.0)
+mut_prob       "--mut_prob "       r      (0.0, 0.4)
+crossover      "--crossover "      c      (jsp.jox, jsp.gox, jsp.gpmx, jsp.ppx)
+mutation       "--mutation "       c      (inversion, insertion, swap)
+ls_target      "--ls_target "      r      (0.1, 1.0)
+tabu_iter      "--tabu_iter "      i      (5, 40)
+
+[forbidden]
+elite_sel > elite_size
+elite_size > pop_size

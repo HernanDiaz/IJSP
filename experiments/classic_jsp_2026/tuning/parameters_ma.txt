@@ -1,0 +1,24 @@
+# irace parameter space, arm B: memetic algorithm (GA + tabu search on N2),
+# crisp solver. The memetic has never been tuned in this repository; every
+# knob GeneticAlgorithm and MemeticAlgorithm read is opened, with the operator
+# choices restricted to the ones registered for the job-order encoding.
+#
+# name          switch               type   range / values
+pop_size        "--pop_size "        i      (50, 400)
+cross_prob      "--cross_prob "      r      (0.5, 1.0)
+mut_prob        "--mut_prob "        r      (0.0, 0.4)
+crossover       "--crossover "       c      (jsp.jox, jsp.gox, jsp.gpmx, jsp.ppx)
+mutation        "--mutation "        c      (inversion, insertion, swap)
+selection       "--selection "       c      (tournament, roulette, sus, shuffle)
+tourn_size      "--tourn_size "      i      (2, 10)   | selection == "tournament"
+# generational and simple replacement are registered but abort the memetic
+# with "Population: Access to a non-existing individual" (checked on
+# 2026-09-19 with the target runner); they are left out rather than tuned
+# around.
+replacement     "--replacement "     c      (elitism, parents, tournament)
+elitism_k       "--elitism_k "       i      (1, 20)   | replacement == "elitism"
+ls_target       "--ls_target "       r      (0.1, 1.0)
+tabu_iter       "--tabu_iter "       i      (5, 40)
+
+[forbidden]
+elitism_k > pop_size
