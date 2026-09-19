@@ -997,3 +997,63 @@ Where the branch stands against the original, by composition of paired ratios:
 2.00x from the crisp type and the static cast, times 1.10 from this, about
 **2.2x**. A direct paired measurement against the original is the number to
 quote and is the next thing to run.
+
+
+## 2026-09-19 — 2.23x against the original, and the same change under the memetic
+
+### The headline, measured directly
+
+Paired against the untouched `experiment/classic-jsp`, `ta01`-`ta10`, 10 runs of
+60 s, tuned ABC configuration:
+
+| | mean gen/s | generations per 60 s run |
+|---|---|---|
+| `experiment/classic-jsp` | 2.070 | 124.2 |
+| crisp, in-place N2 | **4.618** | **277.2** |
+
+**2.23x**, ahead on all ten instances, and the crisp build again reaches the
+optimum of `ta10` (1241) where the original stops at 1243: six known optima
+against five. The composition of the paired ratios predicted about 2.2x; the
+direct measurement is the number to quote.
+
+### Does it hold up under the other algorithm that drives N2?
+
+Every measurement in this directory is ABCPSO. The in-place evaluation changes
+the protocol between the local search, the neighbourhood and `Neighbour`, and
+the memetic algorithm (`algorithm = MEMETIC`, `MemeticAlgorithm`) drives the
+same local search through the same interface, so it is the other consumer that
+could be broken by a mistake the ABC would never exercise.
+
+`setup/jsp_ma_n2_60s.txt` is `jsp_abc_n2_60s.txt` with `algorithm = MEMETIC`
+and nothing else changed -- the memetic reads the GA keys plus `localsearch.*`
+and ignores the ABC-only ones -- so the two algorithms run the same operators,
+the same plain tabu search on N2, and the same budget.
+
+**It does not break.** Same seed on `ta01`, the crisp build agrees with the
+untouched build generation by generation over the whole common prefix, best and
+population average; both certificates verify.
+
+**It improves by the same amount.** Paired, copy against in place, then
+replicated with the roles swapped:
+
+| | copy | in place | ratio |
+|---|---|---|---|
+| first run | 7.706 gen/s | 8.663 gen/s | **1.124x** |
+| replication, roles swapped | 8.009 gen/s | 8.966 gen/s | **1.120x** |
+
+In place ahead on all ten instances in both runs; the makespans reached are
+identical between the two builds on every instance, as they must be with the
+same trajectory. **+12 %** under the memetic against +10 % under the ABC -- the
+memetic spends a larger share of its generation in the local search, so it has
+more of the copying to lose.
+
+### A side observation, recorded and not claimed
+
+The memetic completes about twice as many generations per minute as the ABC
+(462 against 242 per 60 s on the same build) -- its generation is cheaper -- and
+at this budget it reaches `ta06 = 1238`, the optimum, and `ta05 = 1231`, which
+no ABC configuration in this directory has, while missing `ta08` by one unit.
+That is a comparison of two algorithms on ten instances at ten runs, made on the
+way to something else, and this directory's own rule says what that is worth:
+a hypothesis for a pre-registered run, not a result. It goes here so it is not
+rediscovered as a surprise.

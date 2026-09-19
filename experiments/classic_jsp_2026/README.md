@@ -68,9 +68,10 @@ second pass over the critical path are gone with it.
 It is not a second implementation to keep correct, because it is not a second
 implementation: the interval code was refactored in place, and the two branches
 are checked against each other by running both with the same seed and comparing
-the search traces generation by generation. **2.00x**, same trajectory, and on
+the search traces generation by generation. **2.23x**, same trajectory, and on
 this machine it reaches all six known optima of `ta01`-`ta10` where the interval
-build reaches five. The journal entries for 2026-09-19 have the numbers, the
+build reaches five. Of that, 2.0x is the crisp type plus one static cast; the
+rest is N2 evaluating neighbours in place instead of copying the schedule. The journal entries for 2026-09-19 have the numbers, the
 method, and the parts of the refactor that bought nothing.
 
 **Comparing two builds needs `scripts/paired_compare.sh`.** One binary, identical
