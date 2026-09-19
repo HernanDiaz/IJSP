@@ -1,5 +1,16 @@
 # Pre-registration: memetic algorithm against ABCPSO on the open Taillard instances
 
+> **WITHDRAWN on 2026-09-19, about twenty minutes after the runs started, and
+> before any result was looked at.** The partial results were deleted. The
+> design compared the two algorithms under one configuration -- the one irace
+> had tuned for the ABC on the interval instances -- which is a comparison of a
+> tuned ABC against an untuned memetic, not of two algorithms. Each arm has to
+> run with parameters tuned for it, and how those parameters are obtained
+> (per instance set or on separate training instances) is itself the question
+> that has to be settled first. The document is kept as written, because the
+> point of pre-registering is that the record of what was planned survives the
+> plan being wrong.
+
 Written and committed before any run of this experiment was started. Nothing
 below changes once the runs begin; anything learned on the way is a hypothesis
 for the next experiment, not an amendment to this one.

@@ -1190,3 +1190,21 @@ and decision rule, and is committed before any run starts. The two setups
 differ in one line. `scripts/paired_setups.sh` runs both arms at the same time
 on the same instances, because on this machine a wall-clock budget is only
 equal if the two runs share the clock.
+
+
+### Withdrawn twenty minutes in
+
+The PI's objection, on seeing the design: the two arms ran the same
+configuration, the one irace had tuned for the ABC on the interval instances.
+That compares a tuned ABC with an untuned memetic and says nothing about the
+algorithms. Correct, and it should have been obvious from the previous entry,
+which credits the tuned parameters with the ABC's only clear gain in this
+directory. The runs were killed before any result was read and the partial
+results deleted; `PREREG_ma_vs_abc.md` stays, marked withdrawn, because the
+record of a wrong plan is the point of writing plans down.
+
+What replaces it has to start one step earlier: each algorithm tuned for
+itself, on the crisp solver, at the budget it will be run with -- and a
+decision, recorded before tuning, on whether that tuning is done on the target
+instances or on separate ones. The irace scenario under
+`experiments/cor_tabu_2026/irace/` is the starting point.
