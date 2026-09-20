@@ -6,9 +6,9 @@
 > tuned for it, on training instances neither the comparison nor the record
 > attempts ever use.
 >
-> **Status: not started.** Arm B's configuration is filled in below when its
-> tuning finishes, and this document is committed in full before the first
-> comparison run. Nothing after that point changes.
+> **Status: complete and not started.** Both tunings have finished and both
+> configurations are written down below. This document is committed in full
+> before the first comparison run; nothing in it changes after that.
 
 ## Why this experiment, and why first
 
@@ -100,17 +100,46 @@ of 0.98-1.0, `elite.selection = 1` — the lowest selective pressure in the
 space — and a short tabu search of 10-23 bad iterations. Setup:
 `setup/prereg2_abc_300s.txt`.
 
-### Arm B — memetic algorithm, configuration to be filled in
+### Arm B — memetic algorithm, configuration 164
 
-<!-- FILL: the elite configuration of tuning/results_ma/irace_ma.log, its
-     finishing time, and the same table. Written by
-     scripts/make_arm_setups.sh, not transcribed. -->
+Tuning finished 2026-09-20 16:52, 12.1 h of wall clock, 124 h of CPU, on the
+same machine with nothing else on it.
 
-*Pending: the tuning is running and this section, and the setup
-`setup/prereg2_ma_300s.txt`, are written from its log before any comparison run
-starts. The parameter space is `tuning/parameters_ma.txt`, fixed on
-2026-09-19; `generational` and `simple` replacement are excluded because they
-abort the memetic, a pre-existing framework bug recorded in the journal.*
+| parameter | value |
+|---|---|
+| `population.size` | 99 |
+| `crossover` | `jsp.jox` |
+| `crossover.probability` | 0.9434 |
+| `mutation` | `inversion` |
+| `mutation.probability` | 0.0348 |
+| `selection` | `shuffle` |
+| `replacement` | `tournament` |
+| `localsearch.target` | 0.7186 |
+| `localsearch.bad-iterations` | 23 |
+
+The three surviving elites agree on `jsp.jox`, `inversion`, `shuffle`
+selection, `tournament` replacement and a tabu search of 20-26 bad iterations,
+and all three sit at a **small population, 99 to 152**, against the ABC's 247
+to 292. The two algorithms were therefore tuned to opposite regimes — the ABC
+to a large population with the weakest selective pressure the space allows,
+the memetic to a small one — which is the kind of difference a shared
+configuration would have hidden, and is the reason the withdrawn version of
+this document was worthless.
+
+The parameter space is `tuning/parameters_ma.txt`, fixed on 2026-09-19;
+`generational` and `simple` replacement are excluded because they abort the
+memetic, a pre-existing framework bug recorded in the journal. Setup:
+`setup/prereg2_ma_300s.txt`.
+
+### What the tuning does not say
+
+irace reports a mean cost for the configuration it selected — 1762.43 for the
+ABC, 1803.59 for the memetic. **These two numbers are not comparable and are
+not evidence about H1.** Each is a mean over the instance-seed pairs that
+configuration happened to survive on inside its own race, a different set of
+different size for each arm, and racing keeps a configuration alive on the
+runs where it does well. The comparison below is the only thing that speaks to
+H1.
 
 Both setups are generated from the tuning logs by
 `scripts/make_arm_setups.sh`, which reads irace's own "Best configurations as

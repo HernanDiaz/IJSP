@@ -1344,3 +1344,38 @@ itself a placeholder in the tuning templates, because irace varies it, so the
 sweep that removes unused placeholders removed it before the override could
 set it. The overrides now run before the sweep. The comparison would have run
 without a declared seed and not been reproducible.
+
+
+### 2026-09-20: the memetic's tuned configuration; the comparison is ready
+
+The memetic tuning finished at 16:52, 12.1 h of wall clock and 124 h of CPU,
+1499 of its 1500 runs used. Elite configuration 164: population 99, `jsp.jox`
+at 0.9434, `inversion` at 0.0348, `shuffle` selection, `tournament`
+replacement, `localsearch.target` 0.7186, tabu search stopped after 23 bad
+iterations.
+
+The two arms came out in opposite regimes. All three memetic elites sit at a
+small population, 99 to 152, where all three ABC elites sit at 247 to 292 with
+the weakest selective pressure the space allows. They also disagree on the
+mutation operator -- `inversion` against `swap` -- and agree only on `jsp.jox`
+and on a short local search of 15 to 26 bad iterations. A single shared
+configuration could not have been right for both, which is what the withdrawn
+pre-registration got wrong and what this one is built to avoid.
+
+irace's own mean costs, 1762.43 for the ABC and 1803.59 for the memetic, say
+nothing about which algorithm is better: each is a mean over the instance-seed
+pairs its configuration survived on inside its own race, a different set of a
+different size for each arm, and racing keeps a configuration alive on the
+runs where it does well. Recorded in the pre-registration as something not to
+be read as a result.
+
+Both setups were generated from the tuning logs and smoke-tested, 20 s on
+`ta01`: both run, both emit a feasible schedule that verifies against the
+OR-Library data (1240 and 1248 against the optimum of 1231; one run of 20 s on
+a closed instance, which is a check that the setups work and nothing else).
+The fix from yesterday held -- both carry `seed = 1`.
+
+`PREREG_ma_vs_abc_v2.md` is now complete, with both configurations written
+down, and committed before any comparison run. The comparison is ready to
+launch on an idle machine: 44 jobs through one queue, both arms alternating,
+14 at a time, about 3 hours.
