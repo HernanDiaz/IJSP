@@ -220,3 +220,16 @@ the 30x20 group before the rest; adding a third arm afterwards; comparing
 against the older 5-run baselines instead of against the arm run alongside;
 or letting either arm run while something else is on the machine. The journal
 records two dead ends and one retraction that came from exactly these moves.
+
+
+---
+
+## Result
+
+Run 2026-09-20 20:01 to 2026-09-21 00:36. Primary endpoint: Wilcoxon W = 30,
+p = 0.002, ABCPSO better on 18 of 22 instances by per-instance mean. **H1 is
+rejected**; by the decision rule above, ABCPSO stays as the base algorithm.
+Secondary, not deciding: best-of-runs 9-13 to the memetic, sign test p = 0.523;
+mean best gap to the lower bound 4.361 % for the ABC against 4.470 %. Table in
+`results/prereg2_comparison.txt`, discussion in `JOURNAL.md`. Nothing above
+this line was changed after the first run started.

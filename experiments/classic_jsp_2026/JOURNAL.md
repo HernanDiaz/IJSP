@@ -1379,3 +1379,47 @@ The fix from yesterday held -- both carry `seed = 1`.
 down, and committed before any comparison run. The comparison is ready to
 launch on an idle machine: 44 jobs through one queue, both arms alternating,
 14 at a time, about 3 hours.
+
+
+### 2026-09-21: the comparison, and H1 rejected
+
+The pre-registered comparison ran from 20:01 to 00:36 on an idle machine, 440
+runs of 300 s through one queue with the two arms alternating, 14 at a time.
+Every schedule verifies against the OR-Library data. Full table in
+`results/prereg2_comparison.txt`.
+
+**The ABC wins the primary endpoint.** Per-instance mean makespan over ten
+runs, paired by instance across the 22 open instances: Wilcoxon W = 30,
+p = 0.002, the ABC better on 18 of 22. H1 -- that the memetic reaches better
+makespans -- is rejected, and by the pre-registered decision rule the ABC
+stays as the base algorithm for the record attempts.
+
+**The margin is small and the secondary endpoint does not separate them.** The
+mean of the per-instance differences is 5.4 units of makespan on a mean of
+about 1850, 0.29 %. On best-of-runs the arms are indistinguishable: the
+memetic wins 9 instances and loses 13, sign test p = 0.523, and the mean best
+gap to the lower bound is 4.36 % against 4.47 %. So the ABC is reliably
+slightly better on average, and neither is better at producing one good run.
+That second fact is the one that matters for beating a best known solution,
+and this experiment does not settle it -- the endpoint that decides was fixed
+in advance as the mean, and is not being switched now that the other one is
+more interesting.
+
+**What the diagnostic runs were worth: nothing.** The hypothesis came from a
+single run on `ta41` where the memetic reached 2102 against the ABC's 2168.
+Under the tuned configurations the same instance gives means of 2084.6 for the
+ABC and 2093.0 for the memetic, with bests of 2067 and 2061 -- both arms now
+beat the number that started this, and the ordering it suggested is gone. The
+disclosure section of the pre-registration was written so this could be
+checked, and it is the third time in this directory that something noticed on
+the way to something else failed to replicate.
+
+**What did replicate is the tuning's own finding.** The two algorithms wanted
+opposite regimes -- population 247 against 99 -- and the one tuned to the
+larger population, the lowest selective pressure in its space and a short
+local search is the one that won. The diversity work stands: the collapse is
+still the constraint, and neither arm addresses it. Both sit 4.4 % above the
+best known solutions, which is where the configuration sat before any of this.
+
+The 22 x 2 collapse curves from these runs are recorded and untouched; they
+are the input to the next experiment rather than a result of this one.
