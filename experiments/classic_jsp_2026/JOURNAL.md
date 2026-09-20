@@ -1295,3 +1295,52 @@ Taken with the PI on 2026-09-19:
 
 The ABC tuning runs first, the memetic after it, sequentially, so that each
 arm has the machine to itself the way the other did.
+
+
+### 2026-09-20: the ABC's tuned configuration, and the comparison made ready
+
+The ABC tuning finished at 04:49, 14.2 h of wall clock and 123 h of CPU for
+1500 runs of 300 s. Elite configuration 136: population 247, elite size 86,
+`elite.selection` 1, `maxnumtrials` 35, `jsp.jox` at 0.982, `swap` at 0.1801,
+`localsearch.target` 0.4645, tabu search stopped after 15 bad iterations.
+
+What the three surviving elites agree on is more informative than the winner's
+exact numbers. All three pick `jsp.jox` and `swap`, a crossover probability of
+0.98-1.0, `elite.selection = 1` -- the lowest selective pressure the space
+allows -- and a short local search, 10 to 23 bad iterations, against the 20 of
+the hand-set baseline and its `localsearch.target` of 1.0. Read against the
+collapse curves measured on 2026-09-19, irace has converged on the
+configuration that takes longest to collapse and spends the saved time on more
+generations rather than on deeper local search. It is the same diagnosis the
+diversity statistics gave, arrived at without being told to look for it.
+
+The memetic tuning started straight after and is running.
+
+Prepared meanwhile, and not started:
+
+* `PREREG_ma_vs_abc_v2.md`, replacing the version withdrawn on 2026-09-19.
+  Each arm runs the configuration tuned for it; arm B's section and setup are
+  written from its tuning log when that finishes, and the document is
+  committed in full before the first comparison run.
+* `scripts/make_arm_setups.sh`, which builds each arm's setup by reading
+  irace's own "Best configurations as commandlines" line and substituting it
+  into that arm's tuning template, then fixing what the comparison fixes: ten
+  runs from seed 1 and the two diversity statistics. Nothing is transcribed,
+  so a setup cannot claim a configuration the tuning did not produce. It
+  refuses to write an arm whose tuning has not finished, which is how the
+  memetic's setup is absent rather than wrong.
+* `scripts/sequential_compare.sh`. The arms may not run one after the other:
+  a wall-clock budget turns this machine's 9 % drift between batches into a
+  difference in how much search each arm gets, which is the confound behind
+  this directory's one retraction. Nor should two batches be stacked on the
+  machine. So there is one queue holding all 44 jobs of both arms, alternating
+  between them, at most 14 running at a time -- one solver per core. Both arms
+  are spread evenly over the same window and the machine is never asked for
+  more than it has. The script refuses to start while any other solver or
+  tuning is running.
+
+One thing the check caught: the generator dropped the `seed` line. `seed` is
+itself a placeholder in the tuning templates, because irace varies it, so the
+sweep that removes unused placeholders removed it before the override could
+set it. The overrides now run before the sweep. The comparison would have run
+without a declared seed and not been reproducible.
