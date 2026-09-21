@@ -231,7 +231,7 @@ bucle y están aquí para que no se repitan; sus cifras están en el JOURNAL.
 | H-1 | back-jump (Nowicki-Smutnicki) en el tabú | vuelve mejor a los buenos puntos | -- | 22 abiertas x 5 x 300 s: 10 de 22, p = 1.000; en las 12 no vistas, tabú simple mejor, p = 0.022 | **descartada** (2026-09-19) |
 | H-2 | pool de élite + path relinking (IPRTS, rama `path-relinking`, IJSP) | recombinar casi-óptimos sale de la meseta | -- | x20: 0 mejoras en ~500 llamadas a PR; meseta neutra en calidad | **descartada** (2026-06-21) |
 | H-3 | memético con su configuración afinada vs ABC con la suya | el memético alcanza mejores makespans | -- | 22 x 10 x 300 s: ABC mejor en 18 de 22, W = 30, p = 0.002 | **descartada** (2026-09-21) |
-| I-003 | el explorador del ABC reinyecta un **elite pateado** en vez de una solución aleatoria | un arranque aleatorio a mitad de tirada no puede alcanzar a la población; uno dentro de una cuenca buena sí | kick−control = **+1.43** (ta23 −0.27, ta29 +0.70, ta30 −0.50, ta45 **+5.80**); regla > +2 descarta → **pasa, por poco y en contra** | en curso (oleadas) | **en curso**. Una retirada previa fue **errónea**, ver la retractación abajo |
+| I-003 | el explorador del ABC reinyecta un **elite pateado** en vez de una solución aleatoria | un arranque aleatorio a mitad de tirada no puede alcanzar a la población; uno dentro de una cuenca buena sí | kick−control = **+1.43** (ta23 −0.27, ta29 +0.70, ta30 −0.50, ta45 **+5.80**); regla > +2 descarta → **pasa, por poco y en contra** | 4 mirillas de 6: −1.02, −0.57, **−0.03**, +0.44; kick mejor en 9-10 de 21 siempre; p entre 0.55 y 0.88, la frontera nunca se acerca | **detenida en la 4ª** (2026-09-21) por cambio de dirección del PI, no por sus datos. Sin aceptación: es un cero |
 | H-4 | N8 contra N2 (y contra N1, N3, N_ext), fase B del paper de COR | un vecindario más rico gana | -- | 82 instancias x 30 runs, 2460 bloques pareados: N2 1846.50 contra N8 1847.94, dif −1.45, p_adj = 3.9e−4, r = 0.077 (**despreciable**); rangos de Friedman N2 2.1315 el mejor de cinco, N8 2.2400 | **descartada** (antes del bucle; `experiments/cor_tabu_2026/`) |
 | H-5 | profundidad del tabú como **parámetro global** (`bad-iterations`) | más profundo es mejor | -- | dentro del espacio de irace **dos veces**: rango (5, 30) en el paper de COR para los cinco vecindarios, rango (5, 40) en los dos brazos de este proyecto. Las configuraciones ganadoras eligieron **15** para el ABC (config. 136) y **23** para el memético (config. 164), no el tope | **contestada** por el afinado, no hace falta experimento |
 | I-002 | vecindario N8 en vez de N2, **repetición de H-4** | la misma que H-4 | n8−control = −1.44, pasa (no descarta) | 3 mirillas de 6, 15 runs: **+1.52**, N8 mejor en 7 de 21, p = 0.054; reproduce H-4 en el régimen corto y crisp | **retirada** (2026-09-21): la pregunta ya estaba contestada |
@@ -854,3 +854,27 @@ ta29 1640.8 contra 1641.3, ta30 1623.4 contra 1623.4, ta45 2041.9 contra
 El ruido entre tandas de este banco de pruebas es despreciable al lado de los
 efectos que perseguimos, y eso es lo que hace que un efecto de tres unidades
 sea detectable.
+
+### I-003, cierre en la cuarta mirilla
+
+Cuatro mirillas, 20 tiradas acumuladas por celda, cero infactibles en 840
+tiradas. `kick` menos `control`: **−1.02, −0.57, −0.03, +0.44**, con `kick`
+mejor en 9 o 10 de las 21 en las cuatro, y p entre 0.55 y 0.88. La frontera
+de Pocock, 0.0142, no se acercó en ningún momento ni en ningún sentido.
+
+**Por qué se detiene en la cuarta y no en la sexta**: por decisión del PI de
+cambiar de dirección, no por lo que dicen los datos. La distinción importa y
+por eso se escribe: **no se reclama aceptación ni rechazo estadístico**, se
+deja el registro de un **cero** medido con 20 tiradas por celda sobre las 21
+instancias. Detener una tanda preinscrita porque la estimación va hacia donde
+a uno le gusta sería trampa; detenerla sobre una estimación que lleva cuatro
+mirillas pegada al cero, para gastar esas dos horas en otra cosa, no lo es, y
+queda anotado para que cualquiera lo juzgue.
+
+**Qué deja medido**, que es lo que vale: reemplazar entre 500 y 800 arranques
+aleatorios por tirada por elites pateados **no cambia el resultado**. Junto a
+I-001, que midió que 294 unidades de ventaja en la generación 0 se quedan en
+0.9 al final, el patrón es consistente y ya son dos medidas independientes:
+en este algoritmo, **de dónde parte un individuo es irrelevante**, tanto al
+principio como a mitad de tirada. Lo que queda por mirar no es de dónde se
+sale sino cómo se elige el paso siguiente, que es donde apunta el PI.
