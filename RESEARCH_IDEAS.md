@@ -135,6 +135,16 @@ en la primera hora**: un efecto de -3 se declara en la primera o la segunda
 oleada el 70 % de las veces, y uno del doble en la primera. Las seis oleadas
 completas son el caso peor, no el normal, y son 2.6 h en vez de 6.5.
 
+**Antes de preinscribir una idea, buscarla en el repositorio.** Regla nueva
+(2026-09-21), a raíz de I-002: el historial de abajo solo tenía los tres
+negativos que el PI me nombró, y con eso preinscribí una repetición de un
+experimento que estaba **en este mismo árbol**,
+`experiments/cor_tabu_2026/`, el paquete de la fase B del paper de COR. No
+basta con leer el código para saber si algo se ha probado; hay que mirar
+todos los paquetes de `experiments/`, los tags (`cor-tabu-2026-submission`,
+`ijsp-neigh-ranking-v1`) y las ramas, y preguntar al PI. El historial queda
+sembrado con H-4 para que N8 no vuelva a proponerse.
+
 **Intocable desde el bucle**: `scripts/verify_certificate.py`,
 `taillard_bounds.csv`, `reference/taillard_orlib.txt`, las instancias
 `TaillardJSP/`, el banco de semillas de origen (solo lectura, ver abajo), la
@@ -221,7 +231,8 @@ bucle y están aquí para que no se repitan; sus cifras están en el JOURNAL.
 | H-1 | back-jump (Nowicki-Smutnicki) en el tabú | vuelve mejor a los buenos puntos | -- | 22 abiertas x 5 x 300 s: 10 de 22, p = 1.000; en las 12 no vistas, tabú simple mejor, p = 0.022 | **descartada** (2026-09-19) |
 | H-2 | pool de élite + path relinking (IPRTS, rama `path-relinking`, IJSP) | recombinar casi-óptimos sale de la meseta | -- | x20: 0 mejoras en ~500 llamadas a PR; meseta neutra en calidad | **descartada** (2026-06-21) |
 | H-3 | memético con su configuración afinada vs ABC con la suya | el memético alcanza mejores makespans | -- | 22 x 10 x 300 s: ABC mejor en 18 de 22, W = 30, p = 0.002 | **descartada** (2026-09-21) |
-| I-002 | vecindario N8 (N2 + reinserciones fuera de bloque) en vez de N2 | cambiar la *conectividad* del vecindario, no la elección dentro del mismo | n8−control = **−1.44** (ta23 −5.00, ta30 −5.57, ta29 +1.43, ta45 +3.37); regla > +2 descarta → **pasa**. El primero se anuló por infactibilidad | pendiente (oleadas) | **en curso** |
+| H-4 | N8 contra N2 (y contra N1, N3, N_ext), fase B del paper de COR | un vecindario más rico gana | -- | 82 instancias x 30 runs, 2460 bloques pareados: N2 1846.50 contra N8 1847.94, dif −1.45, p_adj = 3.9e−4, r = 0.077 (**despreciable**); rangos de Friedman N2 2.1315 el mejor de cinco, N8 2.2400 | **descartada** (antes del bucle; `experiments/cor_tabu_2026/`) |
+| I-002 | vecindario N8 en vez de N2, **repetición de H-4** | la misma que H-4 | n8−control = −1.44, pasa (no descarta) | 3 mirillas de 6, 15 runs: **+1.52**, N8 mejor en 7 de 21, p = 0.054; reproduce H-4 en el régimen corto y crisp | **retirada** (2026-09-21): la pregunta ya estaba contestada |
 | I-001 | sembrar la población inicial en tiradas cortas desde el banco; composición vs calidad | ver abajo | mix−control = −2.75 en 4 inst. (regla: > +2 descarta) → pasa | 21 inst. x 5 celdas x 30 runs: mix−control = −0.90, mejor en 13 de 21, W = 88.5, **p = 0.348**; ninguna celda separa (la mejor, `v2rand`, −1.87, p = 0.079) | **descartada** (2026-09-21) |
 
 ### I-001 — siembra en tiradas cortas: composición contra calidad
@@ -385,12 +396,12 @@ comprobación cambió su precio:
   cada llamada con iteraciones hechas, si terminó por las 15 o por los 2 s,
   profundidad del peor empeoramiento antes de la siguiente mejora, y makespan
   de entrada y salida. Si casi todas mueren en 15-30 iteraciones, ahí está.
-- **B-10** **N8 en vez de N2**, o alternando. Una línea de setup, sin
-  código, y es la idea estructural más fuerte de la revisión: cambia la
-  *conectividad* del vecindario en vez de escoger mejor dentro del mismo.
-  Mecanismo plausible para 4-19 unidades, no para 3: una reinserción hace de
-  golpe lo que varios intercambios adyacentes no alcanzan. Comparar a igual
-  tiempo de reloj, nunca a igual número de iteraciones.
+- **B-10** ~~N8 en vez de N2~~ **cerrada (2026-09-21)**: es H-4, medida ya
+  en la fase B del paper de COR sobre 82 instancias, y reproducida por I-002.
+  N8 no bate a N2; queda segundo de cinco por rangos de Friedman, a 1.45
+  unidades. Lo que queda vivo de esta línea no es N8 sino un vecindario que
+  el paper **no** probó: reinserciones que crucen máquinas o que trabajen en
+  espacio de soluciones parciales (B-12), no más variantes de bloque.
 - **B-11** **Patada estructurada y reoptimización** (ILS, no back-jump): al
   estancarse, aplicar tres movimientos críticos factibles al azar sin
   evaluar, limpiar la memoria tabú y volver al tabú. Se distingue de H-1 en
@@ -597,3 +608,53 @@ son 3.5 h, no 2.6. Sigue siendo una decisión cada 35 minutos en vez de una
 cada 6.5 horas, y el 70 % de las decisiones caen en las dos primeras, así
 que el diseño se mantiene tal como está preinscrito; lo que se corrige es la
 cifra que se anuncia.
+
+### I-002 retirada, y lo que deja (2026-09-21)
+
+**Por qué se retira**: la pregunta ya estaba contestada antes de empezar. La
+fase B del paper de COR (`experiments/cor_tabu_2026/`, tag
+`cor-tabu-2026-submission`) compara los cinco vecindarios afinados por irace
+sobre 82 instancias con 30 runs, 2460 bloques pareados: N2 queda primero por
+rangos de Friedman (2.1315) y N8 segundo (2.2400), con N2 mejor que N8 por
+1.45 unidades, p_adj = 3.9e−4 y tamaño de efecto **despreciable** (r =
+0.077). Se retira por eso y **no** por sus propias mirillas: la decisión no
+depende de los datos de I-002.
+
+**Lo que I-002 deja, que no es nada**:
+
+1. **Una reproducción independiente de H-4.** Mis tres mirillas dan N8 peor
+   que N2 por +1.82, +1.49 y +1.52 unidades con 5, 10 y 15 runs, sobre el
+   problema **crisp**, las 21 instancias abiertas de Taillard y presupuestos
+   de tiradas cortas. El paper da +1.45 sobre el problema de **intervalos**,
+   82 instancias y presupuesto largo. Dos problemas, dos conjuntos de
+   instancias, dos regímenes, misma cifra a una décima. Pocas veces se
+   reproduce así un negativo.
+2. **Un fallo real arreglado en el árbol crisp.** El defecto de N8 que
+   encontró la verificación (24 de 30 tiradas infactibles en ta45) **no era
+   nuevo**: es el primero de los cuatro parches de siembra de BFS que la
+   línea de intervalos ya había encontrado y corregido para el paper
+   (`statistical_results/REGENERATION_NOTES.md`: *"eval tipo=1: missing
+   arc->x, arc->z seeds"*; `arc->z` es `newMs`, exactamente lo que faltaba).
+   El N8 crisp se escribió con la lógica de antes del arreglo (`32660f4`) y
+   nunca recibió el porte, así que **el refactor crisp regresó un fallo ya
+   resuelto**. Tras su arreglo, la línea de intervalos validó 2460 de 2460
+   tiradas de N8; el árbol crisp estaba otra vez en 24 de 30 infactibles en
+   ta45. El arreglo (`b1ad79e`) es el mismo, y se queda.
+3. **La comprobación de que el vecindario de producción está sano.** El N2
+   crisp siembra su propagación con `x` **y** con `y`
+   (`NeighbourhoodJSP_N2.cpp:145-146`), así que el tercero de aquellos cuatro
+   parches (*"eval tipo=0: missing arc->x seed"*) no está presente aquí. Y
+   las 3.780 tiradas verificadas de I-001 e I-002 son todas factibles.
+
+**Dos cosas del paquete del paper que hay que mirar**, ajenas al bucle:
+
+- La columna `winner` de `statistical_results/wilcoxon_table.csv` está
+  **invertida**: nombra siempre el brazo de media **mayor**, o sea el peor.
+  En `gen_phaseB_tables.py:233` es `p["A"] if p["sign"] > 0 else p["B"]`, con
+  `diff = meanA − meanB`, así que con `diff > 0` el brazo A es el peor y sale
+  como ganador. **No afecta al paper**: `tab4_wilcoxon.tex` no usa esa
+  columna. Pero ese CSV viaja en el dataset de Zenodo, y ahí sí es una
+  trampa para quien lo lea.
+- El README del paquete dice *Computers & Operations Research*, y el PI
+  habló de ASOC. O son dos artículos distintos o uno de los dos datos hay
+  que corregir.
