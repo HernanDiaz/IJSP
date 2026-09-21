@@ -376,6 +376,19 @@ namespace FuzzyFW {
 			params->getBoolean(MA_LOCAL_SEARCH_LAMARCKISM, true);
 
 		// Loads the common parameters
+		// Scout phase. Default is the classical ABC, a fresh random solution,
+		// so a setup that says nothing behaves exactly as before.
+		this->scoutKick = false;
+		this->scoutKicks = 0;
+		std::string scoutValue = params->getStringLower(SCOUT_MODE);
+		if (scoutValue.compare(SCOUT_MODE_KICK) == 0) {
+			this->scoutKick = true;
+			this->scoutKicks = (unsigned int)params->getInteger(SCOUT_KICKS, 3);
+			if (this->scoutKicks == 0)
+				throw FuzzyFWException("Artificial Bee Colony",
+					"abc.scout = kick needs abc.scout.kicks greater than zero");
+		}
+
 		GeneticAlgorithm::prepareToRun(params);
 
 		this->neighbourhood->setup(params);
@@ -753,7 +766,37 @@ namespace FuzzyFW {
 			this->abc_replacements += numSourceAfterLimit;
 			//We replace those food sources with fresh ones.
 			if (numSourceAfterLimit > 0) {
-				Population* newPopulation = this->creation->createPopulation(numSourceAfterLimit, this->sharedVariables);
+				// The scout replacement. The classical ABC injects fresh random
+				// solutions here. In a short-budget regime that is dead weight:
+				// I-001 measured that a random start is 294 makespan units worse
+				// at generation 0 and that 0.3 % of that gap survives to the end
+				// of a run, so an individual injected at generation g starts far
+				// outside the population's current basin and cannot reach it in
+				// what is left of the budget. `abc.scout = kick` replaces the
+				// exhausted source with a clone of a random elite perturbed by
+				// abc.scout.kicks mutations: the same abandonment mechanism, but
+				// restarting a trajectory inside a promising basin instead of
+				// outside every basin. This is not the discarded back-jump (which
+				// returned inside one tabu call to a point already visited) nor
+				// path relinking (which recombined two elites).
+				Population* newPopulation;
+				if (this->scoutKick) {
+					int eliteCount = this->sharedVariables->parameters->getInteger(ELITE_SIZE);
+					if (eliteCount < 1) eliteCount = 1;
+					newPopulation = new Population();
+					for (int s = 0; s < numSourceAfterLimit; s++) {
+						unsigned int pick = this->sharedVariables->rng->getInteger(0, eliteCount);
+						Individual *kicked =
+							currentPopulation->getBest(this->sharedVariables, pick)->clone();
+						kicked->setNumTrials(0);
+						for (unsigned int k = 0; k < this->scoutKicks; k++)
+							this->mutation->apply(kicked, this->sharedVariables);
+						kicked->id = s;
+						newPopulation->addIndividual(kicked);
+					}
+				}
+				else
+					newPopulation = this->creation->createPopulation(numSourceAfterLimit, this->sharedVariables);
 				this->evaluator->evaluatePopulation(this->sharedVariables, newPopulation, false);
 
 				if (this->lsFrequency == LS_Frequency::MALS_INITIAL) {

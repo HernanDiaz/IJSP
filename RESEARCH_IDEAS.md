@@ -231,6 +231,7 @@ bucle y están aquí para que no se repitan; sus cifras están en el JOURNAL.
 | H-1 | back-jump (Nowicki-Smutnicki) en el tabú | vuelve mejor a los buenos puntos | -- | 22 abiertas x 5 x 300 s: 10 de 22, p = 1.000; en las 12 no vistas, tabú simple mejor, p = 0.022 | **descartada** (2026-09-19) |
 | H-2 | pool de élite + path relinking (IPRTS, rama `path-relinking`, IJSP) | recombinar casi-óptimos sale de la meseta | -- | x20: 0 mejoras en ~500 llamadas a PR; meseta neutra en calidad | **descartada** (2026-06-21) |
 | H-3 | memético con su configuración afinada vs ABC con la suya | el memético alcanza mejores makespans | -- | 22 x 10 x 300 s: ABC mejor en 18 de 22, W = 30, p = 0.002 | **descartada** (2026-09-21) |
+| I-003 | el explorador del ABC reinyecta un **elite pateado** en vez de una solución aleatoria | un arranque aleatorio a mitad de tirada no puede alcanzar a la población; uno dentro de una cuenca buena sí | pendiente | pendiente | **en curso** (2026-09-21) |
 | H-4 | N8 contra N2 (y contra N1, N3, N_ext), fase B del paper de COR | un vecindario más rico gana | -- | 82 instancias x 30 runs, 2460 bloques pareados: N2 1846.50 contra N8 1847.94, dif −1.45, p_adj = 3.9e−4, r = 0.077 (**despreciable**); rangos de Friedman N2 2.1315 el mejor de cinco, N8 2.2400 | **descartada** (antes del bucle; `experiments/cor_tabu_2026/`) |
 | H-5 | profundidad del tabú como **parámetro global** (`bad-iterations`) | más profundo es mejor | -- | dentro del espacio de irace **dos veces**: rango (5, 30) en el paper de COR para los cinco vecindarios, rango (5, 40) en los dos brazos de este proyecto. Las configuraciones ganadoras eligieron **15** para el ABC (config. 136) y **23** para el memético (config. 164), no el tope | **contestada** por el afinado, no hace falta experimento |
 | I-002 | vecindario N8 en vez de N2, **repetición de H-4** | la misma que H-4 | n8−control = −1.44, pasa (no descarta) | 3 mirillas de 6, 15 runs: **+1.52**, N8 mejor en 7 de 21, p = 0.054; reproduce H-4 en el régimen corto y crisp | **retirada** (2026-09-21): la pregunta ya estaba contestada |
@@ -666,3 +667,66 @@ depende de los datos de I-002.
 - El README del paquete dice *Computers & Operations Research*, y el PI
   habló de ASOC. O son dos artículos distintos o uno de los dos datos hay
   que corregir.
+
+### I-003 — el explorador del ABC: elite pateado en vez de solución aleatoria
+
+**Hipótesis** (una frase): a igual tiempo de reloj, reemplazar una fuente de
+comida agotada por **un clon de un elite al azar con tres mutaciones encima**
+da un makespan final menor que reemplazarla por una solución aleatoria
+nueva, que es lo que hace el ABC clásico.
+
+De dónde sale, y esto es lo importante: **de nuestra propia medida**. I-001
+midió que un arranque aleatorio está 294 unidades por encima en la generación
+0 y que de esa distancia sobrevive el **0.3 %** al final de la tirada. El
+mecanismo de abandono (`maxnumtrials = 35`,
+`ArtificialBeeColony.cpp:755-757`) inyecta exactamente ese arranque
+aleatorio, y lo hace repetidamente durante toda la tirada. Un individuo
+inyectado en la generación g nace en torno a 2100 cuando la población ya está
+en 1640, y no le queda presupuesto para alcanzarla: es diversidad que no
+puede competir. La patada lo pone dentro de una cuenca prometedora, a tres
+mutaciones de un elite, de modo que el abandono pasa de inyectar ruido a
+**reiniciar una trayectoria**, que es lo único que este proyecto tiene medido
+como positivo (JOURNAL 2026-09-21: reiniciar gana en 21 de 22 instancias).
+
+**Qué no es**, porque tres ideas vecinas ya están descartadas: no es el
+back-jump de H-1, que volvía a un punto ya visitado **dentro de una misma
+llamada al tabú**; no es el path relinking de H-2, que **recombinaba** dos
+elites; y no es la siembra de I-001, que actúa **una sola vez** en la
+generación 0 y cuyo efecto se borra. Esta actúa durante toda la tirada y en
+el momento que el propio algoritmo señala como agotado.
+
+**Qué se toca**: el ABC, no el setup. `abc.scout = kick` y
+`abc.scout.kicks = 3` en `ArtificialBeeColony.{h,cpp}`. Por defecto el
+parámetro no existe y el comportamiento es el clásico, así que la celda de
+control es idéntica en comportamiento a las de I-001 e I-002. Los tres
+golpes se fijan **de antemano** y no se ajustan; los parámetros del ABC
+siguen congelados en la configuración 136. Reutiliza la mutación ya
+configurada (`swap`), sin operador nuevo.
+
+**Búsqueda previa** (regla del 2026-09-21, aplicada): no hay nada de esto en
+el árbol. Ni clearing, ni niching, ni crowding; ni racing ni reinicio dentro
+de una tirada; ni memoria de frecuencias en `TabuList`; ni fijación de arcos
+por consenso. La fase de explorador no aparece en ningún paquete de
+`experiments/`, ni en los tags, ni como parámetro de irace en ninguno de los
+siete ficheros de parámetros del repositorio.
+
+**Celdas**: `control` (ABC clásico) y `kick`.
+
+**Endpoint primario, fijado antes de correr**: `kick` contra `control`, media
+por instancia, Wilcoxon pareado por las 21 instancias abiertas, frontera de
+Pocock **p <= 0.0142** en cada una de las seis mirillas.
+
+**Frontera simétrica**, que es el hueco que destapó I-002: cruzarla con
+`kick` en el rango menor **acepta**; cruzarla con `control` en el rango menor
+**rechaza ahí mismo** y las oleadas restantes no se corren. No cruzarla en la
+sexta también rechaza. Queda fijado ahora, antes de ver un solo dato.
+
+**Regla del filtro**: se descarta si la media de `kick − control` sobre las
+cuatro instancias del filtro supera **+2.0**. Solo descarta, y su magnitud no
+es una previsión: I-001 leyó −2.75 y luego −0.90, I-002 leyó −1.44 y luego
++1.52.
+
+**Si se acepta**: `abc.scout = kick` pasa a la configuración vigente, y la
+siguiente pregunta es si el número de golpes y la elección del elite (al
+azar contra el mejor contra el más distante) valen algo, que ya sería
+afinado y no idea.
