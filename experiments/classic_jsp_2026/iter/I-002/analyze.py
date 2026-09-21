@@ -78,8 +78,15 @@ def report(data, instances, label):
 def main():
     which = sys.argv[1] if len(sys.argv) > 1 else ""
     if which == "filter":
-        instances = instances_of("filter")
-        data = cells_of(["filter"], instances)
+        chunks = [t for t in ("fc1", "fc2", "fc3", "fc4", "fc5", "fc6")
+                  if os.path.isdir(os.path.join(EXPERIMENT, "results",
+                                                "I-002_%s_control" % t))]
+        # Chunked filter if it was run that way, the single directory if not;
+        # never both, or the runs would be counted twice.
+        tags = chunks or ["filter"]
+        instances = instances_of(tags[0])
+        data = cells_of(tags, instances)
+        print("filter read from: %s" % ", ".join(tags))
         d = report(data, instances, "filter")
         mean = statistics.mean(d)
         print("\nfilter rule: mean(n8 - control) = %+.2f; discard if > %+.1f -> %s"

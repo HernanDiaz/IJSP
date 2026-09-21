@@ -86,10 +86,25 @@ por clase, cuesta 0.61 h-CPU. La clase 30x20 (10 instancias a 150 s) es el
    su propio tag `results/<id>_full_<celda>_w<w>` (el guardia de reanudación
    de `queue_jobs.sh` cuenta runs por directorio, así que dos oleadas no
    pueden compartirlo) y el análisis suma los directorios `_w*`.
-3. **El filtro se queda con 30 runs.** Con 10, el error típico de la media
-   de las cuatro instancias del filtro sube a 1.8 unidades y la regla
-   "descarta si la diferencia supera +2" empezaría a descartar ideas
-   neutras. Lo que se recorta en el filtro son las celdas, no los runs.
+3. **El filtro se queda con 30 runs**, y también troceados. Con 10 runs, el
+   error típico de la media de las cuatro instancias sube a 1.8 unidades y la
+   regla "descarta si la diferencia supera +2" empezaría a descartar ideas
+   neutras. Lo que se recorta en el filtro son las celdas, no los runs. Los
+   30 runs se parten en 6 trozos de 5 (`fc1..fc6`, semillas 1, 6, ..., 26),
+   por la misma razón que la confirmación va por oleadas: ver el aviso de
+   abajo.
+
+**Aviso, y corrección de esta sección (2026-09-21, medido)**: el reloj de una
+tanda **no** es su coste en horas-CPU partido por 14. Eso solo vale cuando
+hay más trabajos que huecos. El suelo real es **la duración del trabajo más
+largo**, porque un trabajo es un proceso de un solo hilo. El filtro de I-002,
+8 trabajos en 14 huecos, se anunció aquí como 19 minutos y tardó **82**: sus
+30 runs de `ta45` a 150 s son 75 minutos de un solo proceso y los otros 13
+núcleos miraban. La regla correcta, que es la que ya cumplen las oleadas por
+casualidad, es **trocear los runs hasta que ningún trabajo pase de unos 13
+minutos**: 5 runs por trabajo. Con eso el filtro son 48 trabajos, 4.5 h-CPU y
+unos 20 minutos de reloj de verdad. Una oleada son 42 trabajos, ninguno de
+más de 750 s, y sus 26 minutos sí eran correctos.
 
 **Mirillas intermedias y su precio.** Analizar al final de cada oleada es un
 contraste repetido sobre los mismos datos, y eso infla el error de tipo I.

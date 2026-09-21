@@ -11,7 +11,12 @@ search. The `control` cell is byte-identical to I-001's control apart from its
 runs and seed, so the two batches remain comparable.
 
 The filter runs 30 runs per cell on the four instances fixed in
-RESEARCH_IDEAS.md. The confirmation runs as six waves of five runs over the 21
+RESEARCH_IDEAS.md, in six chunks of five runs (tags fc1..fc6, seeds 1, 6, ...,
+26) for the same reason the confirmation is waved: a batch's wall clock is
+bounded below by its longest single job, so 30 runs of ta45 in one job is 75
+minutes no matter how many cores are idle. Chunked, the filter packs into the
+14 slots and takes about 20 minutes. I-002's own filter was run unchunked,
+before this was noticed. The confirmation runs as six waves of five runs over the 21
 open instances, per "Cadencia" in RESEARCH_IDEAS.md: wave w uses runs = 5 and
 seed = 1 + 5(w-1), so the six waves together are exactly the same thirty runs
 as one batch with seed = 1, and each wave writes to its own results tag
@@ -25,6 +30,7 @@ EXPERIMENT = os.path.abspath(os.path.join(HERE, "..", ".."))
 BASE = os.path.join(EXPERIMENT, "setup", "prereg2_abc_300s.txt")
 
 FILTER_RUNS = 30
+FILTER_CHUNKS = 6                  # 6 x 5 runs, so no single job is too long
 WAVE_RUNS = 5
 WAVES = 6
 
@@ -86,7 +92,9 @@ def write(which, instances, runs, seed, tag):
 def main():
     which = sys.argv[1] if len(sys.argv) > 1 else ""
     if which == "filter":
-        write(which, FILTER, FILTER_RUNS, 1, "filter")
+        runs = FILTER_RUNS // FILTER_CHUNKS
+        for chunk in range(1, FILTER_CHUNKS + 1):
+            write(which, FILTER, runs, 1 + runs * (chunk - 1), "fc%d" % chunk)
     elif which == "wave":
         try:
             n = int(sys.argv[2])
