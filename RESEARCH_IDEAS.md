@@ -260,13 +260,43 @@ optimizar la receta de composición contra el resultado final (B-2).
   recompensa = resultado del ABC, contra un sustituto ajustado en B-2. Solo si
   B-2 muestra que la palanca es grande.
 - **B-4** Primera mejora con orden aleatorio en el tabú, en vez de
-  mejor-de-todos. Diff pequeño, sin parámetros nuevos; es la única forma en
-  que "ordenar los vecinos" puede cambiar algo con el bucle actual
-  (`LocalSearch.cpp:213-238` evalúa todos y coge el mejor no tabú).
+  mejor-de-todos. Diff pequeño, sin parámetros nuevos. Corrección al
+  razonamiento original (2026-09-21, leyendo `LS_Tabu::apply`,
+  `LocalSearch.cpp:316-435`): el bucle **ya ordena** los vecinos
+  (`sortByEstimation`) y **ya poda** (`localsearch.filter = yes` corta el
+  barrido en el primer vecino cuya estimación no mejora al mejor real
+  encontrado). Como el estimador es `heads&tails`, una cota inferior del
+  makespan tras el intercambio, la poda es exacta: el movimiento elegido es
+  el mejor de todo el vecindario aunque solo se evalúe un prefijo. Ordenar,
+  por tanto, no puede cambiar la trayectoria, solo el coste, y el coste ya
+  está podado; primera-mejora sí la cambiaría, pero el ahorro es menor de lo
+  que parecía. Prioridad baja.
 - **B-5** `[REAJUSTA]` Política aprendida de selección de movimiento en el
   tabú (RL / hiperheurística). Solo si B-4 muestra que la regla de selección
   importa.
 - **B-6** Intentos de récord: muchas tiradas cortas con la configuración
   vigente sobre la lista corta `ta29 (0) ta30 (4) ta22 (13) ta23 (14) ta27
   (16) ta26 (17) ta45 (19)`; afinar sobre las propias instancias es legítimo
-  ahí y se declara.
+  ahí y se declara. No es una idea sino el objetivo: conviene intercalarlo
+  cada pocas iteraciones, no dejarlo para el final.
+- **B-7** `[REAJUSTA]` **Longitud de tirada adaptativa**: terminar la tirada
+  tras `S` segundos sin mejorar el mejor global, en vez de agotar un
+  presupuesto fijo, y dejar que el arnés arranque la siguiente. Es la
+  continuación natural de lo que ya medimos (JOURNAL 2026-09-21: la última
+  mejora llega en la mediana al 0.32 del presupuesto, el 61.8 % de cada
+  tirada se gasta después, y reiniciar gana en 21 de 22 instancias). Los
+  presupuestos por clase son el mejor `L` *fijo*; uno adaptativo debería
+  batirlo sin tocar nada más. Diff pequeño, en la regla de parada; `S` se
+  fija de antemano en la mediana medida por clase, no se ajusta.
+- **B-8** `[REAJUSTA]` **Reparto de la búsqueda local**, a coste total igual.
+  Hoy (`localsearch.target = 0.4645`, `MALS_SOME`, `period = 1`) el tabú cae
+  cada generación sobre el **46 % de los 247 individuos elegido al azar**, y
+  cada llamada es corta: 15 iteraciones sin mejora y 2 s de tope
+  (`localsearch.bad-iterations = 15`, `localsearch.max-time = 2`). El
+  incumbente no recibe trato especial salvo por azar. Dos celdas, la primera
+  sin escribir una línea de código porque la opción ya existe: (i)
+  `localsearch.target = best`, todo el esfuerzo en el mejor; (ii) mezcla, el
+  mejor siempre más una fracción al azar, que sí pide un diff pequeño en
+  `ArtificialBeeColonyCell`. Es la iteración más barata del backlog y toca
+  la pregunta de dónde gastar el tabú, que es distinta de cómo hacerlo mejor
+  (H-1, B-4).
