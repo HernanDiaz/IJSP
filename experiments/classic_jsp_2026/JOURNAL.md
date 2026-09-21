@@ -1506,3 +1506,71 @@ I-001 closes as pre-registered -- one batch, five cells, thirty runs -- for
 two reasons: it was past two thirds when this was written, and changing a
 design after seeing its filter is how a result stops meaning anything. The
 waves start at I-002.
+
+
+### 2026-09-21: an outside reading, and two things already in the tree
+
+The PI asked for a second opinion, so the problem, the frozen configuration,
+every measurement, the three discarded ideas with their numbers and the whole
+backlog went to an outside model (OpenAI Codex, `gpt-5.6-sol`, web search on).
+Briefing and reply are kept verbatim in
+`experiments/classic_jsp_2026/reviews/2026-09-21_codex_*.md`.
+
+Its diagnosis is one sentence: the deficiency is not population throughput
+nor the quality of the starts, it is that all the intensification uses the
+same very shallow N2 trajectory. The evidence it reads that way is ours.
+Restarts work because independent starts reach different basins. Mixed seeds
+start worse and end better because they widen the basin distribution. Path
+relinking is quality-neutral because paths between elites stay inside the
+same broad region. Back-jump fails because returning to an earlier point of
+a short trajectory creates no new structure. The memetic loses because more
+generations are not more independent local-search trajectories. And the
+detail that ties it together is one we had in the setup file all along:
+`localsearch.bad-iterations = 15`. A tabu call dies after fifteen
+consecutive non-improving moves. TSAB and i-TSAB cross worsening regions for
+hundreds or thousands. What we call a tabu search may be a mildly
+non-monotone descent, which would also explain H-1: back-jumping around a
+trajectory that never went anywhere cannot help.
+
+Two of its proposals were checked against the code before being written
+down, and the check changed their price.
+
+The first, sampling several critical paths, is inapplicable: N2 already
+seeds its queue with every machine-last task whose completion equals the
+makespan and walks back through all tight predecessors, machine and job
+alike (`NeighbourhoodJSP_N2.cpp:38-88`). That is the critical graph, not a
+path.
+
+The second, a richer neighbourhood with reinsertions, is already
+implemented. `jsp.makespan.n8` is N2's boundary swaps plus extra-block
+reinsertion moves (`NeighbourhoodJSP_N8.cpp:17-22`), which is the
+Balas-Vazacopoulos family the review points at, it is registered, and
+selecting it costs one line of a setup file. The caveat is real: N8 still
+evaluates on a copy of the schedule while N2 evaluates in place, so at equal
+wall clock N8 pays a speed toll. Equal wall clock is the honest comparison
+and it is ours; if N8 shows through the toll, porting the in-place
+evaluation is the obvious follow-up.
+
+So the strongest structural idea available costs no code at all, which is
+not how these consultations usually end.
+
+The review also took our measurements apart, and it is right four times.
+The best restart length per class was chosen on the same traces that
+measured the gain, so there is selection optimism, and "21 of 22" hides both
+magnitude and dependence. The 61.8 % after the last improvement is
+descriptive rather than proof of waste, because "last" is defined using the
+future; what decides an early cutoff is the conditional hazard of another
+improvement after s seconds of stagnation. "Throughput is not the
+constraint" was overstated: the memetic result says only that generation
+count in that architecture does not predict quality. And the acceptance
+criterion measures a shift in the mean while the objective lives in the
+lower tail, so the protocol now also wants pre-declared tail endpoints: the
+probability of matching the BKS on ta30, of reaching BKS+d per shortlist
+instance, the best verified makespan after a fixed campaign, and the
+expected shortfall in the bottom tenth of runs. The Wilcoxon stays for
+choosing an algorithm. The tail is the product.
+
+Backlog after the reading: B-9 tabu depth, instrumented before it is
+changed; B-10 N8 instead of N2; B-11 a structured kick with reoptimisation;
+B-12 an exact repair window on the incumbent; B-13 heavy-tailed run lengths
+instead of adaptive ones. B-3, B-4 and B-5 drop.

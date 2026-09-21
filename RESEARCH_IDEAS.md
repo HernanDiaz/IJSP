@@ -287,16 +287,119 @@ optimizar la receta de composición contra el resultado final (B-2).
   tirada se gasta después, y reiniciar gana en 21 de 22 instancias). Los
   presupuestos por clase son el mejor `L` *fijo*; uno adaptativo debería
   batirlo sin tocar nada más. Diff pequeño, en la regla de parada; `S` se
-  fija de antemano en la mediana medida por clase, no se ajusta.
+  fija de antemano en la mediana medida por clase, no se ajusta. Aviso de la
+  revisión externa (2026-09-21): "segundos sin mejorar el mejor global"
+  asigna al revés, porque una tirada que encuentra pronto un buen incumbente
+  recibe *más* tiempo estéril que una mala que se corta antes; hay que
+  añadir un mínimo de ejecución (`0.25 L`) y comprobar antes que el riesgo
+  de mejora decae de verdad con la edad del estancamiento. Si ese riesgo no
+  cae, el corte por estancamiento no tiene base.
 - **B-8** `[REAJUSTA]` **Reparto de la búsqueda local**, a coste total igual.
   Hoy (`localsearch.target = 0.4645`, `MALS_SOME`, `period = 1`) el tabú cae
   cada generación sobre el **46 % de los 247 individuos elegido al azar**, y
   cada llamada es corta: 15 iteraciones sin mejora y 2 s de tope
   (`localsearch.bad-iterations = 15`, `localsearch.max-time = 2`). El
   incumbente no recibe trato especial salvo por azar. Dos celdas, la primera
-  sin escribir una línea de código porque la opción ya existe: (i)
-  `localsearch.target = best`, todo el esfuerzo en el mejor; (ii) mezcla, el
-  mejor siempre más una fracción al azar, que sí pide un diff pequeño en
-  `ArtificialBeeColonyCell`. Es la iteración más barata del backlog y toca
-  la pregunta de dónde gastar el tabú, que es distinta de cómo hacerlo mejor
-  (H-1, B-4).
+  **el mejor siempre más el resto al azar, a número total de llamadas
+  igual**. La revisión externa (2026-09-21) avisa de no empezar por
+  `localsearch.target = best`, que es la variante sin código: con
+  lamarckismo y élite de 86, pulir una sola estirpe destruiría la diversidad
+  que nuestros propios resultados de reinicio y de siembra dicen que
+  importa. Toca la pregunta de dónde gastar el tabú, distinta de cómo
+  hacerlo mejor (H-1, B-4), y no toca la de si el tabú es bastante profundo
+  (B-9).
+
+### Revisión externa, 2026-09-21
+
+Consulta a un modelo externo (OpenAI Codex, `gpt-5.6-sol`, con búsqueda web)
+sobre el problema, la configuración congelada, las medidas, los tres
+descartes y el backlog. Informe enviado y respuesta completa en
+`experiments/classic_jsp_2026/reviews/2026-09-21_codex_briefing.md` y
+`..._codex_review.md`. Su diagnóstico, en una frase: *la deficiencia no está
+en el rendimiento de la población ni en la calidad de los arranques, sino en
+que toda la intensificación usa la misma trayectoria N2 muy poco profunda*.
+Su orden: B-1, B-6, B-7, B-8, B-9 (nueva), B-10 (nueva), B-2, y dejar caer
+B-3, B-4 y B-5.
+
+Dos de sus propuestas se comprobaron en el código antes de anotarlas, y la
+comprobación cambió su precio:
+
+- **Muestreo de varios caminos críticos**: **inaplicable**. `N2`
+  (`NeighbourhoodJSP_N2.cpp:38-88`) no recorre *un* camino crítico: siembra
+  la cola con todas las tareas últimas de máquina cuyo fin iguala el
+  makespan y retrocede por todos los predecesores tensos, de máquina y de
+  trabajo. Ya es el grafo crítico completo.
+- **Vecindario más rico con reinserciones**: **ya está implementado**.
+  `jsp.makespan.n8` (`NeighbourhoodJSP_N8.cpp:17-22`) son los intercambios
+  de extremo de N2 *más* movimientos de reinserción fuera de bloque, que es
+  justo el tipo Balas-Vazacopoulos que la revisión señala. Está registrado y
+  se selecciona con una línea del setup, sin código. Con una advertencia:
+  N8 todavía evalúa sobre una copia del horario, mientras N2 tiene la
+  evaluación en sitio, así que a igual tiempo de reloj N8 paga un peaje de
+  velocidad. La comparación a igual tiempo es la honesta y es la nuestra; si
+  N8 asoma pese al peaje, portar la evaluación en sitio es lo siguiente.
+
+- **B-9** `[REAJUSTA]` **Profundidad del tabú**. Cada llamada muere a las 15
+  iteraciones consecutivas sin mejorar, con tope de 2 s
+  (`localsearch.bad-iterations = 15`). Para un tabú eso es rasísimo: TSAB e
+  i-TSAB cruzan regiones peores durante cientos o miles de movimientos, y lo
+  que tenemos se parece más a un descenso suavemente no monótono. Explicaría
+  de paso por qué falló el back-jump (H-1): devolver a un punto mejor no
+  cambia nada si la trayectoria nunca se alejó. Subir el parámetro a secas
+  **no** es neutral en coste (46 % de 247 individuos por generación con tope
+  de 2 s agotaría el presupuesto), así que la forma correcta es la que
+  propone la revisión: mantener las llamadas cortas para la población y
+  añadir **una** llamada profunda sobre el incumbente cuando la tirada se
+  estanca. **Antes de eso, el diagnóstico**, que es casi gratis: instrumentar
+  cada llamada con iteraciones hechas, si terminó por las 15 o por los 2 s,
+  profundidad del peor empeoramiento antes de la siguiente mejora, y makespan
+  de entrada y salida. Si casi todas mueren en 15-30 iteraciones, ahí está.
+- **B-10** **N8 en vez de N2**, o alternando. Una línea de setup, sin
+  código, y es la idea estructural más fuerte de la revisión: cambia la
+  *conectividad* del vecindario en vez de escoger mejor dentro del mismo.
+  Mecanismo plausible para 4-19 unidades, no para 3: una reinserción hace de
+  golpe lo que varios intercambios adyacentes no alcanzan. Comparar a igual
+  tiempo de reloj, nunca a igual número de iteraciones.
+- **B-11** **Patada estructurada y reoptimización** (ILS, no back-jump): al
+  estancarse, aplicar tres movimientos críticos factibles al azar sin
+  evaluar, limpiar la memoria tabú y volver al tabú. Se distingue de H-1 en
+  que H-1 volvía a un punto ya visitado; esto sale de la cuenca a propósito,
+  y se distingue del reinicio en que conserva la estructura de fondo.
+- **B-12** **Reparación por ventana exacta / CP** sobre el incumbente: fijar
+  casi todas las secuencias de máquina, liberar las dos máquinas que más
+  arcos críticos aportan y darle medio segundo a un resolutor exacto, tarde
+  en la tirada. Diff mayor, y la única familia con un mecanismo creíble para
+  encontrar la unidad suelta que N2 no ve (Beck, Feng y Watson).
+- **B-13** **Longitudes de tirada de cola pesada** en vez de adaptativas:
+  sortear el límite de cada tirada en `{L/2, L, 2L}`. Sin parámetro
+  continuo que ajustar, y protege contra las instancias donde la mejora rara
+  llega tarde. Más simple que B-7 y se prueba antes.
+
+**Crítica de la revisión a nuestras propias medidas**, aceptada y anotada
+aquí para que conste:
+
+1. El mejor `L` por clase se eligió sobre las mismas trazas con las que se
+   midió la ganancia: hay optimismo de selección, y "21 de 22" ignora la
+   magnitud y la dependencia entre instancias. La afirmación defendible es
+   que las trazas dan evidencia fuerte de que el reinicio fijo domina a los
+   300 s, no que los horizontes elegidos sean los buenos. B-1 tiene que ser
+   con tiradas independientes de verdad, paradas y relanzadas, y reportando
+   la distribución del mejor-de-k, no su media.
+2. "El 61.8 % del tiempo se gasta después de la última mejora" es
+   descriptivo, no prueba de desperdicio: toda búsqueda estocástica tiene un
+   intervalo largo tras su última mejora, porque "última" se define con el
+   futuro. Lo que decide es el riesgo condicional de mejora tras `s`
+   segundos de estancamiento.
+3. "El rendimiento no es la restricción" está sobreafirmado. El resultado
+   del memético solo dice que el número de generaciones *en esa arquitectura*
+   no predice la calidad. Las unidades útiles de rendimiento son entradas
+   independientes a cuencas, movimientos de tabú y vecinos evaluados por
+   segundo, no generaciones.
+4. El criterio de aceptación (Wilcoxon sobre medias por instancia) mide un
+   desplazamiento medio, y el objetivo es un récord, que vive en la **cola
+   inferior**. Hay que añadir endpoints predeclarados de cola: probabilidad
+   de igualar o batir el BKS en `ta30`, probabilidad de llegar a BKS+d por
+   instancia de la lista corta, mejor makespan verificado tras un
+   presupuesto total fijo, y el déficit esperado en el 5-10 % inferior de las
+   tiradas. El Wilcoxon se queda para elegir algoritmo; la cola es el
+   producto.
