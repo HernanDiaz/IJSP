@@ -1,0 +1,21 @@
+# I-001 filter: 4 instances x 5 cells, 30 runs each
+/opt/ijsp/crisp/IJSP/experiments/classic_jsp_2026/iter/I-001/setups/ta29_control.txt	I-001_filter_control	ta29
+/opt/ijsp/crisp/IJSP/experiments/classic_jsp_2026/iter/I-001/setups/ta29_v2rand.txt	I-001_filter_v2rand	ta29
+/opt/ijsp/crisp/IJSP/experiments/classic_jsp_2026/iter/I-001/setups/ta29_v2top.txt	I-001_filter_v2top	ta29
+/opt/ijsp/crisp/IJSP/experiments/classic_jsp_2026/iter/I-001/setups/ta29_v2maxmin.txt	I-001_filter_v2maxmin	ta29
+/opt/ijsp/crisp/IJSP/experiments/classic_jsp_2026/iter/I-001/setups/ta29_mix.txt	I-001_filter_mix	ta29
+/opt/ijsp/crisp/IJSP/experiments/classic_jsp_2026/iter/I-001/setups/ta30_control.txt	I-001_filter_control	ta30
+/opt/ijsp/crisp/IJSP/experiments/classic_jsp_2026/iter/I-001/setups/ta30_v2rand.txt	I-001_filter_v2rand	ta30
+/opt/ijsp/crisp/IJSP/experiments/classic_jsp_2026/iter/I-001/setups/ta30_v2top.txt	I-001_filter_v2top	ta30
+/opt/ijsp/crisp/IJSP/experiments/classic_jsp_2026/iter/I-001/setups/ta30_v2maxmin.txt	I-001_filter_v2maxmin	ta30
+/opt/ijsp/crisp/IJSP/experiments/classic_jsp_2026/iter/I-001/setups/ta30_mix.txt	I-001_filter_mix	ta30
+/opt/ijsp/crisp/IJSP/experiments/classic_jsp_2026/iter/I-001/setups/ta23_control.txt	I-001_filter_control	ta23
+/opt/ijsp/crisp/IJSP/experiments/classic_jsp_2026/iter/I-001/setups/ta23_v2rand.txt	I-001_filter_v2rand	ta23
+/opt/ijsp/crisp/IJSP/experiments/classic_jsp_2026/iter/I-001/setups/ta23_v2top.txt	I-001_filter_v2top	ta23
+/opt/ijsp/crisp/IJSP/experiments/classic_jsp_2026/iter/I-001/setups/ta23_v2maxmin.txt	I-001_filter_v2maxmin	ta23
+/opt/ijsp/crisp/IJSP/experiments/classic_jsp_2026/iter/I-001/setups/ta23_mix.txt	I-001_filter_mix	ta23
+/opt/ijsp/crisp/IJSP/experiments/classic_jsp_2026/iter/I-001/setups/ta45_control.txt	I-001_filter_control	ta45
+/opt/ijsp/crisp/IJSP/experiments/classic_jsp_2026/iter/I-001/setups/ta45_v2rand.txt	I-001_filter_v2rand	ta45
+/opt/ijsp/crisp/IJSP/experiments/classic_jsp_2026/iter/I-001/setups/ta45_v2top.txt	I-001_filter_v2top	ta45
+/opt/ijsp/crisp/IJSP/experiments/classic_jsp_2026/iter/I-001/setups/ta45_v2maxmin.txt	I-001_filter_v2maxmin	ta45
+/opt/ijsp/crisp/IJSP/experiments/classic_jsp_2026/iter/I-001/setups/ta45_mix.txt	I-001_filter_mix	ta45

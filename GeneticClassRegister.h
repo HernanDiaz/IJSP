@@ -305,6 +305,7 @@ public:
 		// -----  CREATION OPERATORS  -----------------------------------------
     	CreationMap[toUpper("ijsp-random")] = &createCreationInstance<JSP::CreationRandomSchedule>;
 		CreationMap[toUpper("jsp.random")] = &createCreationInstance<JSP::CreationRandomSchedule>;
+		CreationMap[toUpper("jsp.seeded")] = &createCreationInstance<JSP::CreationSeededSchedule>;
 		CreationMap[toUpper("jsp.SRT.makespan")] = &createCreationInstance<JSP::CreationSRTIntervalMkSchedule>;
 		CreationMap[toUpper("jsp.SNTF.makespan")] = &createCreationInstance<JSP::CreationSNTFIntervalMkSchedule>;
 		

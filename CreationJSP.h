@@ -16,3 +16,4 @@
 #include "CreationJSP_SPJF.h"
 #include "CreationJSP_SPJFInverse.h"
 #include "CreationJSP_Manager.h"
+#include "CreationJSP_Seeded.h"
