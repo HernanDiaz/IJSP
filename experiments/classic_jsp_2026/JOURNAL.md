@@ -1574,3 +1574,50 @@ Backlog after the reading: B-9 tabu depth, instrumented before it is
 changed; B-10 N8 instead of N2; B-11 a structured kick with reoptimisation;
 B-12 an exact repair window on the incumbent; B-13 heavy-tailed run lengths
 instead of adaptive ones. B-3, B-4 and B-5 drop.
+
+
+### 2026-09-21: I-001 rejected, and the number that archives two more ideas
+
+The confirmation ran from 05:22 to 14:23: 21 open instances, five cells,
+thirty runs each, 3,150 schedules, every makespan recomputed from its own
+schedule, all verified. The pre-declared endpoint was the mixed pool against
+the random control, paired by instance over the 21.
+
+It says no. Mean difference -0.90 makespan units, mix better on 13 of 21,
+W = 88.5, p = 0.348. No other cell separates either: v2rand -1.87 and 14 of
+21 at p = 0.079, v2top -1.32, v2maxmin -0.67. Best-of-seven over blocks,
+which is what a record attempt actually sees, says the same between -0.5 and
+-1.8. I-001 is discarded.
+
+The interesting result is not the rejection, it is why. The seeding worked,
+spectacularly, at the only place it can work: at generation 0 the seeded
+cells start **294 makespan units below** the control on average. By the end
+of a forty-to-a-hundred-and-fifty second run, **0.3 % of that advantage is
+left**. Whatever this solver is, it is something that erases where it
+started from. That single number does more than reject one idea. It archives
+B-2, optimising the composition recipe of the pool, and B-3, training the
+generator with the ABC's result as reward, because the ceiling on both is
+0.3 % of whatever they buy at the start: to be worth three units at the end
+they would have to be worth a thousand at the beginning. They come back only
+if something first changes the part of the search that does the erasing.
+
+Descriptively, and deciding nothing, the difference lives in 20x20: -2.17
+with mix better on 6 of 7, against +0.72 on 30x15 and -0.65 on 30x20. Three
+of the four filter instances are 20x20. That is why the filter read -2.75
+where the 21 read -0.90, and it is worth writing down as a property of the
+filter: it is biased toward the class where this effect was largest, it
+still only discards, and its magnitude is not a forecast of the final one.
+
+Nothing gets reverted. jsp.seeded is opt-in from the setup file and the
+current configuration keeps creation = jsp.random, so a discarded idea
+leaves nothing switched on. The class and the pools stay, because a
+controlled start may be wanted later for entirely different reasons.
+
+The batch also leaves the loop its missing reference. The control cell is
+now the short-run regime measured with real runs: 21 instances, 30 runs, the
+class budgets, and a mean distance of its best run to the BKS of 37.4 units.
+Everything from here is measured against that, not against our all-time
+bests, which come from far more runs at longer budgets. And B-1 now has one
+of its two sides; the other, the 300-second batch, is ten runs against
+thirty, so the analysis has to equalise CPU time before it compares
+anything.

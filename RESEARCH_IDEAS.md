@@ -157,8 +157,18 @@ nada.
 - Referencia **original** del bucle, para medir la deriva: la misma tanda
   `prereg2_abc` (2026-09-20 20:01 - 2026-09-21 00:36). Cada 3 aceptaciones,
   volver a correr la configuración vigente contra ella a 300 s.
-- Referencia en el **régimen de tiradas cortas**: la celda `control` de la
-  primera tanda completa (I-001); se rellena al cerrar I-001.
+- Referencia en el **régimen de tiradas cortas**: la celda `control` de
+  I-001, `results/I-001_full_control/`, 21 instancias x 30 runs a 40/100/150 s
+  (2026-09-21, 05:22-14:23). Media de la distancia del mejor de sus 30 runs
+  al BKS: **37.4 unidades**. Por instancia (mejor verificado, distancia al
+  BKS): ta22 1619 (19), ta23 1574 (17), ta25 1620 (25), ta26 1660 (17),
+  ta27 1703 (23), ta29 1628 (3), ta30 1607 (23), ta32 1815 (31), ta33 1848
+  (57), ta34 1856 (27), ta40 1711 (42), ta41 2069 (64), ta42 1983 (46),
+  ta43 1905 (59), ta44 2011 (32), ta45 2024 (24), ta46 2062 (58), ta47 1951
+  (62), ta48 1998 (61), ta49 1997 (36), ta50 1982 (59). Cifras completas en
+  `iter/I-001/full_analysis.txt`. Contra esta celda se mide todo lo que
+  venga, y no contra los mejores históricos, que salen de muchas más tiradas
+  y de presupuestos más largos.
 - I-001 se cierra **como se preinscribió**: una sola tanda de 5 celdas x 30
   runs, lanzada a las 05:22 del 2026-09-21 y ya por encima de dos tercios
   cuando se escribió esta sección. Cortarla para relanzarla por oleadas
@@ -196,7 +206,7 @@ bucle y están aquí para que no se repitan; sus cifras están en el JOURNAL.
 | H-1 | back-jump (Nowicki-Smutnicki) en el tabú | vuelve mejor a los buenos puntos | -- | 22 abiertas x 5 x 300 s: 10 de 22, p = 1.000; en las 12 no vistas, tabú simple mejor, p = 0.022 | **descartada** (2026-09-19) |
 | H-2 | pool de élite + path relinking (IPRTS, rama `path-relinking`, IJSP) | recombinar casi-óptimos sale de la meseta | -- | x20: 0 mejoras en ~500 llamadas a PR; meseta neutra en calidad | **descartada** (2026-06-21) |
 | H-3 | memético con su configuración afinada vs ABC con la suya | el memético alcanza mejores makespans | -- | 22 x 10 x 300 s: ABC mejor en 18 de 22, W = 30, p = 0.002 | **descartada** (2026-09-21) |
-| I-001 | sembrar la población inicial en tiradas cortas desde el banco; composición vs calidad | ver abajo | mix−control = −2.75 en 4 inst. (regla: > +2 descarta) → **pasa** | pendiente (lanzada 2026-09-21 05:2x, ~6.5 h) | **en curso** |
+| I-001 | sembrar la población inicial en tiradas cortas desde el banco; composición vs calidad | ver abajo | mix−control = −2.75 en 4 inst. (regla: > +2 descarta) → pasa | 21 inst. x 5 celdas x 30 runs: mix−control = −0.90, mejor en 13 de 21, W = 88.5, **p = 0.348**; ninguna celda separa (la mejor, `v2rand`, −1.87, p = 0.079) | **descartada** (2026-09-21) |
 
 ### I-001 — siembra en tiradas cortas: composición contra calidad
 
@@ -251,14 +261,19 @@ optimizar la receta de composición contra el resultado final (B-2).
 - **B-1** Confirmar el reinicio con tiradas reales: `k x L` por clase contra
   1 x 300 s, mismas instancias. La celda `control` de I-001 da la mitad; la
   otra mitad ya existe (`prereg2_abc`). Solo hace falta el análisis.
-- **B-2** `[REAJUSTA]` Optimizar la receta de composición del pool (cuantiles
-  de calidad, umbral de distancia, fracción, mezcla de generadores) contra
-  el makespan final a presupuesto corto, en instancias generadas; evaluar en
-  Taillard. Con irace o CMA-ES por encima. Depende de que I-001 muestre
-  señal.
-- **B-3** `[REAJUSTA]` Entrenar el generador (política RL de `v2`) con
-  recompensa = resultado del ABC, contra un sustituto ajustado en B-2. Solo si
-  B-2 muestra que la palanca es grande.
+- **B-2** ~~Optimizar la receta de composición del pool~~ **archivada
+  (2026-09-21)**, y no por falta de ganas sino por aritmética: I-001 midió
+  que una ventaja de **294 unidades de makespan en la generación 0**
+  sobrevive como **0.9 unidades al final**, el 0.3 %. El techo de cualquier
+  receta de siembra es esa fracción de lo que se gane en el arranque, y
+  para que la receta valiera tres unidades habría que mejorar el arranque en
+  mil. Depende de que algo cambie primero la parte de la búsqueda que borra
+  el arranque (B-9, B-10).
+- **B-3** ~~Entrenar el generador con recompensa = resultado del ABC~~
+  **archivada (2026-09-21)**, por lo mismo que B-2 y con más razón: la
+  recompensa que se querría optimizar conserva el 0.3 % de la señal del
+  arranque, así que el ruido de asignación de crédito de una tirada entera
+  del ABC la enterraría.
 - **B-4** Primera mejora con orden aleatorio en el tabú, en vez de
   mejor-de-todos. Diff pequeño, sin parámetros nuevos. Corrección al
   razonamiento original (2026-09-21, leyendo `LS_Tabu::apply`,
@@ -403,3 +418,38 @@ aquí para que conste:
    presupuesto total fijo, y el déficit esperado en el 5-10 % inferior de las
    tiradas. El Wilcoxon se queda para elegir algoritmo; la cola es el
    producto.
+
+### Cierre de I-001, 2026-09-21
+
+`iter/I-001/full_analysis.txt`. Decisión por el criterio predeclarado:
+**descartada**. `mix` contra `control`, media por instancia de 30 runs,
+Wilcoxon pareado por las 21: diferencia media **−0.90**, mejor en 13 de 21,
+W = 88.5, **p = 0.348**. Ninguna celda separa: `v2rand` −1.87 (14 de 21,
+p = 0.079), `v2top` −1.32 (p = 0.274), `v2maxmin` −0.67 (p = 0.876). Con
+mejor-de-7 por bloques, entre −0.5 y −1.8, igual de mudo.
+
+**Lo que sí quedó medido, y es el resultado de verdad de la iteración**: la
+siembra entró con una fuerza enorme y no sirvió de nada. En la generación 0
+las celdas sembradas arrancan **294 unidades por debajo** del control de
+media, y de esa ventaja queda **el 0.3 %** al final. La calidad del arranque
+se borra. Es una cifra, no una opinión, y es la que archiva B-2 y B-3.
+
+**Descriptivo, post hoc, no decide nada**: la diferencia `mix − control` se
+concentra en 20x20 (−2.17, mejor en 6 de 7), es nula en 30x15 (+0.72) y casi
+nula en 30x20 (−0.65). Tres de las cuatro instancias del filtro son 20x20,
+así que el filtro está sesgado hacia la clase donde el efecto es mayor y por
+eso dio −2.75 donde las 21 dan −0.90. El filtro sigue valiendo, porque solo
+descarta, pero **su magnitud no es una previsión de la magnitud final** y no
+debe leerse como tal.
+
+**Qué se revierte**: nada. `jsp.seeded` es opcional y se activa desde el
+fichero de setup; la configuración vigente conserva `creation = jsp.random`,
+así que la idea descartada no deja nada encendido. El código y los pools se
+quedan porque B-9 y B-10 podrían querer un arranque controlado por otras
+razones.
+
+**B-1 ya tiene sus datos** por un lado: la celda `control` de I-001 es el
+régimen corto con tiradas reales. El otro lado, `results/prereg2_abc/`, son
+10 runs a 300 s. Los presupuestos totales no coinciden (20x20: 30 x 40 s
+= 1200 s contra 10 x 300 s = 3000 s), así que el análisis tiene que igualar
+tiempo de CPU antes de comparar, o la comparación no dice nada.
