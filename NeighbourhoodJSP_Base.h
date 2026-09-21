@@ -77,6 +77,9 @@ public:
 
 	virtual void discardNeighbour(const unsigned int idx);
 
+	/** DIAGNOSTIC: recompute every tail from scratch. */
+	void recomputeAllTails();
+
 	virtual void sortByEstimation(const FuzzyFW::SharedVars *svars);
 
 	// Pure virtual — each neighbourhood defines its own search and move

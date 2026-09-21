@@ -17,6 +17,10 @@ namespace FuzzyFW {
 
 #define  FUZZYFW_LOCAL_SEARCH_DRIVE "localsearch.estimation-guide"
 #define  FUZZYFW_LOCAL_SEARCH_FILTER "localsearch.filter"
+// How the tails feeding the heads&tails estimate are maintained.
+//   "incremental" (default, unchanged), or "full": recomputed before every
+//   estimation. See LocalSearch::setup for the measurement behind this.
+#define  FUZZYFW_LOCAL_SEARCH_TAILS "localsearch.tails"
 
 #define FUZZYFW_LOCAL_SEARCH_TABUITER "localsearch.bad-iterations"
 
@@ -50,6 +54,9 @@ protected:
 
 	std::string filterLabel;
 	char estimationFilter;
+
+	std::string tailsLabel;
+	bool fullTails;
 
 	Neighbourhood * neighbourhood;
 

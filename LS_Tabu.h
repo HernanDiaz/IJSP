@@ -27,6 +27,20 @@ protected:
 	unsigned int badIterations;
 
 public:
+		//-----  DIAGNOSTIC 2026-09-21  --------------------------------------
+		// Does the order in which N2's neighbours are visited decide anything?
+		// It cannot change which VALUE is best, but isBetterThan is strict, so
+		// among several neighbours attaining that value the scan keeps the
+		// FIRST one it reaches, and with the estimation filter on it never even
+		// evaluates the others. These counters measure how often that choice
+		// exists, and whether the heads&tails estimate is a true lower bound.
+		// Run them with localsearch.filter = no, so every neighbour is seen.
+		static unsigned long diagTieSum;        // ties at the best eligible value
+		static unsigned long diagIters;         // tabu iterations counted
+		static unsigned long diagScanned;       // neighbours evaluated
+		static unsigned long diagBoundBreaks;   // estimation strictly worse than the real value
+		static unsigned long diagTieMax;        // the largest tie seen
+
 	explicit LS_Tabu(ParameterDB *parameters = NULL);
 	LS_Tabu(const LS_Tabu &source);
 

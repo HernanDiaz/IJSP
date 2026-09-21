@@ -5,6 +5,8 @@
 */
 
 #include "LocalSearch.h"
+#include "NeighbourhoodJSP_Base.h"
+#include <cstdlib>
 #include <time.h>
 
 namespace FuzzyFW {
@@ -24,7 +26,8 @@ LocalSearch::LocalSearch(ParameterDB *parameters)
 	evaluations(0), timeLabel(FUZZYFW_LOCAL_SEARCH_TIME), maxTime(0.0),
 	neighbours(0), iterations(0), neighbourhood(NULL),
 	guideLabel(FUZZYFW_LOCAL_SEARCH_DRIVE), estimationGuided(false),
-	filterLabel(FUZZYFW_LOCAL_SEARCH_FILTER), estimationFilter(false)
+	filterLabel(FUZZYFW_LOCAL_SEARCH_FILTER), estimationFilter(false),
+	tailsLabel(FUZZYFW_LOCAL_SEARCH_TAILS), fullTails(false)
 	{
 	if (parameters != NULL)
 		this->setup(parameters);
@@ -39,6 +42,7 @@ LocalSearch::LocalSearch(const LocalSearch &source)
 	timeLabel(source.timeLabel), maxTime(source.maxTime),
 	guideLabel(source.guideLabel), estimationGuided(source.estimationGuided),
 	filterLabel(source.filterLabel), estimationFilter(source.estimationFilter),
+	tailsLabel(source.tailsLabel), fullTails(source.fullTails),
 	neighbours(source.neighbours) {
 
 	if (source.neighbourhood != NULL)
@@ -61,6 +65,19 @@ void LocalSearch::setup(ParameterDB *parameters) {
 
 	// Loads the filter mechanism
 	this->estimationFilter = parameters->getBoolean(this->filterLabel, false);
+
+	// How the tails feeding the heads&tails estimate are maintained.
+	//   "incremental" (default, unchanged): the backward sweep of
+	//       acceptNeighbour, which only continues while a tail changes
+	//   "full"       : recomputed from scratch before every estimation
+	// Measured 2026-09-22 on ta29: with the incremental tails the estimate
+	// exceeds the true value of the neighbour in 882,481 of 1,362,270
+	// evaluations, 64.8 %, so it is not a lower bound, the neighbourhood is
+	// sorted wrongly and the estimation filter prunes away moves that are
+	// actually better. Recomputed from scratch, the violations are 0 of
+	// 1,352,160 and the throughput cost is under 1 %.
+	this->fullTails =
+		(parameters->getStringLower(this->tailsLabel).compare("full") == 0);
 }
 
 
@@ -313,6 +330,12 @@ bool LS_Tabu::stoppingCriteria() {
 //		METHODS
 //=============================================================================
 //-----  Apply method  --------------------------------------------------------
+unsigned long LS_Tabu::diagTieSum = 0;
+unsigned long LS_Tabu::diagIters = 0;
+unsigned long LS_Tabu::diagScanned = 0;
+unsigned long LS_Tabu::diagBoundBreaks = 0;
+unsigned long LS_Tabu::diagTieMax = 0;
+
 FullSolution LS_Tabu::apply(const Solution *solution,
 	const Fitness *fitness, const SharedVars *svars) {
 
@@ -367,9 +390,23 @@ FullSolution LS_Tabu::apply(const Solution *solution,
 		nNeighbours =
 			this->neighbourhood->findNewNeighbours(svars);
 		this->neighbours += nNeighbours;
+		// DIAGNOSTIC: with N2_FULL_TAILS set, rebuild every tail from scratch
+		// before the estimations are computed, so that the estimator works on
+		// exact data instead of on whatever the incremental maintenance left.
+		{
+			const bool fullTails = this->fullTails;
+			if (fullTails) {
+				JSP::NB_ParallelBase_MakespanJSP *nb =
+					dynamic_cast<JSP::NB_ParallelBase_MakespanJSP *>(this->neighbourhood);
+				if (nb != NULL) nb->recomputeAllTails();
+			}
+		}
 		this->neighbourhood->sortByEstimation(svars);
 
 		index = 0;
+		unsigned long diagTies = 0;               // eligible neighbours at the best value
+		double diagBestSeen = 0.0;
+		bool diagHaveBest = false;
 		while (index < nNeighbours) {
 			estimation = this->neighbourhood->getEstimation(index, svars);
 			isTabu = this->tabuList->isTabu(this->neighbourhood->getNeighbour(index));
@@ -387,6 +424,33 @@ FullSolution LS_Tabu::apply(const Solution *solution,
 				else {
 					realValue = this->neighbourhood->evaluateNeighbour(index, svars, false);
 					this->evaluations++;
+					// DIAGNOSTIC: is the estimate a lower bound, and how many
+					// eligible neighbours tie at the best value?
+					if (realValue != NULL) {
+						LS_Tabu::diagScanned++;
+						// Dump the first few (estimate, real) pairs so the
+						// counter above can be checked against actual numbers,
+						// and so a stale-pointer artefact would be visible.
+						if (LS_Tabu::diagScanned <= 25 && estimation != NULL)
+							fprintf(stderr, "[N2PAIR] est=%.0f real=%.0f %s\n",
+								estimation->toDouble(), realValue->toDouble(),
+								(estimation->toDouble() > realValue->toDouble())
+									? "ESTIMATE ABOVE REAL" : "");
+						if (estimation != NULL
+							&& estimation->isWorseThan(realValue))
+							LS_Tabu::diagBoundBreaks++;
+						bool eligible =
+							(!isTabu || realValue->isBetterThan(bestSolution.second))
+							&& (lastNeighbour == NULL || !isLastNeighbour);
+						if (eligible) {
+							double v = realValue->toDouble();
+							if (!diagHaveBest || v < diagBestSeen) {
+								diagBestSeen = v; diagHaveBest = true; diagTies = 1;
+							}
+							else if (v == diagBestSeen)
+								diagTies++;
+						}
+					}
 					if (realValue != NULL
 						&& (best == NULL || realValue->isBetterThan(best))
 						&& (!isTabu || realValue->isBetterThan(bestSolution.second))
@@ -401,6 +465,11 @@ FullSolution LS_Tabu::apply(const Solution *solution,
 				index = nNeighbours;
 		}
 
+		if (diagHaveBest) {
+			LS_Tabu::diagIters++;
+			LS_Tabu::diagTieSum += diagTies;
+			if (diagTies > LS_Tabu::diagTieMax) LS_Tabu::diagTieMax = diagTies;
+		}
 		if (bestNeighbor >= 0) {
 			if (lastNeighbour != NULL)
 				delete lastNeighbour;

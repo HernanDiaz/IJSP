@@ -6,6 +6,7 @@
 */
 
 #include "ArtificialBeeColonyPSO.h"
+#include "LS_Tabu.h"
 #include <iostream>
 #include <set>
 
@@ -242,6 +243,15 @@ namespace FuzzyFW {
 		stats.push_back(std::pair<std::string, double>
 			("Total replacements in ABC",
 			(double)this->abc_replacements));
+		stats.push_back(std::pair<std::string, double>
+			("N2 ties at best per tabu iteration",
+			LS_Tabu::diagIters ? (double)LS_Tabu::diagTieSum / LS_Tabu::diagIters : 0.0));
+		stats.push_back(std::pair<std::string, double>
+			("N2 largest tie seen", (double)LS_Tabu::diagTieMax));
+		stats.push_back(std::pair<std::string, double>
+			("N2 neighbours evaluated", (double)LS_Tabu::diagScanned));
+		stats.push_back(std::pair<std::string, double>
+			("N2 estimate above real value", (double)LS_Tabu::diagBoundBreaks));
 		stats.push_back(std::pair<std::string, double>
 			("Plateau vetoes in crossover",
 			(double)this->plateauVetoesCross));
