@@ -221,7 +221,7 @@ bucle y están aquí para que no se repitan; sus cifras están en el JOURNAL.
 | H-1 | back-jump (Nowicki-Smutnicki) en el tabú | vuelve mejor a los buenos puntos | -- | 22 abiertas x 5 x 300 s: 10 de 22, p = 1.000; en las 12 no vistas, tabú simple mejor, p = 0.022 | **descartada** (2026-09-19) |
 | H-2 | pool de élite + path relinking (IPRTS, rama `path-relinking`, IJSP) | recombinar casi-óptimos sale de la meseta | -- | x20: 0 mejoras en ~500 llamadas a PR; meseta neutra en calidad | **descartada** (2026-06-21) |
 | H-3 | memético con su configuración afinada vs ABC con la suya | el memético alcanza mejores makespans | -- | 22 x 10 x 300 s: ABC mejor en 18 de 22, W = 30, p = 0.002 | **descartada** (2026-09-21) |
-| I-002 | vecindario N8 (N2 + reinserciones fuera de bloque) en vez de N2 | cambiar la *conectividad* del vecindario, no la elección dentro del mismo | pendiente | pendiente | **en curso** (2026-09-21) |
+| I-002 | vecindario N8 (N2 + reinserciones fuera de bloque) en vez de N2 | cambiar la *conectividad* del vecindario, no la elección dentro del mismo | **anulado**: N8 emitía horarios infactibles (ta45 24 de 30, ta23 1 de 30); el filtro se relanza tras arreglarlo, sin haber mirado la comparación | pendiente | **en curso**, bloqueado por el fallo |
 | I-001 | sembrar la población inicial en tiradas cortas desde el banco; composición vs calidad | ver abajo | mix−control = −2.75 en 4 inst. (regla: > +2 descarta) → pasa | 21 inst. x 5 celdas x 30 runs: mix−control = −0.90, mejor en 13 de 21, W = 88.5, **p = 0.348**; ninguna celda separa (la mejor, `v2rand`, −1.87, p = 0.079) | **descartada** (2026-09-21) |
 
 ### I-001 — siembra en tiradas cortas: composición contra calidad
@@ -523,3 +523,38 @@ de la magnitud final: tres de sus cuatro instancias son 20x20.
 **Si se acepta**: `jsp.makespan.n8` pasa a la configuración vigente y la
 siguiente idea es portarle la evaluación en sitio, que es rendimiento puro
 sobre un vecindario que ya habría demostrado valer.
+
+### I-002, primer filtro anulado por un fallo de N8 (2026-09-21)
+
+El filtro corrió de 14:37 a 16:14 y la cola salió con estado **1**: la
+verificación rechazó horarios. `N8` emitía soluciones **infactibles**, con
+operaciones solapadas en una máquina: en `ta45`, **24 de 30** tiradas; en
+`ta23`, 1 de 30; en `ta29` y `ta30`, ninguna. Todos los solapes de `ta45` son
+en la máquina 7 y entre los mismos tres trabajos, o sea un fallo
+sistemático, no ruido.
+
+**Qué falla**, en `NB_ParallelN8_MakespanJSP::evaluateNeighbour` para los
+movimientos de reinserción (`tipo = 1`,
+`NeighbourhoodJSP_N8.cpp:380-391`): la propagación de cabezas siembra la cola
+con `oldMs` y con `T`, y le falta **`newMs`**. Al reinsertar `T` entre `newMp`
+y `newMs`, el predecesor de máquina de `newMs` pasa de ser `newMp` a ser `T`,
+así que su cabeza hay que recalcularla siempre. Tal como estaba, solo se
+recalcula si la cabeza de `T` cambia, porque entonces la BFS empuja a sus
+sucesores. Cuando la cabeza de `T` no cambia, `newMs` se queda con la cabeza
+que tenía con su predecesor viejo, arranca antes de que `T` termine, y **el
+makespan sale falsamente mejor**, que es justo por lo que la búsqueda
+aceptaba esos movimientos.
+
+**Qué hace esto por el método**: es la mejor defensa que ha tenido la regla
+de recomputar el makespan desde el propio horario. El solver reportó esas
+soluciones como buenas y como mejores; nada dentro del solver lo habría
+detectado. También dice que el humo previo fue demasiado estrecho: probé
+`ta29` con 4 tiradas y `ta29` es precisamente una de las dos instancias donde
+el fallo no salió.
+
+**Qué se hace**: el filtro queda **anulado por invalidez**, no descartado, y
+la decisión de anularlo se toma **sin haber calculado la comparación**, que
+sobre una celda con 24 de 30 tiradas infactibles no significaría nada. Se
+arregla `N8`, se comprueba en `ta45`, que es la instancia que lo destapó, y
+se relanza el filtro entero. La regla del filtro y el endpoint primario de
+I-002 siguen siendo los preinscritos: no se toca ninguno.
