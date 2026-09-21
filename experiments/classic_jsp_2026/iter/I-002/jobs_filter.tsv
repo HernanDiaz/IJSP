@@ -1,0 +1,9 @@
+# I-002 filter: 4 instances x 2 cells, 30 runs each, seed 1
+/opt/ijsp/crisp/IJSP/experiments/classic_jsp_2026/iter/I-002/setups/ta29_control_filter.txt	I-002_filter_control	ta29
+/opt/ijsp/crisp/IJSP/experiments/classic_jsp_2026/iter/I-002/setups/ta29_n8_filter.txt	I-002_filter_n8	ta29
+/opt/ijsp/crisp/IJSP/experiments/classic_jsp_2026/iter/I-002/setups/ta30_control_filter.txt	I-002_filter_control	ta30
+/opt/ijsp/crisp/IJSP/experiments/classic_jsp_2026/iter/I-002/setups/ta30_n8_filter.txt	I-002_filter_n8	ta30
+/opt/ijsp/crisp/IJSP/experiments/classic_jsp_2026/iter/I-002/setups/ta23_control_filter.txt	I-002_filter_control	ta23
+/opt/ijsp/crisp/IJSP/experiments/classic_jsp_2026/iter/I-002/setups/ta23_n8_filter.txt	I-002_filter_n8	ta23
+/opt/ijsp/crisp/IJSP/experiments/classic_jsp_2026/iter/I-002/setups/ta45_control_filter.txt	I-002_filter_control	ta45
+/opt/ijsp/crisp/IJSP/experiments/classic_jsp_2026/iter/I-002/setups/ta45_n8_filter.txt	I-002_filter_n8	ta45

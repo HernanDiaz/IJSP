@@ -206,6 +206,7 @@ bucle y están aquí para que no se repitan; sus cifras están en el JOURNAL.
 | H-1 | back-jump (Nowicki-Smutnicki) en el tabú | vuelve mejor a los buenos puntos | -- | 22 abiertas x 5 x 300 s: 10 de 22, p = 1.000; en las 12 no vistas, tabú simple mejor, p = 0.022 | **descartada** (2026-09-19) |
 | H-2 | pool de élite + path relinking (IPRTS, rama `path-relinking`, IJSP) | recombinar casi-óptimos sale de la meseta | -- | x20: 0 mejoras en ~500 llamadas a PR; meseta neutra en calidad | **descartada** (2026-06-21) |
 | H-3 | memético con su configuración afinada vs ABC con la suya | el memético alcanza mejores makespans | -- | 22 x 10 x 300 s: ABC mejor en 18 de 22, W = 30, p = 0.002 | **descartada** (2026-09-21) |
+| I-002 | vecindario N8 (N2 + reinserciones fuera de bloque) en vez de N2 | cambiar la *conectividad* del vecindario, no la elección dentro del mismo | pendiente | pendiente | **en curso** (2026-09-21) |
 | I-001 | sembrar la población inicial en tiradas cortas desde el banco; composición vs calidad | ver abajo | mix−control = −2.75 en 4 inst. (regla: > +2 descarta) → pasa | 21 inst. x 5 celdas x 30 runs: mix−control = −0.90, mejor en 13 de 21, W = 88.5, **p = 0.348**; ninguna celda separa (la mejor, `v2rand`, −1.87, p = 0.079) | **descartada** (2026-09-21) |
 
 ### I-001 — siembra en tiradas cortas: composición contra calidad
@@ -453,3 +454,57 @@ régimen corto con tiradas reales. El otro lado, `results/prereg2_abc/`, son
 10 runs a 300 s. Los presupuestos totales no coinciden (20x20: 30 x 40 s
 = 1200 s contra 10 x 300 s = 3000 s), así que el análisis tiene que igualar
 tiempo de CPU antes de comparar, o la comparación no dice nada.
+
+### I-002 — N8 en vez de N2
+
+**Hipótesis** (una frase): a igual tiempo de reloj, hacer la búsqueda tabú
+sobre `jsp.makespan.n8`, que son los intercambios de extremo de bloque de N2
+**más** movimientos de reinserción fuera de bloque, da un makespan final
+menor que hacerla sobre N2.
+
+De dónde sale: (i) la revisión externa del 2026-09-21 señala que las tres
+ideas descartadas (back-jump, path relinking, memético) y las dos que algo
+hacen (reinicio, siembra) son todas consistentes con un problema de *acceso a
+cuencas*, y que las dos palancas que quedan son la profundidad de la
+trayectoria tabú y la **conectividad del vecindario**; (ii) I-001 acaba de
+medir que 294 unidades de ventaja en la generación 0 se evaporan hasta 0.9 al
+final, o sea que de dónde se parte no decide nada y lo que decide es por
+dónde se puede ir; (iii) una reinserción hace de una vez lo que varios
+intercambios adyacentes no alcanzan, que es el mecanismo plausible para 4-19
+unidades y no para 3.
+
+**Qué se toca**: **una línea** del setup,
+`localsearch.neighbourhood = jsp.makespan.n8`. Ni una de código. El resto de
+la configuración, congelada. La celda `control` es la misma de I-001 salvo
+runs y semilla, así que las dos tandas se pueden mirar juntas.
+
+**El peaje, declarado de antemano**: N8 todavía evalúa sobre una copia del
+horario mientras N2 evalúa en sitio (JOURNAL, refactor crisp), así que a
+igual tiempo de reloj N8 examina menos vecinos por segundo. La comparación a
+igual tiempo es la honesta y es la nuestra: si N8 gana pese al peaje, el
+siguiente paso evidente es portarle la evaluación en sitio; si pierde, no se
+sabrá si fue el vecindario o el peaje, y eso se anotará como tal en vez de
+declarar muerto al vecindario.
+
+**Comprobado antes de correr** (2026-09-21, `ta29`, 4 runs x 40 s con las
+mismas semillas): N8 produce horarios factibles y verificados, y su
+trayectoria **no** es la de N2 (1634/1637/1631/1645 contra
+1642/1634/1640/1639), o sea que los movimientos extra entran de verdad.
+Cuatro tiradas no miden nada más que eso.
+
+**Celdas**: `control` (N2) y `n8`. Dos, según la cadencia nueva.
+
+**Endpoint primario, fijado antes de correr**: `n8` contra `control`, media
+por instancia, Wilcoxon pareado por las 21 instancias abiertas, **p <= 0.0142
+en cada una de las seis mirillas** (frontera de Pocock) y `n8` con menor
+rango. **Secundario, reportado y no decisorio**: el mejor esperado por celda
+sobre las tiradas acumuladas.
+
+**Regla del filtro**: se descarta si la media de `n8 − control` sobre las
+cuatro instancias del filtro supera **+2.0** unidades. El filtro solo
+descarta. Y, con lo aprendido en I-001, su magnitud **no** es una previsión
+de la magnitud final: tres de sus cuatro instancias son 20x20.
+
+**Si se acepta**: `jsp.makespan.n8` pasa a la configuración vigente y la
+siguiente idea es portarle la evaluación en sitio, que es rendimiento puro
+sobre un vecindario que ya habría demostrado valer.
