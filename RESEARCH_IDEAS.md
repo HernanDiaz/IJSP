@@ -231,7 +231,7 @@ bucle y están aquí para que no se repitan; sus cifras están en el JOURNAL.
 | H-1 | back-jump (Nowicki-Smutnicki) en el tabú | vuelve mejor a los buenos puntos | -- | 22 abiertas x 5 x 300 s: 10 de 22, p = 1.000; en las 12 no vistas, tabú simple mejor, p = 0.022 | **descartada** (2026-09-19) |
 | H-2 | pool de élite + path relinking (IPRTS, rama `path-relinking`, IJSP) | recombinar casi-óptimos sale de la meseta | -- | x20: 0 mejoras en ~500 llamadas a PR; meseta neutra en calidad | **descartada** (2026-06-21) |
 | H-3 | memético con su configuración afinada vs ABC con la suya | el memético alcanza mejores makespans | -- | 22 x 10 x 300 s: ABC mejor en 18 de 22, W = 30, p = 0.002 | **descartada** (2026-09-21) |
-| I-003 | el explorador del ABC reinyecta un **elite pateado** en vez de una solución aleatoria | un arranque aleatorio a mitad de tirada no puede alcanzar a la población; uno dentro de una cuenca buena sí | pendiente | pendiente | **en curso** (2026-09-21). Una retirada previa fue **errónea**, ver la retractación abajo |
+| I-003 | el explorador del ABC reinyecta un **elite pateado** en vez de una solución aleatoria | un arranque aleatorio a mitad de tirada no puede alcanzar a la población; uno dentro de una cuenca buena sí | kick−control = **+1.43** (ta23 −0.27, ta29 +0.70, ta30 −0.50, ta45 **+5.80**); regla > +2 descarta → **pasa, por poco y en contra** | en curso (oleadas) | **en curso**. Una retirada previa fue **errónea**, ver la retractación abajo |
 | H-4 | N8 contra N2 (y contra N1, N3, N_ext), fase B del paper de COR | un vecindario más rico gana | -- | 82 instancias x 30 runs, 2460 bloques pareados: N2 1846.50 contra N8 1847.94, dif −1.45, p_adj = 3.9e−4, r = 0.077 (**despreciable**); rangos de Friedman N2 2.1315 el mejor de cinco, N8 2.2400 | **descartada** (antes del bucle; `experiments/cor_tabu_2026/`) |
 | H-5 | profundidad del tabú como **parámetro global** (`bad-iterations`) | más profundo es mejor | -- | dentro del espacio de irace **dos veces**: rango (5, 30) en el paper de COR para los cinco vecindarios, rango (5, 40) en los dos brazos de este proyecto. Las configuraciones ganadoras eligieron **15** para el ABC (config. 136) y **23** para el memético (config. 164), no el tope | **contestada** por el afinado, no hace falta experimento |
 | I-002 | vecindario N8 en vez de N2, **repetición de H-4** | la misma que H-4 | n8−control = −1.44, pasa (no descarta) | 3 mirillas de 6, 15 runs: **+1.52**, N8 mejor en 7 de 21, p = 0.054; reproduce H-4 en el régimen corto y crisp | **retirada** (2026-09-21): la pregunta ya estaba contestada |
@@ -835,3 +835,22 @@ más que la idea:
 **Qué se revierte**: nada, y el código de la patada se queda con un comentario
 en `ArtificialBeeColony.cpp` que dice que es rama muerta mientras el abandono
 no se active, con la medida y la fecha. Borrarlo perdería el hallazgo.
+
+### I-003, filtro: pasa, y hay que decir cómo
+
+`iter/I-003/filter_analysis.txt`, 48 trabajos, cero infactibles. Medias de 30
+runs, `kick` menos `control`: ta23 −0.27, ta29 +0.70, ta30 −0.50, ta45
+**+5.80**; media **+1.43**. La regla preinscrita descartaba por encima de
++2.0, así que **pasa**, pero pasa **por poco y con la dirección en contra de
+la hipótesis**. La regla solo descarta y se aplica literalmente: va a las
+oleadas. Lo que acota el coste es la frontera simétrica, que rechazará en la
+mirilla en que cruce en lugar de gastar las seis.
+
+**Tercera reproducción del control**, y ya es un registro: la celda `control`
+de este filtro es la misma configuración y las mismas semillas que las de
+I-001 y I-002, corrida en otro momento del día. ta23 1587.3 contra 1587.3,
+ta29 1640.8 contra 1641.3, ta30 1623.4 contra 1623.4, ta45 2041.9 contra
+2041.9. Media décima de unidad de diferencia sobre makespans de 1587 a 2042.
+El ruido entre tandas de este banco de pruebas es despreciable al lado de los
+efectos que perseguimos, y eso es lo que hace que un efecto de tres unidades
+sea detectable.
