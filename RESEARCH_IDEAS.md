@@ -221,7 +221,7 @@ bucle y están aquí para que no se repitan; sus cifras están en el JOURNAL.
 | H-1 | back-jump (Nowicki-Smutnicki) en el tabú | vuelve mejor a los buenos puntos | -- | 22 abiertas x 5 x 300 s: 10 de 22, p = 1.000; en las 12 no vistas, tabú simple mejor, p = 0.022 | **descartada** (2026-09-19) |
 | H-2 | pool de élite + path relinking (IPRTS, rama `path-relinking`, IJSP) | recombinar casi-óptimos sale de la meseta | -- | x20: 0 mejoras en ~500 llamadas a PR; meseta neutra en calidad | **descartada** (2026-06-21) |
 | H-3 | memético con su configuración afinada vs ABC con la suya | el memético alcanza mejores makespans | -- | 22 x 10 x 300 s: ABC mejor en 18 de 22, W = 30, p = 0.002 | **descartada** (2026-09-21) |
-| I-002 | vecindario N8 (N2 + reinserciones fuera de bloque) en vez de N2 | cambiar la *conectividad* del vecindario, no la elección dentro del mismo | **anulado**: N8 emitía horarios infactibles (ta45 24 de 30, ta23 1 de 30); el filtro se relanza tras arreglarlo, sin haber mirado la comparación | pendiente | **en curso**, bloqueado por el fallo |
+| I-002 | vecindario N8 (N2 + reinserciones fuera de bloque) en vez de N2 | cambiar la *conectividad* del vecindario, no la elección dentro del mismo | n8−control = **−1.44** (ta23 −5.00, ta30 −5.57, ta29 +1.43, ta45 +3.37); regla > +2 descarta → **pasa**. El primero se anuló por infactibilidad | pendiente (oleadas) | **en curso** |
 | I-001 | sembrar la población inicial en tiradas cortas desde el banco; composición vs calidad | ver abajo | mix−control = −2.75 en 4 inst. (regla: > +2 descarta) → pasa | 21 inst. x 5 celdas x 30 runs: mix−control = −0.90, mejor en 13 de 21, W = 88.5, **p = 0.348**; ninguna celda separa (la mejor, `v2rand`, −1.87, p = 0.079) | **descartada** (2026-09-21) |
 
 ### I-001 — siembra en tiradas cortas: composición contra calidad
@@ -558,3 +558,42 @@ sobre una celda con 24 de 30 tiradas infactibles no significaría nada. Se
 arregla `N8`, se comprueba en `ta45`, que es la instancia que lo destapó, y
 se relanza el filtro entero. La regla del filtro y el endpoint primario de
 I-002 siguen siendo los preinscritos: no se toca ninguno.
+
+### I-002, filtro (segundo, válido): pasa
+
+`iter/I-002/filter_analysis.txt`, 2026-09-21 16:29-17:05, 48 trabajos, cero
+infactibles. Medias de 30 runs, `n8` menos `control`: ta23 **−5.00**, ta30
+**−5.57**, ta29 **+1.43**, ta45 **+3.37**; media **−1.44**. La regla
+preinscrita descartaba si superaba +2.0, así que **pasa** y va a las oleadas.
+Nada más se puede leer aquí: el filtro solo descarta, y I-001 acaba de
+demostrar que su magnitud no anticipa la final.
+
+**Control reproducido, de regalo**: la celda `control` de este filtro es la
+misma configuración y las mismas semillas que la de I-001, corrida cinco
+horas después y troceada en seis procesos en vez de uno. Medias: ta23 1587.3
+contra 1587.3, ta29 1641.3 contra 1641.1, ta30 1623.4 contra 1623.4, ta45
+2041.9 contra 2042.1. A dos décimas de unidad. No son idénticas porque el
+presupuesto es tiempo y no generaciones, así que la carga de la máquina
+cambia cuántas se hacen; que la diferencia sea de 0.2 unidades sobre 1600 a
+2000 dice que el ruido entre tandas es mucho menor que los efectos que
+perseguimos, y que trocear los runs no cambia nada.
+
+**Segunda corrección al reloj, ahora medida y no estimada**: el suelo de una
+tanda no es ni el coste partido por 14 ni el trabajo más largo, es **la suma
+de los dos**, porque el último trabajo no puede empezar hasta que se haya
+despachado el resto. Con 48 trabajos y 4.5 h-CPU: 19 minutos de despacho
+más 16 del último trabajo de `ta45` = 35, y midió 36. Además un trabajo con
+la máquina llena va un **28 %** más lento que su presupuesto nominal de CPU.
+La fórmula que vale, y que hay que usar para prometer plazos:
+
+```
+reloj ~= (coste_total_CPU - trabajo_mas_largo) / huecos + trabajo_mas_largo * 1.28
+```
+
+Consecuencia para las oleadas: una oleada de 5 runs sobre las 21 instancias
+son 6.1 h-CPU, o sea 26 minutos de despacho como suelo irreducible, más unos
+16 del último trabajo de 30x20: **unos 35 minutos**, no 26. Las seis oleadas
+son 3.5 h, no 2.6. Sigue siendo una decisión cada 35 minutos en vez de una
+cada 6.5 horas, y el 70 % de las decisiones caen en las dos primeras, así
+que el diseño se mantiene tal como está preinscrito; lo que se corrige es la
+cifra que se anuncia.

@@ -1,0 +1,12 @@
+filter read from: fc1, fc2, fc3, fc4, fc5, fc6
+=== I-002 filter: per-instance mean (best in brackets) ===
+inst             control                n8   n8 - ctrl
+ta23       1587.3 [1574]     1582.3 [1568]       -5.00
+ta29       1641.3 [1630]     1642.7 [1634]       +1.43
+ta30       1623.4 [1607]     1617.8 [1602]       -5.57
+ta45       2041.9 [2024]     2045.2 [2016]       +3.37
+
+runs per cell and instance: 30
+
+filter rule: mean(n8 - control) = -1.44; discard if > +2.0 -> PASS, go to the waves
+the filter only discards: it cannot accept anything.
