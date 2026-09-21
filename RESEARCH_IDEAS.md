@@ -97,7 +97,12 @@ nada.
   volver a correr la configuración vigente contra ella a 300 s.
 - Referencia en el **régimen de tiradas cortas**: la celda `control` de la
   primera tanda completa (I-001); se rellena al cerrar I-001.
-- Registro del filtro: pendiente (I-001).
+- Registro del filtro: `experiments/classic_jsp_2026/iter/I-001/filter_analysis.txt`
+  (2026-09-21, 03:13-~04:05). Medias de 30 runs, control / mix: ta23 1587.8 / 1582.1,
+  ta29 1641.1 / 1640.0, ta30 1623.8 / 1619.7, ta45 2039.4 / 2039.4. Las cuatro
+  celdas sembradas quedan entre −2.4 y −3.6 de media respecto al control; con
+  n = 4 ningún contraste separa nada (p ≥ 0.25) y no tiene que hacerlo: el filtro
+  solo descarta.
 
 ## Banco de semillas (solo lectura)
 
@@ -124,7 +129,7 @@ bucle y están aquí para que no se repitan; sus cifras están en el JOURNAL.
 | H-1 | back-jump (Nowicki-Smutnicki) en el tabú | vuelve mejor a los buenos puntos | -- | 22 abiertas x 5 x 300 s: 10 de 22, p = 1.000; en las 12 no vistas, tabú simple mejor, p = 0.022 | **descartada** (2026-09-19) |
 | H-2 | pool de élite + path relinking (IPRTS, rama `path-relinking`, IJSP) | recombinar casi-óptimos sale de la meseta | -- | x20: 0 mejoras en ~500 llamadas a PR; meseta neutra en calidad | **descartada** (2026-06-21) |
 | H-3 | memético con su configuración afinada vs ABC con la suya | el memético alcanza mejores makespans | -- | 22 x 10 x 300 s: ABC mejor en 18 de 22, W = 30, p = 0.002 | **descartada** (2026-09-21) |
-| I-001 | sembrar la población inicial en tiradas cortas desde el banco; composición vs calidad | ver abajo | pendiente | pendiente | **en curso** (2026-09-21) |
+| I-001 | sembrar la población inicial en tiradas cortas desde el banco; composición vs calidad | ver abajo | mix−control = −2.75 en 4 inst. (regla: > +2 descarta) → **pasa** | pendiente (lanzada 2026-09-21 05:2x, ~6.5 h) | **en curso** |
 
 ### I-001 — siembra en tiradas cortas: composición contra calidad
 

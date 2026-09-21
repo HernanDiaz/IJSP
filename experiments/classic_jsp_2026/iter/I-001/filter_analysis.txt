@@ -1,0 +1,21 @@
+=== I-001 filter: per-instance mean of 30 runs (best in brackets) ===
+inst             control            v2rand             v2top          v2maxmin               mix
+ta23       1587.8 [1574]     1577.3 [1570]     1584.2 [1570]     1579.3 [1563]     1582.1 [1570]
+ta29       1641.1 [1628]     1645.3 [1638]     1643.9 [1629]     1644.7 [1628]     1640.0 [1627]
+ta30       1623.8 [1607]     1616.9 [1603]     1615.1 [1605]     1615.7 [1602]     1619.7 [1601]
+ta45       2039.4 [2024]     2038.4 [2022]     2039.2 [2025]     2039.9 [2027]     2039.4 [2020]
+
+=== step-0 best (mean over runs): did the seeds go in? ===
+ta23                2025              1752              1760              1749              1755
+ta29                2130              1828              1839              1833              1817
+ta30                2061              1822              1828              1814              1825
+ta45                2671              2303              2321              2297              2305
+
+=== against control, paired by instance (n = 4) ===
+cell        mean d   better          W        p   best-of-7 d
+v2rand       -3.56     3/4         2.0    0.375      -1.56
+v2top        -2.43     3/4         2.0    0.375      -2.12
+v2maxmin     -3.14     2/4         3.0    0.625      -2.06
+mix          -2.75     3/4           0    0.250      -2.69  <-- PRIMARY
+
+filter rule: mean(mix - control) over the filter instances = -2.75; discard if > +2.0 -> PASS, go to the full run

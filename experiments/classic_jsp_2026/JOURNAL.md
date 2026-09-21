@@ -1423,3 +1423,40 @@ best known solutions, which is where the configuration sat before any of this.
 
 The 22 x 2 collapse curves from these runs are recorded and untouched; they
 are the input to the next experiment rather than a result of this one.
+
+
+### 2026-09-21: the research loop, and I-001's filter
+
+From here on the line runs as a loop with a written protocol,
+`RESEARCH_IDEAS.md` at the repository root: one idea per iteration, a cheap
+filter on four instances fixed for good that can only discard, a full
+confirmation on the 21 open instances with a seed bank, a control cell in
+every batch, parameters frozen at irace's configuration 136 (the PI's
+decision: retuning per iteration would make each loop too long), and one
+experiment on the machine at a time. Three earlier ideas -- back-jump,
+path relinking, the memetic -- are entered as discarded with their numbers.
+
+**I-001** is the PI's question: if restarting helps because a run's fate is
+decided at the start, should the start be optimised rather than drawn at
+random? The seeding study on the interval problem (branch `seeding-study`,
+58,560 runs) answers half of it: seeding is worth 0.1-1.0 % at the full
+budget and 1.3-5.2 % at a tenth of it, and what helps is the *composition*
+of the pool, not the quality of its seeds -- a mixed pool starts worse and
+ends better. Yesterday's measurement says the right budget per run is about
+an eighth of what we used. Same regime. I-001 seeds the ABC's initial
+population with 25 of 247 individuals from the study's bank in five cells
+that separate quality (v2 top-250) from spread (v2 max-min 250) from
+heterogeneity (the mixed pool), against a random control, at 40/100/150 s
+per run by size class, 30 runs each.
+
+The seeded creation of the study was ported as `jsp.seeded` (routing of the
+interval instances verified identical to the crisp ones on `ta29`; a job
+permutation is a solution of any instance with that routing). The pools are
+derived from the read-only bank by `scripts/prepare_pools.py`, md5 recorded.
+
+Filter (ta23, ta29, ta30, ta45), means of 30 runs, seeded minus control:
+v2rand -3.56, v2top -2.43, v2maxmin -3.14, mix -2.75. The seeds went in
+(best at generation 0 about 1750-1830 against 2025-2130 random). The rule
+was "discard if mix - control > +2": it passes, and four instances say
+nothing else -- all p >= 0.25, as they must at n = 4. The full run, 105
+jobs, about 6.5 hours, is what decides.
