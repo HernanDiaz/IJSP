@@ -1,0 +1,11 @@
+=== I-004 filter: per-instance mean (best in brackets) ===
+inst             control         fulltailsftails - ctrl
+ta23       1587.0 [1573]     1588.1 [1567]        +1.13
+ta29       1640.8 [1628]     1639.5 [1629]        -1.33
+ta30       1622.9 [1607]     1618.8 [1603]        -4.10
+ta45       2042.2 [2024]     2040.9 [2021]        -1.30
+
+runs per cell and instance: 30
+
+filter rule: mean(fulltails - control) = -1.40; discard if > +2.0 -> PASS, go to the waves
+the filter only discards, and its magnitude is not a forecast.
