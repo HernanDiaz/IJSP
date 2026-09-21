@@ -232,6 +232,7 @@ bucle y están aquí para que no se repitan; sus cifras están en el JOURNAL.
 | H-2 | pool de élite + path relinking (IPRTS, rama `path-relinking`, IJSP) | recombinar casi-óptimos sale de la meseta | -- | x20: 0 mejoras en ~500 llamadas a PR; meseta neutra en calidad | **descartada** (2026-06-21) |
 | H-3 | memético con su configuración afinada vs ABC con la suya | el memético alcanza mejores makespans | -- | 22 x 10 x 300 s: ABC mejor en 18 de 22, W = 30, p = 0.002 | **descartada** (2026-09-21) |
 | H-4 | N8 contra N2 (y contra N1, N3, N_ext), fase B del paper de COR | un vecindario más rico gana | -- | 82 instancias x 30 runs, 2460 bloques pareados: N2 1846.50 contra N8 1847.94, dif −1.45, p_adj = 3.9e−4, r = 0.077 (**despreciable**); rangos de Friedman N2 2.1315 el mejor de cinco, N8 2.2400 | **descartada** (antes del bucle; `experiments/cor_tabu_2026/`) |
+| H-5 | profundidad del tabú como **parámetro global** (`bad-iterations`) | más profundo es mejor | -- | dentro del espacio de irace **dos veces**: rango (5, 30) en el paper de COR para los cinco vecindarios, rango (5, 40) en los dos brazos de este proyecto. Las configuraciones ganadoras eligieron **15** para el ABC (config. 136) y **23** para el memético (config. 164), no el tope | **contestada** por el afinado, no hace falta experimento |
 | I-002 | vecindario N8 en vez de N2, **repetición de H-4** | la misma que H-4 | n8−control = −1.44, pasa (no descarta) | 3 mirillas de 6, 15 runs: **+1.52**, N8 mejor en 7 de 21, p = 0.054; reproduce H-4 en el régimen corto y crisp | **retirada** (2026-09-21): la pregunta ya estaba contestada |
 | I-001 | sembrar la población inicial en tiradas cortas desde el banco; composición vs calidad | ver abajo | mix−control = −2.75 en 4 inst. (regla: > +2 descarta) → pasa | 21 inst. x 5 celdas x 30 runs: mix−control = −0.90, mejor en 13 de 21, W = 88.5, **p = 0.348**; ninguna celda separa (la mejor, `v2rand`, −1.87, p = 0.079) | **descartada** (2026-09-21) |
 
@@ -381,7 +382,14 @@ comprobación cambió su precio:
   velocidad. La comparación a igual tiempo es la honesta y es la nuestra; si
   N8 asoma pese al peaje, portar la evaluación en sitio es lo siguiente.
 
-- **B-9** `[REAJUSTA]` **Profundidad del tabú**. Cada llamada muere a las 15
+- **B-9** `[REAJUSTA]` **Profundidad del tabú**, en su forma **asimétrica**,
+  que es la única que queda viva. La forma global está contestada (H-5): subir
+  `bad-iterations` a secas es reajustar un parámetro que irace ya barrió dos
+  veces, en (5, 30) y en (5, 40), y que eligió en 15 para el ABC. Lo que irace
+  **no** pudo explorar es un reparto desigual, porque en su espacio la
+  profundidad era una sola para toda la población. Sigue el enunciado
+  original abajo, entendido siempre como "llamadas cortas para la población,
+  una profunda para el incumbente". Cada llamada muere a las 15
   iteraciones consecutivas sin mejorar, con tope de 2 s
   (`localsearch.bad-iterations = 15`). Para un tabú eso es rasísimo: TSAB e
   i-TSAB cruzan regiones peores durante cientos o miles de movimientos, y lo
