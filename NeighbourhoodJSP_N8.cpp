@@ -369,14 +369,25 @@ FuzzyFW::Fitness * NB_ParallelN8_MakespanJSP::evaluateNeighbour(
 
     // --- Propagate head changes via BFS ---
     // Two roots of propagation:
-    //  (a) oldMs: its machine predecessor changed from T to oldMp → head may decrease
-    //  (b) T itself: its machine predecessor changed from oldMp to newMp → head may change
+    //  (a) oldMs: its machine predecessor changed from T to oldMp, so its head
+    //      may decrease
+    //  (b) T itself: its machine predecessor changed from oldMp to newMp, so
+    //      its head may change
+    //  (c) newMs: its machine predecessor changed from newMp to T, so its head
+    //      must be recomputed whatever happens to T's. Leaving it out was a
+    //      defect (found 2026-09-21 by the certificate verification, which
+    //      rejected 24 of 30 runs on ta45): the search reaches newMs only by
+    //      pushing T's successors, and it only does that when T's head
+    //      changes. When T's head happens to be unchanged, newMs kept the head
+    //      it had behind newMp, started before T finished, and the makespan
+    //      came out falsely better -- which is why such moves were accepted.
     int _nTasks = (int)newSolution->getScheduledTasks();
     int _bfsLimit = _nTasks * 20; // JSP DAG has <=2 predecessors/node: valid SPFA terminates in O(N); cycle if exceeded
     int _bfsCount = 0;
     std::queue<int> taskQueue;
     if (oldMs != -1) taskQueue.push(oldMs);
     taskQueue.push((int)T);
+    if (newMs != -1) taskQueue.push(newMs);
 
     while (!taskQueue.empty()) {
         if (++_bfsCount > _bfsLimit) {

@@ -1,0 +1,9 @@
+# I-002 fc2: 4 instances x 2 cells, 5 runs each, seed 6
+/opt/ijsp/crisp/IJSP/experiments/classic_jsp_2026/iter/I-002/setups/ta29_control_fc2.txt	I-002_fc2_control	ta29
+/opt/ijsp/crisp/IJSP/experiments/classic_jsp_2026/iter/I-002/setups/ta29_n8_fc2.txt	I-002_fc2_n8	ta29
+/opt/ijsp/crisp/IJSP/experiments/classic_jsp_2026/iter/I-002/setups/ta30_control_fc2.txt	I-002_fc2_control	ta30
+/opt/ijsp/crisp/IJSP/experiments/classic_jsp_2026/iter/I-002/setups/ta30_n8_fc2.txt	I-002_fc2_n8	ta30
+/opt/ijsp/crisp/IJSP/experiments/classic_jsp_2026/iter/I-002/setups/ta23_control_fc2.txt	I-002_fc2_control	ta23
+/opt/ijsp/crisp/IJSP/experiments/classic_jsp_2026/iter/I-002/setups/ta23_n8_fc2.txt	I-002_fc2_n8	ta23
+/opt/ijsp/crisp/IJSP/experiments/classic_jsp_2026/iter/I-002/setups/ta45_control_fc2.txt	I-002_fc2_control	ta45
+/opt/ijsp/crisp/IJSP/experiments/classic_jsp_2026/iter/I-002/setups/ta45_n8_fc2.txt	I-002_fc2_n8	ta45

@@ -1621,3 +1621,40 @@ bests, which come from far more runs at longer budgets. And B-1 now has one
 of its two sides; the other, the 300-second batch, is ten runs against
 thirty, so the analysis has to equalise CPU time before it compares
 anything.
+
+
+### 2026-09-21: N8 was wrong, and the certificate caught it
+
+I-002 put the tabu search on `jsp.makespan.n8` -- N2's block-end swaps plus
+extra-block reinsertions -- by changing one line of a setup file. The filter
+ran from 14:37 to 16:14 and the queue exited 1: verification rejected
+schedules. N8 was emitting infeasible solutions, operations overlapping on a
+machine, 24 of 30 runs on ta45, 1 of 30 on ta23, none on ta29 or ta30. Every
+ta45 violation sat on machine 7 among the same three jobs.
+
+The defect is one missing root in the head propagation of a reinsertion.
+Moving task T between newMp and newMs changes the machine predecessor of
+newMs from newMp to T, so newMs's head must always be recomputed. The queue
+was seeded with T and with oldMs only, and newMs is reached solely by pushing
+T's successors, which happens only when T's own head changes. Whenever T's
+head came out unchanged, newMs kept the head it had behind newMp, started
+before T finished, and the makespan was computed from heads that were too
+small. The move therefore looked like an improvement, which is why the search
+took it.
+
+Nothing inside the solver would have noticed: it reported these as solutions
+and as records-in-waiting. The rule that every makespan is recomputed from
+its own schedule, which until today looked like bookkeeping, is what stopped
+a run of phantom improvements from entering the line. The smoke test that
+preceded the launch is the other lesson: four runs on ta29, and ta29 is one
+of the two instances where the defect does not show.
+
+The fix adds newMs as a third root. After it, 72 runs over ta45, ta23, ta29,
+ta30, ta41 and ta47 are all feasible and verified.
+
+The filter is void on validity grounds, and the call was made without
+computing the comparison, which over a 24-of-30-infeasible cell would have
+meant nothing. Its result directories are kept, renamed I-002_voidfilter_*,
+so they cannot be mistaken for data. The filter is relaunched from scratch,
+this time in six chunks of five runs, with the pre-declared rule and endpoint
+untouched.
