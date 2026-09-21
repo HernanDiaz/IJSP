@@ -21,14 +21,18 @@ experiments/classic_jsp_2026/scripts/queue_jobs.sh <jobs.tsv>
 sobre las **21 instancias abiertas con banco de semillas** (las 22 de
 `taillard_bounds.csv` menos `ta18`, 20x15, para la que no hay pools):
 `ta22 ta23 ta25 ta26 ta27 ta29 ta30 ta32 ta33 ta34 ta40 ta41-ta50`.
-Tarda unas 6-7 horas en 14 núcleos para 5 celdas x 30 runs.
+Se corre **por oleadas de media hora**, no de una sola vez: ver "Cadencia"
+más abajo. De una sola vez, 5 celdas x 30 runs son 90.8 h-CPU, unas 6.5 h en
+14 núcleos, y eso es más de lo que un paso del bucle puede durar.
 
 **Filtro barato**
 
 Mismo comando sobre las instancias del filtro, **fijadas de antemano y para
 siempre**: `ta29 ta30 ta23` (20x20, las tres más cerca del récord) y `ta45`
-(30x20, para no ajustarse a un solo tamaño). Unos 50 minutos en 14 núcleos
-para 5 celdas x 30 runs. **El filtro solo descarta, nunca acepta.**
+(30x20, para no ajustarse a un solo tamaño). Con 2 celdas x 30 runs, 4.5
+h-CPU, unos 19 minutos en 14 núcleos; las variantes de una misma idea se
+separan aquí, que es donde son baratas. **El filtro solo descarta, nunca
+acepta.**
 
 **Semillas**: 30 runs por celda e instancia, `seed = 1`, `runs = 30`, las
 mismas en todas las comparaciones. Con el algoritmo estocástico, una tirada
@@ -54,9 +58,67 @@ tanda (abajo).
 **Criterio de aceptación**: contraste de Wilcoxon de rangos con signo sobre
 la media por instancia de la celda propuesta contra la de control, pareado
 por las 21 instancias, dos colas, **p <= 0.05 y la celda propuesta con menor
-rango medio**. Siempre sobre la evaluación completa y nunca sobre el filtro.
+rango medio**. Siempre sobre la evaluación completa y nunca sobre el filtro. Corrida por
+oleadas, que es lo normal, el umbral por mirilla es **0.0142** y no 0.05
+(ver "Cadencia").
 Un p significativo dice que difieren, no en qué dirección: la dirección la
 dan los rangos. Los endpoints secundarios se reportan y no deciden.
+
+**Cadencia: oleadas de media hora.** Decisión del PI (2026-09-21): cada paso
+del bucle tiene que caber en media hora. La máquina tiene 14 hilos, así que
+el reloj es el coste en horas-CPU partido por 14, y media hora son **7
+h-CPU**. Un run sobre cada una de las 21 instancias, con los presupuestos
+por clase, cuesta 0.61 h-CPU. La clase 30x20 (10 instancias a 150 s) es el
+69 % del coste de una tanda completa. De ahí tres reglas:
+
+1. **Dos celdas, no cinco.** Una tanda de confirmación lleva `control` y la
+   celda del endpoint predeclarado, nada más. Las variantes de una misma
+   idea (calidad contra dispersión contra mezcla, un parámetro en tres
+   valores) se separan en el filtro. De 90.8 a 36.3 h-CPU sin tocar la
+   decisión, porque el criterio de aceptación solo mira esas dos celdas.
+2. **La confirmación se parte en 6 oleadas de 5 runs** sobre las 21
+   instancias: 6.1 h-CPU, unos 26 minutos de reloj cada una. La oleada `w`
+   corre con `runs = 5`, `seed = 1 + 5*(w-1)` y, si la idea siembra,
+   `creation.seed.offset = 5*(w-1)`. Como el run `r` de un proceso usa
+   `seed + r` (`EvoLauncher.cpp:95`), las seis oleadas son **exactamente**
+   los mismos 30 runs que una tanda monolítica con `seed = 1`: partirla no
+   cambia el experimento, solo cuándo se puede mirar. Cada oleada escribe en
+   su propio tag `results/<id>_full_<celda>_w<w>` (el guardia de reanudación
+   de `queue_jobs.sh` cuenta runs por directorio, así que dos oleadas no
+   pueden compartirlo) y el análisis suma los directorios `_w*`.
+3. **El filtro se queda con 30 runs.** Con 10, el error típico de la media
+   de las cuatro instancias del filtro sube a 1.8 unidades y la regla
+   "descarta si la diferencia supera +2" empezaría a descartar ideas
+   neutras. Lo que se recorta en el filtro son las celdas, no los runs.
+
+**Mirillas intermedias y su precio.** Analizar al final de cada oleada es un
+contraste repetido sobre los mismos datos, y eso infla el error de tipo I.
+Con 6 mirillas igualmente espaciadas, el umbral por mirilla que mantiene el
+global en 0.05 es **p <= 0.0142** (frontera constante de Pocock, 1977), y
+ese es el umbral que se aplica en las seis, la última incluida. El número de
+oleadas (6) y el umbral quedan fijados de antemano como todo lo demás: si a
+la sexta no se declara, la idea se descarta, y mirar una séptima no es una
+opción.
+
+Lo que cuesta y lo que da, simulado con la dispersión real (sd entre runs
+~ 8 unidades de makespan, medida en el filtro de I-001; 1500 tiradas,
+`experiments/classic_jsp_2026/scripts/wave_power.py`), como porcentaje acumulado de tandas que
+declaran al cerrar cada oleada:
+
+| efecto real | ol. 1 | ol. 2 | ol. 3 | ol. 4 | ol. 5 | ol. 6 |
+|-------------|-------|-------|-------|-------|-------|-------|
+| ninguno     |   0.5 |   1.1 |   1.5 |   1.9 |   2.1 |   2.3 |
+| -1.5        |   8.3 |  17.2 |  26.6 |  34.8 |  39.4 |  44.9 |
+| -3.0        |  38.5 |  69.5 |  84.8 |  92.2 |  95.1 |  97.2 |
+| -6.0        |  97.6 | 100.0 | 100.0 | 100.0 | 100.0 | 100.0 |
+
+Es decir: el diseño por oleadas no es una rebaja. Mantiene el error de tipo
+I por debajo del 5 % (sale 2.3 %, conservador), conserva la potencia de los
+30 runs para el efecto que perseguimos (97 % a la sexta, contra 99 % de la
+tanda monolítica a 0.05) y, sobre todo, **la mayoría de las decisiones caen
+en la primera hora**: un efecto de -3 se declara en la primera o la segunda
+oleada el 70 % de las veces, y uno del doble en la primera. Las seis oleadas
+completas son el caso peor, no el normal, y son 2.6 h en vez de 6.5.
 
 **Intocable desde el bucle**: `scripts/verify_certificate.py`,
 `taillard_bounds.csv`, `reference/taillard_orlib.txt`, las instancias
@@ -97,6 +159,11 @@ nada.
   volver a correr la configuración vigente contra ella a 300 s.
 - Referencia en el **régimen de tiradas cortas**: la celda `control` de la
   primera tanda completa (I-001); se rellena al cerrar I-001.
+- I-001 se cierra **como se preinscribió**: una sola tanda de 5 celdas x 30
+  runs, lanzada a las 05:22 del 2026-09-21 y ya por encima de dos tercios
+  cuando se escribió esta sección. Cortarla para relanzarla por oleadas
+  tiraría cuatro horas y media de cómputo y, sobre todo, cambiaría el diseño
+  después de ver el filtro. La cadencia por oleadas rige desde I-002.
 - Registro del filtro: `experiments/classic_jsp_2026/iter/I-001/filter_analysis.txt`
   (2026-09-21, 03:13-~04:05). Medias de 30 runs, control / mix: ta23 1587.8 / 1582.1,
   ta29 1641.1 / 1640.0, ta30 1623.8 / 1619.7, ta45 2039.4 / 2039.4. Las cuatro

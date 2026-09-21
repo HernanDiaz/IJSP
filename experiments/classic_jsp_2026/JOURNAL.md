@@ -1460,3 +1460,49 @@ v2rand -3.56, v2top -2.43, v2maxmin -3.14, mix -2.75. The seeds went in
 was "discard if mix - control > +2": it passes, and four instances say
 nothing else -- all p >= 0.25, as they must at n = 4. The full run, 105
 jobs, about 6.5 hours, is what decides.
+
+
+### 2026-09-21: half-hour iterations
+
+The PI's objection to the loop as it stood: a step that takes six and a half
+hours is not an iteration. The machine has 14 threads, so wall clock is
+CPU-hours over 14 and half an hour is 7 CPU-hours. One run on each of the 21
+open instances, at the class budgets, costs 0.61 CPU-hours; the 30x20 class
+alone, ten instances at 150 s, is 69 % of a full batch. The 6.5 hours were
+the product of three factors, and two of them were slack.
+
+Five cells was the first. The acceptance criterion only ever looks at the
+proposed cell against the control; the other three cells of I-001 answer a
+question -- quality against spread against heterogeneity -- that the cheap
+filter can answer on four instances. Confirmations now carry two cells:
+90.8 CPU-hours become 36.3, and the decision is untouched.
+
+Thirty runs in one go was the second, and this one is free. Run r of a
+solver process is seeded `seed + r` (`EvoLauncher.cpp:95`), so six waves of
+five runs with `seed = 1, 6, 11, 16, 21, 26` are *exactly* the thirty runs
+of one batch with `seed = 1` -- and, for a seeded cell,
+`creation.seed.offset = 5(w-1)` keeps the pool blocks the same too. Each
+wave is 6.1 CPU-hours, 26 minutes of wall clock, and it is a complete look
+at all 21 instances rather than a prefix of the instance list. The waves
+write to their own result tags because `queue_jobs.sh` counts completed runs
+per directory, and the analysis sums the `_w*` directories.
+
+Looking after every wave is a repeated test, so it is paid for rather than
+taken: Pocock's constant boundary for six equally spaced looks, nominal
+two-sided 0.0142 at every look including the last. `scripts/wave_power.py`
+simulates the design with the run-to-run spread measured on the I-001 filter
+(sd about 8 makespan units against an effect around 3). The type-I rate
+comes out at 2.3 %, conservative; power at an effect of -3 is 97 % by the
+sixth wave against the 99 % of the monolithic test at 0.05; and 70 % of
+those decisions land by the *second* wave, an effect twice that size in the
+first. Six full waves are the worst case, not the normal one.
+
+What was actually too small to cut is the filter's thirty runs: at ten, the
+standard error of the four-instance mean rises to 1.8 units and the "discard
+if worse by more than 2" rule would start discarding neutral ideas. The
+filter loses cells, not runs: two cells, four instances, 19 minutes.
+
+I-001 closes as pre-registered -- one batch, five cells, thirty runs -- for
+two reasons: it was past two thirds when this was written, and changing a
+design after seeing its filter is how a result stops meaning anything. The
+waves start at I-002.
