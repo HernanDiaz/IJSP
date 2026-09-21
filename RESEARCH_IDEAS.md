@@ -231,7 +231,7 @@ bucle y están aquí para que no se repitan; sus cifras están en el JOURNAL.
 | H-1 | back-jump (Nowicki-Smutnicki) en el tabú | vuelve mejor a los buenos puntos | -- | 22 abiertas x 5 x 300 s: 10 de 22, p = 1.000; en las 12 no vistas, tabú simple mejor, p = 0.022 | **descartada** (2026-09-19) |
 | H-2 | pool de élite + path relinking (IPRTS, rama `path-relinking`, IJSP) | recombinar casi-óptimos sale de la meseta | -- | x20: 0 mejoras en ~500 llamadas a PR; meseta neutra en calidad | **descartada** (2026-06-21) |
 | H-3 | memético con su configuración afinada vs ABC con la suya | el memético alcanza mejores makespans | -- | 22 x 10 x 300 s: ABC mejor en 18 de 22, W = 30, p = 0.002 | **descartada** (2026-09-21) |
-| I-003 | el explorador del ABC reinyecta un **elite pateado** en vez de una solución aleatoria | un arranque aleatorio a mitad de tirada no puede alcanzar a la población; uno dentro de una cuenca buena sí | pendiente | pendiente | **en curso** (2026-09-21) |
+| I-003 | el explorador del ABC reinyecta un **elite pateado** en vez de una solución aleatoria | un arranque aleatorio a mitad de tirada no puede alcanzar a la población; uno dentro de una cuenca buena sí | -- | -- | **retirada antes de correr** (2026-09-21): la fase de explorador **nunca se ejecuta**. `Total replacements in ABC` = 0 en 8 tiradas y 4 instancias |
 | H-4 | N8 contra N2 (y contra N1, N3, N_ext), fase B del paper de COR | un vecindario más rico gana | -- | 82 instancias x 30 runs, 2460 bloques pareados: N2 1846.50 contra N8 1847.94, dif −1.45, p_adj = 3.9e−4, r = 0.077 (**despreciable**); rangos de Friedman N2 2.1315 el mejor de cinco, N8 2.2400 | **descartada** (antes del bucle; `experiments/cor_tabu_2026/`) |
 | H-5 | profundidad del tabú como **parámetro global** (`bad-iterations`) | más profundo es mejor | -- | dentro del espacio de irace **dos veces**: rango (5, 30) en el paper de COR para los cinco vecindarios, rango (5, 40) en los dos brazos de este proyecto. Las configuraciones ganadoras eligieron **15** para el ABC (config. 136) y **23** para el memético (config. 164), no el tope | **contestada** por el afinado, no hace falta experimento |
 | I-002 | vecindario N8 en vez de N2, **repetición de H-4** | la misma que H-4 | n8−control = −1.44, pasa (no descarta) | 3 mirillas de 6, 15 runs: **+1.52**, N8 mejor en 7 de 21, p = 0.054; reproduce H-4 en el régimen corto y crisp | **retirada** (2026-09-21): la pregunta ya estaba contestada |
@@ -730,3 +730,52 @@ es una previsión: I-001 leyó −2.75 y luego −0.90, I-002 leyó −1.44 y lu
 siguiente pregunta es si el número de golpes y la elección del elite (al
 azar contra el mejor contra el más distante) valen algo, que ya sería
 afinado y no idea.
+
+### I-003 retirada antes de correr, y la medida que la retira
+
+La prueba de humo, cuatro instancias de tres clases y dos celdas, salió
+factible y con los **mismos makespans** en tres de las cuatro instancias. Eso
+no era casualidad. Los contadores que el propio solver ya escribe en su CSV
+(`ArtificialBeeColony.cpp:239-243`) lo explican:
+
+| instancia | `Total replacements in ABC` | `Avg. Iterations per LS` |
+|---|---|---|
+| ta29 | 0 | 26.7 |
+| ta23 | 0 | 30.9 |
+| ta33 | 0 | 35.7 |
+| ta41 | 0 | 41.0 |
+
+**La fase de explorador del ABC no se ejecuta nunca.** Cero reemplazos, en
+las ocho tiradas, en las cuatro instancias, en las tres clases de tamaño.
+Con `maxnumtrials = 35` ninguna fuente de comida se agota, porque su contador
+de intentos se pone a cero cada vez que la fuente mejora y, con la búsqueda
+tabú cayendo sobre el 46 % de la población en cada generación y con
+lamarckismo, ninguna fuente sobrevive 35 fallos consecutivos. El ABC, tal
+como está afinado, **no abandona nada**. La patada no puede ejecutarse, así
+que I-003 se retira por invalidez, antes de correr y sin gastar una tanda.
+
+Esto no es un fracaso de la idea, es una medida sobre el algoritmo, y vale
+más que la idea:
+
+1. **`maxtrials = 35` no es un parámetro, es un interruptor apagado.** irace
+   lo barrió y eligió un valor que desactiva el mecanismo. Es decir, el
+   afinado prefirió un ABC sin exploradores. Cualquier idea que cuelgue del
+   abandono está muerta de antemano, y eso incluye media literatura de ABC.
+2. **La población nunca pierde un miembro.** Sin abandono, la única presión
+   de diversidad que queda es la del cruce y la mutación, y el estudio de
+   siembra ya documentó que la población colapsa. Eso apunta a la siguiente
+   idea, que no depende de ningún mecanismo apagado: **obligar a una
+   distancia mínima en la población** (clearing), que actúa en cada
+   inserción. Las estadísticas de `hamming` y `neri` que el setup ya calcula
+   y que nadie usa son justo su instrumento de medida.
+3. **De paso, la profundidad del tabú queda medida** sin gastar la sonda que
+   había lanzado: una llamada dura entre **26 y 41 iteraciones** de media
+   según la clase. No mueren en un puñado de iteraciones, y no mueren en el
+   tope de 2 s, que permitiría muchas más: mueren en el contador de 15 sin
+   mejora, tras haber hecho 26 a 41 movimientos. Sigue siendo poco profundo
+   al lado de TSAB, pero es diez veces más de lo que la revisión externa
+   suponía al hablar de "15 movimientos".
+
+**Qué se revierte**: nada, y el código de la patada se queda con un comentario
+en `ArtificialBeeColony.cpp` que dice que es rama muerta mientras el abandono
+no se active, con la medida y la fecha. Borrarlo perdería el hallazgo.

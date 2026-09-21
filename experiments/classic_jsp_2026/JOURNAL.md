@@ -1658,3 +1658,51 @@ meant nothing. Its result directories are kept, renamed I-002_voidfilter_*,
 so they cannot be mistaken for data. The filter is relaunched from scratch,
 this time in six chunks of five runs, with the pre-declared rule and endpoint
 untouched.
+
+
+### 2026-09-21: the ABC does not abandon anything
+
+The PI closed the configuration direction: the algorithm has to change. The
+place our own data pointed at was the scout phase. When a food source
+exhausts its trials the classical ABC injects a fresh random solution, and
+I-001 had just measured that a random start is worth nothing after forty
+seconds -- 294 makespan units of disadvantage at generation 0, of which 0.3 %
+survives. An individual injected mid-run is born outside every basin the
+population occupies and cannot catch up. So `abc.scout = kick` was
+implemented: replace the exhausted source with a clone of a random elite
+under three mutations, turning abandonment from noise injection into a
+restart inside a promising basin, which is the only mechanism this project
+has positive evidence for.
+
+The smoke test came back feasible and with identical makespans on three of
+the four instances. The solver's own counters, which it has been writing into
+every CSV all along, say why: `Total replacements in ABC` is zero. In every
+run, on every instance, across all three size classes. With maxnumtrials =
+35, no food source ever exhausts its trials, because the counter resets
+whenever the source improves, and with the tabu search touching 46 % of the
+population every generation under Lamarckism no source survives 35
+consecutive failures. The scout phase is dead code. I-003 is withdrawn before
+it ran, on validity grounds, without spending a batch.
+
+The measurement is worth more than the idea was. irace swept maxtrials and
+chose a value that switches the mechanism off, which means the tuning
+preferred an ABC with no scouts; any idea hanging off abandonment is dead on
+arrival, and that includes a good deal of the ABC literature. It also means
+the population never loses a member, so the only diversity pressure left is
+crossover and mutation, while the seeding study documented that the
+population collapses. That points at the next idea, which depends on nothing
+switched off: enforce a minimum distance in the population, acting at every
+insertion, with the hamming and neri statistics the setup already computes
+and nobody reads as its instrument.
+
+A second measurement came free, and retires the probe I had launched: an
+average tabu call runs between 26 and 41 iterations depending on size class.
+The calls do not die after a handful of moves, and they do not die on the two
+second cap, which would allow many more; they die on the fifteen
+non-improving counter after twenty-six to forty-one moves. Still shallow
+beside TSAB, but ten times what the outside review assumed when it read
+"fifteen moves".
+
+The kick code stays, with a comment recording that it is unreachable while
+abandonment is off, the measurement and the date. Deleting it would delete
+the finding.

@@ -766,6 +766,16 @@ namespace FuzzyFW {
 			this->abc_replacements += numSourceAfterLimit;
 			//We replace those food sources with fresh ones.
 			if (numSourceAfterLimit > 0) {
+				// MEASURED 2026-09-21: with maxnumtrials = 35, the tuned value,
+				// this whole block is DEAD CODE. The solver's own counter
+				// ("Total replacements in ABC") is 0 in every run of every
+				// instance tried, because a food source's trial counter resets
+				// whenever the source improves and, with the tabu search hitting
+				// 46 % of the population every generation under Lamarckism, no
+				// source survives 35 consecutive failures. So the ABC as tuned
+				// never abandons anything, and the branch below cannot run.
+				// Kept because it becomes live the moment abandonment does.
+				//
 				// The scout replacement. The classical ABC injects fresh random
 				// solutions here. In a short-budget regime that is dead weight:
 				// I-001 measured that a random start is 294 makespan units worse
