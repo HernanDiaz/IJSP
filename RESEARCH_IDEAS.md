@@ -231,7 +231,7 @@ bucle y están aquí para que no se repitan; sus cifras están en el JOURNAL.
 | H-1 | back-jump (Nowicki-Smutnicki) en el tabú | vuelve mejor a los buenos puntos | -- | 22 abiertas x 5 x 300 s: 10 de 22, p = 1.000; en las 12 no vistas, tabú simple mejor, p = 0.022 | **descartada** (2026-09-19) |
 | H-2 | pool de élite + path relinking (IPRTS, rama `path-relinking`, IJSP) | recombinar casi-óptimos sale de la meseta | -- | x20: 0 mejoras en ~500 llamadas a PR; meseta neutra en calidad | **descartada** (2026-06-21) |
 | H-3 | memético con su configuración afinada vs ABC con la suya | el memético alcanza mejores makespans | -- | 22 x 10 x 300 s: ABC mejor en 18 de 22, W = 30, p = 0.002 | **descartada** (2026-09-21) |
-| I-003 | el explorador del ABC reinyecta un **elite pateado** en vez de una solución aleatoria | un arranque aleatorio a mitad de tirada no puede alcanzar a la población; uno dentro de una cuenca buena sí | -- | -- | **retirada antes de correr** (2026-09-21): la fase de explorador **nunca se ejecuta**. `Total replacements in ABC` = 0 en 8 tiradas y 4 instancias |
+| I-003 | el explorador del ABC reinyecta un **elite pateado** en vez de una solución aleatoria | un arranque aleatorio a mitad de tirada no puede alcanzar a la población; uno dentro de una cuenca buena sí | pendiente | pendiente | **en curso** (2026-09-21). Una retirada previa fue **errónea**, ver la retractación abajo |
 | H-4 | N8 contra N2 (y contra N1, N3, N_ext), fase B del paper de COR | un vecindario más rico gana | -- | 82 instancias x 30 runs, 2460 bloques pareados: N2 1846.50 contra N8 1847.94, dif −1.45, p_adj = 3.9e−4, r = 0.077 (**despreciable**); rangos de Friedman N2 2.1315 el mejor de cinco, N8 2.2400 | **descartada** (antes del bucle; `experiments/cor_tabu_2026/`) |
 | H-5 | profundidad del tabú como **parámetro global** (`bad-iterations`) | más profundo es mejor | -- | dentro del espacio de irace **dos veces**: rango (5, 30) en el paper de COR para los cinco vecindarios, rango (5, 40) en los dos brazos de este proyecto. Las configuraciones ganadoras eligieron **15** para el ABC (config. 136) y **23** para el memético (config. 164), no el tope | **contestada** por el afinado, no hace falta experimento |
 | I-002 | vecindario N8 en vez de N2, **repetición de H-4** | la misma que H-4 | n8−control = −1.44, pasa (no descarta) | 3 mirillas de 6, 15 runs: **+1.52**, N8 mejor en 7 de 21, p = 0.054; reproduce H-4 en el régimen corto y crisp | **retirada** (2026-09-21): la pregunta ya estaba contestada |
@@ -411,6 +411,20 @@ comprobación cambió su precio:
   unidades. Lo que queda vivo de esta línea no es N8 sino un vecindario que
   el paper **no** probó: reinserciones que crucen máquinas o que trabajen en
   espacio de soluciones parciales (B-12), no más variantes de bloque.
+- **B-14** **Levantar el veto de meseta**, con su mecanismo ya medido. En
+  `ArtificialBeeColonyPSO` hay dos sitios donde un descendiente se rechaza
+  por **igualar** el makespan del incumbente, y el que importa está dentro de
+  la escritura lamarckiana (`ArtificialBeeColonyPSO.cpp:765`): cuando el tabú
+  mejora un individuo hasta el valor del incumbente, **la mejora se
+  descarta** y se cuenta un intento fallido. Medido: 1.324 descartes por
+  tirada en ta29 y 3.415 en ta41, contra 54.440 y 140.020 mejoras
+  conservadas, o sea el **2,4 %** del trabajo útil del tabú tirado, con una
+  varianza enorme entre tiradas (71 a 8.073). En JSP las mesetas al valor del
+  incumbente son enormes y moverse de lado por ellas es cómo se sale de una
+  cuenca, así que el veto prohíbe justo el movimiento que interesa. Es un
+  filtro de duplicados hecho sobre el fitness en vez de sobre el genotipo:
+  rechaza soluciones distintas por empatar y admite clones con makespan
+  distinto. Diff de dos condiciones, **cero parámetros nuevos**.
 - **B-11** **Patada estructurada y reoptimización** (ILS, no back-jump): al
   estancarse, aplicar tres movimientos críticos factibles al azar sin
   evaluar, limpiar la memoria tabú y volver al tabú. Se distingue de H-1 en
@@ -731,7 +745,49 @@ siguiente pregunta es si el número de golpes y la elección del elite (al
 azar contra el mejor contra el más distante) valen algo, que ya sería
 afinado y no idea.
 
-### I-003 retirada antes de correr, y la medida que la retira
+### RETRACTACIÓN (2026-09-21): la sección siguiente estaba equivocada
+
+Lo que decía la sección de abajo, que la fase de explorador del ABC nunca se
+ejecuta, es **falso**, y el error es de método, no de aritmética.
+
+**Qué pasó.** El setup dice `algorithm = ABCPSO`, y la clase
+`ArtificialBeeColonyPSO` **hereda de `GeneticAlgorithm`, no de
+`ArtificialBeeColony`**: es una implementación aparte, con sus propias fases.
+Implementé la patada, y después el veto de meseta, en
+`ArtificialBeeColony.{h,cpp}`, que **no se ejecuta**. Por eso las dos pruebas
+de humo daban celdas idénticas. Lo interpreté como "el mecanismo está
+apagado" cuando lo que estaba apagado era mi propio código.
+
+**Y el número en el que me apoyé no era una medida.** `Total replacements in
+ABC` salía 0 porque en la clase que sí corre el contador `abc_replacements`
+**solo se inicializa a cero y nunca se incrementa** (`ArtificialBeeColonyPSO`
+lo declaraba heredado y no lo tocaba). Leí una cifra que el solver reportaba
+sin comprobar que estuviera calculada: exactamente el error contra el que
+existe la regla de recomputar cada makespan desde su propio horario. La regla
+estaba escrita para los makespans; queda extendida a **cualquier** contador
+del solver antes de usarlo como dato.
+
+**Lo que se mide de verdad**, con el contador ya instrumentado
+(`ArtificialBeeColonyPSO.cpp`, 3 tiradas, 2026-09-21):
+
+| | ta29 | ta41 |
+|---|---|---|
+| reemplazos de explorador por tirada | **496** | **815** |
+| vetos de meseta en el cruce | 28 | 27 |
+| vetos de meseta en la búsqueda local | **1.324** | **3.415** |
+| mejoras conservadas por la búsqueda local | 54.440 | 140.020 |
+
+Así que el abandono se dispara cientos de veces por tirada y **la premisa de
+I-003 era correcta desde el principio**. I-003 revive, ya portada a la clase
+que corre y con la rama verificada viva: los contadores de reemplazo
+difieren entre celdas (426 contra 371 en ta29, 702 contra 492 en ta33) y los
+makespans cambian en tres de cuatro instancias, todo factible.
+
+**Lo que sobrevive de la sección de abajo**: solo la medida de la profundidad
+del tabú, 26 a 41 iteraciones por llamada, porque `iterationsLS` **sí** se
+incrementa en la clase que corre.
+
+### I-003 retirada antes de correr, y la medida que la retira — **ERRÓNEA, ver arriba**
 
 La prueba de humo, cuatro instancias de tres clases y dos celdas, salió
 factible y con los **mismos makespans** en tres de las cuatro instancias. Eso

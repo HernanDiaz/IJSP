@@ -50,14 +50,7 @@ namespace FuzzyFW {
 
 #define MAX_NUM_TRIALS "maxnumtrials" //maximum number of trials for a food source
 #define ELITE_SELECTION "elite.selection"  //Selection mechanism to select the elite for crossing.
-#define	ELITE_SIZE	"elite.size" //Selection mechanism to select number of elements in elite
-// Scout phase: what replaces an exhausted food source.
-//   "random" (default, the classical ABC): a freshly created solution
-//   "kick"  : a clone of a random elite with abc.scout.kicks mutations applied
-#define SCOUT_MODE  "abc.scout"        //random | kick
-#define SCOUT_KICKS "abc.scout.kicks"  //mutations applied to the cloned elite
-#define SCOUT_MODE_RANDOM "random"
-#define SCOUT_MODE_KICK   "kick"
+#define	ELITE_SIZE	"elite.size" //Selection mechanism to select number of elements in elite 
 
 
 	//=============================================================================
@@ -88,17 +81,6 @@ namespace FuzzyFW {
 		* Simulated cooling algorithm
 		*/
 		Non_Monotonic_Adaptative_Cooling* simulatedCooling;
-
-		/**
-		* Scout phase: replace an exhausted food source by a kicked elite
-		* instead of a fresh random solution. False keeps the classical ABC.
-		*/
-		bool scoutKick;
-
-		/**
-		* Number of mutations applied to the cloned elite when scoutKick.
-		*/
-		unsigned int scoutKicks;
 		
 		/**
 		* Neighbourhood structure for the Local Search

@@ -243,6 +243,15 @@ namespace FuzzyFW {
 			("Total replacements in ABC",
 			(double)this->abc_replacements));
 		stats.push_back(std::pair<std::string, double>
+			("Plateau vetoes in crossover",
+			(double)this->plateauVetoesCross));
+		stats.push_back(std::pair<std::string, double>
+			("Plateau vetoes in local search",
+			(double)this->plateauVetoesLS));
+		stats.push_back(std::pair<std::string, double>
+			("Improvements kept by local search",
+			(double)this->improvementsLS));
+		stats.push_back(std::pair<std::string, double>
 			("Best solution", this->bestSoFar->getFitness()->toDouble()));
 		return stats;
 	}
@@ -377,6 +386,19 @@ namespace FuzzyFW {
 			params->getBoolean(MA_LOCAL_SEARCH_LAMARCKISM, true);
 
 		// Loads the common parameters
+		// Scout phase. Default is the classical ABC, a fresh random solution, so
+		// a setup that says nothing behaves exactly as before.
+		this->scoutKick = false;
+		this->scoutKicks = 0;
+		std::string scoutValue = params->getStringLower(SCOUT_MODE);
+		if (scoutValue.compare(SCOUT_MODE_KICK) == 0) {
+			this->scoutKick = true;
+			this->scoutKicks = (unsigned int)params->getInteger(SCOUT_KICKS, 3);
+			if (this->scoutKicks == 0)
+				throw FuzzyFWException("Artificial Bee Colony PSO",
+					"abc.scout = kick needs abc.scout.kicks greater than zero");
+		}
+
 		GeneticAlgorithm::prepareToRun(params);
 
 		this->neighbourhood->setup(params);
@@ -441,6 +463,9 @@ namespace FuzzyFW {
 		this->localSearchTime = 0;
 		this->iterationsNI = 0;
 		this->abc_replacements = 0;
+		this->plateauVetoesCross = 0;
+		this->plateauVetoesLS = 0;
+
 		evolutionStats.clear();
 
 		this->generation = 0;
@@ -578,6 +603,11 @@ namespace FuzzyFW {
 				this->evaluator->evaluatePopulation(this->sharedVariables, &currentFoodSources, false);
 				Individual* bestLocal = currentFoodSources.getBest(this->sharedVariables);
 				//If the best local food source is better than the currentFoodSource we replace it
+				// INSTRUMENTED 2026-09-21: how often does the second clause, the
+				// plateau veto, decide this branch on its own?
+				if (bestLocal->getFitness()->isBetterThan(currentFoodSource->getFitness())
+					&& bestLocal->getFitness()->isEqualTo(this->bestSoFar->getFitness()))
+					this->plateauVetoesCross++;
 				if (bestLocal->getFitness()->isBetterThan(currentFoodSource->getFitness())
 					&& !bestLocal->getFitness()->isEqualTo(this->bestSoFar->getFitness())) {
 					Individual* bestlocalClone = bestLocal->clone();
@@ -598,7 +628,40 @@ namespace FuzzyFW {
 				}
 
 				if (currentFoodSource->getNumTrials() >= this->sharedVariables->parameters->getInteger(MAX_NUM_TRIALS)) {
-					Population* newPopulation = this->creation->createPopulation(1, this->sharedVariables);
+					// INSTRUMENTED 2026-09-21. This is the abandonment of an
+					// exhausted food source, and it is the only one in this class.
+					// The inherited counter abc_replacements was initialised here
+					// and never incremented, so the statistic "Total replacements
+					// in ABC" read 0 in every run and measured nothing at all.
+					this->abc_replacements++;
+					// I-003. The classical ABC injects a fresh random solution
+					// here, and this fires 496 times per run on ta29 and 815 on
+					// ta41 (measured 2026-09-21). I-001 measured that a random
+					// start is 294 makespan units worse at generation 0 and that
+					// 0.3 % of that gap survives to the end of a run, so each of
+					// those hundreds of injections lands outside every basin the
+					// population occupies, with no budget left to catch up.
+					// abc.scout = kick replaces it with a clone of a random elite
+					// under abc.scout.kicks mutations: the same abandonment, but
+					// restarting a trajectory inside a promising basin.
+					Population* newPopulation;
+					if (this->scoutKick) {
+						int eliteCount =
+							this->sharedVariables->parameters->getInteger(ELITE_SIZE);
+						if (eliteCount < 1) eliteCount = 1;
+						unsigned int pick =
+							this->sharedVariables->rng->getInteger(0, eliteCount);
+						Individual *kicked =
+							currentPopulation->getBest(this->sharedVariables, pick)->clone();
+						kicked->setNumTrials(0);
+						for (unsigned int k = 0; k < this->scoutKicks; k++)
+							this->mutation->apply(kicked, this->sharedVariables);
+						kicked->id = 0;
+						newPopulation = new Population();
+						newPopulation->addIndividual(kicked);
+					}
+					else
+						newPopulation = this->creation->createPopulation(1, this->sharedVariables);
 					this->evaluator->evaluatePopulation(this->sharedVariables, newPopulation, false);
 
 					if (this->lsFrequency == LS_Frequency::MALS_INITIAL) {
@@ -761,6 +824,12 @@ namespace FuzzyFW {
 		this->iterationsLS += this->localSearch->getIterations();
 		this->callsLS++;
 
+		// INSTRUMENTED 2026-09-21: the same veto inside the Lamarckian write-back.
+		// When the tabu search improves an individual to exactly the incumbent
+		// makespan, the improvement is discarded and a trial failure is counted.
+		if (optimised.second->isBetterThan(target->getFitness())
+			&& optimised.second->isEqualTo(this->bestSoFar->getFitness()))
+			this->plateauVetoesLS++;
 		if (optimised.second->isBetterThan(target->getFitness())
 			&& !optimised.second->isEqualTo(this->bestSoFar->getFitness())) {
 			// Lamarckism

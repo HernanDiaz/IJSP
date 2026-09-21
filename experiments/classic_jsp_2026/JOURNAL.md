@@ -1706,3 +1706,51 @@ beside TSAB, but ten times what the outside review assumed when it read
 The kick code stays, with a comment recording that it is unreachable while
 abandonment is off, the measurement and the date. Deleting it would delete
 the finding.
+
+
+### 2026-09-21, later: a retraction, and the counter that was never counting
+
+The entry above, "the ABC does not abandon anything", is wrong. It is worth
+writing down why, because the mistake is the one this project's central rule
+exists to prevent.
+
+The setup says `algorithm = ABCPSO`, and `ArtificialBeeColonyPSO` inherits
+from `GeneticAlgorithm`, not from `ArtificialBeeColony`. It is a separate
+implementation with its own phases. The kicked scout, and then the plateau
+change, went into `ArtificialBeeColony`, which never runs. That is why both
+smoke tests returned identical cells, and I read that as the mechanism being
+switched off when what was switched off was my own code.
+
+Worse, the number I leaned on was not a measurement. `Total replacements in
+ABC` read zero because in the class that actually runs, `abc_replacements` is
+initialised to zero and never incremented. I took a figure the solver printed
+without checking that anything computed it -- precisely the error the rule
+about recomputing every makespan from its own schedule exists to prevent. The
+rule now extends to any counter the solver reports.
+
+Instrumented properly, over three runs: the scout step fires 496 times per
+run on ta29 and 815 on ta41. So abandonment happens hundreds of times per
+run, each time injecting the random solution that I-001 showed is worth
+nothing after forty seconds, and I-003's premise was right all along. It is
+now ported into the class that runs, and the branch is verifiably live: the
+replacement counters differ between cells, 426 against 371 on ta29 and 702
+against 492 on ta33, and makespans differ on three of four instances, all
+feasible.
+
+The same instrumentation turned up the next idea with its mechanism already
+measured. Two sites in that class refuse an offspring for tying the
+incumbent's makespan, and the one that matters sits inside the Lamarckian
+write-back: when the tabu search improves an individual to exactly the
+incumbent value, the improvement is thrown away and a failed trial is
+counted. That is 1,324 discards per run on ta29 and 3,415 on ta41 against
+54,440 and 140,020 improvements kept -- about 2.4 % of the local search's
+useful work discarded, with the count swinging from 71 to 8,073 between runs
+of the same instance. On the JSP the plateaus at the incumbent value are
+vast, and moving sideways across one is how a search leaves a basin, so the
+veto forbids the move that matters. It is a duplicate filter built on fitness
+instead of on the genotype: it rejects distinct solutions for tying and
+admits clones that differ. Two conditions, no new parameter. It is B-14.
+
+What survives from the retracted entry is only the tabu depth figure, 26 to
+41 iterations per call, because `iterationsLS` is incremented in the class
+that runs.
