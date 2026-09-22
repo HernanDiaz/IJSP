@@ -1,1 +1,20 @@
-ta23 in /opt/ijsp/crisp/IJSP/experiments/classic_jsp_2026/results/I-011_filter_portfolio is infeasible
+=== 0. MECHANISM CHECK: does the portfolio spread wider? ===
+inst     sd control sd portfolio      ratio
+ta23          11.34         9.44       0.83
+ta29           4.76         5.99       1.26
+ta30           8.28         9.02       1.09
+ta45           8.89         8.24       0.93
+portfolio wider on 2 of 4 instances, mean ratio 1.03
+
+=== I-011 filter: best-of-5 (primary), mean (reported) ===
+inst      bo5 ctrl    bo5 port         d     mean ctrl   mean port         d
+ta23        1576.2      1574.2     -2.00        1586.8      1584.0     -2.80
+ta29        1635.7      1632.7     -3.00        1640.8      1638.2     -2.63
+ta30        1613.7      1606.8     -6.83        1623.1      1618.4     -4.70
+ta45        2029.0      2030.7     +1.67        2039.7      2041.2     +1.50
+
+runs per cell and instance: 30
+
+filter rule, on the TAIL endpoint: mean(best-of-5 difference) = -2.54;
+discard if > +2.0 -> PASS, go to the waves
+the mean moved -2.16, and this iteration is allowed to worsen it.

@@ -1,0 +1,40 @@
+comb switches                       ta23   ta29   ta30   ta45   mean d
+0    (frozen)                       -2.8   -2.8   -2.6   +4.3    -0.97
+1    seeded                        -14.3   -8.3   -7.1   -4.2    -8.47
+2    tails                          +6.7   -5.3  -16.6   -1.7    -4.22
+3    seeded, tails                  -8.8   -8.8   +1.4   +9.8    -1.59
+4    kick                           +0.7   -6.3   +8.4   +0.3    +0.78
+5    seeded, kick                  -14.3   -5.8   +2.9   +0.3    -4.22
+6    tails, kick                   +11.2   +2.2  -11.6   -3.2    -0.34
+7    seeded, tails, kick            -3.8   -1.3  -11.1   -4.2    -5.09
+8    escape                         -6.3   +2.2   -8.1   +6.3    -1.47
+9    seeded, escape                 +4.7   +1.2   +3.4   -7.7    +0.41
+10   tails, escape                  +1.2   +7.2   -5.1   +1.3    +1.16
+11   seeded, tails, escape          +1.2   +0.2   -5.1   -0.7    -1.09
+12   kick, escape                   -9.8   -4.3  -13.1   +7.3    -4.97
+13   seeded, kick, escape           -0.3   -2.8   +0.9  +14.8    +3.16
+14   tails, kick, escape            -7.8   -6.8   -6.6   -0.7    -5.47
+
+sorted by mean difference to control (2 runs per cell, so this is noise-dominated):
+    -8.47  comb 1   seeded
+    -5.47  comb 14  tails, kick, escape
+    -5.09  comb 7   seeded, tails, kick
+    -4.97  comb 12  kick, escape
+    -4.22  comb 2   tails
+    -4.22  comb 5   seeded, kick
+    -1.59  comb 3   seeded, tails
+    -1.47  comb 8   escape
+    -1.09  comb 11  seeded, tails, escape
+    -0.97  comb 0   (frozen)
+    -0.34  comb 6   tails, kick
+    +0.41  comb 9   seeded, escape
+    +0.78  comb 4   kick
+    +1.16  comb 10  tails, escape
+    +3.16  comb 13  seeded, kick, escape
+
+spread of the 15 combination means: 3.13
+if one switch were carrying the result, its combinations would cluster low.
+  seeded  on  -2.41 (n= 7)   off  -1.94 (n= 8)   difference  -0.48
+  tails   on  -2.38 (n= 7)   off  -1.97 (n= 8)   difference  -0.41
+  kick    on  -2.31 (n= 7)   off  -2.03 (n= 8)   difference  -0.28
+  escape  on  -1.18 (n= 7)   off  -3.01 (n= 8)   difference  +1.83

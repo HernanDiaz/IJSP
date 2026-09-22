@@ -101,7 +101,8 @@ def setup_text(instance, cell, runs, seed, tag, combination):
     return header + "\n".join(out) + "\n"
 
 
-def write(instances, total_runs, chunk, first_seed, tag, combination_base):
+def write(instances, total_runs, chunk, first_seed, tag, combination_base,
+          control_chunk):
     setup_dir = os.path.join(HERE, "setups")
     os.makedirs(setup_dir, exist_ok=True)
     jobs = []
@@ -109,7 +110,13 @@ def write(instances, total_runs, chunk, first_seed, tag, combination_base):
         for cell in CELLS:
             done = 0
             piece = 0
-            step = chunk if cell == "portfolio" else total_runs
+            # From wave 1 both cells are chunked alike. The filter kept the
+            # control as a single 30-run job, which is how it ran and is why
+            # its results sit in one p01_control directory; that job held one
+            # slot for 75 minutes while the other thirteen drained, and the
+            # batch lasted as long as its longest job. Chunking changes
+            # neither configuration nor seeds.
+            step = chunk if cell == "portfolio" else control_chunk
             while done < total_runs:
                 piece += 1
                 runs = min(step, total_runs - done)
@@ -145,7 +152,7 @@ def write(instances, total_runs, chunk, first_seed, tag, combination_base):
 def main():
     which = sys.argv[1] if len(sys.argv) > 1 else ""
     if which == "filter":
-        write(FILTER, FILTER_RUNS, FILTER_CHUNK, 1, "filter", 0)
+        write(FILTER, FILTER_RUNS, FILTER_CHUNK, 1, "filter", 0, FILTER_RUNS)
     elif which == "wave":
         try:
             n = int(sys.argv[2])
@@ -154,7 +161,7 @@ def main():
         if not 1 <= n <= WAVES:
             raise SystemExit("wave must be 1..%d" % WAVES)
         write(FULL, WAVE_RUNS, WAVE_CHUNK, 1 + WAVE_RUNS * (n - 1),
-              "w%d" % n, (n - 1) * WAVE_RUNS)
+              "w%d" % n, (n - 1) * WAVE_RUNS, WAVE_CHUNK)
     else:
         raise SystemExit(__doc__)
 

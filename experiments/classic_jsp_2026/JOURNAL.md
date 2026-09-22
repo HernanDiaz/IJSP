@@ -2083,3 +2083,55 @@ information rather than correcting an error.
 The portfolio therefore has four switches and sixteen combinations, every one
 of them confirmed mean-neutral over the 21 instances: seeded creation, full
 tails, the kicked scout and the all-tabu escape.
+
+## I-011's filter passes its rule while its mechanism does not move
+
+Sixty-four jobs, sixty-four certificates, no infeasible schedule. The
+(results tag, instance) pair was unique this time and the analysis read all
+240 runs it was supposed to read.
+
+The mechanism check comes first, as pre-registered, and it is flat. The
+portfolio spreads wider than the control on two of four instances, mean ratio
+1.03. The whole hypothesis was that a mixture of mean-neutral components keeps
+the mean and adds between-component variance, lengthening the lower tail by
+construction. At ratio 1.03 that between-component variance is
+indistinguishable from zero, so the hypothesis was never exercised.
+
+The endpoint moved anyway. Best-of-five, portfolio minus control: ta23 -2.00,
+ta29 -3.00, ta30 -6.83, ta45 +1.67, mean -2.54 against a rule that discards
+above +2.0. It passes. The mean moved -2.16, and this iteration was allowed to
+worsen the mean, so that number decides nothing. The filter has no boundary; it
+only discards, and it did not discard.
+
+Where the movement does not come from, all checked against data already on
+disk. No switch carries it: the on-minus-off contrasts over the fifteen
+combinations are -0.48 for seeding, -0.41 for tails, -0.28 for the kick, and
++1.83 for the escape, the only large one going the wrong way. Combination 0 is
+the frozen configuration, the control itself, and it measured -0.97 against the
+control; a shift that includes the cell identical to the control is not a
+treatment effect. And there is no within-process drift, which was the
+structural candidate: the control runs as one 30-run process and the portfolio
+as fifteen 2-run processes, and since the budget is wall-clock, decay with run
+index would have handed the portfolio exactly this shift. The measured slope is
++0.011 units per run index, +0.31 across thirty.
+
+What the per-combination table does show is its own noise. Combination 0 runs
+seeds 1 and 2 under the control's configuration, and the control's own runs 1
+and 2 use those same seeds; they differ by 0.9 units. The budget is wall-clock,
+so a run is worth whatever it computes in its seconds and the same seed does
+not reproduce the same number. With two runs per cell the expected spread of
+the fifteen means is about 2.8 and the observed spread is 3.13. That table
+resolves nothing and is not interpreted.
+
+What remains is an aggregate -2.16 at about 1.9 standard errors with a flat
+mechanism check. That is not a finding; it is precisely the state in which a
+filter should send an idea to the waves, where the boundary lives. It goes,
+with the note that a crossing will need an explanation, because the
+pre-registered one no longer applies.
+
+From wave 1 both cells are chunked the same way, one run per job. In the filter
+the control was a single 30-run job that held one slot for 75 minutes while the
+other thirteen drained, so the batch lasted as long as its longest job. The
+change touches neither configuration nor seeds, brings a wave from about 41
+minutes to about 29, and removes the last structural asymmetry between the
+cells.

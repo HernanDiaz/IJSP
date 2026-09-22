@@ -1,0 +1,14 @@
+control cell, one process of 30 runs per instance, in execution order
+inst    runs 1-2 runs 1-10 runs 11-20 runs 21-30    slope/run
+ta23      1580.0    1587.8    1588.7    1583.8       -0.061
+ta29      1638.0    1637.8    1643.4    1641.2       +0.123
+ta30      1621.0    1623.3    1622.6    1623.5       +0.078
+ta45      2044.0    2042.8    2034.9    2041.3       -0.098
+
+mean slope +0.011 makespan units per run index
+over 30 runs that is +0.31 units from first to last
+
+the comparison the portfolio's combination 0 actually made:
+  mean(runs 1-2) - mean(runs 1-30) = -1.84
+  combination 0 is the frozen configuration, i.e. the control itself,
+  and it measured -0.97 against the control.
