@@ -67,6 +67,11 @@ statistics.3.value = hamming
 statistics.4.metric = average
 statistics.4.value = neri
 
-# I-005: rebuild every tail before each estimation, so the
-# heads&tails estimate is the lower bound it is meant to be.
+# I-005: among the N2 neighbours tied at the best value, take the arc
+# used fewest times in this run instead of whichever the ordering
+# reached first. The tied moves are only visible if the estimate is a
+# true lower bound, so the cell carries both lines; I-004 measured the
+# bound repair alone at +0.01 makespan units, a clean zero, so any
+# effect here belongs to the tie-break.
 localsearch.tails = full
+localsearch.tiebreak = frequency
