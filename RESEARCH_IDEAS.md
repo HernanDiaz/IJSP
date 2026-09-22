@@ -274,6 +274,7 @@ bucle y están aquí para que no se repitan; sus cifras están en el JOURNAL.
 | H-3 | memético con su configuración afinada vs ABC con la suya | el memético alcanza mejores makespans | -- | 22 x 10 x 300 s: ABC mejor en 18 de 22, W = 30, p = 0.002 | **descartada** (2026-09-21) |
 | I-003 | el explorador del ABC reinyecta un **elite pateado** en vez de una solución aleatoria | un arranque aleatorio a mitad de tirada no puede alcanzar a la población; uno dentro de una cuenca buena sí | kick−control = **+1.43** (ta23 −0.27, ta29 +0.70, ta30 −0.50, ta45 **+5.80**); regla > +2 descarta → **pasa, por poco y en contra** | 4 mirillas de 6: −1.02, −0.57, **−0.03**, +0.44; kick mejor en 9-10 de 21 siempre; p entre 0.55 y 0.88, la frontera nunca se acerca | **detenida en la 4ª** (2026-09-21) por cambio de dirección del PI, no por sus datos. Sin aceptación: es un cero |
 | H-4 | N8 contra N2 (y contra N1, N3, N_ext), fase B del paper de COR | un vecindario más rico gana | -- | 82 instancias x 30 runs, 2460 bloques pareados: N2 1846.50 contra N8 1847.94, dif −1.45, p_adj = 3.9e−4, r = 0.077 (**despreciable**); rangos de Friedman N2 2.1315 el mejor de cinco, N8 2.2400 | **descartada** (antes del bucle; `experiments/cor_tabu_2026/`) |
+| I-012 | **escapar del estado todo-tabú, solo eso** | la celda informativa de I-010 dio −1.11 y mejor en 15 de 21 (p = 0.033) sin frontera; toca medirlo con una | pendiente | pendiente | **en curso** (2026-09-22) |
 | I-011 | `[COLA]` **cartera de configuraciones**: cada tirada sortea una combinación de los interruptores ya medidos como neutros | una mezcla de componentes neutros conserva la media y **suma varianza entre componentes**, así que alarga la cola por construcción | pendiente | pendiente | **preinscrita** (2026-09-22) |
 | I-010 | **escapar del estado todo-tabú** y con ello hacer alcanzable la profundidad | la profundidad la limita el callejón sin salida, no el parámetro | dscp−control = −0.86, pasa | 6 mirillas, 30 runs: +0.16, −0.32, −0.13, −0.06, −0.41, **−0.25**; mejor en 10 de 21, p = 0.639 | **descartada** (2026-09-22) por no cruzar en la sexta |
 | I-009 | una llamada profunda al tabú sobre el incumbente, **una sola por tirada** | nunca hay una trayectoria profunda | deep−control = −0.02, pasa | -- | **retirada** (2026-09-22): infradimensionada por construcción, la llamada era el 0.06-2.3 % del trabajo del tabú |
@@ -1701,3 +1702,48 @@ beneficioso, así que **I-012 va antes**, con el escape solo como idea de
 posición y su propia confirmación. Si sale neutro, entra en la cartera. Si
 sale beneficioso, pasa a la configuración vigente y la cartera se construye
 sin él.
+
+### I-012 — el escape solo, esta vez con frontera
+
+**De dónde sale, y por qué necesita su propia tanda.** La celda informativa de
+I-010 dio, sobre las 21 instancias y 30 tiradas, media **−1.11**, mejor en
+**15 de 21**, p = **0.0325**. Es la señal más fuerte que ha producido
+cualquier celda en once iteraciones. Y no vale como resultado por dos razones
+que hay que decir juntas: entró **sin frontera**, declarada como información,
+y se miró **porque destacaba**, que es selección sobre los datos. Un p de
+0.033 escogido entre las celdas que llamaron la atención no es un p de 0.033.
+
+**Hipótesis** (una frase): a igual tiempo de reloj, permitir que la búsqueda
+tabú salga de un estado todo-tabú tomando el mejor movimiento de todos modos,
+en vez de terminar la llamada, da un makespan final menor.
+
+**Qué se toca**: una línea, `localsearch.deadend = escape`. **Nada más**: sin
+llamadas profundas, sin cuota, sin ningún parámetro. Es la mitad de I-010 que
+la otra mitad estaba tapando.
+
+**Semillas independientes**, 201 a 230, no las 1 a 30 de I-010. La
+confirmación tiene que ser una muestra nueva: reutilizar las mismas tiradas
+que motivaron la sospecha sería medir dos veces el mismo ruido.
+
+**Por qué es plausible más allá del número.** El escape es la salida clásica
+del estado todo-tabú y está en la familia TSAB desde siempre; lo que I-010
+midió es que sin él las trayectorias mueren en torno al movimiento 80, y que
+con él llegan a 286-1909. I-010 probó que **la profundidad** que eso habilita
+no aporta. Queda la otra mitad: que lo que aporta no sea la profundidad sino
+**no terminar la llamada**, es decir que el valor esté en seguir buscando desde
+donde se estaba en vez de reiniciar la llamada desde el siguiente individuo.
+Son dos mecanismos distintos y I-010 solo refutó uno.
+
+**Celdas**: `control` y `escape`. **Endpoint primario**: Wilcoxon pareado por
+las 21, frontera de Pocock **simétrica** p <= 0.0142 en las seis mirillas.
+**Endpoints de cola**, obligatorios desde I-006. **Regla del filtro**:
+descartar si la media de `escape − control` sobre las cuatro instancias del
+filtro supera +2.0.
+
+**Comprobación de coherencia añadida al procedimiento** (2026-09-22): antes de
+generar nada se verifica que la lista de celdas del generador y la del
+analizador son idéntica. Dos veces en esta sesión derivé ficheros de la
+iteración anterior con sustituciones de texto y las listas quedaron
+descolgadas: en I-005 los setups salieron sin la línea de la idea, y en I-010
+el análisis leyó dos celdas de las tres que se corrieron. Son dos líneas de
+comprobación y se me escapó dos veces.
