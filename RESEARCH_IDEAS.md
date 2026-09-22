@@ -233,6 +233,7 @@ bucle y están aquí para que no se repitan; sus cifras están en el JOURNAL.
 | H-3 | memético con su configuración afinada vs ABC con la suya | el memético alcanza mejores makespans | -- | 22 x 10 x 300 s: ABC mejor en 18 de 22, W = 30, p = 0.002 | **descartada** (2026-09-21) |
 | I-003 | el explorador del ABC reinyecta un **elite pateado** en vez de una solución aleatoria | un arranque aleatorio a mitad de tirada no puede alcanzar a la población; uno dentro de una cuenca buena sí | kick−control = **+1.43** (ta23 −0.27, ta29 +0.70, ta30 −0.50, ta45 **+5.80**); regla > +2 descarta → **pasa, por poco y en contra** | 4 mirillas de 6: −1.02, −0.57, **−0.03**, +0.44; kick mejor en 9-10 de 21 siempre; p entre 0.55 y 0.88, la frontera nunca se acerca | **detenida en la 4ª** (2026-09-21) por cambio de dirección del PI, no por sus datos. Sin aceptación: es un cero |
 | H-4 | N8 contra N2 (y contra N1, N3, N_ext), fase B del paper de COR | un vecindario más rico gana | -- | 82 instancias x 30 runs, 2460 bloques pareados: N2 1846.50 contra N8 1847.94, dif −1.45, p_adj = 3.9e−4, r = 0.077 (**despreciable**); rangos de Friedman N2 2.1315 el mejor de cinco, N8 2.2400 | **descartada** (antes del bucle; `experiments/cor_tabu_2026/`) |
+| I-009 | **una llamada profunda al tabú sobre el incumbente** cuando la tirada se estanca | nunca hay una trayectoria profunda: 242 zambullidas de 26-41 movimientos por generación | pendiente | pendiente | **en curso** (2026-09-22) |
 | I-008 | **caza en `ta29` a 300 s**, 84 tiradas | el mínimo lo da el presupuesto largo (I-007), y con el triple de tiradas debería bajar de 1625 | -- | 84 tiradas: **sin récord y sin igualada**, mínimo **1628**. Con I-007 suman 111 tiradas de 300 s y **1 igualada**. Rebaja la conclusión de I-007 sobre la duración de tirada | **cerrada** (2026-09-22): cierra la fuerza bruta en `ta29` |
 | I-007 | **intento concentrado en `ta29`**, y qué duración de tirada da el mínimo más bajo a igual CPU | los 40 s son el mejor corte fijo **por la media**; un récord vive en el mínimo | -- | 307 tiradas: **sin récord**. **Iguala el BKS, 1625**, verificado, solo la celda de 300 s. 40 s y 100 s se quedan en 1627. Medias iguales (1640.5 / 1639.8 / 1639.4) | **cerrada** (2026-09-22): sin récord, con igualada y con la duración de tirada medida |
 | I-006 | **intento de récord** sobre la lista corta, 75 tiradas por celda e instancia | el récord vive en la cola, no en la media | -- | 600 tiradas: **sin récord**. Casi en `ta29` 1627 (BKS 1625, +2). **Mejor propio nuevo en `ta23`: 1564** contra 1571, verificado. Cola entre celdas plana: 26 contra 30 bloques, p = 0.689 | **cerrada** (2026-09-22), sin récord y con un mejor propio |
@@ -1376,3 +1377,53 @@ parámetro global y que sigue abierta en su forma asimétrica (B-9), y las
 familias que la revisión externa señaló y que exigen salir del vecindario
 completo, reparación exacta sobre una ventana (B-12) o búsqueda en espacio de
 soluciones parciales.
+
+### I-009 — una llamada profunda sobre el incumbente al estancarse
+
+**Hipótesis** (una frase): a igual tiempo de reloj, disparar **una** llamada
+profunda al tabú sobre el incumbente la primera vez que la tirada pasa diez
+generaciones sin mejorar su mejor global da un makespan final menor.
+
+**Por qué es lo único que queda del mapa.** Ocho iteraciones han cerrado casi
+todo: de dónde arranca un individuo no importa (I-001, I-003), cuál de los
+buenos vecinos de N2 se elige tampoco (I-004, I-005), un vecindario más rico
+no ayuda (H-4, reproducido en I-002), y el volumen no rompe la barrera de
+`ta29` (I-006 a I-008). Lo que ninguna ha tocado es **qué se hace con el
+movimiento una vez elegido**. Medido el 2026-09-21: la búsqueda local son unas
+242 zambullidas por generación, cada una muriendo a las 15 iteraciones sin
+mejora tras 26 a 41 movimientos en total. **Nunca hay una sola trayectoria
+profunda**, y eso es justo lo que distingue a TSAB, que cruza regiones peores
+durante cientos o miles de movimientos.
+
+**Por qué no lo contesta ya H-5.** H-5 cerró la profundidad como **parámetro
+global**: irace la barrió entre 5 y 40 y eligió 15. Pero en ese espacio la
+profundidad era **una sola para toda la población**, así que subirla encarecía
+las 242 llamadas a la vez y el afinado estaba eligiendo en una curva de
+compromiso. El reparto **desigual**, corto para la población y profundo para
+el incumbente, no era expresable ahí. Es lo que esto prueba.
+
+**Qué se toca**: `ArtificialBeeColonyPSO` y un par de accesores en `LS_Tabu`.
+Una línea de setup, `abc.deepls = 10`. El disparador (10 generaciones) y la
+profundidad (1000 iteraciones sin mejora contra las 15 congeladas) quedan
+**fijados de antemano y no se ajustan**; el tope de 2 s por llamada se deja
+como está. Parámetros del ABC congelados.
+
+**Dispara una sola vez por tirada, y eso es diseño, no pereza.** Si se
+repitiera en cada episodio de estancamiento, en el peor caso se comería la
+mitad del presupuesto y la comparación a igual tiempo de reloj mediría el
+gasto en vez de la idea. Una vez por tirada acota el coste en un 5 % de una
+tirada de 40 s y deja la prueba interpretable.
+
+**Comprobado antes de correr** (2026-09-22, 4 instancias, 3 clases, 4
+tiradas): horarios factibles, las dos celdas difieren en las cuatro
+instancias, y el contador nuevo `Deep LS calls` marca exactamente **1** por
+tirada en la celda y **0** en el control. Las iteraciones medias por llamada
+suben un poco en la celda (26.21 a 26.23 en `ta29`, 39.83 a 40.76 en `ta41`),
+que es la firma de que la profundidad se usa. Después de I-003 no vuelvo a
+preinscribir nada sin poder demostrar que la rama se ejecuta.
+
+**Celdas**: `control` y `deep`. **Endpoint primario**: Wilcoxon pareado por las
+21, frontera de Pocock **simétrica** p <= 0.0142 en las seis mirillas.
+**Endpoints de cola**, obligatorios desde I-006: mejor de las 30 por instancia
+y media de los tres más bajos. **Regla del filtro**: descartar si la media de
+`deep − control` sobre las cuatro instancias supera +2.0.

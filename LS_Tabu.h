@@ -52,6 +52,16 @@ public:
 		// TabuList does not have, acting at the one point where the algorithm
 		// currently chooses blind.
 		bool tieBreakFrequency;
+
+	public:
+		/**
+		* I-009: read and set the depth of a tabu call, so one call can be run
+		* deeper than the frozen 15 non-improving iterations without touching
+		* the setup. The caller saves the old value and restores it.
+		*/
+		int getMaxBadIterations() const { return this->maxBadIterations; }
+		void setMaxBadIterations(int value) { this->maxBadIterations = value; }
+	public:
 		std::string tieBreakLabel;
 		std::vector<unsigned int> arcUses;   // indexed by x * nTasks + y
 		unsigned int arcUsesTasks;

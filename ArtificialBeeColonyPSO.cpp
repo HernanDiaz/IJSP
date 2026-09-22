@@ -253,6 +253,8 @@ namespace FuzzyFW {
 		stats.push_back(std::pair<std::string, double>
 			("N2 estimate above real value", (double)LS_Tabu::diagBoundBreaks));
 		stats.push_back(std::pair<std::string, double>
+			("Deep LS calls", (double)this->deepLsCalls));
+		stats.push_back(std::pair<std::string, double>
 			("Plateau vetoes in crossover",
 			(double)this->plateauVetoesCross));
 		stats.push_back(std::pair<std::string, double>
@@ -398,6 +400,7 @@ namespace FuzzyFW {
 		// Loads the common parameters
 		// Scout phase. Default is the classical ABC, a fresh random solution, so
 		// a setup that says nothing behaves exactly as before.
+		this->deepLsTrigger = (unsigned int)params->getInteger(DEEP_LS_TRIGGER, 0);
 		this->scoutKick = false;
 		this->scoutKicks = 0;
 		std::string scoutValue = params->getStringLower(SCOUT_MODE);
@@ -475,6 +478,8 @@ namespace FuzzyFW {
 		this->abc_replacements = 0;
 		this->plateauVetoesCross = 0;
 		this->plateauVetoesLS = 0;
+		this->deepLsDone = false;
+		this->deepLsCalls = 0;
 
 		evolutionStats.clear();
 
@@ -691,6 +696,29 @@ namespace FuzzyFW {
 				this->iterationsNI = 0;
 			else
 				this->iterationsNI++;
+
+			// I-009. The local search of this solver is about 242 shallow dips
+			// per generation, each ending after 15 non-improving iterations
+			// having made 26 to 41 moves in total (measured 2026-09-21). There
+			// is never ONE deep trajectory. irace swept the depth between 5
+			// and 40 and chose 15 (H-5), but in its space one depth applied to
+			// the whole population, so the uneven allocation was never
+			// explored. This fires a single deep call on the incumbent the
+			// first time the run stalls, and never again in that run, so the
+			// cost is bounded by the existing per-call time cap.
+			if (this->deepLsTrigger > 0 && !this->deepLsDone
+				&& this->iterationsNI >= this->deepLsTrigger) {
+				LS_Tabu *tabu = dynamic_cast<LS_Tabu *>(this->localSearch);
+				if (tabu != NULL) {
+					int saved = tabu->getMaxBadIterations();
+					tabu->setMaxBadIterations(DEEP_LS_DEPTH);
+					this->applyLocalSearch(currentPopulation,
+						currentPopulation->whoIsBest(this->sharedVariables));
+					tabu->setMaxBadIterations(saved);
+					this->deepLsCalls++;
+				}
+				this->deepLsDone = true;
+			}
 
 			if (this->bestSoFar != NULL) {
 				if (currentPopulation->getBest(this->sharedVariables)->getFitness()->isBetterThan(this->bestSoFar->getFitness())) {

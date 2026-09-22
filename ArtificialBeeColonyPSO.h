@@ -56,7 +56,12 @@ namespace FuzzyFW {
 //   "kick"  : a clone of a random elite with abc.scout.kicks mutations applied
 #define SCOUT_MODE  "abc.scout"        //random | kick
 #define SCOUT_KICKS "abc.scout.kicks"  //mutations applied to the cloned elite
-#define SCOUT_MODE_KICK "kick" 
+#define SCOUT_MODE_KICK "kick"
+// I-009: one deep tabu call on the incumbent when the run stalls.
+//   abc.deepls = N  fires the first time N generations pass without improving
+//   the global best, once per run, with the depth below. 0 or absent is off.
+#define DEEP_LS_TRIGGER "abc.deepls"
+#define DEEP_LS_DEPTH 1000          // fixed in advance, never tuned 
 
 
 	//=============================================================================
@@ -78,6 +83,12 @@ namespace FuzzyFW {
 		/** I-003: kick an elite instead of injecting a random scout. */
 		bool scoutKick;
 		unsigned int scoutKicks;
+
+		/** I-009: generations of stagnation that trigger the deep call, and
+		    whether it has already fired in this run. */
+		unsigned int deepLsTrigger;
+		bool deepLsDone;
+		unsigned int deepLsCalls;
 
 		//=========================================================================
 		//		FIELDS
