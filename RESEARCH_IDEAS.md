@@ -233,6 +233,7 @@ bucle y están aquí para que no se repitan; sus cifras están en el JOURNAL.
 | H-3 | memético con su configuración afinada vs ABC con la suya | el memético alcanza mejores makespans | -- | 22 x 10 x 300 s: ABC mejor en 18 de 22, W = 30, p = 0.002 | **descartada** (2026-09-21) |
 | I-003 | el explorador del ABC reinyecta un **elite pateado** en vez de una solución aleatoria | un arranque aleatorio a mitad de tirada no puede alcanzar a la población; uno dentro de una cuenca buena sí | kick−control = **+1.43** (ta23 −0.27, ta29 +0.70, ta30 −0.50, ta45 **+5.80**); regla > +2 descarta → **pasa, por poco y en contra** | 4 mirillas de 6: −1.02, −0.57, **−0.03**, +0.44; kick mejor en 9-10 de 21 siempre; p entre 0.55 y 0.88, la frontera nunca se acerca | **detenida en la 4ª** (2026-09-21) por cambio de dirección del PI, no por sus datos. Sin aceptación: es un cero |
 | H-4 | N8 contra N2 (y contra N1, N3, N_ext), fase B del paper de COR | un vecindario más rico gana | -- | 82 instancias x 30 runs, 2460 bloques pareados: N2 1846.50 contra N8 1847.94, dif −1.45, p_adj = 3.9e−4, r = 0.077 (**despreciable**); rangos de Friedman N2 2.1315 el mejor de cinco, N8 2.2400 | **descartada** (antes del bucle; `experiments/cor_tabu_2026/`) |
+| I-008 | **caza en `ta29` a 300 s**, 84 tiradas, todo el presupuesto en la configuración que ha tocado 1625 dos veces | el mínimo lo da el presupuesto largo (I-007), y con el triple de tiradas debería bajar de 1625 | -- | pendiente | **en curso** (2026-09-22) |
 | I-007 | **intento concentrado en `ta29`**, y qué duración de tirada da el mínimo más bajo a igual CPU | los 40 s son el mejor corte fijo **por la media**; un récord vive en el mínimo | -- | 307 tiradas: **sin récord**. **Iguala el BKS, 1625**, verificado, solo la celda de 300 s. 40 s y 100 s se quedan en 1627. Medias iguales (1640.5 / 1639.8 / 1639.4) | **cerrada** (2026-09-22): sin récord, con igualada y con la duración de tirada medida |
 | I-006 | **intento de récord** sobre la lista corta, 75 tiradas por celda e instancia | el récord vive en la cola, no en la media | -- | 600 tiradas: **sin récord**. Casi en `ta29` 1627 (BKS 1625, +2). **Mejor propio nuevo en `ta23`: 1564** contra 1571, verificado. Cola entre celdas plana: 26 contra 30 bloques, p = 0.689 | **cerrada** (2026-09-22), sin récord y con un mejor propio |
 | I-005 | desempate **dirigido por frecuencia** entre los vecinos empatados de N2 | elegir *mejor* dentro de N2 no cambia nada (I-004); elegir **dirigidamente distinto** sí puede | freq−control = **+2.55** (ta45 +7.70, ta23 +4.20, ta29 +0.60, ta30 −2.30); regla > +2 descarta → **DESCARTA** | -- | **descartada** (2026-09-22) en el filtro |
@@ -1297,3 +1298,33 @@ el bucle y siguen siendo los de la media.
 **Lo siguiente, sin idea nueva**: un intento con todo el presupuesto en
 `ta29` a 300 s por tirada. Con 7 h-CPU son 84 tiradas, tres veces las 27 de
 aquí, en la única configuración que ha tocado 1625 dos veces.
+
+### I-008 — `ta29` a 300 s, 84 tiradas, y nada más
+
+**Sin idea nueva. Es la caza, y la dirección la fijó una medida.** I-007 midió
+en `ta29`, a igual CPU total, que 40 s por 200 tiradas y 100 s por 80 se
+quedan en 1627 mientras 300 s por 27 llega a **1625**, y que las tres medias
+son indistinguibles. El presupuesto afinado sobre la media es el equivocado
+para un récord. Esta tanda gasta las 7 h-CPU enteras en la única
+configuración que ha tocado 1625 **dos veces**: 84 tiradas de 300 s, el triple
+de lo que I-007 le dio.
+
+**Semillas nuevas**, de la 101 a la 184, para que sean tiradas nuevas y no
+casi-repeticiones de las 1 a 27 de I-007.
+
+**Un récord es un makespan estrictamente por debajo de 1625.** Igualar 1625 es
+una igualada, y esta línea ya lo ha hecho dos veces. La distinción costó un
+titular mal etiquetado en I-007 y está escrita en el `analyze.py` de esta
+iteración para que no vuelva a pasar.
+
+**Endpoints**: cualquier cosa en 1627 o menos con su trozo, para poder sacar
+y reverificar el horario; el mínimo de la tanda; la cola hasta 1630 y la media
+de los tres más bajos; y los recuentos por umbral **al lado de la celda de
+300 s de I-007**, para poder juntar por ojo las dos tandas de la misma
+configuración, que sumarán 111 tiradas de 300 s sobre `ta29`.
+
+**Qué se aprende si no sale.** Con 111 tiradas de 300 s y dos igualadas pero
+ningún 1624, la lectura sería que `ta29` está en una barrera dura en 1625 para
+esta configuración, y que batirla pide algo distinto del volumen. Eso cerraría
+la caza por fuerza bruta en esta instancia y devolvería el foco al mecanismo,
+pero con un dato que ahora no tenemos.
