@@ -35,7 +35,7 @@ from compare import makespans, wilcoxon                      # noqa: E402
 
 ORLIB = os.path.join(EXPERIMENT, "reference", "taillard_orlib.txt")
 CELLS = ["control", "escape", "deepescape"]
-WAVE_CELLS = ["control", "deepescape"]
+WAVE_CELLS = ["control", "escape", "deepescape"]
 POCOCK = 0.0142
 FILTER_RULE = 2.0
 WAVES = 6

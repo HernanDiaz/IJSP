@@ -135,6 +135,47 @@ en la primera hora**: un efecto de -3 se declara en la primera o la segunda
 oleada el 70 % de las veces, y uno del doble en la primera. Las seis oleadas
 completas son el caso peor, no el normal, y son 2.6 h en vez de 6.5.
 
+**Dos clases de iteración: de posición y de cola.** Decisión del PI
+(2026-09-22), tras diez iteraciones y dos sustos. Hasta ahora toda idea se
+juzgaba por el desplazamiento de la **media**, y eso tiene un motivo que sigue
+siendo bueno: con una dispersión entre tiradas de ~8 unidades, el error típico
+agregado sobre las 21 instancias es de **~0.45 unidades** para la media,
+**~0.7** para la media de los mejores por bloques de 5, y **~1.0** y además
+sesgado para el mejor absoluto. El mínimo de una muestra es un estadístico de
+orden extremo: cuesta el doble de datos ver lo mismo. Y si un mecanismo
+desplaza la distribución, **el mínimo baja con ella**: una mejora en la media
+*es* una mejora en la cola, medida con un instrumento más fino.
+
+Esta sesión lo aprendió por las malas dos veces. I-005 empeoraba la media y
+mejoraba el mejor en `ta30`, 1595 contra 1607; con 600 tiradas en I-006 el
+efecto desapareció (26 bloques contra 30, p = 0.689). I-007 tocó 1625 con el
+presupuesto largo en 27 tiradas; con 84 más en I-008 no se repitió.
+
+Pero media y cola **sí** divergen cuando un mecanismo no mueve el centro sino
+la **forma**, es decir cuando aumenta la varianza, y el protocolo no sabía
+premiar eso: el filtro descarta por empeorar la media, que es exactamente el
+aspecto de un mecanismo que ensancha la cola. Por ahí se cayó I-005. Desde
+ahora:
+
+- Una iteración **de posición** (las diez primeras y el caso por defecto)
+  decide por la media, como hasta ahora.
+- Una iteración **de cola** se declara como tal **antes de correr**, y
+  entonces: su endpoint primario es la **media de los mejores por bloques de
+  5 tiradas** (lo que consume de verdad una campaña de récord, y no el mejor
+  absoluto, que solo vale como titular); su regla de filtro se aplica sobre
+  ese endpoint y no sobre la media; y **se le permite empeorar la media**,
+  que se reporta sin valor decisorio. La frontera es la misma de Pocock,
+  p <= 0.0142 en cada una de las seis mirillas, simétrica.
+- Lo que **no** cambia: el filtro solo descarta, los presupuestos por clase
+  son intocables, y la métrica sigue siendo el makespan recomputado desde el
+  horario.
+
+La aritmética que justifica abrir esta vía: en `ta29` la media está en 1641 y
+el BKS en 1625, dos desviaciones típicas. Al récord se llega bajando la media
+dos unidades, que es lo que **no ha conseguido nada** en diez iteraciones, o
+**subiendo la dispersión**, que nadie ha intentado como objetivo. Son dos
+caminos al mismo sitio y solo hemos recorrido uno.
+
 **Antes de preinscribir una idea, buscarla en el repositorio.** Regla nueva
 (2026-09-21), a raíz de I-002: el historial de abajo solo tenía los tres
 negativos que el PI me nombró, y con eso preinscribí una repetición de un
@@ -233,6 +274,7 @@ bucle y están aquí para que no se repitan; sus cifras están en el JOURNAL.
 | H-3 | memético con su configuración afinada vs ABC con la suya | el memético alcanza mejores makespans | -- | 22 x 10 x 300 s: ABC mejor en 18 de 22, W = 30, p = 0.002 | **descartada** (2026-09-21) |
 | I-003 | el explorador del ABC reinyecta un **elite pateado** en vez de una solución aleatoria | un arranque aleatorio a mitad de tirada no puede alcanzar a la población; uno dentro de una cuenca buena sí | kick−control = **+1.43** (ta23 −0.27, ta29 +0.70, ta30 −0.50, ta45 **+5.80**); regla > +2 descarta → **pasa, por poco y en contra** | 4 mirillas de 6: −1.02, −0.57, **−0.03**, +0.44; kick mejor en 9-10 de 21 siempre; p entre 0.55 y 0.88, la frontera nunca se acerca | **detenida en la 4ª** (2026-09-21) por cambio de dirección del PI, no por sus datos. Sin aceptación: es un cero |
 | H-4 | N8 contra N2 (y contra N1, N3, N_ext), fase B del paper de COR | un vecindario más rico gana | -- | 82 instancias x 30 runs, 2460 bloques pareados: N2 1846.50 contra N8 1847.94, dif −1.45, p_adj = 3.9e−4, r = 0.077 (**despreciable**); rangos de Friedman N2 2.1315 el mejor de cinco, N8 2.2400 | **descartada** (antes del bucle; `experiments/cor_tabu_2026/`) |
+| I-011 | `[COLA]` **cartera de configuraciones**: cada tirada sortea una combinación de los interruptores ya medidos como neutros | una mezcla de componentes neutros conserva la media y **suma varianza entre componentes**, así que alarga la cola por construcción | pendiente | pendiente | **preinscrita** (2026-09-22) |
 | I-010 | **escapar del estado todo-tabú** y con ello hacer alcanzable la profundidad | la profundidad la limita el callejón sin salida, no el parámetro | dscp−control = **−0.86**, pasa. Secundario: `escape` solo da **−1.78**, mejor que con la cuota | en curso (oleadas, 3 celdas) | **en curso** (2026-09-22) |
 | I-009 | una llamada profunda al tabú sobre el incumbente, **una sola por tirada** | nunca hay una trayectoria profunda | deep−control = −0.02, pasa | -- | **retirada** (2026-09-22): infradimensionada por construcción, la llamada era el 0.06-2.3 % del trabajo del tabú |
 | I-008 | **caza en `ta29` a 300 s**, 84 tiradas | el mínimo lo da el presupuesto largo (I-007), y con el triple de tiradas debería bajar de 1625 | -- | 84 tiradas: **sin récord y sin igualada**, mínimo **1628**. Con I-007 suman 111 tiradas de 300 s y **1 igualada**. Rebaja la conclusión de I-007 sobre la duración de tirada | **cerrada** (2026-09-22): cierra la fuerza bruta en `ta29` |
@@ -1550,3 +1592,71 @@ de ella más allá de una diferencia reportada: no tiene frontera, no puede
 aceptarse y no puede rechazarse. Si `deepescape` se rechaza y `escape` se ve
 mejor, eso será una preinscripción nueva con su propia confirmación, no una
 conclusión de aquí.
+
+### I-011 `[COLA]` — cartera de configuraciones neutras
+
+**Primera iteración declarada de cola.** Su endpoint primario es la media de
+los mejores por bloques de 5, y se le permite empeorar la media.
+
+**Hipótesis** (una frase): si cada tirada de una campaña sortea su
+configuración entre varias que ya sabemos **neutras en media**, la cola
+inferior se alarga sin que la media se mueva, y el mejor de cada bloque de 5
+tiradas mejora.
+
+**Por qué debería funcionar, y por qué es casi aritmética.** Una mezcla de
+componentes tiene por media la media de las medias, así que si cada componente
+es neutro la mezcla también lo es. Pero su varianza es la varianza **dentro**
+de los componentes **más** la varianza **entre** ellos. Si los componentes
+recorren trayectorias distintas, la mezcla tiene cola más larga que cualquiera
+de ellos por construcción. Es el mismo mecanismo que el estudio de siembra ya
+documentó en el problema de intervalos con otras palabras: *un pool mezclado
+arranca peor y acaba mejor que sus componentes*.
+
+**De dónde salen los componentes, y esto es lo bonito**: de las diez
+iteraciones anteriores. Cada una dejó un interruptor implementado, verificado
+y **medido como neutro en media sobre las 21 instancias**, y ninguno está
+encendido. La cartera los usa todos a la vez, sorteando uno de cada par por
+tirada:
+
+| interruptor | apagado | encendido | dónde se midió neutro |
+|---|---|---|---|
+| creación | `jsp.random` | `jsp.seeded` (pool `mix`, k = 25) | I-001: −0.90, p = 0.348 |
+| colas | incremental | `localsearch.tails = full` | I-004: +0.01, p = 0.677 |
+| explorador | aleatorio | `abc.scout = kick` | I-003: −0.03 a +0.44 en 4 mirillas |
+| callejón | `stop` | `localsearch.deadend = escape` | I-010, **condicional** |
+
+**Regla fijada ahora sobre el cuarto**: el interruptor del callejón entra en la
+cartera **si y solo si** I-010 cierra sin cruzar su frontera, es decir si
+queda medido como neutro en media sobre las 21. Si I-010 se acepta, el escape
+pasa a la configuración vigente y deja de ser un componente de la mezcla; si
+cruza en contra, queda excluido. La composición no se decide mirando ningún
+dato de I-011.
+
+**Excluido explícitamente**: `localsearch.tiebreak = frequency`. Su única
+medida es el filtro de I-005, que dio **+2.55** y descartó. Nunca se midió
+sobre las 21, así que su neutralidad **no está establecida** y no puede entrar
+en una cartera cuya propiedad clave es heredar la neutralidad de sus partes.
+
+**Qué se toca**: **ni una línea del solver.** La cartera es un asunto de
+generación de trabajos: la celda `portfolio` reparte sus 30 tiradas por
+instancia entre las 8 o 16 combinaciones, y se agrupan al analizar. El
+control son 30 tiradas de la configuración congelada. Mismo presupuesto,
+mismo número de tiradas, mismo tiempo de reloj.
+
+**Celdas**: `control` y `portfolio`.
+
+**Endpoint primario** (de cola): la **media de los mejores por bloques de 5
+tiradas** por instancia, Wilcoxon pareado por las 21, frontera de Pocock
+simétrica p <= 0.0142 en las seis mirillas.
+
+**Reportados y sin valor decisorio**: la media por instancia, que **puede
+empeorar**; el mejor absoluto de las 30; y la desviación típica por celda e
+instancia, que es la comprobación de mecanismo de esta iteración. Si la
+dispersión de `portfolio` no sube respecto al control, la mezcla no está
+mezclando y la hipótesis no llega a probarse, igual que pasó con la cuota de
+I-009. **Ese contador va mirado antes de interpretar el endpoint.**
+
+**Regla del filtro**: se descarta si la media de los mejores por bloques de
+`portfolio` menos la de `control`, promediada sobre las cuatro instancias del
+filtro, supera **+2.0** unidades. Sobre el endpoint de cola, no sobre la
+media.
