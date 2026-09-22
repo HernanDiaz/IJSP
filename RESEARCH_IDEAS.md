@@ -1640,11 +1640,23 @@ tirada:
 | callejón | `stop` | `localsearch.deadend = escape` | I-010, **condicional** |
 
 **Regla fijada ahora sobre el cuarto**: el interruptor del callejón entra en la
-cartera **si y solo si** I-010 cierra sin cruzar su frontera, es decir si
-queda medido como neutro en media sobre las 21. Si I-010 se acepta, el escape
-pasa a la configuración vigente y deja de ser un componente de la mezcla; si
-cruza en contra, queda excluido. La composición no se decide mirando ningún
-dato de I-011.
+cartera **si y solo si** queda medido como neutro en media sobre las 21. La
+composición no se decide mirando ningún dato de I-011.
+
+**Resuelta (2026-09-22), en dos pasos y con la segunda medida mandando.** Al
+cerrar I-010 quedó **fuera**: lo que aquella frontera confirmó neutro era la
+*combinación* escape+profundidad, no el interruptor suelto, y el interruptor
+suelto daba 15 de 21 a favor, que no parece neutro. Después I-012 lo midió
+solo y con su propia frontera sobre las 21: **+0.07, p = 0.835**. Es neutro
+como la regla pide, así que **entra**. La decisión anterior era la correcta
+con lo que se sabía entonces; esta la sustituye con una medida mejor.
+
+**Cobertura de las combinaciones, anotada por honestidad**: con 30 tiradas en
+trozos de 2, el filtro recorre las combinaciones **0 a 14** y se deja la 15,
+la de los cuatro interruptores encendidos a la vez. Las seis oleadas, con
+trozos de 1 tirada y el índice avanzando, **sí cubren las 16**. El filtro solo
+descarta, así que la ausencia de una de dieciséis no afecta a ninguna
+decisión, pero queda dicho.
 
 **Excluido explícitamente**: `localsearch.tiebreak = frequency`. Su única
 medida es el filtro de I-005, que dio **+2.55** y descartó. Nunca se midió
