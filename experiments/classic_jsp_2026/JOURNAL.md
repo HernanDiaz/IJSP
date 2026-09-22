@@ -1852,3 +1852,35 @@ Nothing is reverted. localsearch.tiebreak defaults to first and the current
 configuration does not mention it, so the code sits inert alongside
 jsp.seeded, abc.scout = kick and localsearch.tails = full: four measured
 mechanisms, none of them switched on.
+
+
+### 2026-09-22: a record attempt, two units short, and a better best on ta23
+
+Six hundred verified runs on the four instances whose best sits closest to a
+BKS, seventy-five per cell on each, zero infeasible. No record. The closest
+was ta29 at 1627 against a BKS of 1625, two units away, from the control
+cell; nothing else came within two.
+
+What the batch did produce is a better best of our own on ta23: 1564, seven
+units below the 1571 the line had carried since the comparison in September,
+verified from its own schedule with the certificate kept in
+iter/I-006/evidence/. It is still seven above the BKS of 1557, so it is not a
+record and is recorded as what it is.
+
+The batch also settled the question it was designed to double as. I-005 had
+been discarded on the mean while its lower tail went the other way on ta30,
+1595 against 1607, and the protocol had been changed to stop throwing such
+things away. Running both cells over four instances and 600 runs says that
+advantage does not generalise: it repeats in direction on ta30, the one
+instance where it was seen, and the pooled sign test on the best of blocks of
+five is 26 against 30 with p = 0.689. It was one instance plus noise. The
+tail tag on I-005 is withdrawn, though the protocol change stays, because
+measuring the tail remains the right thing for this objective.
+
+Where that leaves the hunt is clearer than before. ta29 at two units with
+seventy-five forty-second runs is the closest this regime has come, and the
+line has already matched 1625 once at three hundred seconds. Both facts point
+the same way: on ta29 the record is within reach of more volume rather than of
+another mechanism. A concentrated attempt that spends the whole budget on
+ta29 instead of splitting it four ways is the obvious next step, and it needs
+no new idea.

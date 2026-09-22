@@ -1,0 +1,32 @@
+=== 1. RECORDS and near misses (within 2 of the BKS) ===
+ta29   control   near miss  makespan 1627, BKS 1625, gap +2   (chunk c11)
+
+=== 2. best of N, and its gap to the BKS ===
+inst      BKS                control               freqtie
+ta22     1600         1613 ( +13)             1613 ( +13)     
+ta23     1557         1564 (  +7)             1570 ( +13)     
+ta29     1625         1627 (  +2)             1630 (  +5)     
+ta30     1584         1604 ( +20)             1597 ( +13)     
+
+=== 3. mean of the three lowest (expected-shortfall proxy) ===
+inst          control       freqtie
+ta22           1615.0        1613.7
+ta23           1568.3        1570.0
+ta29           1628.3        1633.3
+ta30           1606.7        1599.7
+
+=== 4. best of blocks of 5 runs, freqtie against control ===
+ta22   freqtie better on 8 of 15 blocks (worse 7, tied 0)
+ta23   freqtie better on 6 of 15 blocks (worse 9, tied 0)
+ta29   freqtie better on 3 of 15 blocks (worse 9, tied 3)
+ta30   freqtie better on 9 of 15 blocks (worse 5, tied 1)
+pooled: freqtie better on 26, worse on 30, tied 4 -> sign test p = 0.689
+
+=== reported, deciding nothing: per-instance mean ===
+inst          control       freqtie
+ta22           1628.1        1628.2
+ta23           1585.9        1588.3
+ta29           1641.3        1641.8
+ta30           1622.7        1621.2
+
+runs per cell and instance: 75

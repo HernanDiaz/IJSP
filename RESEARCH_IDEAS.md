@@ -233,7 +233,7 @@ bucle y están aquí para que no se repitan; sus cifras están en el JOURNAL.
 | H-3 | memético con su configuración afinada vs ABC con la suya | el memético alcanza mejores makespans | -- | 22 x 10 x 300 s: ABC mejor en 18 de 22, W = 30, p = 0.002 | **descartada** (2026-09-21) |
 | I-003 | el explorador del ABC reinyecta un **elite pateado** en vez de una solución aleatoria | un arranque aleatorio a mitad de tirada no puede alcanzar a la población; uno dentro de una cuenca buena sí | kick−control = **+1.43** (ta23 −0.27, ta29 +0.70, ta30 −0.50, ta45 **+5.80**); regla > +2 descarta → **pasa, por poco y en contra** | 4 mirillas de 6: −1.02, −0.57, **−0.03**, +0.44; kick mejor en 9-10 de 21 siempre; p entre 0.55 y 0.88, la frontera nunca se acerca | **detenida en la 4ª** (2026-09-21) por cambio de dirección del PI, no por sus datos. Sin aceptación: es un cero |
 | H-4 | N8 contra N2 (y contra N1, N3, N_ext), fase B del paper de COR | un vecindario más rico gana | -- | 82 instancias x 30 runs, 2460 bloques pareados: N2 1846.50 contra N8 1847.94, dif −1.45, p_adj = 3.9e−4, r = 0.077 (**despreciable**); rangos de Friedman N2 2.1315 el mejor de cinco, N8 2.2400 | **descartada** (antes del bucle; `experiments/cor_tabu_2026/`) |
-| I-006 | **intento de récord** sobre la lista corta, 75 tiradas por celda e instancia | el récord vive en la cola, no en la media; cinco iteraciones sobre la media dieron cinco ceros | -- (no hay filtro: no se acepta nada) | pendiente | **en curso** (2026-09-22) |
+| I-006 | **intento de récord** sobre la lista corta, 75 tiradas por celda e instancia | el récord vive en la cola, no en la media | -- | 600 tiradas: **sin récord**. Casi en `ta29` 1627 (BKS 1625, +2). **Mejor propio nuevo en `ta23`: 1564** contra 1571, verificado. Cola entre celdas plana: 26 contra 30 bloques, p = 0.689 | **cerrada** (2026-09-22), sin récord y con un mejor propio |
 | I-005 | desempate **dirigido por frecuencia** entre los vecinos empatados de N2 | elegir *mejor* dentro de N2 no cambia nada (I-004); elegir **dirigidamente distinto** sí puede | freq−control = **+2.55** (ta45 +7.70, ta23 +4.20, ta29 +0.60, ta30 −2.30); regla > +2 descarta → **DESCARTA** | -- | **descartada** (2026-09-22) en el filtro |
 | I-004 | reparar las colas que alimentan la estimación de N2 | con colas correctas la estimación vuelve a ser cota inferior, el orden del vecindario es el bueno y la poda deja de tirar movimientos mejores | ftails−control = −1.40, pasa | 6 mirillas, 30 runs, 21 inst.: +2.02, +0.84, +0.92, +1.23, +0.33, **+0.01**; mejor en 13 de 21, W = 103.5, p = 0.677; mejor-de-30 mejora en 9 y empeora en 11 | **descartada** (2026-09-22) por no cruzar la frontera en la sexta |
 | H-5 | profundidad del tabú como **parámetro global** (`bad-iterations`) | más profundo es mejor | -- | dentro del espacio de irace **dos veces**: rango (5, 30) en el paper de COR para los cinco vecindarios, rango (5, 40) en los dos brazos de este proyecto. Las configuraciones ganadoras eligieron **15** para el ABC (config. 136) y **23** para el memético (config. 164), no el tope | **contestada** por el afinado, no hace falta experimento |
@@ -1161,3 +1161,48 @@ tanda al lado de las cinco anteriores.
 `verify_certificate.py`, se guarda el certificado, y la prueba es él. Nada de
 lo que haya aquí se incorpora a la configuración vigente por este resultado:
 un récord no valida un mecanismo, y `freqtie` sigue descartada por la media.
+
+### I-006, cierre: sin récord, un casi a dos unidades y un mejor propio
+
+600 tiradas verificadas, cero infactibles, 120 trabajos, de 05:37 a 06:12.
+`iter/I-006/attempt_analysis.txt`; los horarios de los mejores valores están
+guardados y reverificados uno a uno en `iter/I-006/evidence/`.
+
+**1. Récord: no.** Un casi: `ta29` en **1627** con el control, BKS 1625, a
+**+2**. Nada más entró en la ventana de dos unidades.
+
+**2. Mejor de las 75, y contra nuestro propio mejor histórico:**
+
+| inst | BKS | control | freqtie | mejor propio anterior | ¿mejora? |
+|---|---|---|---|---|---|
+| ta22 | 1600 | 1613 | 1613 | 1613 | iguala |
+| ta23 | 1557 | **1564** | 1570 | 1571 | **sí, −7** |
+| ta29 | 1625 | 1627 | 1630 | 1625 (régimen largo) | no |
+| ta30 | 1584 | 1604 | 1597 | 1588 (régimen largo) | no |
+
+**`ta23` = 1564 es un mejor propio nuevo**, siete unidades por debajo de
+1571, verificado desde su horario y con el certificado guardado. Sigue a 7 del
+BKS, así que **no es un récord**, y se anota como lo que es.
+
+**3. Media de los tres más bajos**: `freqtie` mejor en `ta30` (1599.7 contra
+1606.7) y `ta22`, peor en `ta23` y `ta29`.
+
+**4. Contraste de signos sobre el mejor de bloques de 5**: `freqtie` mejor en
+26 bloques, peor en 30, empatados 4; **p = 0.689**. Plano.
+
+**Lo que esto resuelve, y es la razón de haber corrido las dos celdas**: la
+ventaja de cola de `freqtie` que I-005 dejó a la vista **no generaliza**. Se
+repite en dirección en `ta30`, la única instancia donde se vio, y desaparece
+al agregar cuatro instancias y 600 tiradas. Era un efecto de una instancia
+más ruido. La etiqueta `[COLA]` de I-005 queda **retirada**: el cambio de
+protocolo que trajo se queda, porque medir la cola sigue siendo lo correcto
+para este objetivo, pero la candidatura de `freqtie` a intento de récord se
+cierra aquí.
+
+**Dónde deja la caza.** `ta29` a +2 con 75 tiradas de 40 s es el sitio más
+cerca al que hemos llegado en el régimen corto, y nuestro histórico ya igualó
+1625 una vez con 300 s. Las dos cosas juntas dicen que en `ta29` el récord
+está al alcance de más volumen, no de otro mecanismo. Un intento concentrado
+solo en `ta29`, con todo el presupuesto en una instancia en vez de repartido
+en cuatro, es el siguiente paso natural del backlog (B-6) y no necesita
+ninguna idea nueva.
