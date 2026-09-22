@@ -61,7 +61,22 @@ namespace FuzzyFW {
 //   abc.deepls = N  fires the first time N generations pass without improving
 //   the global best, once per run, with the depth below. 0 or absent is off.
 #define DEEP_LS_TRIGGER "abc.deepls"
-#define DEEP_LS_DEPTH 1000          // fixed in advance, never tuned 
+// Depth of a deep call, in consecutive non-improving moves, against the 15 of
+// the frozen setup. Sized by measurement, not taste: a tabu iteration costs
+// about 1.7 us here because the pruning evaluates one or two neighbours, so a
+// run's shallow calls add up to roughly 20 million iterations. A thousand-move
+// trajectory is 0.005 % of that and cannot matter; thirty thousand moves at
+// about 50 ms a call, repeated until the quota below is spent, is a fifth of
+// the search. This is TSAB territory, which crosses worsening regions for
+// hundreds or thousands of moves.
+#define DEEP_LS_DEPTH 30000         // fixed in advance, never tuned
+// I-010: the deep call gets a SHARE of the local-search effort instead of one
+// shot per run. I-009 fired once and that was 0.06 % to 2.3 % of the tabu
+// work (measured 2026-09-22), far too little to move anything. This fires on
+// every stagnation episode while the time spent in deep calls stays under
+// abc.deepls.share percent of all local-search time, so the mechanism gets a
+// real share and the cost is self-limiting.
+#define DEEP_LS_SHARE "abc.deepls.share" 
 
 
 	//=============================================================================
@@ -87,8 +102,10 @@ namespace FuzzyFW {
 		/** I-009: generations of stagnation that trigger the deep call, and
 		    whether it has already fired in this run. */
 		unsigned int deepLsTrigger;
-		bool deepLsDone;
+		unsigned int deepLsShare;      // percent of local-search time, 0 = one shot
+		bool deepLsDone;               // fired in the current stagnation episode
 		unsigned int deepLsCalls;
+		clock_t deepLsTime;
 
 		//=========================================================================
 		//		FIELDS

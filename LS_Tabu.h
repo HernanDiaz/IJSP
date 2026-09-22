@@ -42,6 +42,18 @@ public:
 		static unsigned long diagBoundBreaks;   // estimation strictly worse than the real value
 		static unsigned long diagTieMax;        // the largest tie seen
 
+		//-----  Why does a DEEP call stop?  ---------------------------------
+		// Counted only for calls whose depth limit is above 100, that is the
+		// deep calls of I-010. Raising the limit from 1000 to 30000 changed
+		// neither the share of time nor the average iterations, so something
+		// other than the counter ends them. These say what.
+		static unsigned long deepCalls;
+		static unsigned long deepIters;
+		static unsigned long deepDeadEnd;    // no admissible neighbour at all
+		static unsigned long deepBadStop;    // the non-improving counter ran out
+		static unsigned long deepTimeStop;   // the per-call time cap
+		static unsigned long deepEscapes;    // all-tabu states escaped from
+
 		//-----  I-005: directed tie-breaking  -------------------------------
 		// N2 offers 1.5 to 2.0 eligible neighbours tied at the best value on
 		// average, and up to 27. Which one is taken is decided today by the

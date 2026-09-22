@@ -25,6 +25,17 @@ namespace FuzzyFW {
 //   "first" (default, unchanged): whichever the sort reached first
 //   "frequency": among the tied moves, the arc used fewest times in this run
 #define  FUZZYFW_LOCAL_SEARCH_TIEBREAK "localsearch.tiebreak"
+// I-010: what a tabu call does when NO neighbour is admissible, every move
+// being tabu without meeting the aspiration criterion or being the reverse of
+// the last one.
+//   "stop"   (default, unchanged): end the call
+//   "escape" : take the best neighbour anyway, ignoring the tabu status, and
+//              carry on, which is the classical way out of an all-tabu state
+// Measured 2026-09-22: every deep call ends this way, after 75 to 92 moves,
+// so the depth of this search is capped by the dead end and not by
+// localsearch.bad-iterations. Raising that limit from 15 to 30000 changes
+// nothing at all.
+#define  FUZZYFW_LOCAL_SEARCH_DEADEND "localsearch.deadend"
 
 #define FUZZYFW_LOCAL_SEARCH_TABUITER "localsearch.bad-iterations"
 
@@ -61,6 +72,9 @@ protected:
 
 	std::string tailsLabel;
 	bool fullTails;
+
+	std::string deadEndLabel;
+	bool deadEndEscape;
 
 	Neighbourhood * neighbourhood;
 

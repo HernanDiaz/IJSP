@@ -233,7 +233,8 @@ bucle y están aquí para que no se repitan; sus cifras están en el JOURNAL.
 | H-3 | memético con su configuración afinada vs ABC con la suya | el memético alcanza mejores makespans | -- | 22 x 10 x 300 s: ABC mejor en 18 de 22, W = 30, p = 0.002 | **descartada** (2026-09-21) |
 | I-003 | el explorador del ABC reinyecta un **elite pateado** en vez de una solución aleatoria | un arranque aleatorio a mitad de tirada no puede alcanzar a la población; uno dentro de una cuenca buena sí | kick−control = **+1.43** (ta23 −0.27, ta29 +0.70, ta30 −0.50, ta45 **+5.80**); regla > +2 descarta → **pasa, por poco y en contra** | 4 mirillas de 6: −1.02, −0.57, **−0.03**, +0.44; kick mejor en 9-10 de 21 siempre; p entre 0.55 y 0.88, la frontera nunca se acerca | **detenida en la 4ª** (2026-09-21) por cambio de dirección del PI, no por sus datos. Sin aceptación: es un cero |
 | H-4 | N8 contra N2 (y contra N1, N3, N_ext), fase B del paper de COR | un vecindario más rico gana | -- | 82 instancias x 30 runs, 2460 bloques pareados: N2 1846.50 contra N8 1847.94, dif −1.45, p_adj = 3.9e−4, r = 0.077 (**despreciable**); rangos de Friedman N2 2.1315 el mejor de cinco, N8 2.2400 | **descartada** (antes del bucle; `experiments/cor_tabu_2026/`) |
-| I-009 | **una llamada profunda al tabú sobre el incumbente** cuando la tirada se estanca | nunca hay una trayectoria profunda: 242 zambullidas de 26-41 movimientos por generación | pendiente | pendiente | **en curso** (2026-09-22) |
+| I-010 | **escapar del estado todo-tabú** y con ello hacer alcanzable la profundidad | la profundidad la limita el callejón sin salida, no el parámetro: con el escape las trayectorias pasan de 47-102 a 286-1909 movimientos | pendiente | pendiente | **en curso** (2026-09-22) |
+| I-009 | una llamada profunda al tabú sobre el incumbente, **una sola por tirada** | nunca hay una trayectoria profunda | deep−control = −0.02, pasa | -- | **retirada** (2026-09-22): infradimensionada por construcción, la llamada era el 0.06-2.3 % del trabajo del tabú |
 | I-008 | **caza en `ta29` a 300 s**, 84 tiradas | el mínimo lo da el presupuesto largo (I-007), y con el triple de tiradas debería bajar de 1625 | -- | 84 tiradas: **sin récord y sin igualada**, mínimo **1628**. Con I-007 suman 111 tiradas de 300 s y **1 igualada**. Rebaja la conclusión de I-007 sobre la duración de tirada | **cerrada** (2026-09-22): cierra la fuerza bruta en `ta29` |
 | I-007 | **intento concentrado en `ta29`**, y qué duración de tirada da el mínimo más bajo a igual CPU | los 40 s son el mejor corte fijo **por la media**; un récord vive en el mínimo | -- | 307 tiradas: **sin récord**. **Iguala el BKS, 1625**, verificado, solo la celda de 300 s. 40 s y 100 s se quedan en 1627. Medias iguales (1640.5 / 1639.8 / 1639.4) | **cerrada** (2026-09-22): sin récord, con igualada y con la duración de tirada medida |
 | I-006 | **intento de récord** sobre la lista corta, 75 tiradas por celda e instancia | el récord vive en la cola, no en la media | -- | 600 tiradas: **sin récord**. Casi en `ta29` 1627 (BKS 1625, +2). **Mejor propio nuevo en `ta23`: 1564** contra 1571, verificado. Cola entre celdas plana: 26 contra 30 bloques, p = 0.689 | **cerrada** (2026-09-22), sin récord y con un mejor propio |
@@ -1427,3 +1428,90 @@ preinscribir nada sin poder demostrar que la rama se ejecuta.
 **Endpoints de cola**, obligatorios desde I-006: mejor de las 30 por instancia
 y media de los tres más bajos. **Regla del filtro**: descartar si la media de
 `deep − control` sobre las cuatro instancias supera +2.0.
+
+### La profundidad del tabú está limitada por el callejón sin salida, no por su parámetro (2026-09-22)
+
+Este es el hallazgo del que sale I-010, y reencuadra dos entradas del
+historial. Se llegó a él por tres rediseños fallidos de I-009, cada uno
+forzado por un número y no por una intuición, y los tres habrían producido un
+cero que yo habría anotado como "la profundidad no ayuda".
+
+**Primer intento (I-009).** Una llamada profunda por tirada. El filtro dio
+−0.02. Midiendo qué fracción del trabajo del tabú hacía esa llamada,
+despejada del aumento en iteraciones medias: entre el **0.06 % y el 2.3 %**.
+Retirada por infradimensionada, no por su signo.
+
+**Segundo intento.** Cuota del 25 % del tiempo de búsqueda local en vez de una
+llamada. La cuota alcanzada fue el **0.03 %**: la puerta de "una vez por
+episodio de estancamiento" limitaba las oportunidades, no el coste, y los
+episodios son pocos (1.3 en `ta29`, 7.7 en `ta41` por tirada). Confundí
+limitar oportunidades con limitar coste.
+
+**Tercer intento.** Que la cuota sea el único límite. Subió a 40-150 llamadas
+por tirada y la cuota seguía en el **0.3 %**. La razón es de escala: una
+iteración de tabú cuesta ~1.7 us porque la poda evalúa uno o dos vecinos, así
+que las zambullidas cortas suman del orden de **20 millones de iteraciones por
+tirada** y mil movimientos son el 0.005 % de eso.
+
+**Cuarto intento.** Profundidad a 30.000 movimientos. **No cambió nada**: ni la
+cuota ni las iteraciones medias. Ahí estaba el hallazgo, y hubo que
+instrumentar el porqué:
+
+| instancia | llamadas profundas | iteraciones por llamada | mueren por callejón | por tope de tiempo |
+|---|---|---|---|---|
+| ta29 | 52 | 75 | 93 de 93 | 0 |
+| ta41 | 158 | 92 | 217 de 217 | 0 |
+
+**Todas mueren en callejón sin salida, tras 75 a 92 movimientos.** Llegan a un
+estado donde **ningún** vecino es admisible: todo movimiento de bloque crítico
+es tabú sin cumplir la aspiración, o es el inverso del último. `LS_Tabu` trata
+eso como fin de llamada (`this->badIterations = this->maxBadIterations`).
+
+**Consecuencias, que son tres y ninguna es pequeña:**
+
+1. **`localsearch.bad-iterations` tiene un techo efectivo en ~80.** Por encima
+   de eso da igual lo que valga: 15, 1.000 o 30.000 producen la misma
+   trayectoria porque muere antes. El barrido de irace entre 5 y 40 (H-5) cayó
+   entero por debajo del techo, así que **H-5 sigue siendo válido para el
+   rango que barrió**, pero no dice nada sobre profundidades mayores, que eran
+   inalcanzables por construcción.
+2. **Explica el fracaso del back-jump (H-1).** Devolver la búsqueda a un punto
+   mejor no puede ayudar si la trayectoria nunca se aleja: con un techo de 80
+   movimientos no hay excursión desde la que volver.
+3. **El escape clásico funciona, y mucho.** Tomar el mejor vecino aunque sea
+   tabú cuando no hay ninguno admisible, en vez de terminar, lleva las
+   trayectorias de **47-102 a 286-1909 movimientos** por llamada, y la cuota
+   declarada del 25 % pasa a morder de verdad: 14.0 % en `ta29`, **25.3 %** en
+   `ta41`, con 21.333 y 282.854 escapes por tirada.
+
+### I-010 — escapar del todo-tabú, y con ello probar la profundidad
+
+**Hipótesis** (una frase): a igual tiempo de reloj, permitir que el tabú salga
+de un estado todo-tabú tomando el mejor movimiento de todos modos, y gastar
+hasta el 25 % del tiempo de búsqueda local en trayectorias profundas sobre el
+incumbente, da un makespan final menor.
+
+**Tres celdas en el filtro, que es donde van las variantes**, y encajadas una
+en otra para que la atribución sea limpia:
+
+| celda | qué añade |
+|---|---|
+| `control` | nada, la configuración congelada |
+| `escape` | solo `localsearch.deadend = escape` |
+| `deepescape` | el escape **más** la cuota del 25 % en llamadas profundas |
+
+Así el filtro separa lo que aporta el escape por sí solo de lo que aporta la
+profundidad que el escape habilita. **Dos celdas en la confirmación**,
+`control` y `deepescape`, que es el mecanismo completo y el endpoint primario.
+
+**Endpoint primario**: Wilcoxon pareado por las 21, frontera de Pocock
+**simétrica** p <= 0.0142 en las seis mirillas. **Endpoints de cola**,
+obligatorios desde I-006. **Regla del filtro**: descartar si la media de
+`deepescape − control` sobre las cuatro instancias supera +2.0.
+
+**Regla nueva del protocolo, que estas cuatro rondas han ganado**: ninguna
+idea se preinscribe sin un **contador que demuestre que el mecanismo recibe la
+parte del cómputo que la hipótesis supone**. Verificar que la rama se ejecuta
+(lección de I-003) no basta; hay que verificar cuánto pesa. Aquí ese contador
+es `Deep LS share of LS time %`, y sin él habría lanzado cuatro filtros y
+anotado cuatro ceros.

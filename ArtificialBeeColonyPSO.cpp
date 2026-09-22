@@ -255,6 +255,22 @@ namespace FuzzyFW {
 		stats.push_back(std::pair<std::string, double>
 			("Deep LS calls", (double)this->deepLsCalls));
 		stats.push_back(std::pair<std::string, double>
+			("Deep iters per call",
+			LS_Tabu::deepCalls ? (double)LS_Tabu::deepIters / LS_Tabu::deepCalls : 0.0));
+		stats.push_back(std::pair<std::string, double>
+			("Deep stops: dead end", (double)LS_Tabu::deepDeadEnd));
+		stats.push_back(std::pair<std::string, double>
+			("Deep escapes from all-tabu", (double)LS_Tabu::deepEscapes));
+		stats.push_back(std::pair<std::string, double>
+			("Deep stops: counter", (double)LS_Tabu::deepBadStop));
+		stats.push_back(std::pair<std::string, double>
+			("Deep stops: time cap", (double)LS_Tabu::deepTimeStop));
+		stats.push_back(std::pair<std::string, double>
+			("Deep LS share of LS time %",
+			this->localSearchTime > 0
+				? 100.0 * (double)this->deepLsTime / (double)this->localSearchTime
+				: 0.0));
+		stats.push_back(std::pair<std::string, double>
 			("Plateau vetoes in crossover",
 			(double)this->plateauVetoesCross));
 		stats.push_back(std::pair<std::string, double>
@@ -401,6 +417,7 @@ namespace FuzzyFW {
 		// Scout phase. Default is the classical ABC, a fresh random solution, so
 		// a setup that says nothing behaves exactly as before.
 		this->deepLsTrigger = (unsigned int)params->getInteger(DEEP_LS_TRIGGER, 0);
+		this->deepLsShare = (unsigned int)params->getInteger(DEEP_LS_SHARE, 0);
 		this->scoutKick = false;
 		this->scoutKicks = 0;
 		std::string scoutValue = params->getStringLower(SCOUT_MODE);
@@ -480,6 +497,7 @@ namespace FuzzyFW {
 		this->plateauVetoesLS = 0;
 		this->deepLsDone = false;
 		this->deepLsCalls = 0;
+		this->deepLsTime = 0;
 
 		evolutionStats.clear();
 
@@ -692,8 +710,11 @@ namespace FuzzyFW {
 			this->generation++;
 
 			if (currentPopulation->getBest(sharedVariables)->getFitness()
-				->isBetterThan(this->bestSoFar->getFitness()))
+				->isBetterThan(this->bestSoFar->getFitness())) {
 				this->iterationsNI = 0;
+				// A new episode may fire again.
+				if (this->deepLsShare > 0) this->deepLsDone = false;
+			}
 			else
 				this->iterationsNI++;
 
@@ -706,14 +727,35 @@ namespace FuzzyFW {
 			// explored. This fires a single deep call on the incumbent the
 			// first time the run stalls, and never again in that run, so the
 			// cost is bounded by the existing per-call time cap.
-			if (this->deepLsTrigger > 0 && !this->deepLsDone
-				&& this->iterationsNI >= this->deepLsTrigger) {
+			// With a share declared, the QUOTA is the only limiter: fire on
+			// every stagnant generation and let the time budget stop it. The
+			// once-per-episode gate was measured on 2026-09-22 to cap the
+			// mechanism at 0.03 % of local-search time, because episodes are
+			// few (1.3 on ta29, 7.7 on ta41 per run) while the quota asks for
+			// 25 %. Limiting opportunities and limiting cost are different
+			// things, and only the second one belongs here.
+			bool deepAllowed = this->deepLsTrigger > 0
+				&& this->iterationsNI >= this->deepLsTrigger
+				&& (this->deepLsShare > 0 || !this->deepLsDone);
+			if (deepAllowed && this->deepLsShare > 0) {
+				// Keep the deep calls under their declared share of all
+				// local-search time, so the mechanism gets a real slice of the
+				// search and the cost limits itself.
+				double spent = (double)this->deepLsTime;
+				double allLS = (double)this->localSearchTime;
+				if (allLS > 0.0
+					&& spent >= allLS * (double)this->deepLsShare / 100.0)
+					deepAllowed = false;
+			}
+			if (deepAllowed) {
 				LS_Tabu *tabu = dynamic_cast<LS_Tabu *>(this->localSearch);
 				if (tabu != NULL) {
 					int saved = tabu->getMaxBadIterations();
 					tabu->setMaxBadIterations(DEEP_LS_DEPTH);
+					clock_t before = clock();
 					this->applyLocalSearch(currentPopulation,
 						currentPopulation->whoIsBest(this->sharedVariables));
+					this->deepLsTime += clock() - before;
 					tabu->setMaxBadIterations(saved);
 					this->deepLsCalls++;
 				}

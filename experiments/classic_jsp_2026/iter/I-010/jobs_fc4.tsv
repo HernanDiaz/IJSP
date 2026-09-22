@@ -1,0 +1,13 @@
+# I-010 fc4: 4 instances x 3 cells, 5 runs each, seed 16
+/opt/ijsp/crisp/IJSP/experiments/classic_jsp_2026/iter/I-010/setups/ta29_control_fc4.txt	I-010_fc4_control	ta29
+/opt/ijsp/crisp/IJSP/experiments/classic_jsp_2026/iter/I-010/setups/ta29_escape_fc4.txt	I-010_fc4_escape	ta29
+/opt/ijsp/crisp/IJSP/experiments/classic_jsp_2026/iter/I-010/setups/ta29_deepescape_fc4.txt	I-010_fc4_deepescape	ta29
+/opt/ijsp/crisp/IJSP/experiments/classic_jsp_2026/iter/I-010/setups/ta30_control_fc4.txt	I-010_fc4_control	ta30
+/opt/ijsp/crisp/IJSP/experiments/classic_jsp_2026/iter/I-010/setups/ta30_escape_fc4.txt	I-010_fc4_escape	ta30
+/opt/ijsp/crisp/IJSP/experiments/classic_jsp_2026/iter/I-010/setups/ta30_deepescape_fc4.txt	I-010_fc4_deepescape	ta30
+/opt/ijsp/crisp/IJSP/experiments/classic_jsp_2026/iter/I-010/setups/ta23_control_fc4.txt	I-010_fc4_control	ta23
+/opt/ijsp/crisp/IJSP/experiments/classic_jsp_2026/iter/I-010/setups/ta23_escape_fc4.txt	I-010_fc4_escape	ta23
+/opt/ijsp/crisp/IJSP/experiments/classic_jsp_2026/iter/I-010/setups/ta23_deepescape_fc4.txt	I-010_fc4_deepescape	ta23
+/opt/ijsp/crisp/IJSP/experiments/classic_jsp_2026/iter/I-010/setups/ta45_control_fc4.txt	I-010_fc4_control	ta45
+/opt/ijsp/crisp/IJSP/experiments/classic_jsp_2026/iter/I-010/setups/ta45_escape_fc4.txt	I-010_fc4_escape	ta45
+/opt/ijsp/crisp/IJSP/experiments/classic_jsp_2026/iter/I-010/setups/ta45_deepescape_fc4.txt	I-010_fc4_deepescape	ta45

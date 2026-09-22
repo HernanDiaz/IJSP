@@ -1,0 +1,11 @@
+=== I-009 filter: per-instance mean (best in brackets) ===
+inst             control              deep  deep - ctrl
+ta23       1587.4 [1574]     1587.4 [1574]        +0.07
+ta29       1641.1 [1628]     1640.5 [1630]        -0.63
+ta30       1623.3 [1607]     1623.6 [1607]        +0.27
+ta45       2042.5 [2024]     2042.7 [2022]        +0.20
+
+runs per cell and instance: 30
+
+filter rule: mean(deep - control) = -0.02; discard if > +2.0 -> PASS, go to the waves
+the filter only discards, and its magnitude is not a forecast.

@@ -1956,3 +1956,58 @@ the effective depth of the trajectory, which H-5 closed only as a global
 parameter and which remains open in its asymmetric form, and the families the
 outside review named that require leaving the complete-schedule neighbourhood
 altogether.
+
+
+### 2026-09-22: the depth of this tabu search is capped by dead ends, not by its parameter
+
+Four redesigns of one idea, each forced by a number, ending in a finding that
+reframes two entries of the history.
+
+The idea was the last untouched corner of the map: what happens to a move once
+chosen. The local search is about 242 shallow dips a generation, each dying
+after 15 non-improving moves having made 26 to 41 in total, and there is never
+one deep trajectory, which is exactly what distinguishes TSAB.
+
+I-009 fired one deep call per run. Its filter read -0.02, and the reason was
+arithmetic: solving for the deep call's share of the tabu work from the rise
+in average iterations per call gave 0.06 % to 2.3 %. Withdrawn as underpowered
+by construction, not for its sign. I had bounded the cost and bounded the
+effect along with it.
+
+A quota of 25 % of local-search time replaced the single shot. It reached
+0.03 %, because the once-per-episode gate limited opportunities rather than
+cost and episodes are few. Letting the quota be the only limiter brought 40 to
+150 calls a run and still 0.3 %, because of scale: a tabu iteration costs
+about 1.7 us here, so the shallow calls add up to some 20 million iterations a
+run and a thousand-move trajectory is 0.005 % of that. Raising the depth from
+1000 to 30000 changed neither the share nor the average iterations at all.
+
+That was the finding, and it took instrumenting the reason. Every deep call
+ends in a dead end, after 75 to 92 moves: a state where no neighbour is
+admissible because every critical-block move is tabu without meeting the
+aspiration criterion or is the reverse of the last one. LS_Tabu treats that as
+the end of the call.
+
+So localsearch.bad-iterations has an effective ceiling near 80. Above it the
+value is irrelevant -- 15, 1000 and 30000 give the same trajectory because it
+dies first. irace's sweep from 5 to 40 fell entirely below that ceiling, so
+H-5 stands for the range it swept and says nothing about greater depths, which
+were unreachable by construction. It also explains H-1: back-jumping to a
+better point cannot help when the trajectory never goes anywhere, and with an
+eighty-move ceiling there is no excursion to return from.
+
+The classical escape works, and works hard. Taking the best neighbour anyway
+when none is admissible, instead of ending the call, lifts trajectories from
+47-102 moves to 286-1909, and the declared 25 % quota finally binds: 14.0 % on
+ta29 and 25.3 % on ta41, with 21,333 and 282,854 escapes a run.
+
+I-010 tests that, with three nested cells in the filter -- control, escape
+alone, escape plus the deep quota -- so the filter separates what the escape
+gives from what the depth it enables gives, and two cells in the waves.
+
+The protocol gains a rule these four rounds paid for: no idea is
+pre-registered without a counter showing that the mechanism receives the share
+of the computation the hypothesis assumes. Checking that the branch executes,
+which was I-003's lesson, is not enough. Checking how much it weighs is the
+rest of it. Without that counter I would have launched four filters and
+recorded four zeros.

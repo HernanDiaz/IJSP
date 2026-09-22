@@ -28,7 +28,8 @@ LocalSearch::LocalSearch(ParameterDB *parameters)
 	neighbours(0), iterations(0), neighbourhood(NULL),
 	guideLabel(FUZZYFW_LOCAL_SEARCH_DRIVE), estimationGuided(false),
 	filterLabel(FUZZYFW_LOCAL_SEARCH_FILTER), estimationFilter(false),
-	tailsLabel(FUZZYFW_LOCAL_SEARCH_TAILS), fullTails(false)
+	tailsLabel(FUZZYFW_LOCAL_SEARCH_TAILS), fullTails(false),
+	deadEndLabel(FUZZYFW_LOCAL_SEARCH_DEADEND), deadEndEscape(false)
 	{
 	if (parameters != NULL)
 		this->setup(parameters);
@@ -44,6 +45,7 @@ LocalSearch::LocalSearch(const LocalSearch &source)
 	guideLabel(source.guideLabel), estimationGuided(source.estimationGuided),
 	filterLabel(source.filterLabel), estimationFilter(source.estimationFilter),
 	tailsLabel(source.tailsLabel), fullTails(source.fullTails),
+	deadEndLabel(source.deadEndLabel), deadEndEscape(source.deadEndEscape),
 	neighbours(source.neighbours) {
 
 	if (source.neighbourhood != NULL)
@@ -79,6 +81,8 @@ void LocalSearch::setup(ParameterDB *parameters) {
 	// 1,352,160 and the throughput cost is under 1 %.
 	this->fullTails =
 		(parameters->getStringLower(this->tailsLabel).compare("full") == 0);
+	this->deadEndEscape =
+		(parameters->getStringLower(this->deadEndLabel).compare("escape") == 0);
 }
 
 
@@ -341,6 +345,12 @@ unsigned long LS_Tabu::diagIters = 0;
 unsigned long LS_Tabu::diagScanned = 0;
 unsigned long LS_Tabu::diagBoundBreaks = 0;
 unsigned long LS_Tabu::diagTieMax = 0;
+unsigned long LS_Tabu::deepCalls = 0;
+unsigned long LS_Tabu::deepIters = 0;
+unsigned long LS_Tabu::deepDeadEnd = 0;
+unsigned long LS_Tabu::deepBadStop = 0;
+unsigned long LS_Tabu::deepTimeStop = 0;
+unsigned long LS_Tabu::deepEscapes = 0;
 
 FullSolution LS_Tabu::apply(const Solution *solution,
 	const Fitness *fitness, const SharedVars *svars) {
@@ -421,6 +431,8 @@ FullSolution LS_Tabu::apply(const Solution *solution,
 		this->neighbourhood->sortByEstimation(svars);
 
 		index = 0;
+		int escapeNeighbor = -1;          // best ignoring the tabu status
+		Fitness *escapeValue = NULL;
 		unsigned long diagTies = 0;               // eligible neighbours at the best value
 		double diagBestSeen = 0.0;
 		bool diagHaveBest = false;
@@ -471,6 +483,12 @@ FullSolution LS_Tabu::apply(const Solution *solution,
 							else if (v == diagBestSeen)
 								diagTies++;
 						}
+					}
+					if (this->deadEndEscape && realValue != NULL
+						&& (escapeValue == NULL
+							|| realValue->isBetterThan(escapeValue))) {
+						escapeValue = realValue;
+						escapeNeighbor = index;
 					}
 					bool eligibleMove = (realValue != NULL)
 						&& (!isTabu || realValue->isBetterThan(bestSolution.second))
@@ -540,11 +558,47 @@ FullSolution LS_Tabu::apply(const Solution *solution,
 			else
 				this->badIterations++;
 		}
-		// No neihgbours: Dead end
-		else
+		// No admissible neighbour. Every move is tabu without aspiring, or is
+		// the reverse of the last one. Measured 2026-09-22: this is how EVERY
+		// deep call ends, after 75 to 92 moves, so it and not
+		// localsearch.bad-iterations is what caps the depth of this search.
+		else if (this->deadEndEscape && escapeNeighbor >= 0) {
+			// The classical way out: take the best move anyway and carry on.
+			if (this->maxBadIterations > 100) LS_Tabu::deepEscapes++;
+			if (lastNeighbour != NULL) delete lastNeighbour;
+			lastNeighbour =
+				this->neighbourhood->getNeighbour(escapeNeighbor)->clone();
+			this->tabuList->addNeighbour(
+				this->neighbourhood->getNeighbour(escapeNeighbor));
+			this->neighbourhood->acceptNeighbour(escapeNeighbor, svars);
+			current = this->neighbourhood->getCurrentSolution();
+			this->iterations++;
+			if (current.second->isBetterThan(bestSolution.second)) {
+				delete bestSolution.first;
+				delete bestSolution.second;
+				bestSolution.first = current.first->clone();
+				bestSolution.second = current.second->clone();
+				improves = true;
+				this->badIterations = 0;
+			}
+			else
+				this->badIterations++;
+		}
+		else {
+			if (this->maxBadIterations > 100) LS_Tabu::deepDeadEnd++;
 			this->badIterations = this->maxBadIterations;
+		}
 	}
 
+	if (this->maxBadIterations > 100) {
+		LS_Tabu::deepCalls++;
+		LS_Tabu::deepIters += this->iterations;
+		double elapsed = this->runtime / (double)CLOCKS_PER_SEC;
+		if (this->maxTime > 0 && elapsed >= this->maxTime * 0.9)
+			LS_Tabu::deepTimeStop++;
+		else if (this->badIterations >= this->maxBadIterations)
+			LS_Tabu::deepBadStop++;
+	}
 	if(lastNeighbour != NULL)
 		delete lastNeighbour;
 	return bestSolution;
