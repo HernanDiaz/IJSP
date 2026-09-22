@@ -233,6 +233,7 @@ bucle y están aquí para que no se repitan; sus cifras están en el JOURNAL.
 | H-3 | memético con su configuración afinada vs ABC con la suya | el memético alcanza mejores makespans | -- | 22 x 10 x 300 s: ABC mejor en 18 de 22, W = 30, p = 0.002 | **descartada** (2026-09-21) |
 | I-003 | el explorador del ABC reinyecta un **elite pateado** en vez de una solución aleatoria | un arranque aleatorio a mitad de tirada no puede alcanzar a la población; uno dentro de una cuenca buena sí | kick−control = **+1.43** (ta23 −0.27, ta29 +0.70, ta30 −0.50, ta45 **+5.80**); regla > +2 descarta → **pasa, por poco y en contra** | 4 mirillas de 6: −1.02, −0.57, **−0.03**, +0.44; kick mejor en 9-10 de 21 siempre; p entre 0.55 y 0.88, la frontera nunca se acerca | **detenida en la 4ª** (2026-09-21) por cambio de dirección del PI, no por sus datos. Sin aceptación: es un cero |
 | H-4 | N8 contra N2 (y contra N1, N3, N_ext), fase B del paper de COR | un vecindario más rico gana | -- | 82 instancias x 30 runs, 2460 bloques pareados: N2 1846.50 contra N8 1847.94, dif −1.45, p_adj = 3.9e−4, r = 0.077 (**despreciable**); rangos de Friedman N2 2.1315 el mejor de cinco, N8 2.2400 | **descartada** (antes del bucle; `experiments/cor_tabu_2026/`) |
+| I-006 | **intento de récord** sobre la lista corta, 75 tiradas por celda e instancia | el récord vive en la cola, no en la media; cinco iteraciones sobre la media dieron cinco ceros | -- (no hay filtro: no se acepta nada) | pendiente | **en curso** (2026-09-22) |
 | I-005 | desempate **dirigido por frecuencia** entre los vecinos empatados de N2 | elegir *mejor* dentro de N2 no cambia nada (I-004); elegir **dirigidamente distinto** sí puede | freq−control = **+2.55** (ta45 +7.70, ta23 +4.20, ta29 +0.60, ta30 −2.30); regla > +2 descarta → **DESCARTA** | -- | **descartada** (2026-09-22) en el filtro |
 | I-004 | reparar las colas que alimentan la estimación de N2 | con colas correctas la estimación vuelve a ser cota inferior, el orden del vecindario es el bueno y la poda deja de tirar movimientos mejores | ftails−control = −1.40, pasa | 6 mirillas, 30 runs, 21 inst.: +2.02, +0.84, +0.92, +1.23, +0.33, **+0.01**; mejor en 13 de 21, W = 103.5, p = 0.677; mejor-de-30 mejora en 9 y empeora en 11 | **descartada** (2026-09-22) por no cruzar la frontera en la sexta |
 | H-5 | profundidad del tabú como **parámetro global** (`bad-iterations`) | más profundo es mejor | -- | dentro del espacio de irace **dos veces**: rango (5, 30) en el paper de COR para los cinco vecindarios, rango (5, 40) en los dos brazos de este proyecto. Las configuraciones ganadoras eligieron **15** para el ABC (config. 136) y **23** para el memético (config. 164), no el tope | **contestada** por el afinado, no hace falta experimento |
@@ -1112,3 +1113,51 @@ inerte, porque `localsearch.tiebreak` es `first` por defecto y la
 configuración vigente no lo menciona. Igual que con `jsp.seeded`,
 `abc.scout = kick` y `localsearch.tails = full`: cuatro mecanismos medidos y
 disponibles, ninguno encendido.
+
+### I-006 — intento de récord, que es el objetivo y no una idea
+
+**No hay hipótesis que aceptar ni rechazar, y por eso no hay filtro ni
+oleadas.** El objetivo de la línea es batir o igualar una mejor solución
+conocida, y la prueba de un récord es el propio horario. Cinco iteraciones
+midiendo desplazamientos de la media han dado cinco ceros (I-001 a I-005), y
+lo que I-005 dejó a la vista es que el criterio estaba mirando al sitio
+equivocado: el récord vive en la **cola inferior**.
+
+**Lista corta**, por distancia de nuestro mejor verificado al BKS: `ta29`
+(igualado una vez en 1625 en el régimen largo; a 3 en este), `ta30` (BKS
+1584, mejor de este régimen **1595**, a 11), `ta23` (a 14) y `ta22` (a 13).
+Se dejan fuera las 30x20, que están a 47-65 y donde 75 tiradas no compran
+nada.
+
+**Presupuesto**: 75 tiradas por celda e instancia, 600 tiradas en total, 8.3
+h-CPU, en 120 trabajos de 5 tiradas para que ninguno pase de unos minutos.
+Presupuesto por tirada el de la clase, 40 s, que es el que el análisis de
+reinicios señala para la cola inferior en 20x20.
+
+**Dos celdas, y la elección de la segunda se declara**: `control` es la
+configuración vigente. `freqtie` es la celda que I-005 **descartó por la
+media** y cuya cola fue al contrario, 1595 contra 1607 en `ta30`. Elegirla por
+eso es selección sobre los datos, y en un intento de récord es legítimo
+justamente porque **no se infiere nada**: un récord es un horario, no una p.
+Queda escrito para que nadie tenga que adivinarlo. De paso, el intento duplica
+como los datos extra que la pregunta de la cola necesita.
+
+**Endpoints, predeclarados y en este orden**:
+
+1. **Récord**: cualquier tirada cuyo makespan verificado quede en el BKS o por
+   debajo. Se imprime el horario y el índice de la tirada de todo lo que quede
+   a dos unidades o menos, para poder perseguir un casi.
+2. **Mejor de las 75** por instancia y celda, y su distancia al BKS.
+3. **Media de los tres valores más bajos**, el sustituto de déficit esperado
+   que el protocolo pide desde I-006.
+4. **Contraste de signos** entre celdas sobre el mejor de bloques de 5
+   tiradas consecutivas, que es lo que un intento de récord consume de
+   verdad.
+
+Reportada y sin valor decisorio: la media por instancia, para poder poner esta
+tanda al lado de las cinco anteriores.
+
+**Qué pasa si sale un récord**: se verifica el horario con
+`verify_certificate.py`, se guarda el certificado, y la prueba es él. Nada de
+lo que haya aquí se incorpora a la configuración vigente por este resultado:
+un récord no valida un mecanismo, y `freqtie` sigue descartada por la media.
