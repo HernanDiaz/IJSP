@@ -233,7 +233,7 @@ bucle y están aquí para que no se repitan; sus cifras están en el JOURNAL.
 | H-3 | memético con su configuración afinada vs ABC con la suya | el memético alcanza mejores makespans | -- | 22 x 10 x 300 s: ABC mejor en 18 de 22, W = 30, p = 0.002 | **descartada** (2026-09-21) |
 | I-003 | el explorador del ABC reinyecta un **elite pateado** en vez de una solución aleatoria | un arranque aleatorio a mitad de tirada no puede alcanzar a la población; uno dentro de una cuenca buena sí | kick−control = **+1.43** (ta23 −0.27, ta29 +0.70, ta30 −0.50, ta45 **+5.80**); regla > +2 descarta → **pasa, por poco y en contra** | 4 mirillas de 6: −1.02, −0.57, **−0.03**, +0.44; kick mejor en 9-10 de 21 siempre; p entre 0.55 y 0.88, la frontera nunca se acerca | **detenida en la 4ª** (2026-09-21) por cambio de dirección del PI, no por sus datos. Sin aceptación: es un cero |
 | H-4 | N8 contra N2 (y contra N1, N3, N_ext), fase B del paper de COR | un vecindario más rico gana | -- | 82 instancias x 30 runs, 2460 bloques pareados: N2 1846.50 contra N8 1847.94, dif −1.45, p_adj = 3.9e−4, r = 0.077 (**despreciable**); rangos de Friedman N2 2.1315 el mejor de cinco, N8 2.2400 | **descartada** (antes del bucle; `experiments/cor_tabu_2026/`) |
-| I-004 | reparar las colas que alimentan la estimación de N2 | con colas correctas la estimación vuelve a ser cota inferior, el orden del vecindario es el bueno y la poda deja de tirar movimientos mejores | ftails−control = **−1.40** (ta30 −4.10, ta29 −1.33, ta45 −1.30, ta23 +1.13); regla > +2 descarta → **pasa** | en curso (oleadas) | **en curso** (2026-09-22) |
+| I-004 | reparar las colas que alimentan la estimación de N2 | con colas correctas la estimación vuelve a ser cota inferior, el orden del vecindario es el bueno y la poda deja de tirar movimientos mejores | ftails−control = −1.40, pasa | 6 mirillas, 30 runs, 21 inst.: +2.02, +0.84, +0.92, +1.23, +0.33, **+0.01**; mejor en 13 de 21, W = 103.5, p = 0.677; mejor-de-30 mejora en 9 y empeora en 11 | **descartada** (2026-09-22) por no cruzar la frontera en la sexta |
 | H-5 | profundidad del tabú como **parámetro global** (`bad-iterations`) | más profundo es mejor | -- | dentro del espacio de irace **dos veces**: rango (5, 30) en el paper de COR para los cinco vecindarios, rango (5, 40) en los dos brazos de este proyecto. Las configuraciones ganadoras eligieron **15** para el ABC (config. 136) y **23** para el memético (config. 164), no el tope | **contestada** por el afinado, no hace falta experimento |
 | I-002 | vecindario N8 en vez de N2, **repetición de H-4** | la misma que H-4 | n8−control = −1.44, pasa (no descarta) | 3 mirillas de 6, 15 runs: **+1.52**, N8 mejor en 7 de 21, p = 0.054; reproduce H-4 en el régimen corto y crisp | **retirada** (2026-09-21): la pregunta ya estaba contestada |
 | I-001 | sembrar la población inicial en tiradas cortas desde el banco; composición vs calidad | ver abajo | mix−control = −2.75 en 4 inst. (regla: > +2 descarta) → pasa | 21 inst. x 5 celdas x 30 runs: mix−control = −0.90, mejor en 13 de 21, W = 88.5, **p = 0.348**; ninguna celda separa (la mejor, `v2rand`, −1.87, p = 0.079) | **descartada** (2026-09-21) |
@@ -962,3 +962,53 @@ la media.
 Aviso repetido por tercera vez: la magnitud del filtro **no** anticipa la de
 la confirmación. I-001 leyó −2.75 y luego −0.90, I-002 −1.44 y luego +1.52,
 I-003 +1.43 y luego −1.02. Este −1.40 no dice nada sobre lo que dirán las 21.
+
+### I-004, cierre: el estimador estaba roto y arreglarlo no cambia nada
+
+Seis mirillas completas, 30 tiradas por celda, 21 instancias, 1.260 tiradas,
+cero infactibles. `fulltails` menos `control` por mirilla: **+2.02, +0.84,
++0.92, +1.23, +0.33, +0.01**. En la sexta: media **+0.01**, mejor en 13 de
+21, W = 103.5, p = 0.677. No cruza la frontera de Pocock y **no hay séptima
+mirada**: por el criterio predeclarado, **descartada**.
+
+En la cola inferior tampoco hay nada: el mejor de las 30 tiradas mejora en 9
+instancias, empeora en 11 y empata en 1.
+
+**Lo que queda medido, que es el resultado y no el veredicto**: el estimador
+`heads&tails` viola la cota inferior en el **64,8 %** de las evaluaciones por
+culpa de las colas obsoletas, y arreglarlo del todo, pasando a 0 violaciones
+de 1,35 millones, **no mueve el makespan final ni una unidad**. Dos hechos
+que hay que sostener juntos:
+
+1. **El defecto existe.** No es una opinión sobre heurísticas: la poda del
+   tabú es incorrecta tal como está, descarta movimientos cuyo valor real es
+   mejor, y el orden del vecindario está mal. Medido, no razonado.
+2. **A la búsqueda le da igual.** Con 1.260 tiradas, el efecto sobre el
+   resultado es una centésima de unidad. La conclusión es que este algoritmo
+   es **insensible a cuál de los buenos vecinos de N2 elige**, y no que el
+   defecto sea inocuo por casualidad.
+
+Eso convierte la intuición del PI en una pregunta más afilada, y es la que
+queda viva: si elegir *mejor* dentro de N2 no cambia nada, lo que puede
+cambiar algo es elegir **deliberadamente distinto**. No un orden más
+correcto, sino uno perturbado a propósito, o un desempate con criterio
+propio. El fallo llevaba haciendo esa perturbación por accidente en dos
+tercios de los casos, y el resultado era el mismo, lo cual acota también la
+esperanza de esa vía.
+
+**Decisión sobre el arreglo, separada del veredicto.** `localsearch.tails =
+full` se queda disponible y documentado, pero **no** pasa a ser el valor por
+defecto. La razón no es el rendimiento, que cuesta menos del 1 %, sino la
+continuidad de la referencia: la celda `control` es el patrón del bucle y se
+ha reproducido cuatro veces a media décima de unidad (I-001, I-002, I-003,
+I-004). Cambiar el comportamiento por defecto rompería esa comparabilidad a
+cambio de un beneficio medido como nulo. Se revisará si alguna idea futura
+necesita que la cota sea válida, por ejemplo cualquiera que use la estimación
+como guía en vez de como filtro. Queda anotado para que la decisión no se
+pierda.
+
+**Qué se revierte**: nada de los registros, y del código solo el volcado por
+evaluación a `stderr` que se usó para el diagnóstico. Los contadores
+(`N2 ties at best`, `N2 estimate above real value`, vetos de meseta,
+reemplazos de explorador) se quedan: son inertes y son la única forma de
+volver a ver esto.

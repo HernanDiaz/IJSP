@@ -1754,3 +1754,58 @@ admits clones that differ. Two conditions, no new parameter. It is B-14.
 What survives from the retracted entry is only the tabu depth figure, 26 to
 41 iterations per call, because `iterationsLS` is incremented in the class
 that runs.
+
+
+### 2026-09-22: N2's estimate was not a lower bound, and the search does not care
+
+The PI pushed back twice: what was being tested were patches, none of them
+touching the algorithm's logic, and the key had to be in N2's neighbours, in
+how they are ordered and in what order they are visited. Following that took
+the line to a defect.
+
+`LS_Tabu` sorts the neighbourhood by the heads&tails estimate and stops the
+sweep at the first neighbour whose estimate no longer beats the best real
+value found. Sound only if the estimate is a lower bound. On ta29, evaluating
+every neighbour, the estimate exceeded the neighbour's true value in 882,481
+of 1,362,270 evaluations, 64.8 %. With every tail rebuilt from scratch, 0 of
+1,352,160. The cause is the incremental tail maintenance in
+NB_ParallelN2_MakespanJSP::acceptNeighbour, whose backward sweep continues
+only while a tail changes -- the same incomplete-seeding pattern behind the
+N8 defect found during I-002. Stale tails inflate estimates by up to 75 units
+and push to the back of the ordering neighbours whose real value beats those
+actually evaluated; the pruning then never reaches them.
+
+So the tabu search has not been taking the best move in N2. It takes the best
+of a truncated, misordered prefix, tens of millions of times per run.
+
+I-004 tested the repair over six waves, 30 runs per cell, 21 instances, 1,260
+runs, zero infeasible. The differences per look were +2.02, +0.84, +0.92,
++1.23, +0.33 and +0.01. At the sixth: +0.01 makespan units, better on 13 of
+21, p = 0.677. Rejected by the pre-declared boundary. The lower tail says the
+same: the best of thirty improves on nine instances and worsens on eleven.
+
+Two things have to be held together. The defect is real and measured, not a
+matter of taste about heuristics. And the search is indifferent to it: making
+the estimate exact changes the final makespan by a hundredth of a unit. What
+that means is that this algorithm does not care which of N2's good neighbours
+it picks.
+
+That sharpens the PI's intuition into the question that survives. If picking
+*better* inside N2 changes nothing, what might change something is picking
+deliberately *differently* -- a perturbed order or a tie-break with a
+criterion of its own, rather than a more correct order. The caveat is that
+the defect had been perturbing the order by accident in two thirds of cases,
+and the outcome was the same, which bounds the hope for that route too.
+
+The repair stays available as `localsearch.tails = full` and does not become
+the default. Not for the cost, which is under 1 %, but for continuity: the
+control cell is the loop's reference and has now reproduced four times to
+within half a tenth of a unit. Changing default behaviour would break that
+comparability for a benefit measured at zero. It will be revisited if an idea
+needs the bound to be valid, such as anything using the estimate as a guide
+rather than as a filter.
+
+Also measured along the way, and kept as inert counters: N2 offers on average
+1.5 to 2.0 eligible neighbours tied at the best value, with up to 27, and
+which one is taken is decided today by the random pivot of the quicksort that
+sorts the neighbourhood.

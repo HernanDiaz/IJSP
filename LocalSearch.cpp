@@ -428,14 +428,6 @@ FullSolution LS_Tabu::apply(const Solution *solution,
 					// eligible neighbours tie at the best value?
 					if (realValue != NULL) {
 						LS_Tabu::diagScanned++;
-						// Dump the first few (estimate, real) pairs so the
-						// counter above can be checked against actual numbers,
-						// and so a stale-pointer artefact would be visible.
-						if (LS_Tabu::diagScanned <= 25 && estimation != NULL)
-							fprintf(stderr, "[N2PAIR] est=%.0f real=%.0f %s\n",
-								estimation->toDouble(), realValue->toDouble(),
-								(estimation->toDouble() > realValue->toDouble())
-									? "ESTIMATE ABOVE REAL" : "");
 						if (estimation != NULL
 							&& estimation->isWorseThan(realValue))
 							LS_Tabu::diagBoundBreaks++;
