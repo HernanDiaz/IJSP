@@ -94,6 +94,8 @@ def main():
         print("the filter only discards, and its magnitude is not a forecast.")
     elif which == "wave":
         globals()["CELLS"] = WAVE_CELLS
+        # The primary stays deepescape against control; the escape-only cell is
+        # printed in the table and decides nothing.
         try:
             last = int(sys.argv[2])
         except (IndexError, ValueError):

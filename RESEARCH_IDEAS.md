@@ -233,7 +233,7 @@ bucle y están aquí para que no se repitan; sus cifras están en el JOURNAL.
 | H-3 | memético con su configuración afinada vs ABC con la suya | el memético alcanza mejores makespans | -- | 22 x 10 x 300 s: ABC mejor en 18 de 22, W = 30, p = 0.002 | **descartada** (2026-09-21) |
 | I-003 | el explorador del ABC reinyecta un **elite pateado** en vez de una solución aleatoria | un arranque aleatorio a mitad de tirada no puede alcanzar a la población; uno dentro de una cuenca buena sí | kick−control = **+1.43** (ta23 −0.27, ta29 +0.70, ta30 −0.50, ta45 **+5.80**); regla > +2 descarta → **pasa, por poco y en contra** | 4 mirillas de 6: −1.02, −0.57, **−0.03**, +0.44; kick mejor en 9-10 de 21 siempre; p entre 0.55 y 0.88, la frontera nunca se acerca | **detenida en la 4ª** (2026-09-21) por cambio de dirección del PI, no por sus datos. Sin aceptación: es un cero |
 | H-4 | N8 contra N2 (y contra N1, N3, N_ext), fase B del paper de COR | un vecindario más rico gana | -- | 82 instancias x 30 runs, 2460 bloques pareados: N2 1846.50 contra N8 1847.94, dif −1.45, p_adj = 3.9e−4, r = 0.077 (**despreciable**); rangos de Friedman N2 2.1315 el mejor de cinco, N8 2.2400 | **descartada** (antes del bucle; `experiments/cor_tabu_2026/`) |
-| I-010 | **escapar del estado todo-tabú** y con ello hacer alcanzable la profundidad | la profundidad la limita el callejón sin salida, no el parámetro: con el escape las trayectorias pasan de 47-102 a 286-1909 movimientos | pendiente | pendiente | **en curso** (2026-09-22) |
+| I-010 | **escapar del estado todo-tabú** y con ello hacer alcanzable la profundidad | la profundidad la limita el callejón sin salida, no el parámetro | dscp−control = **−0.86**, pasa. Secundario: `escape` solo da **−1.78**, mejor que con la cuota | en curso (oleadas, 3 celdas) | **en curso** (2026-09-22) |
 | I-009 | una llamada profunda al tabú sobre el incumbente, **una sola por tirada** | nunca hay una trayectoria profunda | deep−control = −0.02, pasa | -- | **retirada** (2026-09-22): infradimensionada por construcción, la llamada era el 0.06-2.3 % del trabajo del tabú |
 | I-008 | **caza en `ta29` a 300 s**, 84 tiradas | el mínimo lo da el presupuesto largo (I-007), y con el triple de tiradas debería bajar de 1625 | -- | 84 tiradas: **sin récord y sin igualada**, mínimo **1628**. Con I-007 suman 111 tiradas de 300 s y **1 igualada**. Rebaja la conclusión de I-007 sobre la duración de tirada | **cerrada** (2026-09-22): cierra la fuerza bruta en `ta29` |
 | I-007 | **intento concentrado en `ta29`**, y qué duración de tirada da el mínimo más bajo a igual CPU | los 40 s son el mejor corte fijo **por la media**; un récord vive en el mínimo | -- | 307 tiradas: **sin récord**. **Iguala el BKS, 1625**, verificado, solo la celda de 300 s. 40 s y 100 s se quedan en 1627. Medias iguales (1640.5 / 1639.8 / 1639.4) | **cerrada** (2026-09-22): sin récord, con igualada y con la duración de tirada medida |
@@ -1515,3 +1515,38 @@ parte del cómputo que la hipótesis supone**. Verificar que la rama se ejecuta
 (lección de I-003) no basta; hay que verificar cuánto pesa. Aquí ese contador
 es `Deep LS share of LS time %`, y sin él habría lanzado cuatro filtros y
 anotado cuatro ceros.
+
+### I-010, filtro: pasa, y su secundario señala al escape y no a la profundidad
+
+`iter/I-010/filter_analysis.txt`, 72 trabajos, tres celdas, cero infactibles.
+Medias de 30 runs:
+
+| instancia | `control` | `escape` | `deepescape` |
+|---|---|---|---|
+| ta23 | 1587.8 | **1584.6** | 1586.6 |
+| ta29 | 1640.8 | 1641.0 | 1641.9 |
+| ta30 | 1623.6 | **1618.5** | 1619.1 |
+| ta45 | 2043.0 | 2044.0 | 2044.2 |
+| media − control | — | **−1.78** | **−0.86** |
+
+La regla descartaba por encima de +2.0 sobre `deepescape`, así que **pasa**.
+
+**Lo que dice el secundario, y lo que no voy a hacer con él.** El escape por sí
+solo sale mejor que el escape con la cuota de profundidad encima, en tres de
+las cuatro instancias y en la media. Si se sostiene, el ingrediente activo es
+**salir del estado todo-tabú**, y la profundidad que el escape habilita no
+aporta o estorba. Es una hipótesis atractiva y por eso mismo **no cambio el
+endpoint primario**: sigue siendo `deepescape` contra `control` en la frontera
+de Pocock. Dejar que el secundario de un filtro redirija una decisión
+preinscrita es exactamente lo que este protocolo existe para impedir, y ya
+llevo cuatro iteraciones donde la magnitud del filtro no anticipó la de la
+confirmación.
+
+**Lo que sí hago, declarado ahora y antes de que exista un solo dato de
+oleada**: la celda `escape` viaja en las oleadas como **información**. Cuesta
+9.2 h-CPU por oleada en vez de 6.1, unos 50 minutos en vez de 40, y contesta
+en la misma tanda la pregunta que el filtro acaba de abrir. No se infiere nada
+de ella más allá de una diferencia reportada: no tiene frontera, no puede
+aceptarse y no puede rechazarse. Si `deepescape` se rechaza y `escape` se ve
+mejor, eso será una preinscripción nueva con su propia confirmación, no una
+conclusión de aquí.

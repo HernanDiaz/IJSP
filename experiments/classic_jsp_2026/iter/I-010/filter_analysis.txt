@@ -1,0 +1,11 @@
+=== I-010 filter: per-instance mean (best in brackets) ===
+inst             control            escape        deepescape  dscp - ctrl
+ta23       1587.8 [1574]     1584.6 [1571]     1586.6 [1571]        -1.20
+ta29       1640.8 [1628]     1641.0 [1629]     1641.9 [1637]        +1.13
+ta30       1623.6 [1607]     1618.5 [1608]     1619.1 [1608]        -4.53
+ta45       2043.0 [2024]     2044.0 [2017]     2044.2 [2025]        +1.17
+
+runs per cell and instance: 30
+
+filter rule: mean(deepescape - control) = -0.86; discard if > +2.0 -> PASS, go to the waves
+the filter only discards, and its magnitude is not a forecast.

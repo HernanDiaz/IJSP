@@ -51,7 +51,15 @@ FILTER = ["ta29", "ta30", "ta23", "ta45"]          # fixed in RESEARCH_IDEAS.md
 # Three cells in the filter, because the filter is where variants belong, and
 # two in the waves: the confirmation compares the full mechanism only.
 CELLS = ["control", "escape", "deepescape"]
-WAVE_CELLS = ["control", "deepescape"]
+# Declared 2026-09-22, after the filter and BEFORE any wave data exists: the
+# escape-only cell rides along in the waves as INFORMATION. The primary
+# endpoint does not change -- it stays deepescape against control at the
+# Pocock boundary -- because the filter's secondary hinting that the escape
+# alone is the active ingredient is exactly the kind of thing that must not be
+# allowed to redirect a pre-declared decision. Carrying the cell answers the
+# question in the same batch at 9.2 CPU-hours a wave instead of 6.1, and
+# nothing is inferred from it beyond a reported difference.
+WAVE_CELLS = ["control", "escape", "deepescape"]
 
 
 def setup_text(instance, cell, runs, seed, tag):
