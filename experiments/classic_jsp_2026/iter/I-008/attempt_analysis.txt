@@ -1,0 +1,19 @@
+=== 1. anything at or below 1627 (BKS 1625) ===
+  nothing at or below 1627
+  no record: nothing strictly below 1625
+
+=== 2. the minimum ===
+  84 runs of 300 s, minimum 1628, gap +3, 7.0 CPU-hours
+
+=== 3. the lower tail ===
+  values <= 1630: [1628.0, 1629.0, 1629.0, 1630.0, 1630.0, 1630.0]
+  mean of the three lowest: 1628.7
+
+=== 4. counts by threshold, beside I-007's 300 s cell ===
+batch              runs    <=1625   <=1626   <=1627   <=1628   <=1629   <=1630
+I-008 (this)         84         0        0        0        1        3        6
+I-007 b300           27         1        1        1        2        2        3
+pooled              111         1        1        1        3        5        9
+
+=== reported, deciding nothing ===
+  mean 1638.1, sd 5.7, worst 1654

@@ -233,7 +233,7 @@ bucle y están aquí para que no se repitan; sus cifras están en el JOURNAL.
 | H-3 | memético con su configuración afinada vs ABC con la suya | el memético alcanza mejores makespans | -- | 22 x 10 x 300 s: ABC mejor en 18 de 22, W = 30, p = 0.002 | **descartada** (2026-09-21) |
 | I-003 | el explorador del ABC reinyecta un **elite pateado** en vez de una solución aleatoria | un arranque aleatorio a mitad de tirada no puede alcanzar a la población; uno dentro de una cuenca buena sí | kick−control = **+1.43** (ta23 −0.27, ta29 +0.70, ta30 −0.50, ta45 **+5.80**); regla > +2 descarta → **pasa, por poco y en contra** | 4 mirillas de 6: −1.02, −0.57, **−0.03**, +0.44; kick mejor en 9-10 de 21 siempre; p entre 0.55 y 0.88, la frontera nunca se acerca | **detenida en la 4ª** (2026-09-21) por cambio de dirección del PI, no por sus datos. Sin aceptación: es un cero |
 | H-4 | N8 contra N2 (y contra N1, N3, N_ext), fase B del paper de COR | un vecindario más rico gana | -- | 82 instancias x 30 runs, 2460 bloques pareados: N2 1846.50 contra N8 1847.94, dif −1.45, p_adj = 3.9e−4, r = 0.077 (**despreciable**); rangos de Friedman N2 2.1315 el mejor de cinco, N8 2.2400 | **descartada** (antes del bucle; `experiments/cor_tabu_2026/`) |
-| I-008 | **caza en `ta29` a 300 s**, 84 tiradas, todo el presupuesto en la configuración que ha tocado 1625 dos veces | el mínimo lo da el presupuesto largo (I-007), y con el triple de tiradas debería bajar de 1625 | -- | pendiente | **en curso** (2026-09-22) |
+| I-008 | **caza en `ta29` a 300 s**, 84 tiradas | el mínimo lo da el presupuesto largo (I-007), y con el triple de tiradas debería bajar de 1625 | -- | 84 tiradas: **sin récord y sin igualada**, mínimo **1628**. Con I-007 suman 111 tiradas de 300 s y **1 igualada**. Rebaja la conclusión de I-007 sobre la duración de tirada | **cerrada** (2026-09-22): cierra la fuerza bruta en `ta29` |
 | I-007 | **intento concentrado en `ta29`**, y qué duración de tirada da el mínimo más bajo a igual CPU | los 40 s son el mejor corte fijo **por la media**; un récord vive en el mínimo | -- | 307 tiradas: **sin récord**. **Iguala el BKS, 1625**, verificado, solo la celda de 300 s. 40 s y 100 s se quedan en 1627. Medias iguales (1640.5 / 1639.8 / 1639.4) | **cerrada** (2026-09-22): sin récord, con igualada y con la duración de tirada medida |
 | I-006 | **intento de récord** sobre la lista corta, 75 tiradas por celda e instancia | el récord vive en la cola, no en la media | -- | 600 tiradas: **sin récord**. Casi en `ta29` 1627 (BKS 1625, +2). **Mejor propio nuevo en `ta23`: 1564** contra 1571, verificado. Cola entre celdas plana: 26 contra 30 bloques, p = 0.689 | **cerrada** (2026-09-22), sin récord y con un mejor propio |
 | I-005 | desempate **dirigido por frecuencia** entre los vecinos empatados de N2 | elegir *mejor* dentro de N2 no cambia nada (I-004); elegir **dirigidamente distinto** sí puede | freq−control = **+2.55** (ta45 +7.70, ta23 +4.20, ta29 +0.60, ta30 −2.30); regla > +2 descarta → **DESCARTA** | -- | **descartada** (2026-09-22) en el filtro |
@@ -1328,3 +1328,51 @@ ningún 1624, la lectura sería que `ta29` está en una barrera dura en 1625 par
 esta configuración, y que batirla pide algo distinto del volumen. Eso cerraría
 la caza por fuerza bruta en esta instancia y devolvería el foco al mecanismo,
 pero con un dato que ahora no tenemos.
+
+### I-008, cierre: la fuerza bruta en `ta29` se cierra, y I-007 se rebaja
+
+84 tiradas de 300 s en `ta29`, 7.0 h-CPU, cero infactibles.
+`iter/I-008/attempt_analysis.txt`.
+
+**Sin récord y esta vez sin igualada.** El mínimo de la tanda es **1628**,
+a +3. La cola hasta 1630: 1628, 1629, 1629, 1630, 1630, 1630.
+
+**Rebaja de la conclusión de I-007, y es lo importante de esta tanda.** Ayer
+escribí que el presupuesto largo da el mínimo más bajo a igual CPU, apoyado en
+que la celda de 300 s llegó a 1625 con 27 tiradas mientras 40 s y 100 s se
+quedaban en 1627. Con 84 tiradas más de la misma configuración, **el 1625 no
+se repite**. Era una tirada afortunada, y yo ya había avisado de que era n = 1,
+pero la conclusión estaba escrita con más peso del que soportaba. Puesto en
+aciertos por hora de CPU, que es la comparación que I-007 debió hacer:
+
+| celda | h-CPU | ≤1625 /h | ≤1627 /h | ≤1628 /h | ≤1630 /h |
+|---|---|---|---|---|---|
+| 40 s x 200 | 2.22 | 0.00 | 0.45 | 0.90 | 2.25 |
+| 100 s x 80 | 2.22 | 0.00 | 0.45 | 1.80 | 2.70 |
+| 300 s x 111 | 9.25 | 0.11 | 0.11 | 0.32 | 0.97 |
+
+En todos los umbrales salvo el único suceso de 1625, los presupuestos corto y
+medio producen **más** aciertos por hora de CPU. La afirmación "el
+presupuesto largo es el bueno para el mínimo" **no está establecida**, y la
+elección de 40 s por la media no queda refutada. Lo que queda es que la única
+vez que se tocó 1625 fue con 300 s, con una frecuencia de 1 en 111.
+
+**Y lo que sí queda establecido, que era el otro resultado previsto.** Entre
+I-007 e I-008 hay **111 tiradas de 300 s** sobre `ta29` con **una** igualada y
+**ningún** 1624. Sumando las 200 de 40 s y las 80 de 100 s, son **391 tiradas
+verificadas** sobre esta instancia sin un solo valor por debajo de 1625.
+`ta29` está contra una barrera dura en 1625 para esta configuración, y
+batirla **no es cuestión de volumen**. La caza por fuerza bruta en `ta29` se
+cierra aquí, y con un número detrás en vez de por cansancio.
+
+**Dónde deja el bucle.** El foco vuelve al mecanismo, pero con el mapa mucho
+mejor dibujado que al empezar: de dónde arranca un individuo no importa
+(I-001, I-003), cuál de los buenos vecinos de N2 se elige tampoco (I-004,
+I-005), un vecindario más rico no ayuda (H-4, reproducido en I-002), y el
+volumen no rompe la barrera de `ta29` (I-006, I-007, I-008). Lo que ninguna
+iteración ha tocado todavía es **qué se hace con el movimiento una vez
+elegido**: la profundidad efectiva de la trayectoria, que H-5 cerró solo como
+parámetro global y que sigue abierta en su forma asimétrica (B-9), y las
+familias que la revisión externa señaló y que exigen salir del vecindario
+completo, reparación exacta sobre una ventana (B-12) o búsqueda en espacio de
+soluciones parciales.

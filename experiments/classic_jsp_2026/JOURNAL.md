@@ -1921,3 +1921,38 @@ mean.
 The next step needs no new idea: the whole budget on ta29 at three hundred
 seconds a run, eighty-four runs in seven CPU-hours, three times what this
 batch gave the only configuration that has touched 1625 twice.
+
+
+### 2026-09-22: brute force on ta29 closes, and yesterday's conclusion is downgraded
+
+Eighty-four runs of 300 s on ta29, seven CPU-hours, zero infeasible. No
+record, and this time no match either: the batch minimum is 1628.
+
+The part worth writing down is the correction. Yesterday I-007 concluded that
+the long budget gives the lower minimum at equal CPU, on the strength of its
+300 s cell reaching 1625 in 27 runs while 40 s and 100 s stopped at 1627. With
+eighty-four more runs of that same configuration the 1625 does not repeat. It
+was a lucky draw. I had flagged the n = 1, but the conclusion was written with
+more weight than it could carry. Put as hits per CPU-hour, which is the
+comparison I-007 should have made: at every threshold except that single 1625
+event, the short and medium budgets produce more hits per CPU-hour than the
+long one. The claim that long runs are the right budget for the minimum is not
+established, and the choice of 40 s on the mean is not refuted.
+
+What is established is the other outcome the pre-registration named. Between
+I-007 and I-008 there are 111 runs of 300 s on ta29 with one match and no
+1624; adding the 200 runs at 40 s and the 80 at 100 s makes 391 verified runs
+on this instance without a single value below 1625. ta29 sits against a hard
+barrier at 1625 for this configuration, and beating it is not a matter of
+volume. Brute force on ta29 closes here, with a number behind it rather than
+from fatigue.
+
+The map is much better drawn than when the loop started. Where an individual
+starts does not matter (I-001, I-003). Which of N2's good neighbours is taken
+does not matter (I-004, I-005). A richer neighbourhood does not help (H-4,
+reproduced in I-002). Volume does not break ta29's barrier (I-006, I-007,
+I-008). What no iteration has touched is what happens to a move once chosen:
+the effective depth of the trajectory, which H-5 closed only as a global
+parameter and which remains open in its asymmetric form, and the families the
+outside review named that require leaving the complete-schedule neighbourhood
+altogether.
