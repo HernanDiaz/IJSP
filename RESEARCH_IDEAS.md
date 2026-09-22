@@ -199,6 +199,20 @@ nuevo o cambien el papel de uno existente se marcan `[REAJUSTA]`; se
 prueban igualmente con los parámetros congelados, y la etiqueta obliga a
 reajustar antes de darlas por confirmadas.
 
+**Un directorio de resultados por trabajo, nunca compartido entre trabajos de
+la misma instancia.** Regla nueva (2026-09-22), pagada con el primer filtro de
+I-011. El solver nombra su salida con una marca de tiempo de **resolución de
+un segundo**, así que dos trabajos concurrentes sobre la misma instancia que
+escriban en el mismo directorio **colisionan en el nombre del fichero y se
+pisan**. Aquel filtro mandó 60 trabajos de la celda `portfolio` a un solo
+directorio y dejó **25 certificados**: 35 tiradas desaparecidas y 4 de las
+supervivientes ilegibles. Lo detectó el análisis, que verifica **todos** los
+certificados; la cola no, porque su verificación mira solo el más reciente de
+cada par (tag, instancia) y con 15 trabajos por par comprueba el mismo fichero
+quince veces. **`queue exit 0` no garantiza nada cuando varios trabajos
+comparten directorio.** Desde ahora el par (tag de resultados, instancia) es
+único por construcción y se comprueba antes de lanzar.
+
 **Ejecución**: un solo experimento en la máquina a la vez, nunca dos
 apilados (regla del PI). `queue_jobs.sh` corre todas las celdas de una tanda
 por una única cola, alternadas, como máximo un solver por núcleo, y se niega
@@ -1850,3 +1864,40 @@ combinaciones, todos con neutralidad **confirmada sobre las 21 instancias**:
 | colas | `localsearch.tails = full` | I-004: +0.01, p = 0.677 |
 | explorador | `abc.scout = kick` | I-003: −0.03 a +0.44, 4 mirillas |
 | callejón | `localsearch.deadend = escape` | **I-012: +0.07, p = 0.835** |
+
+### I-011, primer filtro anulado por colisión de ficheros (2026-09-22)
+
+La cola salió con **0** y el análisis se paró en seco: `ta23 ... is
+infeasible`. Dos problemas, y el segundo es peor que el primero.
+
+**Qué pasó.** La celda `portfolio` reparte sus 30 tiradas en 15 trozos, cada
+uno con su combinación, y los mandé **todos al mismo directorio de
+resultados**. El solver nombra su salida `<inst>_<AAAAMMDDHHMMSS>_*.csv`, con
+resolución de **un segundo**. Quince trabajos de la misma instancia arrancando
+a la vez colisionan en el nombre y se sobrescriben. De **60 trabajos
+quedaron 25 certificados**, y 4 de esos estaban a medio escribir y no
+verifican. El control, con un trabajo por instancia, salió intacto.
+
+**Por qué la cola no lo vio.** `queue_jobs.sh` verifica, por cada línea de
+trabajo, **el certificado más reciente** de su par (tag, instancia). Con 15
+líneas apuntando al mismo par, verificó quince veces el mismo fichero y nunca
+los otros. Hasta ahora cada par tenía exactamente un trabajo y la verificación
+era completa por accidente. **`queue exit 0` no garantiza nada cuando varios
+trabajos comparten directorio**, y eso queda escrito en el protocolo.
+
+**Lo que salvó la tanda** fue que el análisis recomputa **todos** los
+makespans desde sus horarios, no una muestra. Es la tercera vez en la sesión
+que esa regla detecta algo que ninguna otra comprobación habría visto: antes
+fueron los horarios infactibles de N8 y el contador de reemplazos que nunca
+contaba.
+
+**Descartado como causa, y comprobado**: las 15 combinaciones se corrieron
+por separado sobre `ta23` con 3 tiradas cada una y **todas dan horarios
+factibles**. No hay ninguna interacción rota entre los interruptores; el fallo
+era de mi generación de trabajos.
+
+**Arreglo**: un tag de resultados por trozo, `I-011_<tanda>_p<NN>_<celda>`, de
+modo que el par (tag, instancia) es único. Verificado sobre el filtro y sobre
+la oleada 1: 64 y 126 trabajos, 64 y 126 pares distintos. Los resultados
+corruptos quedan como `I-011_voidfilter_*`, no se borran, y el filtro se
+relanza entero.

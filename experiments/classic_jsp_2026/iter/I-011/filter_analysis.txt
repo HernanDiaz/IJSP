@@ -1,0 +1,1 @@
+ta23 in /opt/ijsp/crisp/IJSP/experiments/classic_jsp_2026/results/I-011_filter_portfolio is infeasible

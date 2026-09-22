@@ -43,14 +43,19 @@ BLOCK = 5
 
 
 def cells_of(tags, instances):
+    """Every chunk has its own results directory, so a cell is the union of
+    I-011_<tag>_p<NN>_<cell> over the chunks. One directory per chunk is not a
+    detail: sharing one made concurrent jobs on the same instance collide on
+    the solver's one-second timestamp filenames and overwrite each other."""
+    import glob
     data = {}
     for cell in CELLS:
         for instance in instances:
             values = []
             for tag in tags:
-                directory = os.path.join(EXPERIMENT, "results",
-                                         "I-011_%s_%s" % (tag, cell))
-                if os.path.isdir(directory):
+                pattern = os.path.join(EXPERIMENT, "results",
+                                       "I-011_%s_p*_%s" % (tag, cell))
+                for directory in sorted(glob.glob(pattern)):
                     values += makespans(directory, ORLIB, instance)
             data[(cell, instance)] = values
     return data

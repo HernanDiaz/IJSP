@@ -119,7 +119,15 @@ def write(instances, total_runs, chunk, first_seed, tag, combination_base):
                 path = os.path.join(setup_dir, name + ".txt")
                 with open(path, "w", newline="\n") as handle:
                     handle.write(setup_text(instance, cell, runs, seed, tag, combination))
-                jobs.append("%s\tI-011_%s_%s\t%s" % (path, tag, cell, instance))
+                # One results directory PER CHUNK. Sharing one directory
+                # across the chunks of a cell corrupts the data: the solver
+                # names its output by a timestamp with one-second resolution,
+                # so concurrent jobs on the same instance collide on the
+                # filename and overwrite each other. Measured 2026-09-22 on
+                # the first attempt at this filter: 60 portfolio jobs left 25
+                # certificates, and four of those were unverifiable.
+                jobs.append("%s\tI-011_%s_p%02d_%s\t%s"
+                            % (path, tag, piece, cell, instance))
                 done += runs
     jobs_path = os.path.join(HERE, "jobs_%s.tsv" % tag)
     with open(jobs_path, "w", newline="\n") as handle:
