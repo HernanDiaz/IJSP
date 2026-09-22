@@ -223,6 +223,19 @@ nada.
 - Referencia **original** del bucle, para medir la deriva: la misma tanda
   `prereg2_abc` (2026-09-20 20:01 - 2026-09-21 00:36). Cada 3 aceptaciones,
   volver a correr la configuración vigente contra ella a 300 s.
+- **Mejores verificados de la línea, igualando el BKS** (la prueba es el
+  horario, y los horarios están guardados):
+  - `ta30` = **1584**, **iguala el BKS**, 2026-09-22, celda `control` del
+    filtro de I-012, 40 s por tirada.
+    `iter/I-012/evidence/ta30_1584_control_I-012_fc1_control.csv`.
+    **Primera vez de la línea**: el mejor anterior era 1588, del régimen
+    largo, y en el régimen corto era 1595.
+  - `ta29` = **1625**, iguala el BKS, tres veces: régimen largo, celda de
+    300 s de I-007 (`iter/I-007/evidence/`), y celda `escape` del filtro de
+    I-012 (`iter/I-012/evidence/`).
+  - `ta23` = **1564**, a 7 del BKS, I-006, `iter/I-006/evidence/`.
+  Ninguno es un récord: **récord es batir el BKS**, y no hay nada
+  estrictamente por debajo.
 - Referencia en el **régimen de tiradas cortas**: la celda `control` de
   I-001, `results/I-001_full_control/`, 21 instancias x 30 runs a 40/100/150 s
   (2026-09-21, 05:22-14:23). Media de la distancia del mejor de sus 30 runs
@@ -274,7 +287,7 @@ bucle y están aquí para que no se repitan; sus cifras están en el JOURNAL.
 | H-3 | memético con su configuración afinada vs ABC con la suya | el memético alcanza mejores makespans | -- | 22 x 10 x 300 s: ABC mejor en 18 de 22, W = 30, p = 0.002 | **descartada** (2026-09-21) |
 | I-003 | el explorador del ABC reinyecta un **elite pateado** en vez de una solución aleatoria | un arranque aleatorio a mitad de tirada no puede alcanzar a la población; uno dentro de una cuenca buena sí | kick−control = **+1.43** (ta23 −0.27, ta29 +0.70, ta30 −0.50, ta45 **+5.80**); regla > +2 descarta → **pasa, por poco y en contra** | 4 mirillas de 6: −1.02, −0.57, **−0.03**, +0.44; kick mejor en 9-10 de 21 siempre; p entre 0.55 y 0.88, la frontera nunca se acerca | **detenida en la 4ª** (2026-09-21) por cambio de dirección del PI, no por sus datos. Sin aceptación: es un cero |
 | H-4 | N8 contra N2 (y contra N1, N3, N_ext), fase B del paper de COR | un vecindario más rico gana | -- | 82 instancias x 30 runs, 2460 bloques pareados: N2 1846.50 contra N8 1847.94, dif −1.45, p_adj = 3.9e−4, r = 0.077 (**despreciable**); rangos de Friedman N2 2.1315 el mejor de cinco, N8 2.2400 | **descartada** (antes del bucle; `experiments/cor_tabu_2026/`) |
-| I-012 | **escapar del estado todo-tabú, solo eso** | la celda informativa de I-010 dio −1.11 y mejor en 15 de 21 (p = 0.033) sin frontera; toca medirlo con una | pendiente | pendiente | **en curso** (2026-09-22) |
+| I-012 | **escapar del estado todo-tabú, solo eso** | la celda informativa de I-010 dio −1.11 y mejor en 15 de 21 (p = 0.033) sin frontera | esc−control = **−1.82** (ta45 −4.03, ta23 −3.53, ta30 −2.13, ta29 +2.43); pasa | en curso (oleadas) | **en curso** (2026-09-22) |
 | I-011 | `[COLA]` **cartera de configuraciones**: cada tirada sortea una combinación de los interruptores ya medidos como neutros | una mezcla de componentes neutros conserva la media y **suma varianza entre componentes**, así que alarga la cola por construcción | pendiente | pendiente | **preinscrita** (2026-09-22) |
 | I-010 | **escapar del estado todo-tabú** y con ello hacer alcanzable la profundidad | la profundidad la limita el callejón sin salida, no el parámetro | dscp−control = −0.86, pasa | 6 mirillas, 30 runs: +0.16, −0.32, −0.13, −0.06, −0.41, **−0.25**; mejor en 10 de 21, p = 0.639 | **descartada** (2026-09-22) por no cruzar en la sexta |
 | I-009 | una llamada profunda al tabú sobre el incumbente, **una sola por tirada** | nunca hay una trayectoria profunda | deep−control = −0.02, pasa | -- | **retirada** (2026-09-22): infradimensionada por construcción, la llamada era el 0.06-2.3 % del trabajo del tabú |
@@ -1747,3 +1760,36 @@ iteración anterior con sustituciones de texto y las listas quedaron
 descolgadas: en I-005 los setups salieron sin la línea de la idea, y en I-010
 el análisis leyó dos celdas de las tres que se corrieron. Son dos líneas de
 comprobación y se me escapó dos veces.
+
+### I-012, filtro: pasa, y aparece la primera igualada de `ta30`
+
+`iter/I-012/filter_analysis.txt`, 48 trabajos, cero infactibles. Medias de 30
+runs, `escape` menos `control`: ta45 −4.03, ta23 −3.53, ta30 −2.13, ta29
++2.43; media **−1.82**. La regla descartaba por encima de +2.0: **pasa**.
+
+**Lo que importa más que el filtro.** En la columna de mejores aparecen dos
+valores que igualan su BKS, los dos verificados de forma independiente
+recomputando el makespan desde el horario, y los dos con el certificado
+guardado en `iter/I-012/evidence/`:
+
+| instancia | valor | BKS | celda | qué es |
+|---|---|---|---|---|
+| `ta30` | **1584** | 1584 | `control` | **iguala, y es la primera vez de la línea** |
+| `ta29` | 1625 | 1625 | `escape` | iguala, tercera vez |
+
+**`ta30` = 1584 es el mejor resultado que este proyecto ha producido en esa
+instancia.** El anterior era 1588, cuatro unidades peor, y venía del régimen
+largo; en el régimen corto lo mejor había sido 1595. **No es un récord**:
+récord es batir el BKS y aquí se iguala.
+
+**Y sale de la celda `control`**, es decir de la configuración congelada sin
+tocar nada. No es evidencia a favor del escape y no se cuenta como tal.
+
+**Lo que sí dice, y corrige una conclusión de I-006.** En I-006 el intento de
+récord dio en `ta30` un mejor de 1604 con 75 tiradas de 40 s, y de ahí salió
+la idea de que en el régimen corto esa instancia estaba a 20 del BKS. Ahora 30
+tiradas del mismo régimen han dado 1584. La cola inferior de `ta30` es **mucho
+más pesada** de lo que 75 tiradas sugerían, y eso reabre la instancia como
+objetivo de intento de récord: si 30 tiradas llegan al BKS, batirlo puede
+estar a una tanda de volumen, que es justo lo contrario de lo que concluimos
+para `ta29` en I-008.

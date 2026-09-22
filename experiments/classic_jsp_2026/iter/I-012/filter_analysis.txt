@@ -1,0 +1,11 @@
+=== I-012 filter: per-instance mean (best in brackets) ===
+inst             control            escape   esc - ctrl
+ta23       1587.3 [1567]     1583.7 [1564]        -3.53
+ta29       1639.4 [1631]     1641.9 [1625]        +2.43
+ta30       1620.3 [1584]     1618.2 [1595]        -2.13
+ta45       2044.5 [2026]     2040.5 [2016]        -4.03
+
+runs per cell and instance: 30
+
+filter rule: mean(escape - control) = -1.82; discard if > +2.0 -> PASS, go to the waves
+the filter only discards, and its magnitude is not a forecast.
