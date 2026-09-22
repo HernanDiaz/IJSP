@@ -2049,3 +2049,37 @@ It also changes the order. I-011 needs to know whether the escape is neutral
 or good, so I-012 comes first: the escape alone as a position idea with its
 own confirmation. Neutral, and it joins the portfolio. Good, and it enters the
 current configuration and the portfolio is built without it.
+
+
+### 2026-09-22: the signal did not reproduce, which is the result
+
+Six waves, 30 runs a cell, 1,260 runs, zero infeasible. The escape against the
+control per look: +1.30, +1.09, +0.59, +0.27, +0.39, +0.07. At the sixth,
++0.07, better on 10 of 21, p = 0.835. Rejected.
+
+Set beside what prompted the batch: I-010's informational cell gave -1.11,
+better on 15 of 21, p = 0.0325, on the same 21 instances with the same 30 runs
+and the same budget. The only difference is the seeds. The signal vanished
+entirely.
+
+That is this protocol's whole argument demonstrated on our own data, and it is
+worth writing down because it is the kind of thing that gets published without
+anyone noticing. The 0.0325 came from a cell that rode along without a
+boundary, declared as information, and was looked at because it stood out
+among three. A p chosen that way is not a p: it is the minimum of several, and
+its distribution is not the one the test assumes. Ninety minutes of machine
+time settled it. Without the protocol it would have cost a false claim in a
+paper.
+
+It also settles I-011's composition with a measurement instead of an
+interpretation. Closing I-010 I left the dead-end switch out of the portfolio,
+reasoning that what had been confirmed neutral was the combination rather than
+the switch, and that the switch did not look neutral. The switch now has its
+own confirmation with a boundary over the 21 instances: +0.07 at p = 0.835. It
+is mean-neutral as the rule requires, so it joins. The earlier decision was
+right on the information available then and this replaces it with better
+information rather than correcting an error.
+
+The portfolio therefore has four switches and sixteen combinations, every one
+of them confirmed mean-neutral over the 21 instances: seeded creation, full
+tails, the kicked scout and the all-tabu escape.

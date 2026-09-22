@@ -287,7 +287,7 @@ bucle y están aquí para que no se repitan; sus cifras están en el JOURNAL.
 | H-3 | memético con su configuración afinada vs ABC con la suya | el memético alcanza mejores makespans | -- | 22 x 10 x 300 s: ABC mejor en 18 de 22, W = 30, p = 0.002 | **descartada** (2026-09-21) |
 | I-003 | el explorador del ABC reinyecta un **elite pateado** en vez de una solución aleatoria | un arranque aleatorio a mitad de tirada no puede alcanzar a la población; uno dentro de una cuenca buena sí | kick−control = **+1.43** (ta23 −0.27, ta29 +0.70, ta30 −0.50, ta45 **+5.80**); regla > +2 descarta → **pasa, por poco y en contra** | 4 mirillas de 6: −1.02, −0.57, **−0.03**, +0.44; kick mejor en 9-10 de 21 siempre; p entre 0.55 y 0.88, la frontera nunca se acerca | **detenida en la 4ª** (2026-09-21) por cambio de dirección del PI, no por sus datos. Sin aceptación: es un cero |
 | H-4 | N8 contra N2 (y contra N1, N3, N_ext), fase B del paper de COR | un vecindario más rico gana | -- | 82 instancias x 30 runs, 2460 bloques pareados: N2 1846.50 contra N8 1847.94, dif −1.45, p_adj = 3.9e−4, r = 0.077 (**despreciable**); rangos de Friedman N2 2.1315 el mejor de cinco, N8 2.2400 | **descartada** (antes del bucle; `experiments/cor_tabu_2026/`) |
-| I-012 | **escapar del estado todo-tabú, solo eso** | la celda informativa de I-010 dio −1.11 y mejor en 15 de 21 (p = 0.033) sin frontera | esc−control = **−1.82** (ta45 −4.03, ta23 −3.53, ta30 −2.13, ta29 +2.43); pasa | en curso (oleadas) | **en curso** (2026-09-22) |
+| I-012 | **escapar del estado todo-tabú, solo eso** | la celda informativa de I-010 dio −1.11 y mejor en 15 de 21 (p = 0.033) sin frontera | esc−control = −1.82, pasa | 6 mirillas, 30 runs: +1.30, +1.09, +0.59, +0.27, +0.39, **+0.07**; mejor en 10 de 21, p = 0.835 | **descartada** (2026-09-22). La señal de I-010 **no se reprodujo** |
 | I-011 | `[COLA]` **cartera de configuraciones**: cada tirada sortea una combinación de los interruptores ya medidos como neutros | una mezcla de componentes neutros conserva la media y **suma varianza entre componentes**, así que alarga la cola por construcción | pendiente | pendiente | **preinscrita** (2026-09-22) |
 | I-010 | **escapar del estado todo-tabú** y con ello hacer alcanzable la profundidad | la profundidad la limita el callejón sin salida, no el parámetro | dscp−control = −0.86, pasa | 6 mirillas, 30 runs: +0.16, −0.32, −0.13, −0.06, −0.41, **−0.25**; mejor en 10 de 21, p = 0.639 | **descartada** (2026-09-22) por no cruzar en la sexta |
 | I-009 | una llamada profunda al tabú sobre el incumbente, **una sola por tirada** | nunca hay una trayectoria profunda | deep−control = −0.02, pasa | -- | **retirada** (2026-09-22): infradimensionada por construcción, la llamada era el 0.06-2.3 % del trabajo del tabú |
@@ -1793,3 +1793,48 @@ más pesada** de lo que 75 tiradas sugerían, y eso reabre la instancia como
 objetivo de intento de récord: si 30 tiradas llegan al BKS, batirlo puede
 estar a una tanda de volumen, que es justo lo contrario de lo que concluimos
 para `ta29` en I-008.
+
+### I-012, cierre: la señal de I-010 no se reprodujo, y eso es el resultado
+
+Seis mirillas, 30 tiradas por celda, 21 instancias, 1.260 tiradas, cero
+infactibles. `escape` menos `control` por mirilla: **+1.30, +1.09, +0.59,
++0.27, +0.39, +0.07**. En la sexta: media **+0.07**, mejor en 10 de 21,
+p = 0.835. **Descartada.**
+
+**El contraste con lo que motivó la tanda:**
+
+| | media | mejor en | p |
+|---|---|---|---|
+| celda informativa de I-010, 21 inst. x 30 runs | −1.11 | **15** de 21 | **0.0325** |
+| I-012, mismas instancias, **semillas nuevas** | **+0.07** | 10 de 21 | 0.835 |
+
+Mismo mecanismo, mismo presupuesto, mismas 21 instancias, mismo número de
+tiradas. Lo único distinto son las semillas. **La señal desapareció entera.**
+
+Esto es el argumento del protocolo demostrado sobre un caso propio, y conviene
+dejarlo escrito porque es el tipo de cosa que en un artículo se publica sin
+saberlo. Aquel p de 0.0325 salió de una celda que viajaba **sin frontera**,
+declarada como información, y que se miró **porque destacaba entre tres**. Un
+p escogido así no es un p: es el mínimo de varios, y su distribución no es la
+que el contraste supone. Costó una tanda de hora y media comprobarlo. Sin el
+protocolo habría costado una afirmación falsa en un paper.
+
+**Consecuencia sobre I-011, ahora sí resuelta con una medida y no con una
+interpretación.** Al cerrar I-010 dejé el interruptor del callejón **fuera** de
+la cartera, razonando que lo confirmado neutro era la combinación y no el
+interruptor, y que el interruptor no parecía neutro. Ahora el interruptor
+tiene su propia confirmación con frontera sobre las 21 instancias:
+**+0.07, p = 0.835**. Es neutro en media, medido como pide la regla. **Entra
+en la cartera.** Queda anotado que la decisión anterior era la correcta con la
+información de entonces y que esta la sustituye con una medida mejor, no que
+aquella fuera un error.
+
+**Composición final de la cartera de I-011**, cuatro interruptores, 16
+combinaciones, todos con neutralidad **confirmada sobre las 21 instancias**:
+
+| interruptor | encendido | confirmación |
+|---|---|---|
+| creación | `jsp.seeded` (pool `mix`, k = 25) | I-001: −0.90, p = 0.348 |
+| colas | `localsearch.tails = full` | I-004: +0.01, p = 0.677 |
+| explorador | `abc.scout = kick` | I-003: −0.03 a +0.44, 4 mirillas |
+| callejón | `localsearch.deadend = escape` | **I-012: +0.07, p = 0.835** |
