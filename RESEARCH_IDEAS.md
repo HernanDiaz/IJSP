@@ -233,7 +233,7 @@ bucle y están aquí para que no se repitan; sus cifras están en el JOURNAL.
 | H-3 | memético con su configuración afinada vs ABC con la suya | el memético alcanza mejores makespans | -- | 22 x 10 x 300 s: ABC mejor en 18 de 22, W = 30, p = 0.002 | **descartada** (2026-09-21) |
 | I-003 | el explorador del ABC reinyecta un **elite pateado** en vez de una solución aleatoria | un arranque aleatorio a mitad de tirada no puede alcanzar a la población; uno dentro de una cuenca buena sí | kick−control = **+1.43** (ta23 −0.27, ta29 +0.70, ta30 −0.50, ta45 **+5.80**); regla > +2 descarta → **pasa, por poco y en contra** | 4 mirillas de 6: −1.02, −0.57, **−0.03**, +0.44; kick mejor en 9-10 de 21 siempre; p entre 0.55 y 0.88, la frontera nunca se acerca | **detenida en la 4ª** (2026-09-21) por cambio de dirección del PI, no por sus datos. Sin aceptación: es un cero |
 | H-4 | N8 contra N2 (y contra N1, N3, N_ext), fase B del paper de COR | un vecindario más rico gana | -- | 82 instancias x 30 runs, 2460 bloques pareados: N2 1846.50 contra N8 1847.94, dif −1.45, p_adj = 3.9e−4, r = 0.077 (**despreciable**); rangos de Friedman N2 2.1315 el mejor de cinco, N8 2.2400 | **descartada** (antes del bucle; `experiments/cor_tabu_2026/`) |
-| I-005 | desempate **dirigido por frecuencia** entre los vecinos empatados de N2 | elegir *mejor* dentro de N2 no cambia nada (I-004); elegir **dirigidamente distinto** sí puede | pendiente | pendiente | **en curso** (2026-09-22) |
+| I-005 | desempate **dirigido por frecuencia** entre los vecinos empatados de N2 | elegir *mejor* dentro de N2 no cambia nada (I-004); elegir **dirigidamente distinto** sí puede | freq−control = **+2.55** (ta45 +7.70, ta23 +4.20, ta29 +0.60, ta30 −2.30); regla > +2 descarta → **DESCARTA** | -- | **descartada** (2026-09-22) en el filtro |
 | I-004 | reparar las colas que alimentan la estimación de N2 | con colas correctas la estimación vuelve a ser cota inferior, el orden del vecindario es el bueno y la poda deja de tirar movimientos mejores | ftails−control = −1.40, pasa | 6 mirillas, 30 runs, 21 inst.: +2.02, +0.84, +0.92, +1.23, +0.33, **+0.01**; mejor en 13 de 21, W = 103.5, p = 0.677; mejor-de-30 mejora en 9 y empeora en 11 | **descartada** (2026-09-22) por no cruzar la frontera en la sexta |
 | H-5 | profundidad del tabú como **parámetro global** (`bad-iterations`) | más profundo es mejor | -- | dentro del espacio de irace **dos veces**: rango (5, 30) en el paper de COR para los cinco vecindarios, rango (5, 40) en los dos brazos de este proyecto. Las configuraciones ganadoras eligieron **15** para el ABC (config. 136) y **23** para el memético (config. 164), no el tope | **contestada** por el afinado, no hace falta experimento |
 | I-002 | vecindario N8 en vez de N2, **repetición de H-4** | la misma que H-4 | n8−control = −1.44, pasa (no descarta) | 3 mirillas de 6, 15 runs: **+1.52**, N8 mejor en 7 de 21, p = 0.054; reproduce H-4 en el régimen corto y crisp | **retirada** (2026-09-21): la pregunta ya estaba contestada |
@@ -1065,3 +1065,50 @@ cuatro instancias supera +2.0.
 de las colas ya medidos, un tercer cero aquí cerraría la vía del orden de los
 vecinos de N2 con tres medidas independientes, y el foco tendría que irse a
 qué se hace con el movimiento elegido, no a cuál se elige.
+
+### I-005, descartada en el filtro, y una cola que apunta al revés
+
+`iter/I-005/filter_analysis.txt`, 48 trabajos, cero infactibles. Medias de 30
+runs, `freqtie` menos `control`: ta45 **+7.70**, ta23 +4.20, ta29 +0.60, ta30
+−2.30; media **+2.55**. La regla preinscrita descartaba por encima de +2.0.
+**Descartada**, sin oleadas. La regla se aplica literalmente y no se discute
+después de verla.
+
+**Pero la cola inferior se mueve al contrario, y hay que anotarlo**: el mejor
+de las 30 tiradas mejora en dos de las cuatro, y en una de ellas mucho. En
+`ta30`, **1595** contra 1607 del control, doce unidades mejor, y el mejor
+valor que este régimen corto ha producido en esa instancia en toda la línea
+(BKS 1584, o sea a 11). En `ta23`, 1571 contra 1574. En `ta29` y `ta45` la
+cola empeora.
+
+Eso no cambia el veredicto, y decirlo no es reabrirlo: el endpoint es la
+media y estaba fijado. Lo que señala es un hueco del protocolo que la
+revisión externa del 2026-09-21 ya identificó y que yo no había cerrado: **el
+objetivo de la línea es un récord, y un récord vive en la cola inferior,
+mientras todos los criterios que hemos usado miden un desplazamiento de la
+media**. Un mecanismo que empeora la media y ensancha la cola hacia abajo es
+exactamente lo que un cazador de récords querría, y nuestro filtro lo tira.
+
+**Cambio de protocolo, declarado ahora y por tanto válido solo para lo que
+venga** (I-006 en adelante), no aplicable retroactivamente a I-005:
+
+- Toda tanda reporta, **además** del endpoint de la media, dos endpoints de
+  cola predeclarados: el **mejor de las 30 tiradas** por instancia, pareado
+  por instancia con un contraste de signos; y el **déficit esperado del 10 %
+  inferior** de las tiradas, o sea la media de las tres peores... de las tres
+  **mejores**, que en minimización es la media de los tres valores más bajos.
+- La **regla del filtro no cambia** y sigue siendo solo sobre la media, para
+  que siga siendo barata y solo descarte.
+- Una idea descartada por la media **cuyos endpoints de cola mejoren** no se
+  acepta, pero se anota en el historial con la etiqueta `[COLA]` y entra en
+  el backlog como candidata a **intento de récord** (B-6), que es el marco
+  donde afinar sobre las propias instancias es legítimo.
+
+`I-005` recibe esa etiqueta retroactivamente **solo como anotación**, sin
+efecto sobre su veredicto: `[COLA]` por `ta30` 1595.
+
+**Qué se revierte**: nada de los registros. El código del desempate se queda,
+inerte, porque `localsearch.tiebreak` es `first` por defecto y la
+configuración vigente no lo menciona. Igual que con `jsp.seeded`,
+`abc.scout = kick` y `localsearch.tails = full`: cuatro mecanismos medidos y
+disponibles, ninguno encendido.

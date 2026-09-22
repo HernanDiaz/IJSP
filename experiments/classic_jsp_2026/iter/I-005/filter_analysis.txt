@@ -1,0 +1,11 @@
+=== I-005 filter: per-instance mean (best in brackets) ===
+inst             control           freqtie  freq - ctrl
+ta23       1587.0 [1574]     1591.2 [1571]        +4.20
+ta29       1641.1 [1629]     1641.7 [1637]        +0.60
+ta30       1623.5 [1607]     1621.2 [1595]        -2.30
+ta45       2042.5 [2024]     2050.2 [2028]        +7.70
+
+runs per cell and instance: 30
+
+filter rule: mean(freqtie - control) = +2.55; discard if > +2.0 -> DISCARD
+the filter only discards, and its magnitude is not a forecast.

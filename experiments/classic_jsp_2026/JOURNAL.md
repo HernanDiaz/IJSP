@@ -1809,3 +1809,46 @@ Also measured along the way, and kept as inert counters: N2 offers on average
 1.5 to 2.0 eligible neighbours tied at the best value, with up to 27, and
 which one is taken is decided today by the random pivot of the quicksort that
 sorts the neighbourhood.
+
+
+### 2026-09-22: the tie-break is discarded, and the filter may be measuring the wrong thing
+
+I-005 broke ties among N2's equally good moves by long-term frequency: among
+the neighbours tied at the best value, take the arc used fewest times in the
+run. It is the only form of the PI's ordering idea the previous measurements
+left open, since I-004 had shown that making the ordering correct is worth
++0.01 units and the tail defect had been randomising the ordering in two
+thirds of cases to the same end.
+
+The filter discards it. Means of 30 runs, freqtie minus control: ta45 +7.70,
+ta23 +4.20, ta29 +0.60, ta30 -2.30, mean +2.55 against a threshold of +2.0.
+The rule is applied as written and not argued with after the fact.
+
+The lower tail, though, moves the other way, and on one instance it moves a
+lot. The best of thirty runs improves on two of the four: 1595 against 1607
+on ta30, twelve units better and the best this short-run regime has produced
+on that instance in the whole line, and 1571 against 1574 on ta23. On ta29
+and ta45 the tail worsens.
+
+That does not change the verdict, and saying it is not reopening it. But it
+does expose a hole in the protocol that the outside review named on the 21st
+and that I had not closed: this line's objective is a record, a record lives
+in the lower tail, and every criterion we have used measures a shift in the
+mean. A mechanism that worsens the mean while widening the lower tail is
+exactly what a record hunt wants, and our filter throws it away.
+
+So the protocol now asks every batch for two pre-declared tail endpoints
+alongside the mean: the best of the thirty runs per instance, paired by
+instance with a sign test, and the mean of the three lowest makespans as an
+expected-shortfall proxy. The filter rule itself does not change -- it stays
+on the mean, cheap, and discarding only. An idea discarded on the mean whose
+tail endpoints improve is still not accepted, but it is tagged in the history
+and enters the backlog as a candidate for a record attempt, which is the one
+setting where tuning on the target instances is legitimate. The change is
+declared now and applies from I-006; I-005 gets the tag as an annotation
+only, with no effect on its verdict.
+
+Nothing is reverted. localsearch.tiebreak defaults to first and the current
+configuration does not mention it, so the code sits inert alongside
+jsp.seeded, abc.scout = kick and localsearch.tails = full: four measured
+mechanisms, none of them switched on.
