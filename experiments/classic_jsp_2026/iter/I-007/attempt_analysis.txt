@@ -1,0 +1,28 @@
+=== 1. RECORDS and everything at or below 1627 (BKS 1625) ===
+  b040  near  makespan 1627, gap +2   (chunk b040_c11)
+  b100  near  makespan 1627, gap +2   (chunk b100_c11)
+  b300  MATCH (equals the BKS, does not beat it)  makespan 1625, gap +0   (chunk b300_c01)
+  no record: nothing strictly below the BKS
+
+=== 2. the minimum per cell ===
+cell    s/run     runs     best       gap    CPU-hours
+b040       40      200     1627        +2         2.22
+b100      100       80     1627        +2         2.22
+b300      300       27     1625        +0         2.25
+
+=== 3. the lower tail per cell ===
+b040   three lowest mean  1628.3   values <= BKS+5: [1627.0, 1628.0, 1630.0, 1630.0, 1630.0]
+b100   three lowest mean  1627.7   values <= BKS+5: [1627.0, 1628.0, 1628.0, 1628.0, 1630.0, 1630.0]
+b300   three lowest mean  1627.7   values <= BKS+5: [1625.0, 1628.0, 1630.0]
+
+=== 4. runs at or below each threshold, at equal CPU ===
+cell      <=1625   <=1626   <=1627   <=1628   <=1629   <=1630
+b040           0        0        1        2        2        5
+b100           0        0        1        4        4        6
+b300           1        1        1        2        2        3
+
+=== reported, deciding nothing ===
+cell         mean         sd    worst
+b040       1640.5        5.0     1654
+b100       1639.8        5.8     1652
+b300       1639.4        5.9     1647

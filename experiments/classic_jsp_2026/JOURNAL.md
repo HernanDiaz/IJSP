@@ -1884,3 +1884,40 @@ the same way: on ta29 the record is within reach of more volume rather than of
 another mechanism. A concentrated attempt that spends the whole budget on
 ta29 instead of splitting it four ways is the obvious next step, and it needs
 no new idea.
+
+
+### 2026-09-22: ta29 matched again, and the run length that a record needs
+
+Three hundred and seven runs on ta29, the whole budget on one instance, split
+three ways by per-run budget at equal total CPU. No record: nothing came in
+strictly below the best known 1625. One run matched it, verified, from the
+300-second cell, and its certificate is kept under iter/I-007/evidence/. The
+line had matched 1625 once before in the long regime, so this reproduces that
+rather than extending it.
+
+Before the numbers, a correction to my own analysis. The first version of the
+script printed the match as a record and announced RECORD FOUND, because the
+record label tested `value <= BKS` and left the equality branch unreachable. A
+record is beating the best known solution, not equalling it. The script is
+fixed and the mistake is written down, because it erred in the direction of
+overselling the result.
+
+The measurement that survives the absence of a record is the run length. At
+equal CPU on ta29: forty seconds by two hundred runs reached 1627, a hundred
+seconds by eighty runs reached 1627, three hundred seconds by twenty-seven
+runs reached 1625. The three means are indistinguishable -- 1640.5, 1639.8,
+1639.4 -- and the minima are not. Only the long budget touched the best known
+value, with seven times fewer runs. The budget chosen on the mean is the wrong
+budget for a record hunt, and that is now measured on the instance that
+matters instead of assumed.
+
+The honest qualifier is that this is one instance and one lucky run out of
+twenty-seven. With n = 1 in the winning cell it is a strong indication of
+where to spend, not a test. What it licenses is declaring three hundred
+seconds in the next record attempt; it does not license rewriting the
+per-class budgets, which stay untouchable from the loop and stay tuned to the
+mean.
+
+The next step needs no new idea: the whole budget on ta29 at three hundred
+seconds a run, eighty-four runs in seven CPU-hours, three times what this
+batch gave the only configuration that has touched 1625 twice.

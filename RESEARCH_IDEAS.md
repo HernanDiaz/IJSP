@@ -233,7 +233,7 @@ bucle y están aquí para que no se repitan; sus cifras están en el JOURNAL.
 | H-3 | memético con su configuración afinada vs ABC con la suya | el memético alcanza mejores makespans | -- | 22 x 10 x 300 s: ABC mejor en 18 de 22, W = 30, p = 0.002 | **descartada** (2026-09-21) |
 | I-003 | el explorador del ABC reinyecta un **elite pateado** en vez de una solución aleatoria | un arranque aleatorio a mitad de tirada no puede alcanzar a la población; uno dentro de una cuenca buena sí | kick−control = **+1.43** (ta23 −0.27, ta29 +0.70, ta30 −0.50, ta45 **+5.80**); regla > +2 descarta → **pasa, por poco y en contra** | 4 mirillas de 6: −1.02, −0.57, **−0.03**, +0.44; kick mejor en 9-10 de 21 siempre; p entre 0.55 y 0.88, la frontera nunca se acerca | **detenida en la 4ª** (2026-09-21) por cambio de dirección del PI, no por sus datos. Sin aceptación: es un cero |
 | H-4 | N8 contra N2 (y contra N1, N3, N_ext), fase B del paper de COR | un vecindario más rico gana | -- | 82 instancias x 30 runs, 2460 bloques pareados: N2 1846.50 contra N8 1847.94, dif −1.45, p_adj = 3.9e−4, r = 0.077 (**despreciable**); rangos de Friedman N2 2.1315 el mejor de cinco, N8 2.2400 | **descartada** (antes del bucle; `experiments/cor_tabu_2026/`) |
-| I-007 | **intento concentrado en `ta29`**, y qué duración de tirada da el mínimo más bajo a igual CPU | los 40 s son el mejor corte fijo **por la media**; un récord vive en el mínimo, y eso no se ha medido nunca | -- | pendiente | **en curso** (2026-09-22) |
+| I-007 | **intento concentrado en `ta29`**, y qué duración de tirada da el mínimo más bajo a igual CPU | los 40 s son el mejor corte fijo **por la media**; un récord vive en el mínimo | -- | 307 tiradas: **sin récord**. **Iguala el BKS, 1625**, verificado, solo la celda de 300 s. 40 s y 100 s se quedan en 1627. Medias iguales (1640.5 / 1639.8 / 1639.4) | **cerrada** (2026-09-22): sin récord, con igualada y con la duración de tirada medida |
 | I-006 | **intento de récord** sobre la lista corta, 75 tiradas por celda e instancia | el récord vive en la cola, no en la media | -- | 600 tiradas: **sin récord**. Casi en `ta29` 1627 (BKS 1625, +2). **Mejor propio nuevo en `ta23`: 1564** contra 1571, verificado. Cola entre celdas plana: 26 contra 30 bloques, p = 0.689 | **cerrada** (2026-09-22), sin récord y con un mejor propio |
 | I-005 | desempate **dirigido por frecuencia** entre los vecinos empatados de N2 | elegir *mejor* dentro de N2 no cambia nada (I-004); elegir **dirigidamente distinto** sí puede | freq−control = **+2.55** (ta45 +7.70, ta23 +4.20, ta29 +0.60, ta30 −2.30); regla > +2 descarta → **DESCARTA** | -- | **descartada** (2026-09-22) en el filtro |
 | I-004 | reparar las colas que alimentan la estimación de N2 | con colas correctas la estimación vuelve a ser cota inferior, el orden del vecindario es el bueno y la poda deja de tirar movimientos mejores | ftails−control = −1.40, pasa | 6 mirillas, 30 runs, 21 inst.: +2.02, +0.84, +0.92, +1.23, +0.33, **+0.01**; mejor en 13 de 21, W = 103.5, p = 0.677; mejor-de-30 mejora en 9 y empeora en 11 | **descartada** (2026-09-22) por no cruzar la frontera en la sexta |
@@ -1251,3 +1251,49 @@ intento**, y esa es la parte que vale aunque no haya récord: los presupuestos
 por clase del protocolo son intocables desde el bucle y seguirán siendo los
 de la media, pero un intento de récord podrá declarar el suyo con esta medida
 detrás en vez de por inercia.
+
+### I-007, cierre: sin récord, igualada verificada, y la duración de tirada resuelta
+
+307 tiradas en `ta29`, cero infactibles, 70 trabajos, de 06:24 a 07:04.
+`iter/I-007/attempt_analysis.txt`.
+
+**Récord: no.** Nada quedó **estrictamente** por debajo de 1625.
+
+**Igualada: sí, y verificada.** La celda `b300` produjo un **1625**, que
+iguala el BKS. El horario está en
+`iter/I-007/evidence/ta29_1625_I-007_b300_c01.csv` y `verify_certificate.py`
+lo confirma por su cuenta: *"matches the best known solution 1625"*. La línea
+ya había igualado 1625 antes, en el régimen largo, así que esto lo **reproduce**
+y no lo amplía.
+
+**Corrección de mi propio análisis, antes de las cifras.** La primera versión
+de `analyze.py` imprimió esa igualada como `*** RECORD ***` y remató con
+`RECORD FOUND`. La condición era `value <= BKS` para la etiqueta de récord, lo
+que dejaba inalcanzable la rama de igualdad. **Un récord es batir el BKS, no
+igualarlo.** Corregido en el script y anotado aquí, porque el error iba en la
+dirección de sobrevender el resultado y ese es justo el que hay que dejar
+escrito.
+
+**La duración de tirada, a igual CPU, sobre `ta29`:**
+
+| celda | s/tirada | tiradas | mínimo | distancia | ≤1625 | ≤1628 | ≤1630 | media |
+|---|---|---|---|---|---|---|---|---|
+| `b040` | 40 | 200 | 1627 | +2 | 0 | 2 | 5 | 1640.5 |
+| `b100` | 100 | 80 | 1627 | +2 | 0 | 4 | 6 | 1639.8 |
+| `b300` | 300 | 27 | **1625** | **+0** | **1** | 2 | 3 | 1639.4 |
+
+Y aquí está el resultado que vale aunque no haya récord: **las tres medias son
+indistinguibles, 1640.5 contra 1639.8 contra 1639.4, y los mínimos no lo
+son.** Solo el presupuesto largo llegó a 1625, con **siete veces menos
+tiradas**. El presupuesto elegido por la media es el equivocado para cazar un
+récord, y ahora está medido en la instancia que importa en vez de supuesto.
+
+Matiz honesto: es **una** instancia y **una** tirada afortunada de 27. Con
+n = 1 en la celda que gana, esto no es un contraste, es un indicio fuerte
+sobre dónde gastar. Lo que autoriza es declarar 300 s en el próximo intento de
+récord, no reescribir los presupuestos por clase, que siguen intocables desde
+el bucle y siguen siendo los de la media.
+
+**Lo siguiente, sin idea nueva**: un intento con todo el presupuesto en
+`ta29` a 300 s por tirada. Con 7 h-CPU son 84 tiradas, tres veces las 27 de
+aquí, en la única configuración que ha tocado 1625 dos veces.

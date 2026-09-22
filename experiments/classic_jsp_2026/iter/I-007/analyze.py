@@ -65,15 +65,26 @@ def main():
     for cell in sorted(data):
         for value, tag in data[cell]:
             if value <= PRINT_AT_OR_BELOW:
-                mark = "*** RECORD ***" if value <= BKS else ("MATCH" if value == BKS else "near")
+                # A record means BEATING the BKS. Equality is a match, which
+                # this line had already achieved once on ta29. The first
+                # version of this line tested `value <= BKS` for the record
+                # label, so the match branch was unreachable and a match got
+                # printed as a record. Fixed 2026-09-22.
+                if value < BKS:
+                    mark = "*** RECORD ***"
+                elif value == BKS:
+                    mark = "MATCH (equals the BKS, does not beat it)"
+                else:
+                    mark = "near"
                 print("  %-5s %s  makespan %d, gap %+d   (chunk %s)"
                       % (cell, mark, value, value - BKS, tag))
                 shown += 1
-                if value <= BKS:
+                if value < BKS:
                     any_record = True
     if not shown:
         print("  nothing at or below %d" % PRINT_AT_OR_BELOW)
-    print("  RECORD FOUND" if any_record else "  no record")
+    print("  RECORD FOUND (a makespan strictly below the BKS)" if any_record
+          else "  no record: nothing strictly below the BKS")
 
     print("\n=== 2. the minimum per cell ===")
     print("%-6s %6s %8s %8s %9s %12s"
