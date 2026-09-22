@@ -2011,3 +2011,41 @@ of the computation the hypothesis assumes. Checking that the branch executes,
 which was I-003's lesson, is not enough. Checking how much it weighs is the
 rest of it. Without that counter I would have launched four filters and
 recorded four zeros.
+
+
+### 2026-09-22: depth reaches the search and the search does not care
+
+Six waves, 30 runs a cell, 21 instances, 1,890 runs, zero infeasible. The deep
+escape against the control per look: +0.16, -0.32, -0.13, -0.06, -0.41, -0.25.
+At the sixth, -0.25, better on 10 of 21, p = 0.639. Rejected.
+
+This zero is worth more than the earlier ones. Those were mechanisms that did
+not act, or acted where nothing depended on them. Here the counters say the
+mechanism acted at full strength: hundreds of thousands of escapes a run,
+trajectories of 286 to 1909 moves instead of 47 to 102, and the declared 25 %
+quota binding. The depth of the tabu trajectory, which is what distinguishes
+TSAB, buys nothing inside this ABC. Together with I-004 that says this search
+tolerates an estimator violating its bound in two thirds of cases and
+tolerates trajectories forty times longer, without the final makespan
+noticing.
+
+The informational cell says something else. The escape alone comes out at
+-1.10 on the mean and better on 15 of 21, against 10 of 21 for the full
+mechanism. Nothing is concluded from it: it rode along without a boundary and
+the pre-registration said in as many words that this case would become a new
+pre-registration with its own confirmation rather than a conclusion drawn
+here.
+
+That resolves I-011's composition rule, and the two halves of the rule pointed
+different ways. It said the dead-end switch joins the portfolio if I-010
+closes without crossing its boundary, "that is, if it is measured mean-neutral
+over the 21". But I-010's boundary applied to the combination, not to the
+escape on its own, and the escape on its own does not look neutral. What was
+confirmed neutral is the combination. So the switch does not join the
+portfolio, on the rule's stated intent rather than its letter, and the
+divergence is written down along with which half was followed.
+
+It also changes the order. I-011 needs to know whether the escape is neutral
+or good, so I-012 comes first: the escape alone as a position idea with its
+own confirmation. Neutral, and it joins the portfolio. Good, and it enters the
+current configuration and the portfolio is built without it.

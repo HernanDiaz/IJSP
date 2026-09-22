@@ -275,7 +275,7 @@ bucle y están aquí para que no se repitan; sus cifras están en el JOURNAL.
 | I-003 | el explorador del ABC reinyecta un **elite pateado** en vez de una solución aleatoria | un arranque aleatorio a mitad de tirada no puede alcanzar a la población; uno dentro de una cuenca buena sí | kick−control = **+1.43** (ta23 −0.27, ta29 +0.70, ta30 −0.50, ta45 **+5.80**); regla > +2 descarta → **pasa, por poco y en contra** | 4 mirillas de 6: −1.02, −0.57, **−0.03**, +0.44; kick mejor en 9-10 de 21 siempre; p entre 0.55 y 0.88, la frontera nunca se acerca | **detenida en la 4ª** (2026-09-21) por cambio de dirección del PI, no por sus datos. Sin aceptación: es un cero |
 | H-4 | N8 contra N2 (y contra N1, N3, N_ext), fase B del paper de COR | un vecindario más rico gana | -- | 82 instancias x 30 runs, 2460 bloques pareados: N2 1846.50 contra N8 1847.94, dif −1.45, p_adj = 3.9e−4, r = 0.077 (**despreciable**); rangos de Friedman N2 2.1315 el mejor de cinco, N8 2.2400 | **descartada** (antes del bucle; `experiments/cor_tabu_2026/`) |
 | I-011 | `[COLA]` **cartera de configuraciones**: cada tirada sortea una combinación de los interruptores ya medidos como neutros | una mezcla de componentes neutros conserva la media y **suma varianza entre componentes**, así que alarga la cola por construcción | pendiente | pendiente | **preinscrita** (2026-09-22) |
-| I-010 | **escapar del estado todo-tabú** y con ello hacer alcanzable la profundidad | la profundidad la limita el callejón sin salida, no el parámetro | dscp−control = **−0.86**, pasa. Secundario: `escape` solo da **−1.78**, mejor que con la cuota | en curso (oleadas, 3 celdas) | **en curso** (2026-09-22) |
+| I-010 | **escapar del estado todo-tabú** y con ello hacer alcanzable la profundidad | la profundidad la limita el callejón sin salida, no el parámetro | dscp−control = −0.86, pasa | 6 mirillas, 30 runs: +0.16, −0.32, −0.13, −0.06, −0.41, **−0.25**; mejor en 10 de 21, p = 0.639 | **descartada** (2026-09-22) por no cruzar en la sexta |
 | I-009 | una llamada profunda al tabú sobre el incumbente, **una sola por tirada** | nunca hay una trayectoria profunda | deep−control = −0.02, pasa | -- | **retirada** (2026-09-22): infradimensionada por construcción, la llamada era el 0.06-2.3 % del trabajo del tabú |
 | I-008 | **caza en `ta29` a 300 s**, 84 tiradas | el mínimo lo da el presupuesto largo (I-007), y con el triple de tiradas debería bajar de 1625 | -- | 84 tiradas: **sin récord y sin igualada**, mínimo **1628**. Con I-007 suman 111 tiradas de 300 s y **1 igualada**. Rebaja la conclusión de I-007 sobre la duración de tirada | **cerrada** (2026-09-22): cierra la fuerza bruta en `ta29` |
 | I-007 | **intento concentrado en `ta29`**, y qué duración de tirada da el mínimo más bajo a igual CPU | los 40 s son el mejor corte fijo **por la media**; un récord vive en el mínimo | -- | 307 tiradas: **sin récord**. **Iguala el BKS, 1625**, verificado, solo la celda de 300 s. 40 s y 100 s se quedan en 1627. Medias iguales (1640.5 / 1639.8 / 1639.4) | **cerrada** (2026-09-22): sin récord, con igualada y con la duración de tirada medida |
@@ -1660,3 +1660,44 @@ I-009. **Ese contador va mirado antes de interpretar el endpoint.**
 `portfolio` menos la de `control`, promediada sobre las cuatro instancias del
 filtro, supera **+2.0** unidades. Sobre el endpoint de cola, no sobre la
 media.
+
+### I-010, cierre: la profundidad no aporta, y la celda informativa apunta a otra cosa
+
+Seis mirillas, 30 tiradas por celda, 21 instancias, 1.890 tiradas, cero
+infactibles. `deepescape` menos `control` por mirilla: **+0.16, −0.32, −0.13,
+−0.06, −0.41, −0.25**. En la sexta: media **−0.25**, mejor en 10 de 21,
+p = 0.639. No cruza la frontera: **descartada**.
+
+**Este cero no es como los anteriores, y por eso vale.** Los de I-001 a I-005
+eran de mecanismos que no llegaban a actuar o actuaban donde no importaba.
+Aquí los contadores dicen que el mecanismo actuó con toda la fuerza pedida:
+cientos de miles de escapes por tirada, trayectorias de **286 a 1909
+movimientos** en vez de 47 a 102, y la cuota mordiendo en el 25 % declarado.
+**La profundidad de la trayectoria tabú, que es lo que distingue a TSAB, no
+aporta nada dentro de este ABC.** Es un resultado con contenido propio: junto
+con I-004 dice que esta búsqueda tolera que su estimador viole la cota en dos
+tercios de los casos y tolera que sus trayectorias sean cuarenta veces más
+largas, sin que el makespan final se entere.
+
+**La celda informativa, y lo que no se concluye de ella.** El escape **solo**
+queda en media **−1.10** y mejor en **15 de 21**, contra el 10 de 21 del
+mecanismo completo. Es un patrón mejor que el del endpoint primario. No se
+concluye nada: la celda entró sin frontera y declarada como información, y la
+preinscripción decía literalmente que si esto pasaba sería *"una preinscripción
+nueva con su propia confirmación, no una conclusión de aquí"*. Se cumple.
+
+**Consecuencia sobre la composición de I-011, resuelta explícitamente.** La
+regla preinscrita decía que el interruptor del callejón entra en la cartera si
+I-010 cierra sin cruzar su frontera, *"es decir si queda medido como neutro en
+media sobre las 21"*. Las dos mitades de esa frase apuntan ahora a sitios
+distintos: la frontera de I-010 se aplicó a `deepescape`, no al escape solo, y
+el escape solo **no parece neutro**. Lo que quedó confirmado neutro es la
+combinación, no el interruptor. Por tanto **el escape no entra en la cartera**,
+y la razón es la intención escrita de la regla y no su letra. Queda anotado
+así para que se vea que la letra y la intención divergieron y cuál se siguió.
+
+**Y cambia el orden**: I-011 depende de saber si el escape es neutro o
+beneficioso, así que **I-012 va antes**, con el escape solo como idea de
+posición y su propia confirmación. Si sale neutro, entra en la cartera. Si
+sale beneficioso, pasa a la configuración vigente y la cartera se construye
+sin él.
