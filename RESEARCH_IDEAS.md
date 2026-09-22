@@ -233,6 +233,7 @@ bucle y están aquí para que no se repitan; sus cifras están en el JOURNAL.
 | H-3 | memético con su configuración afinada vs ABC con la suya | el memético alcanza mejores makespans | -- | 22 x 10 x 300 s: ABC mejor en 18 de 22, W = 30, p = 0.002 | **descartada** (2026-09-21) |
 | I-003 | el explorador del ABC reinyecta un **elite pateado** en vez de una solución aleatoria | un arranque aleatorio a mitad de tirada no puede alcanzar a la población; uno dentro de una cuenca buena sí | kick−control = **+1.43** (ta23 −0.27, ta29 +0.70, ta30 −0.50, ta45 **+5.80**); regla > +2 descarta → **pasa, por poco y en contra** | 4 mirillas de 6: −1.02, −0.57, **−0.03**, +0.44; kick mejor en 9-10 de 21 siempre; p entre 0.55 y 0.88, la frontera nunca se acerca | **detenida en la 4ª** (2026-09-21) por cambio de dirección del PI, no por sus datos. Sin aceptación: es un cero |
 | H-4 | N8 contra N2 (y contra N1, N3, N_ext), fase B del paper de COR | un vecindario más rico gana | -- | 82 instancias x 30 runs, 2460 bloques pareados: N2 1846.50 contra N8 1847.94, dif −1.45, p_adj = 3.9e−4, r = 0.077 (**despreciable**); rangos de Friedman N2 2.1315 el mejor de cinco, N8 2.2400 | **descartada** (antes del bucle; `experiments/cor_tabu_2026/`) |
+| I-007 | **intento concentrado en `ta29`**, y qué duración de tirada da el mínimo más bajo a igual CPU | los 40 s son el mejor corte fijo **por la media**; un récord vive en el mínimo, y eso no se ha medido nunca | -- | pendiente | **en curso** (2026-09-22) |
 | I-006 | **intento de récord** sobre la lista corta, 75 tiradas por celda e instancia | el récord vive en la cola, no en la media | -- | 600 tiradas: **sin récord**. Casi en `ta29` 1627 (BKS 1625, +2). **Mejor propio nuevo en `ta23`: 1564** contra 1571, verificado. Cola entre celdas plana: 26 contra 30 bloques, p = 0.689 | **cerrada** (2026-09-22), sin récord y con un mejor propio |
 | I-005 | desempate **dirigido por frecuencia** entre los vecinos empatados de N2 | elegir *mejor* dentro de N2 no cambia nada (I-004); elegir **dirigidamente distinto** sí puede | freq−control = **+2.55** (ta45 +7.70, ta23 +4.20, ta29 +0.60, ta30 −2.30); regla > +2 descarta → **DESCARTA** | -- | **descartada** (2026-09-22) en el filtro |
 | I-004 | reparar las colas que alimentan la estimación de N2 | con colas correctas la estimación vuelve a ser cota inferior, el orden del vecindario es el bueno y la poda deja de tirar movimientos mejores | ftails−control = −1.40, pasa | 6 mirillas, 30 runs, 21 inst.: +2.02, +0.84, +0.92, +1.23, +0.33, **+0.01**; mejor en 13 de 21, W = 103.5, p = 0.677; mejor-de-30 mejora en 9 y empeora en 11 | **descartada** (2026-09-22) por no cruzar la frontera en la sexta |
@@ -1206,3 +1207,47 @@ está al alcance de más volumen, no de otro mecanismo. Un intento concentrado
 solo en `ta29`, con todo el presupuesto en una instancia en vez de repartido
 en cuatro, es el siguiente paso natural del backlog (B-6) y no necesita
 ninguna idea nueva.
+
+### I-007 — todo el presupuesto en `ta29`, y la duración de tirada contra el mínimo
+
+**Por qué `ta29` y solo `ta29`.** I-006 la dejó a **dos unidades**: 1627
+contra un BKS de 1625, con 75 tiradas de 40 s. Y la línea ya igualó 1625 una
+vez, en el régimen de 300 s. Es el punto más cerca al que hemos estado, y
+repartir el presupuesto entre cuatro instancias fue lo que hizo I-006. Aquí va
+entero a una.
+
+**Y la pregunta que aprovecha el viaje.** El análisis de reinicios eligió 40 s
+para 20x20 **por la media**. Un récord no vive en la media, vive en el
+mínimo, y **qué duración de tirada produce el mínimo más bajo a igual CPU
+total no se ha medido nunca**. Nuestro 1625 salió de 300 s; el mejor de 75
+tiradas de 40 s es 1627. Los dos datos sueltos apuntan en direcciones
+distintas y esto los enfrenta:
+
+| celda | s por tirada | tiradas | h-CPU |
+|---|---|---|---|
+| `b040` | 40 | 200 | 2.22 |
+| `b100` | 100 | 80 | 2.22 |
+| `b300` | 300 | 27 | 2.25 |
+
+Misma instancia, misma configuración congelada, mismo CPU total, una sola cosa
+distinta. **No hay filtro ni oleadas**: no se acepta nada.
+
+**Endpoints, predeclarados y en este orden**:
+
+1. **Récord**: cualquier makespan verificado en 1625 o por debajo. Se imprime
+   el certificado y el trozo de todo lo que quede en 1627 o menos.
+2. **El mínimo por celda**, con su distancia al BKS y el CPU gastado.
+3. **Media de los tres más bajos** por celda, y la cola entera hasta BKS+5
+   para ver su forma.
+4. **Cuántas tiradas de cada celda quedan en o por debajo de cada umbral**
+   desde BKS hasta BKS+5. Es la pregunta de la duración dicha como le importa
+   a una caza de récords: a igual CPU, qué presupuesto pone más masa abajo.
+
+Reportado y sin valor decisorio: media, desviación y peor valor por celda.
+
+**Qué se hace con el resultado.** Si sale un récord, el certificado es la
+prueba y se guarda. Si no, el endpoint 4 decide **dónde se gasta el siguiente
+intento**, y esa es la parte que vale aunque no haya récord: los presupuestos
+por clase del protocolo son intocables desde el bucle y seguirán siendo los
+de la media, pero un intento de récord podrá declarar el suyo con esta medida
+detrás en vez de por inercia.
