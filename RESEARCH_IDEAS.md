@@ -233,6 +233,7 @@ bucle y están aquí para que no se repitan; sus cifras están en el JOURNAL.
 | H-3 | memético con su configuración afinada vs ABC con la suya | el memético alcanza mejores makespans | -- | 22 x 10 x 300 s: ABC mejor en 18 de 22, W = 30, p = 0.002 | **descartada** (2026-09-21) |
 | I-003 | el explorador del ABC reinyecta un **elite pateado** en vez de una solución aleatoria | un arranque aleatorio a mitad de tirada no puede alcanzar a la población; uno dentro de una cuenca buena sí | kick−control = **+1.43** (ta23 −0.27, ta29 +0.70, ta30 −0.50, ta45 **+5.80**); regla > +2 descarta → **pasa, por poco y en contra** | 4 mirillas de 6: −1.02, −0.57, **−0.03**, +0.44; kick mejor en 9-10 de 21 siempre; p entre 0.55 y 0.88, la frontera nunca se acerca | **detenida en la 4ª** (2026-09-21) por cambio de dirección del PI, no por sus datos. Sin aceptación: es un cero |
 | H-4 | N8 contra N2 (y contra N1, N3, N_ext), fase B del paper de COR | un vecindario más rico gana | -- | 82 instancias x 30 runs, 2460 bloques pareados: N2 1846.50 contra N8 1847.94, dif −1.45, p_adj = 3.9e−4, r = 0.077 (**despreciable**); rangos de Friedman N2 2.1315 el mejor de cinco, N8 2.2400 | **descartada** (antes del bucle; `experiments/cor_tabu_2026/`) |
+| I-005 | desempate **dirigido por frecuencia** entre los vecinos empatados de N2 | elegir *mejor* dentro de N2 no cambia nada (I-004); elegir **dirigidamente distinto** sí puede | pendiente | pendiente | **en curso** (2026-09-22) |
 | I-004 | reparar las colas que alimentan la estimación de N2 | con colas correctas la estimación vuelve a ser cota inferior, el orden del vecindario es el bueno y la poda deja de tirar movimientos mejores | ftails−control = −1.40, pasa | 6 mirillas, 30 runs, 21 inst.: +2.02, +0.84, +0.92, +1.23, +0.33, **+0.01**; mejor en 13 de 21, W = 103.5, p = 0.677; mejor-de-30 mejora en 9 y empeora en 11 | **descartada** (2026-09-22) por no cruzar la frontera en la sexta |
 | H-5 | profundidad del tabú como **parámetro global** (`bad-iterations`) | más profundo es mejor | -- | dentro del espacio de irace **dos veces**: rango (5, 30) en el paper de COR para los cinco vecindarios, rango (5, 40) en los dos brazos de este proyecto. Las configuraciones ganadoras eligieron **15** para el ABC (config. 136) y **23** para el memético (config. 164), no el tope | **contestada** por el afinado, no hace falta experimento |
 | I-002 | vecindario N8 en vez de N2, **repetición de H-4** | la misma que H-4 | n8−control = −1.44, pasa (no descarta) | 3 mirillas de 6, 15 runs: **+1.52**, N8 mejor en 7 de 21, p = 0.054; reproduce H-4 en el régimen corto y crisp | **retirada** (2026-09-21): la pregunta ya estaba contestada |
@@ -1012,3 +1013,55 @@ evaluación a `stderr` que se usó para el diagnóstico. Los contadores
 (`N2 ties at best`, `N2 estimate above real value`, vetos de meseta,
 reemplazos de explorador) se quedan: son inertes y son la única forma de
 volver a ver esto.
+
+### I-005 — desempate dirigido por frecuencia entre los empatados de N2
+
+**Hipótesis** (una frase): entre los movimientos de N2 que empatan en el
+mejor makespan, tomar el arco que **menos veces se ha usado en la tirada**, en
+vez del primero que el orden coloque, da un makespan final menor a igual
+tiempo de reloj.
+
+De dónde sale, y esta vez de tres medidas propias:
+
+1. **N2 empata a menudo y el empate lo rompe el azar.** Contado con los
+   contadores de I-004: entre **1,5 y 2,0** vecinos elegibles empatados en el
+   mejor valor de media, con máximos de **27**, y `isBetterThan` es estricto,
+   así que gana el primero del orden. El orden lo fija un quicksort de
+   **pivote aleatorio**. Hoy esa decisión la toma el generador de números
+   aleatorios.
+2. **Elegir mejor no sirve.** I-004 reparó la cota inferior, de 882.481
+   violaciones a 0, y el resultado se movió **+0.01** unidades sobre 1.260
+   tiradas.
+3. **Perturbar el orden al azar tampoco.** El propio defecto de las colas
+   llevaba desordenando el vecindario en dos tercios de los casos, y el
+   resultado era el mismo. Lo que **no** se ha probado nunca es una elección
+   con criterio, y es lo que el PI viene señalando desde el principio.
+
+**Qué se toca**: `LS_Tabu`. Un contador de usos por arco, y entre los
+empatados se toma el de menor cuenta. Es **memoria de frecuencias a largo
+plazo**, la pieza de la familia TSAB que `TabuList` no tiene: la lista tabú
+prohíbe, pero no recuerda cuánto se ha usado cada arco. **Ningún parámetro
+numérico nuevo**: el criterio es un mínimo, sin umbral que ajustar.
+
+**Por qué la celda lleva dos líneas y no una.** Para ver a todos los
+empatados el barrido no puede cortarse en una estimación *igual* al mejor
+valor, y eso solo es correcto si la estimación es cota inferior, es decir
+exige `localsearch.tails = full`. La atribución queda limpia precisamente
+porque I-004 midió esa mitad por separado y dio un cero exacto: cualquier
+efecto aquí es del desempate.
+
+**Comprobado antes de correr** (2026-09-22, 4 instancias, 3 clases, 4
+tiradas): horarios factibles, las dos celdas difieren en las cuatro
+instancias, la celda nueva tiene **0** violaciones de la cota, y el contador
+de empates sube de ~1,2 a entre 1,4 y 2,0, que es la prueba de que el barrido
+ahora **alcanza** los empatados que la poda hacía invisibles.
+
+**Celdas**: `control` y `freqtie`. **Endpoint primario**: Wilcoxon pareado por
+las 21, frontera de Pocock **simétrica** p <= 0.0142 en las seis mirillas.
+**Regla del filtro**: descartar si la media de `freqtie − control` sobre las
+cuatro instancias supera +2.0.
+
+**Si sale cero**, y hay que decirlo de antemano: con I-004 y con el accidente
+de las colas ya medidos, un tercer cero aquí cerraría la vía del orden de los
+vecinos de N2 con tres medidas independientes, y el foco tendría que irse a
+qué se hace con el movimiento elegido, no a cuál se elige.

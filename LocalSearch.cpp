@@ -6,6 +6,7 @@
 
 #include "LocalSearch.h"
 #include "NeighbourhoodJSP_Base.h"
+#include "NeighbourJSP.h"
 #include <cstdlib>
 #include <time.h>
 
@@ -301,6 +302,11 @@ LS_Tabu::LS_Tabu(const LS_Tabu &source)
 //-----  Setup method  --------------------------------------------------------
 void LS_Tabu::setup(ParameterDB *parameters) {
 	LocalSearch::setup(parameters);
+	this->tieBreakLabel = FUZZYFW_LOCAL_SEARCH_TIEBREAK;
+	this->tieBreakFrequency =
+		(parameters->getStringLower(this->tieBreakLabel).compare("frequency") == 0);
+	this->arcUses.clear();
+	this->arcUsesTasks = 0;
 	// Configure the tabu list with the parameters from the setup file
 	this->tabuList->setup(parameters);
 	// Loads the maximum number of iterations without improvement
@@ -366,6 +372,17 @@ FullSolution LS_Tabu::apply(const Solution *solution,
 
 	bool improves = true;
 	this->tabuList->clear();
+	if (this->tieBreakFrequency) {
+		JSP::NB_ParallelBase_MakespanJSP *nb0 =
+			dynamic_cast<JSP::NB_ParallelBase_MakespanJSP *>(this->neighbourhood);
+		if (nb0 != NULL) {
+			unsigned int n = (unsigned int)nb0->getScheduledTasksCount();
+			if (n > 0 && this->arcUsesTasks != n) {
+				this->arcUsesTasks = n;
+				this->arcUses.assign((size_t)n * n, 0u);
+			}
+		}
+	}
 
 	while (!this->stoppingCriteria()) {
 		this->runtime = clock() - _startClock;
@@ -413,7 +430,19 @@ FullSolution LS_Tabu::apply(const Solution *solution,
 			if(lastNeighbour != NULL)
 				isLastNeighbour = lastNeighbour->isReverse(this->neighbourhood->getNeighbour(index));
 
-			if (!this->estimationFilter || best == NULL || estimation->isBetterThan(best)) {
+			// With directed tie-breaking the sweep must not stop at an
+			// estimate merely EQUAL to the best real value, or the tied moves
+			// stay invisible. Sound because the cell also sets
+			// localsearch.tails = full, which makes the estimate a true lower
+			// bound (I-004: 0 violations of 1.35 million).
+			bool passFilter;
+			if (!this->estimationFilter || best == NULL)
+				passFilter = true;
+			else if (this->tieBreakFrequency)
+				passFilter = !estimation->isWorseThan(best);
+			else
+				passFilter = estimation->isBetterThan(best);
+			if (passFilter) {
 				if (this->estimationGuided) {
 					if ((best == NULL || estimation->isBetterThan(best))
 						&& (!isTabu || estimation->isBetterThan(bestSolution.second))) {
@@ -443,10 +472,28 @@ FullSolution LS_Tabu::apply(const Solution *solution,
 								diagTies++;
 						}
 					}
-					if (realValue != NULL
-						&& (best == NULL || realValue->isBetterThan(best))
+					bool eligibleMove = (realValue != NULL)
 						&& (!isTabu || realValue->isBetterThan(bestSolution.second))
-						&& (lastNeighbour == NULL || !isLastNeighbour)) {
+						&& (lastNeighbour == NULL || !isLastNeighbour);
+					if (eligibleMove && best != NULL && this->tieBreakFrequency
+						&& realValue->isEqualTo(best) && bestNeighbor >= 0) {
+						// A tie at the best value: keep the less used arc.
+						const JSP::NeighbourJSP_Arc *cand = dynamic_cast<const JSP::NeighbourJSP_Arc *>(
+							this->neighbourhood->getNeighbour(index));
+						const JSP::NeighbourJSP_Arc *held = dynamic_cast<const JSP::NeighbourJSP_Arc *>(
+							this->neighbourhood->getNeighbour(bestNeighbor));
+						if (cand != NULL && held != NULL && this->arcUsesTasks > 0) {
+							unsigned int ci = cand->x * this->arcUsesTasks + cand->y;
+							unsigned int hi = held->x * this->arcUsesTasks + held->y;
+							if (ci < this->arcUses.size() && hi < this->arcUses.size()
+								&& this->arcUses[ci] < this->arcUses[hi]) {
+								best = realValue;
+								bestNeighbor = index;
+							}
+						}
+					}
+					else if (eligibleMove
+						&& (best == NULL || realValue->isBetterThan(best))) {
 						best = realValue;
 						bestNeighbor = index;
 					}
@@ -467,6 +514,14 @@ FullSolution LS_Tabu::apply(const Solution *solution,
 				delete lastNeighbour;
 			lastNeighbour = this->neighbourhood->getNeighbour(bestNeighbor)->clone();
 
+			if (this->tieBreakFrequency && this->arcUsesTasks > 0) {
+				const JSP::NeighbourJSP_Arc *taken = dynamic_cast<const JSP::NeighbourJSP_Arc *>(
+					this->neighbourhood->getNeighbour(bestNeighbor));
+				if (taken != NULL) {
+					unsigned int ti = taken->x * this->arcUsesTasks + taken->y;
+					if (ti < this->arcUses.size()) this->arcUses[ti]++;
+				}
+			}
 			this->tabuList->addNeighbour(this->neighbourhood->getNeighbour(bestNeighbor));
 			this->neighbourhood->acceptNeighbour(bestNeighbor, svars);
 			current = this->neighbourhood->getCurrentSolution();

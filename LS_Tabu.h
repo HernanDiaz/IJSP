@@ -5,6 +5,7 @@
 */
 #pragma once
 
+#include <vector>
 #include "LocalSearch.h"
 
 namespace FuzzyFW {
@@ -40,6 +41,20 @@ public:
 		static unsigned long diagScanned;       // neighbours evaluated
 		static unsigned long diagBoundBreaks;   // estimation strictly worse than the real value
 		static unsigned long diagTieMax;        // the largest tie seen
+
+		//-----  I-005: directed tie-breaking  -------------------------------
+		// N2 offers 1.5 to 2.0 eligible neighbours tied at the best value on
+		// average, and up to 27. Which one is taken is decided today by the
+		// random pivot of the quicksort that orders the neighbourhood, and
+		// I-004 showed that making that order CORRECT changes nothing. This
+		// picks among the tied moves the arc used fewest times so far in the
+		// run: long-term frequency memory, the piece of the TSAB family that
+		// TabuList does not have, acting at the one point where the algorithm
+		// currently chooses blind.
+		bool tieBreakFrequency;
+		std::string tieBreakLabel;
+		std::vector<unsigned int> arcUses;   // indexed by x * nTasks + y
+		unsigned int arcUsesTasks;
 
 	explicit LS_Tabu(ParameterDB *parameters = NULL);
 	LS_Tabu(const LS_Tabu &source);

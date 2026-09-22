@@ -21,6 +21,10 @@ namespace FuzzyFW {
 //   "incremental" (default, unchanged), or "full": recomputed before every
 //   estimation. See LocalSearch::setup for the measurement behind this.
 #define  FUZZYFW_LOCAL_SEARCH_TAILS "localsearch.tails"
+// I-005: how a tie at the best neighbourhood value is broken.
+//   "first" (default, unchanged): whichever the sort reached first
+//   "frequency": among the tied moves, the arc used fewest times in this run
+#define  FUZZYFW_LOCAL_SEARCH_TIEBREAK "localsearch.tiebreak"
 
 #define FUZZYFW_LOCAL_SEARCH_TABUITER "localsearch.bad-iterations"
 

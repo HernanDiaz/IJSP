@@ -80,6 +80,11 @@ public:
 	/** DIAGNOSTIC: recompute every tail from scratch. */
 	void recomputeAllTails();
 
+	/** Number of scheduled tasks, for sizing per-arc tables. */
+	unsigned int getScheduledTasksCount() const {
+		return (unsigned int)this->tails.size();
+	}
+
 	virtual void sortByEstimation(const FuzzyFW::SharedVars *svars);
 
 	// Pure virtual — each neighbourhood defines its own search and move
