@@ -343,6 +343,7 @@ bool LS_Tabu::stoppingCriteria() {
 unsigned long LS_Tabu::diagTieSum = 0;
 unsigned long LS_Tabu::diagIters = 0;
 unsigned long LS_Tabu::diagScanned = 0;
+unsigned long LS_Tabu::diagGenerated = 0;
 unsigned long LS_Tabu::diagBoundBreaks = 0;
 unsigned long LS_Tabu::diagTieMax = 0;
 unsigned long LS_Tabu::deepCalls = 0;
@@ -417,6 +418,7 @@ FullSolution LS_Tabu::apply(const Solution *solution,
 		nNeighbours =
 			this->neighbourhood->findNewNeighbours(svars);
 		this->neighbours += nNeighbours;
+		LS_Tabu::diagGenerated += (unsigned long)nNeighbours;
 		// DIAGNOSTIC: with N2_FULL_TAILS set, rebuild every tail from scratch
 		// before the estimations are computed, so that the estimator works on
 		// exact data instead of on whatever the incremental maintenance left.

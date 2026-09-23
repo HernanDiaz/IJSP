@@ -39,6 +39,7 @@ public:
 		static unsigned long diagTieSum;        // ties at the best eligible value
 		static unsigned long diagIters;         // tabu iterations counted
 		static unsigned long diagScanned;       // neighbours evaluated
+		static unsigned long diagGenerated;     // neighbours offered by N2
 		static unsigned long diagBoundBreaks;   // estimation strictly worse than the real value
 		static unsigned long diagTieMax;        // the largest tie seen
 

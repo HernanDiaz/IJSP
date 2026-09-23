@@ -251,6 +251,18 @@ namespace FuzzyFW {
 		stats.push_back(std::pair<std::string, double>
 			("N2 neighbours evaluated", (double)LS_Tabu::diagScanned));
 		stats.push_back(std::pair<std::string, double>
+			("N2 neighbours offered", (double)LS_Tabu::diagGenerated));
+		stats.push_back(std::pair<std::string, double>
+			("N2 fraction of neighbourhood scanned %",
+			LS_Tabu::diagGenerated
+				? 100.0 * (double)LS_Tabu::diagScanned / (double)LS_Tabu::diagGenerated
+				: 0.0));
+		stats.push_back(std::pair<std::string, double>
+			("N2 neighbours offered per tabu iteration",
+			LS_Tabu::diagIters
+				? (double)LS_Tabu::diagGenerated / (double)LS_Tabu::diagIters
+				: 0.0));
+		stats.push_back(std::pair<std::string, double>
 			("N2 estimate above real value", (double)LS_Tabu::diagBoundBreaks));
 		stats.push_back(std::pair<std::string, double>
 			("Deep LS calls", (double)this->deepLsCalls));

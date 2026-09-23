@@ -2025,3 +2025,44 @@ por defecto, como estaban.
 tiradas, ninguna por debajo ni igualando su BKS. Era de esperar, porque las
 oleadas corren con los presupuestos por clase (40/100/150 s) y no con los 300
 s de los intentos de récord.
+
+### Sondeo del barrido de N2: se ve el 20 %, y una de cada cuatro estimaciones miente
+
+Medido 2026-09-23 con dos contadores nuevos (`N2 neighbours offered`,
+`N2 fraction of neighbourhood scanned %`), una tirada por instancia con la
+configuración congelada:
+
+| | ta23, 40 s | ta45, 150 s |
+|---|---|---|
+| vecinos que N2 ofrece por iteración del tabú | 11.28 | 12.27 |
+| **fracción del vecindario evaluada** | **20.08 %** | **19.79 %** |
+| estimación **por encima** del valor real | 1.12 M de 4.52 M = **24.7 %** | 4.33 M de 15.94 M = **27.2 %** |
+| empates en el mejor por iteración | 1.16 | 1.28 |
+| iteraciones por llamada | 27.3 | 37.1 |
+
+Dos hechos que el bucle no tenía escritos.
+
+**El barrido ve una quinta parte del vecindario.** La poda
+(`localsearch.filter = yes`) corta en el primer vecino cuya estimación no
+mejora al mejor valor real encontrado, y con el vecindario ordenado por
+estimación eso ocurre tras **2.3 vecinos de 11.5**. El tabú no elige entre
+once movimientos, elige entre dos o tres.
+
+**Y por defecto la poda es insegura.** La estimación está *por encima* del
+valor real en una de cada cuatro evaluaciones, así que no es cota inferior y
+el corte puede descartar —y descarta— vecinos cuyo valor real era mejor. Esto
+solo se arregla con `localsearch.tails = full`, que es justo lo que midió
+I-004: **882.481 violaciones a 0**.
+
+**Por qué esto cierra la vía del *cuál* y abre la del *cómo*.** I-004 hizo que
+el barrido viera el mejor de verdad y el resultado se movió **+0.01** en 1260
+tiradas. Es decir: la elección dentro de N2 estaba equivocada el 25 % de las
+veces, corregirla no cambió nada. Súmese a que el defecto de las colas
+desordenaba el vecindario en dos tercios de los casos sin efecto, y a que el
+desempate por frecuencia (I-005) dio +2.55. **Cuatro medidas independientes
+dicen que da igual cuál de los vecinos de N2 se coja.**
+
+Las cuatro comparten una premisa que ninguna ha tocado: **la regla sigue
+siendo *coge el mejor***. Con cota exacta y regla del mejor, el orden de
+visita es matemáticamente irrelevante, y por eso las cuatro dieron cero. El
+orden solo puede decidir algo si se abandona la regla. Eso es I-013.
