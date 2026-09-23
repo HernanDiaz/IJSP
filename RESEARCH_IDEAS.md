@@ -237,7 +237,14 @@ nada.
 
 ## Referencia actual
 
-- Configuración vigente: commit `6544637` + el porte de `jsp.seeded`
+- Configuración vigente **desde el 2026-09-24**: la de abajo **más
+  `abc.ls.pick = best`** (I-018, primera aceptación del bucle), en
+  `experiments/classic_jsp_2026/setup/ref_I-018.txt`. Desde I-019 la celda
+  `control` de toda tanda es esa. `prereg2_abc_300s.txt` queda intacto, porque
+  lo leen todas las iteraciones anteriores y tienen que seguir siendo
+  reproducibles. **Aceptaciones: 1 de 3** para la recomparación a 300 s contra
+  la referencia original.
+- Configuración de partida: commit `6544637` + el porte de `jsp.seeded`
   (`CreationJSP_Seeded.*`), ABC configuración 136, `creation = jsp.random`.
 - Registro de la evaluación completa **a 300 s** (ancla de deriva):
   `experiments/classic_jsp_2026/results/prereg2_abc/`, 22 instancias x 10
@@ -311,7 +318,7 @@ bucle y están aquí para que no se repitan; sus cifras están en el JOURNAL.
 | I-003 | el explorador del ABC reinyecta un **elite pateado** en vez de una solución aleatoria | un arranque aleatorio a mitad de tirada no puede alcanzar a la población; uno dentro de una cuenca buena sí | kick−control = **+1.43** (ta23 −0.27, ta29 +0.70, ta30 −0.50, ta45 **+5.80**); regla > +2 descarta → **pasa, por poco y en contra** | 4 mirillas de 6: −1.02, −0.57, **−0.03**, +0.44; kick mejor en 9-10 de 21 siempre; p entre 0.55 y 0.88, la frontera nunca se acerca | **detenida en la 4ª** (2026-09-21) por cambio de dirección del PI, no por sus datos. Sin aceptación: es un cero |
 | H-4 | N8 contra N2 (y contra N1, N3, N_ext), fase B del paper de COR | un vecindario más rico gana | -- | 82 instancias x 30 runs, 2460 bloques pareados: N2 1846.50 contra N8 1847.94, dif −1.45, p_adj = 3.9e−4, r = 0.077 (**despreciable**); rangos de Friedman N2 2.1315 el mejor de cinco, N8 2.2400 | **descartada** (antes del bucle; `experiments/cor_tabu_2026/`) |
 | I-012 | **escapar del estado todo-tabú, solo eso** | la celda informativa de I-010 dio −1.11 y mejor en 15 de 21 (p = 0.033) sin frontera | esc−control = −1.82, pasa | 6 mirillas, 30 runs: +1.30, +1.09, +0.59, +0.27, +0.39, **+0.07**; mejor en 10 de 21, p = 0.835 | **descartada** (2026-09-22). La señal de I-010 **no se reprodujo** |
-| I-018 | **el segundo tabú siempre al mejor hijo**: lo que el fallo de índice hace por accidente el 53 % de las veces, hecho siempre | I-017 midió que bajarlo al 0 % cuesta +4.87; subirlo al 100 % debería ganar si la relación es monótona, y además es más barato | mecanismo exacto, 100 % al mejor, generaciones **+5 a +49 %**; best−control = **−1.12** (ta30 −3.07, ta45 −2.40, ta29 −0.30, ta23 +1.30), pasa (descartaba si > +2.0) | mirillas media: **-1.84** (w1, 13 de 21, p = 0.164), **-2.60** (w2, 16 de 21, p = 0.046) | **en oleadas** (2026-09-23) |
+| I-018 | **el segundo tabú siempre al mejor hijo**: lo que el fallo de índice hace por accidente el 53 % de las veces, hecho siempre | I-017 midió que bajarlo al 0 % cuesta +4.87; subirlo al 100 % debería ganar si la relación es monótona, y además es más barato | mecanismo exacto, 100 % al mejor, generaciones **+5 a +49 %**; best−control = **−1.12** (ta30 −3.07, ta45 −2.40, ta29 −0.30, ta23 +1.30), pasa (descartaba si > +2.0) | mirillas media: **-1.84** (w1, 13 de 21, p = 0.164), **-2.60** (w2, 16 de 21, p = 0.046), **-3.38** (w3, **18 de 21**, **p = 0.0010**) → cruza | **ACEPTADA** (2026-09-24) en la mirilla 3 de 6. **Primer mecanismo aceptado del bucle**; pasa a la configuración vigente (`setup/ref_I-018.txt`) |
 | I-017 | **el segundo tabú va al hijo sorteado**: en MALS_SOME la segunda llamada se aplica al contador del bucle y no al individuo sorteado, y la mitad de las veces repasa el hijo ya pulido | cada hijo pulido una vez vale más que el 10-18 % de generaciones que cuesta | mecanismo exacto: 100 % de las segundas llamadas al otro hijo (control 47/53); chosen−control = **+4.87** (ta23 +8.40, ta45 +8.27, ta29 +1.93, ta30 +0.87); regla > +2 → **DESCARTA** | -- | **descartada** (2026-09-23) en el filtro: el fallo estaba ayudando, repasar el mejor hijo vale más que pulir el otro |
 | I-016 | **siembra desde el círculo** (idea del PI) y, de paso, **el generador aleatorio hecho uniforme** | que la población inicial represente todas las zonas del espacio; medido antes: el círculo cubre igual que el azar, pero el generador aleatorio del solver está sesgado y empieza un 6-7 % peor | mecanismo: las dos arrancan **~156 mejor** en la generación 0; al final circle−control = **+0.00**, uniform−control = **+0.71**; pasan las dos (descartaba si > +2.0) | mirillas media: w1: circle **+1.94** (8 de 21, p = 0.186), uniform **+3.22** (4 de 21, p = 0.018), w2: circle **+0.98** (9 de 21, p = 0.297), uniform **+1.95** (6 de 21, p = 0.048), w3: circle **+1.38** (7 de 21, p = 0.089), uniform **+1.74** (6 de 21, p = 0.036), w4: circle **+2.19** (6 de 21, p = 0.024), uniform **+2.01** (5 de 21, p = 0.011), w5: circle **+1.79** (7 de 21, p = 0.030), uniform **+1.03** (8 de 21, p = 0.198), w6: circle **+1.28** (7 de 21, **p = 0.054**), uniform **+0.82** (7 de 21, **p = 0.299**) | **descartadas las dos** (2026-09-23) por no cruzar en la sexta; arrancar ~160 mejor no ayuda, y en las seis mirillas va en contra |
 | I-015 | **levantar el veto de meseta** (B-14): conservar la mejora que iguala exactamente el makespan del incumbente, en el cruce y en la escritura lamarckiana del tabú | I-014 dice que la búsqueda no sale de su cuenca; en JSP moverse de lado por la meseta del incumbente es cómo se sale, y el veto lo prohíbe | mecanismo **~3000 admisiones/tirada**, sin coste; allow−control = **−2.38** (ta45 −3.83, ta30 −3.00, ta23 −2.67, ta29 −0.03), pasa (descartaba si > +2.0) | mirillas media: **+1.46** (w1, 7 de 21, p = 0.237), **+0.62** (w2, 8 de 21, p = 0.848), **+0.22** (w3, 9 de 21, p = 0.674), **+0.50** (w4, 13 de 21, p = 0.715), **-0.38** (w5, 13 de 21, p = 0.434), **-0.78** (w6, 14 de 21, **p = 0.122**) | **descartada** (2026-09-23) por no cruzar en la sexta; el final más favorable del bucle, a diez veces la frontera |
@@ -2816,3 +2823,60 @@ pendiente, pero se aplana por el lado bueno: lo que el fallo ya hace por
 accidente recoge buena parte del beneficio. −1.12 en cuatro instancias está
 dentro del ruido del filtro y **no es evidencia**; deciden las oleadas. Es, eso
 sí, el primer filtro favorable del bucle con semillas propias.
+
+### I-018, ACEPTADA en la mirilla 3: el primer mecanismo que entra en la configuración
+
+Tres oleadas, 630 tiradas de confirmación, 15 por celda e instancia, cero
+infactibles en el filtro y en las tres oleadas. Media por instancia,
+`best − control`:
+
+| mirilla | tiradas/celda | media | mejor en | W | p | bo5 |
+|---|---|---|---|---|---|---|
+| filtro (4 inst., semillas 1001-1030) | 30 | −1.12 | -- | -- | -- | −1.25 |
+| 1 | 5 | −1.84 | 13 de 21 | 75.5 | 0.164 | −1.10 |
+| 2 | 10 | −2.60 | 16 de 21 | 58.0 | 0.046 | −3.19 |
+| 3 | 15 | **−3.38** | **18 de 21** | **21.0** | **0.0010** | **−4.19** |
+
+Frontera de Pocock simétrica **0.0142**. En la tercera mirilla p = 0.0010 y la
+celda `best` tiene el rango menor: **cruza, y se acepta**, que es lo que dice el
+criterio de aceptación del protocolo —Wilcoxon sobre la media por instancia,
+pareado por las 21, sobre la evaluación completa y nunca sobre el filtro—. El
+diseño por oleadas se detiene al cruzar; las mirillas 4 a 6 no se corren.
+
+**Por instancia**, tras 15 tiradas por celda: mejora en 18 de 21, con las
+mayores diferencias en las instancias grandes —ta43 −9.60, ta40 −7.40, ta23
+−7.20, ta42 −7.20, ta44 −6.93, ta45 −6.93, ta33 −4.73, ta48 −4.60—; empeoran
+ta32 (+3.33), ta29 (+2.60) y ta49 (+1.73). La cola informada va en la misma
+dirección en todas las mirillas.
+
+**Por qué esta sí.** Es la primera idea del bucle cuya **dirección se midió
+antes de proponerla**: I-017 corrigió un fallo de índice y perdió 4.87 porque
+el fallo estaba dando, la mitad de las veces, una segunda búsqueda tabú al
+mejor hijo de cada pareja. I-018 la da siempre. Y es la primera en que filtro y
+mirillas apuntan igual desde el principio, con semillas independientes y la
+diferencia **creciendo** con las tiradas (−1.84, −2.60, −3.38) en lugar de
+evaporarse, que es lo contrario de lo que hicieron I-010, I-011 e I-015.
+
+**Lo que no está separado, y se dijo antes de lanzar.** La celda `best` hace
+dos cosas a la vez: profundiza sobre el mejor hijo, y como repasar un óptimo
+local es barato, **corre más generaciones** (en el filtro, +5 a +49 %; en ta45,
+de 179 a 267). La aceptación es del mecanismo tal cual; **cuál de las dos
+cosas carga la ganancia está abierto** y es la pregunta natural de una
+iteración siguiente, igualando generaciones en lugar de tiempo.
+
+**Mecanismo**: todas las segundas llamadas al mejor hijo, ~49000 a 50500 por
+tirada, en las tres mirillas.
+
+**Sin récords ni igualadas** en las 870 tiradas de I-018, filtro incluido
+(`iter/I-018/records.txt`). La ganancia es de media; el récord vive en la
+cola, que es donde hay que llevarla ahora.
+
+**Consecuencias.** `abc.ls.pick = best` pasa a la configuración vigente en
+`setup/ref_I-018.txt`, y desde I-019 es la celda `control`. Es la aceptación 1
+de 3 antes de la recomparación a 300 s contra la referencia original. Y los
+interruptores ya medidos como neutros **contra la configuración vieja** no
+quedan medidos contra la nueva; no se reabren salvo con una razón nueva.
+
+*Nota menor*: el analizador imprime "the fix crosses" por un texto heredado de
+la plantilla de I-017; la decisión la toma la condición `p <= 0.0142` con rango
+menor, que es la correcta.

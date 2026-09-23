@@ -2505,3 +2505,41 @@ but it flattens on the good side; what the bug already does by accident
 collects much of the benefit. A -1.12 over four instances is inside the
 filter's noise and is not evidence. The waves decide. It is at least the
 loop's first favourable filter drawn on seeds of its own.
+
+## I-018 is accepted at look 3: the first mechanism to enter the configuration
+
+Three waves, 630 confirmation runs, fifteen per cell and instance, no
+infeasible schedule anywhere. Per-instance mean, best minus control: -1.12 at
+the filter on seeds 1001 to 1030, then -1.84 (13 of 21, p = 0.164), -2.60 (16
+of 21, p = 0.046) and -3.38 (18 of 21, W = 21.0, p = 0.0010). At look 3 the
+p-value is under the symmetric Pocock boundary of 0.0142 with the treatment on
+the lower rank, which is the protocol's acceptance criterion: Wilcoxon on the
+per-instance mean, paired over the 21, on the full evaluation and never on the
+filter. The design stops at a crossing; looks 4 to 6 are not run.
+
+It improves 18 of 21 instances, most on the large ones: ta43 -9.60, ta40 -7.40,
+ta23 -7.20, ta42 -7.20, ta44 -6.93, ta45 -6.93. It loses on ta32 +3.33, ta29
++2.60 and ta49 +1.73. Best-of-five moved the same way at every look, -4.19 at
+the third.
+
+Why this one. It is the first idea in the loop whose direction was measured
+before it was proposed: I-017 fixed an index bug and lost 4.87 because the bug
+was giving the better child of each pair a second tabu search half the time.
+I-018 gives it always. It is also the first whose filter and looks agreed from
+the start, on independent seeds, with the difference growing as runs
+accumulated instead of evaporating, the opposite of I-010, I-011 and I-015.
+
+What is not separated, and was said before launch: the best cell deepens the
+search on the better child and, since re-searching a local optimum is cheap,
+also runs more generations, +5% to +49% at the filter. The acceptance is of the
+mechanism as it stands; which of the two carries the gain is open, and is the
+natural question for a following iteration run at equal generations rather
+than equal time.
+
+No records or matches in I-018's 870 runs. The gain is in the mean; records
+live in the tail, which is where it has to be taken next.
+
+abc.ls.pick = best enters the configuration in setup/ref_I-018.txt, which is
+the control from I-019 on; prereg2 is left untouched so that every earlier
+iteration stays reproducible. This is acceptance 1 of 3 before the 300-second
+recomparison against the original reference.
