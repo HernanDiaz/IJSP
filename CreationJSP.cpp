@@ -21,6 +21,9 @@ namespace JSP {
 void CreationRandomSchedule::setup(FuzzyFW::ParameterDB *parameters) {
 	Creation::setup(parameters);
 	this->randomRatio = parameters->getDouble(CREATION_RANDOM_RATIO, 0);
+	// I-016: draw each job in proportion to its remaining operations
+	this->uniformDraw =
+		(parameters->getStringLower(CREATION_RANDOM_DRAW).compare("uniform") == 0);
 
 	std::string sgsType = parameters->getStringLower(this->sgsLabel);
 	if (sgsType.length() == 0) {
@@ -77,22 +80,43 @@ FuzzyFW::Individual * CreationRandomSchedule::createIndividual(
 		throw JSPException("Creation", errorMsg);
 	}
 
-	// Find the first task of each job
+	// Find the first task of each job, and (I-016) how many it has
+	std::vector<int> left;
+	int totalLeft = 0;
 	for (unsigned int i = 0; i < fuzzyProb->getNumberJobs(); i++)
-		if (fuzzyProb->getNumberTasks(i) > 0)
+		if (fuzzyProb->getNumberTasks(i) > 0) {
 			count.push_back(fuzzyProb->getTaskId(i, 0));
+			left.push_back((int)fuzzyProb->getNumberTasks(i));
+			totalLeft += (int)fuzzyProb->getNumberTasks(i);
+		}
 
 	// Build an array with repetitions
 	while (count.size() > 0) {
-		rand = svars->rng->getInteger(0, count.size() - 1);
+		if (this->uniformDraw) {
+			// I-016: in proportion to the operations each job has left, so
+			// that every sequence is equally likely
+			int ticket = svars->rng->getInteger(0, totalLeft - 1);
+			rand = 0;
+			while (ticket >= left[rand]) {
+				ticket -= left[rand];
+				rand++;
+			}
+		}
+		else
+			rand = svars->rng->getInteger(0, count.size() - 1);
 		permutation.push_back(count[rand]);
+		left[rand]--;
+		totalLeft--;
 
 		// Pass to the next task of the job
 		count[rand] = (*fuzzyProb)[count[rand]]->js;
 		if (count[rand] < 0) {
-			for (size_t i = rand + 1; i < count.size(); i++)
+			for (size_t i = rand + 1; i < count.size(); i++) {
 				count[i - 1] = count[i];
+				left[i - 1] = left[i];
+			}
 			count.pop_back();
+			left.pop_back();
 		}
 	}
 

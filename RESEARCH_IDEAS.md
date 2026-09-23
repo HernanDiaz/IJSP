@@ -302,6 +302,7 @@ bucle y están aquí para que no se repitan; sus cifras están en el JOURNAL.
 | I-003 | el explorador del ABC reinyecta un **elite pateado** en vez de una solución aleatoria | un arranque aleatorio a mitad de tirada no puede alcanzar a la población; uno dentro de una cuenca buena sí | kick−control = **+1.43** (ta23 −0.27, ta29 +0.70, ta30 −0.50, ta45 **+5.80**); regla > +2 descarta → **pasa, por poco y en contra** | 4 mirillas de 6: −1.02, −0.57, **−0.03**, +0.44; kick mejor en 9-10 de 21 siempre; p entre 0.55 y 0.88, la frontera nunca se acerca | **detenida en la 4ª** (2026-09-21) por cambio de dirección del PI, no por sus datos. Sin aceptación: es un cero |
 | H-4 | N8 contra N2 (y contra N1, N3, N_ext), fase B del paper de COR | un vecindario más rico gana | -- | 82 instancias x 30 runs, 2460 bloques pareados: N2 1846.50 contra N8 1847.94, dif −1.45, p_adj = 3.9e−4, r = 0.077 (**despreciable**); rangos de Friedman N2 2.1315 el mejor de cinco, N8 2.2400 | **descartada** (antes del bucle; `experiments/cor_tabu_2026/`) |
 | I-012 | **escapar del estado todo-tabú, solo eso** | la celda informativa de I-010 dio −1.11 y mejor en 15 de 21 (p = 0.033) sin frontera | esc−control = −1.82, pasa | 6 mirillas, 30 runs: +1.30, +1.09, +0.59, +0.27, +0.39, **+0.07**; mejor en 10 de 21, p = 0.835 | **descartada** (2026-09-22). La señal de I-010 **no se reprodujo** |
+| I-016 | **siembra desde el círculo** (idea del PI) y, de paso, **el generador aleatorio hecho uniforme** | que la población inicial represente todas las zonas del espacio; medido antes: el círculo cubre igual que el azar, pero el generador aleatorio del solver está sesgado y empieza un 6-7 % peor | pendiente | pendiente | **lanzada** (2026-09-23), con I-015 en pausa entre sus mirillas 2 y 3 |
 | I-015 | **levantar el veto de meseta** (B-14): conservar la mejora que iguala exactamente el makespan del incumbente, en el cruce y en la escritura lamarckiana del tabú | I-014 dice que la búsqueda no sale de su cuenca; en JSP moverse de lado por la meseta del incumbente es cómo se sale, y el veto lo prohíbe | mecanismo **~3000 admisiones/tirada**, sin coste; allow−control = **−2.38** (ta45 −3.83, ta30 −3.00, ta23 −2.67, ta29 −0.03), pasa (descartaba si > +2.0) | mirillas media: **+1.46** (w1, 7 de 21, p = 0.237), **+0.62** (w2, 8 de 21, p = 0.848) | **en oleadas** (2026-09-23) |
 | I-014 | **reiniciar la población alrededor del incumbente** cuando la tirada lleva 0.2 del presupuesto sin mejorar | entre el 18 y el 44 % de cada tirada se gasta con riesgo de mejora medido en ~0 %; convertir ese tramo en búsqueda nueva **sin perder el incumbente** debe bajar la media | mecanismo **1.36 reinicios/tirada**; restart−control = **−0.70**, pasa (descartaba si > +2.0) | mirillas media: **-0.70** (w1, 13 de 21, p = 0.186), **-0.37** (w2, 12 de 21, p = 0.271), **-0.15** (w3, 9 de 21, p = 0.805), **-0.17** (w4, 11 de 21, p = 0.664), **-0.10** (w5, 10 de 21, p = 0.702), **-0.16** (w6, 10 de 21, **p = 0.516**) | **descartada** (2026-09-23) por no cruzar en la sexta, con el mecanismo disparándose en todas las mirillas |
 | I-013 | **primera mejora sobre un barrido rotatorio de N2**: sin ordenar, sin podar, desde una posición que rota, el primer vecino elegible que mejore | con la regla *el mejor* el orden es irrelevante, y por eso I-004, el defecto de las colas e I-005 dieron cero; al abandonarla, el orden decide el movimiento | mecanismo **al 69.7 %**; first−control = **+21.55** (ta45 +30.83, ta23 +29.27, ta30 +16.90, ta29 +9.20); regla > +2 → **DESCARTA** | -- | **descartada** (2026-09-23) en el filtro, y con una cifra que mide algo |
@@ -2422,3 +2423,81 @@ de I-015 se ejerce con fuerza y sin coste; y el efecto de I-011 no lo cargaba
 ningún interruptor, mientras que aquí hay una única causa posible. **Nada de
 eso sustituye a la frontera.** Van las oleadas, y decide la sexta mirilla o el
 cruce, lo que llegue antes.
+
+### I-016 — la siembra desde el círculo, y lo que apareció al medirla
+
+**La idea es del PI** (2026-09-23). Imaginar todo el espacio de soluciones como
+un círculo, dividirlo en 247 partes iguales y que cada corte sea una solución
+de la población inicial, de modo que **estén representadas todas las zonas del
+espacio**; y girar el círculo para cada semilla, para que la selección no se
+repita entre tiradas. Se pidió probarla en la práctica aunque la medida previa
+la desaconsejara.
+
+**Cómo se ha realizado, exactamente.** Las secuencias de operaciones (cada
+trabajo aparece *m* veces) se numeran en orden lexicográfico, de 0 a
+|S| − 1 con |S| = (nm)! / (m!)^n: unas 10^501 en 20x20 y 10^856 en 30x20. Esa
+numeración es la posición en el círculo, y `unrank` la traduce a la secuencia
+concreta con aritmética entera exacta (comprobado enumerando las 90 secuencias
+de 3 trabajos x 2). El círculo g pone sus 247 puntos en o_g + ⌊k |S| / 247⌋, y el
+giro o_g es la fracción áurea de un arco, así que ninguna semilla repite corte
+(`scripts/circle_pool.py`). La tirada g lee el círculo g por la creación
+sembrada.
+
+**Primera medida: la cobertura, antes de decodificar.** Para 4000 secuencias
+sonda al azar, la distancia a la semilla más cercana:
+
+| | semillas | diversidad | distancia media a la más cercana | peor |
+|---|---|---|---|---|
+| ta23 | círculo | 0.9490 | 0.9169 | 0.930 |
+| ta23 | azar | 0.9499 | 0.9168 | 0.930 |
+| ta45 | círculo | 0.9659 | 0.9443 | 0.953 |
+| ta45 | azar | 0.9666 | 0.9443 | 0.952 |
+
+**Idénticas.** En un espacio de 10^500 puntos, 247 no cubren nada se pongan
+como se pongan: cada sonda queda casi tan lejos de su semilla más cercana
+como de cualquier otra. Y la población aleatoria ya está en el 98.5-99 % de la
+diversidad máxima posible con la propia medida del solver
+(`scripts/diversity_curve.py`).
+
+**Segunda medida: la generación 0 después de decodificar, y la sorpresa.** El
+círculo arranca **bastante mejor**: makespan medio ~2127 en ta23 y ~2754 en
+ta45, contra ~2269 y ~2952 de la creación aleatoria congelada, con la misma
+diversidad. Pero la hipótesis de que el círculo reparte mejor los trabajos a lo
+largo de la secuencia es **falsa** —desequilibrio de prefijos 3.70 contra 3.72—,
+y el control decisivo lo aclara: **secuencias uniformemente aleatorias por el
+mismo camino arrancan igual**, ~2117 y ~2753. La mejora no es del círculo.
+
+**Es del generador aleatorio del solver, que está sesgado.** `jsp.random` elige
+cada siguiente trabajo **uniformemente entre los que aún tienen operaciones**,
+sin mirar cuántas les quedan. Los trabajos que salen pronto se agotan antes, y
+la cola de la secuencia se llena en bloque con las últimas operaciones de unos
+pocos rezagados, lo que decodifica mal. Una permutación uniforme elige en la
+práctica en proporción a lo que le queda a cada trabajo y se autocorrige. El
+sesgo cuesta un **6-7 %** en la población inicial, y lo que lo hace
+importante es que **los exploradores del ABC usan el mismo generador**, entre
+500 y 800 veces por tirada.
+
+**El arreglo**: `creation.random.draw = uniform`, que elige cada trabajo en
+proporción a sus operaciones restantes. Por defecto nada cambia, y está
+comprobado al número: la generación 0 del control repite exactamente los
+valores anteriores con la misma semilla. Con el arreglo, la generación 0 cae
+donde cayeron las secuencias uniformes (~2123 y ~2750).
+
+**Celdas**: `control`; `circle`, la idea del PI, que siembra la población
+inicial y deja los exploradores como están; y `uniform`, el generador
+corregido, que toca la población inicial **y** los exploradores. **Endpoint**:
+la media por instancia. **Filtro**: cada celda tratada por su cuenta, descartar
+si su media contra el control supera +2.0; las que sobrevivan se escriben en
+`wave_cells.txt`, que leen tanto el generador de trabajos como el análisis. Si
+llegan las dos a las oleadas, la frontera se reparte entre ellas:
+p <= 0.0071 cada una en lugar de 0.0142. **Mecanismo, primero**: el makespan
+medio de la generación 0 de cada celda, que tiene que salir claramente por
+debajo del control.
+
+**El riesgo en contra está medido desde I-001**: una ventaja de 294 unidades en
+la generación 0 se quedaba en 0.9 al final. Aquí es de 140 a 200. La celda
+`uniform` tiene a su favor lo que ninguna siembra tenía: su efecto no se agota
+en la generación 0, porque se repite en cada explorador.
+
+**Orden de ejecución**: I-015 queda en pausa entre sus mirillas 2 y 3, lo que
+el diseño de Pocock admite sin coste, y nunca hay dos experimentos a la vez.

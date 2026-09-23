@@ -2302,3 +2302,53 @@ was already flat in its own filter while I-015's is exercised hard and at no
 cost, and I-011's effect was carried by no single switch while here there is
 only one possible cause. None of that replaces the boundary. The waves go, and
 the sixth look or a crossing decides, whichever comes first.
+
+## The PI's circle seeding, and the biased random creation it uncovered
+
+The PI proposed seeding the population so that every area of the search space
+is represented: picture the space as a circle, cut it into 247 equal arcs, let
+each cut be one initial solution, and rotate the circle for every seed. It is
+realised exactly. Operation sequences are numbered in lexicographic order, from
+0 to (nm)!/(m!)^n - 1, about 10^501 for 20x20, and an exact integer unranking
+turns a position on the circle into its sequence, checked by enumerating all
+90 sequences of three jobs by two. Circle g places 247 points at equal arcs
+from a golden-ratio rotation, and run g reads circle g through the seeded
+creation.
+
+Coverage before decoding is identical to random sampling: for 4000 random
+probes, the mean distance to the nearest seed is 0.9169 for the circle and
+0.9168 for random seeds on ta23, 0.9443 for both on ta45. In a space of 10^500
+points no 247 of them cover anything, however they are placed. A random
+population already sits at 98.5% to 99% of the largest diversity any
+population can have under the solver's own measure.
+
+After decoding there was a surprise. The circle starts much better, an average
+makespan near 2127 on ta23 and 2754 on ta45 against 2269 and 2952 for the
+frozen random creation, at the same diversity. The obvious explanation, that
+equal arcs spread each job more evenly along the sequence, is false: prefix
+imbalance is 3.70 against 3.72. The decisive control settles it: uniformly
+random sequences through the same seeded path start just as well, near 2117
+and 2753. The gain is not the circle.
+
+It is the solver's random creation, which is biased. jsp.random draws each next
+job uniformly among the jobs that still have operations, regardless of how
+many, so jobs drawn early run out early and the tail of every sequence fills,
+in blocks, with the last operations of a few jobs left behind. A uniform
+permutation draws in effect in proportion to what each job has left and
+corrects itself. The bias costs 6% to 7% at generation 0, and it matters
+because the ABC's scouts draw through the same creation, 500 to 800 times a
+run.
+
+creation.random.draw = uniform fixes it, drawing each job in proportion to its
+remaining operations. The default is untouched and verified to the unit: the
+control's generation 0 repeats its earlier values exactly under the same seed.
+
+I-016 has three cells: control, the circle seeding the first population with
+the scouts left as they are, and the uniform draw, which reaches both the first
+population and every scout. The risk against both was measured by I-001: a
+294-unit head start at generation 0 survived as 0.9 units at the end, and the
+head start here is 140 to 200. The uniform cell has what no seeding had, an
+effect that does not end at generation 0.
+
+I-015 pauses between its second and third looks, which the Pocock design
+tolerates at no cost, so that two experiments never share the machine.
