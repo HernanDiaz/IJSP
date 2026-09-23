@@ -2457,3 +2457,33 @@ the frozen configuration keeps the original generator.
 
 No records or matches in the 2250 runs, filter and waves included, checked with
 the new scripts/records_any.py, which no longer leaves the filter out.
+
+## I-017 is discarded at the filter: the bug was helping
+
+240 jobs, no infeasible schedule, thirty runs per cell and instance, seeds
+1001 to 1030 under the new rule.
+
+The mechanism is exact: in the chosen cell every second tabu call reaches the
+other child, none the child already searched, while the control splits them
+about 47 to 53; generations fall 4 to 14 percent. Per-instance means, chosen
+minus control: ta23 +8.40, ta29 +1.93, ta30 +0.87, ta45 +8.27, mean +4.87
+against a rule that discards above +2.0. Discarded, worse on all four instances,
+best-of-five moving the same way at +4.62.
+
+The original code, through an index bug, spends a little over half its second
+calls re-searching the better child: a second tabu search from its local
+optimum with an empty tabu list, which is more depth on the better solution of
+the pair. Giving each child exactly one call costs about five units. The bug was
+helping: intensifying on the better solution is worth more than spreading the
+effort. It is I-013's lesson seen from the other side, where leaving the greedy
+rule cost +21.55.
+
+It leaves a hypothesis with a measured direction, I-018. If going from 53% of
+second calls on the better child to 0% costs +4.87, going to 100%, always giving
+the second call to the better child, should gain if the relation is monotone.
+This differs from I-009 and I-010, which gave one deep call per run to the
+incumbent and weighed nothing in the total tabu effort; here the extra depth is
+given at every pair, tens of thousands of times a run.
+
+abc.ls.pick stays implemented and off by default, and I-018 builds on it. No
+records or matches in the 240 runs.

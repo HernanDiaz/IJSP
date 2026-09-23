@@ -1,0 +1,30 @@
+=== 0. MECHANISM CHECK ===
+inst   statistic                                     control     chosen
+ta23   LS second call on the other child            12040.53   21908.90
+ta23   LS second call on the searched best          13416.93       0.00
+ta23   Number of Generations                          103.07      88.70
+ta29   LS second call on the other child            12525.57   24197.77
+ta29   LS second call on the searched best          14257.47       0.00
+ta29   Number of Generations                          108.43      97.97
+ta30   LS second call on the other child            10715.33   21176.13
+ta30   LS second call on the searched best          11909.87       0.00
+ta30   Number of Generations                           91.60      85.73
+ta45   LS second call on the other child            24469.77   48823.67
+ta45   LS second call on the searched best          26519.27       0.00
+ta45   Number of Generations                          206.43     197.67
+
+second calls reaching the other child per run: 29027 on average
+(the control sends about half of them to the child already searched)
+
+=== I-017 filter: per-instance mean (primary), best-of-5 (reported) ===
+inst     mean ctrl mean chosen         d      bo5 ctrl  bo5 chosen         d
+ta23        1584.5      1592.9     +8.40        1575.7      1579.2     +3.50
+ta29        1640.8      1642.7     +1.93        1633.3      1638.5     +5.17
+ta30        1621.1      1621.9     +0.87        1608.3      1611.8     +3.50
+ta45        2039.8      2048.1     +8.27        2028.5      2034.8     +6.33
+
+runs per cell and instance: 30
+
+filter rule, on the MEAN: mean(chosen - control) = +4.87;
+discard if > +2.0 -> DISCARD
+best-of-5 moved +4.62, and decides nothing here.
