@@ -1,0 +1,98 @@
+=== 0. MECHANISM CHECK ===
+inst   statistic                                     control    restart
+ta22   Stall restarts                                   0.00       1.00
+ta22   Number of Generations                          106.80     107.40
+ta22   Avg. Iterations per LS                          29.48      29.29
+ta23   Stall restarts                                   0.00       1.33
+ta23   Number of Generations                          105.13     103.13
+ta23   Avg. Iterations per LS                          30.57      30.41
+ta25   Stall restarts                                   0.00       0.87
+ta25   Number of Generations                           93.00      90.93
+ta25   Avg. Iterations per LS                          31.38      31.53
+ta26   Stall restarts                                   0.00       1.13
+ta26   Number of Generations                          102.20      93.07
+ta26   Avg. Iterations per LS                          31.53      31.65
+ta27   Stall restarts                                   0.00       0.87
+ta27   Number of Generations                           98.33      96.20
+ta27   Avg. Iterations per LS                          30.53      30.34
+ta29   Stall restarts                                   0.00       1.93
+ta29   Number of Generations                          102.13     105.33
+ta29   Avg. Iterations per LS                          26.59      26.28
+ta30   Stall restarts                                   0.00       1.20
+ta30   Number of Generations                           93.60      96.27
+ta30   Avg. Iterations per LS                          32.53      32.11
+ta32   Stall restarts                                   0.00       1.00
+ta32   Number of Generations                          227.13     223.20
+ta32   Avg. Iterations per LS                          34.89      34.67
+ta33   Stall restarts                                   0.00       1.20
+ta33   Number of Generations                          212.33     222.73
+ta33   Avg. Iterations per LS                          37.66      36.83
+ta34   Stall restarts                                   0.00       2.07
+ta34   Number of Generations                          228.87     244.40
+ta34   Avg. Iterations per LS                          36.75      35.31
+ta40   Stall restarts                                   0.00       1.27
+ta40   Number of Generations                          226.53     234.07
+ta40   Avg. Iterations per LS                          36.21      35.89
+ta41   Stall restarts                                   0.00       0.67
+ta41   Number of Generations                          223.00     219.67
+ta41   Avg. Iterations per LS                          42.46      42.56
+ta42   Stall restarts                                   0.00       0.80
+ta42   Number of Generations                          247.27     242.07
+ta42   Avg. Iterations per LS                          39.29      39.44
+ta43   Stall restarts                                   0.00       0.27
+ta43   Number of Generations                          211.60     214.80
+ta43   Avg. Iterations per LS                          43.92      43.59
+ta44   Stall restarts                                   0.00       1.07
+ta44   Number of Generations                          217.67     230.33
+ta44   Avg. Iterations per LS                          40.72      39.57
+ta45   Stall restarts                                   0.00       1.20
+ta45   Number of Generations                          222.33     232.60
+ta45   Avg. Iterations per LS                          42.10      40.87
+ta46   Stall restarts                                   0.00       0.80
+ta46   Number of Generations                          222.40     226.27
+ta46   Avg. Iterations per LS                          42.12      41.65
+ta47   Stall restarts                                   0.00       0.87
+ta47   Number of Generations                          242.40     243.87
+ta47   Avg. Iterations per LS                          39.43      39.21
+ta48   Stall restarts                                   0.00       1.20
+ta48   Number of Generations                          265.20     254.93
+ta48   Avg. Iterations per LS                          38.03      38.00
+ta49   Stall restarts                                   0.00       0.80
+ta49   Number of Generations                          241.60     235.80
+ta49   Avg. Iterations per LS                          38.81      39.17
+ta50   Stall restarts                                   0.00       0.73
+ta50   Number of Generations                          212.40     223.13
+ta50   Avg. Iterations per LS                          42.83      42.22
+
+stall restarts per run: 1.06 on average
+
+=== I-014 waves 1..3: per-instance mean (primary), best-of-5 (reported) ===
+inst     mean ctrl mean restart         d      bo5 ctrl bo5 restart         d
+ta22        1626.0      1626.9     +0.93        1620.7      1619.7     -1.00
+ta23        1586.9      1588.4     +1.53        1577.7      1578.3     +0.67
+ta25        1635.5      1636.5     +0.93        1628.7      1631.7     +3.00
+ta26        1689.3      1689.4     +0.07        1675.7      1675.7     +0.00
+ta27        1713.2      1712.6     -0.60        1706.0      1704.3     -1.67
+ta29        1640.3      1640.0     -0.33        1636.0      1633.7     -2.33
+ta30        1622.5      1623.5     +1.00        1612.7      1614.3     +1.67
+ta32        1836.9      1837.7     +0.73        1823.0      1823.0     +0.00
+ta33        1855.9      1854.6     -1.27        1849.0      1849.0     +0.00
+ta34        1887.7      1888.5     +0.87        1876.3      1877.3     +1.00
+ta40        1726.7      1727.3     +0.67        1717.0      1715.0     -2.00
+ta41        2090.4      2090.3     -0.13        2077.7      2077.3     -0.33
+ta42        2001.5      2002.9     +1.33        1992.3      1995.7     +3.33
+ta43        1930.8      1931.1     +0.27        1916.0      1915.7     -0.33
+ta44        2046.0      2043.7     -2.27        2039.7      2038.3     -1.33
+ta45        2043.1      2040.2     -2.93        2032.3      2030.3     -2.00
+ta46        2086.4      2084.9     -1.53        2069.7      2071.0     +1.33
+ta47        1968.7      1968.9     +0.20        1955.0      1956.7     +1.67
+ta48        2022.0      2020.5     -1.53        2007.0      2004.3     -2.67
+ta49        2011.5      2011.5     +0.00        2002.0      2001.3     -0.67
+ta50        2001.7      2000.6     -1.07        1991.0      1991.0     +0.00
+
+runs per cell and instance: 15
+
+look 3 of 6, symmetric boundary p <= 0.0142 (Pocock, six looks)
+PRIMARY, per-instance mean: -0.15, restart better on 9 of 21, W = 98.0, p = 0.8053
+reported, deciding nothing: best-of-5 moved -0.08
+-> continue: run wave 4
