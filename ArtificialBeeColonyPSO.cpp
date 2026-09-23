@@ -267,6 +267,10 @@ namespace FuzzyFW {
 		stats.push_back(std::pair<std::string, double>
 			("Stall restarts", (double)this->stallRestarts));
 		stats.push_back(std::pair<std::string, double>
+			("Plateau moves admitted in crossover", (double)this->plateauAdmittedCross));
+		stats.push_back(std::pair<std::string, double>
+			("Plateau moves admitted in local search", (double)this->plateauAdmittedLS));
+		stats.push_back(std::pair<std::string, double>
 			("N2 moves by first improvement", (double)LS_Tabu::firstHits));
 		stats.push_back(std::pair<std::string, double>
 			("N2 sweeps with no improving move", (double)LS_Tabu::fallbackHits));
@@ -446,6 +450,9 @@ namespace FuzzyFW {
 		// measured hazard of a further improvement is zero.
 		this->stallRestart =
 			(params->getStringLower(STALL_RESTART).compare("stall") == 0);
+		// I-015: keep improvements that land exactly on the incumbent's value.
+		this->plateauAllow =
+			(params->getStringLower(PLATEAU_MODE).compare("allow") == 0);
 		this->scoutKick = false;
 		this->scoutKicks = 0;
 		std::string scoutValue = params->getStringLower(SCOUT_MODE);
@@ -523,6 +530,8 @@ namespace FuzzyFW {
 		this->abc_replacements = 0;
 		this->plateauVetoesCross = 0;
 		this->plateauVetoesLS = 0;
+		this->plateauAdmittedCross = 0;
+		this->plateauAdmittedLS = 0;
 		this->deepLsDone = false;
 		this->deepLsCalls = 0;
 		this->deepLsTime = 0;
@@ -669,10 +678,15 @@ namespace FuzzyFW {
 				// INSTRUMENTED 2026-09-21: how often does the second clause, the
 				// plateau veto, decide this branch on its own?
 				if (bestLocal->getFitness()->isBetterThan(currentFoodSource->getFitness())
-					&& bestLocal->getFitness()->isEqualTo(this->bestSoFar->getFitness()))
-					this->plateauVetoesCross++;
+					&& bestLocal->getFitness()->isEqualTo(this->bestSoFar->getFitness())) {
+					if (this->plateauAllow) this->plateauAdmittedCross++;
+					else this->plateauVetoesCross++;
+				}
+				// I-015: with abc.plateau = allow the tie with the incumbent no
+				// longer vetoes the replacement.
 				if (bestLocal->getFitness()->isBetterThan(currentFoodSource->getFitness())
-					&& !bestLocal->getFitness()->isEqualTo(this->bestSoFar->getFitness())) {
+					&& (this->plateauAllow
+						|| !bestLocal->getFitness()->isEqualTo(this->bestSoFar->getFitness()))) {
 					Individual* bestlocalClone = bestLocal->clone();
 					delete currentPopulation->replaceIndividual(i, bestlocalClone);
 					bestlocalClone->setNumTrials(0);
@@ -979,10 +993,15 @@ namespace FuzzyFW {
 		// When the tabu search improves an individual to exactly the incumbent
 		// makespan, the improvement is discarded and a trial failure is counted.
 		if (optimised.second->isBetterThan(target->getFitness())
-			&& optimised.second->isEqualTo(this->bestSoFar->getFitness()))
-			this->plateauVetoesLS++;
+			&& optimised.second->isEqualTo(this->bestSoFar->getFitness())) {
+			if (this->plateauAllow) this->plateauAdmittedLS++;
+			else this->plateauVetoesLS++;
+		}
+		// I-015: with abc.plateau = allow an improvement that lands exactly on
+		// the incumbent's makespan is written back instead of discarded.
 		if (optimised.second->isBetterThan(target->getFitness())
-			&& !optimised.second->isEqualTo(this->bestSoFar->getFitness())) {
+			&& (this->plateauAllow
+				|| !optimised.second->isEqualTo(this->bestSoFar->getFitness()))) {
 			// Lamarckism
 			if (this->lsLamarckism)
 				this->sharedVariables->encoder->encode(optimised.first,

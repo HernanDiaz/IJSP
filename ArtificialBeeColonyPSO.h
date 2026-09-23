@@ -91,6 +91,20 @@ namespace FuzzyFW {
 // redesigns to learn.
 // Restarting INSIDE the run keeps the per-class budget, the number of runs and
 // the endpoint exactly as they are, which ending the run early would not.
+// I-015. What happens to an offspring that improves its individual up to
+// EXACTLY the incumbent's makespan, in the crossover replacement and in the
+// Lamarckian write-back of the tabu search.
+//   "veto"  (default, unchanged): it is discarded and a trial failure counted
+//   "allow" : it is kept like any other improvement
+// The veto is a duplicate filter built on the fitness rather than on the
+// genotype: it rejects DIFFERENT solutions for tying and admits clones whose
+// makespan differs. In JSP the plateaus at the incumbent's value are large and
+// moving sideways along them is how a search leaves a basin, which is what
+// I-014 found this one cannot do. Measured 2026-09-21: 1,324 improvements per
+// run discarded in the write-back on ta29 and 3,415 on ta41, 2.4 % of the
+// useful tabu work, with a spread of 71 to 8,073 between runs.
+#define  PLATEAU_MODE "abc.plateau"
+
 #define  STALL_RESTART "abc.restart"
 #define  STALL_RESTART_SHARE 0.2
 
@@ -322,6 +336,12 @@ namespace FuzzyFW {
 		bool stallRestart;
 		double lastImprovementSec;
 		unsigned long stallRestarts;
+
+		// I-015: the switch, and how many plateau moves it admitted, which is
+		// the mechanism check.
+		bool plateauAllow;
+		unsigned long plateauAdmittedCross;
+		unsigned long plateauAdmittedLS;
 
 
 		/**

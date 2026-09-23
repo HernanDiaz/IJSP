@@ -11,12 +11,11 @@ This is a POSITION iteration, so the endpoint is the per-instance mean.
 0. MECHANISM CHECK, printed first and read first, in two halves, because the
    lesson of I-009 and I-011 is that an idea that was not exercised was not
    tested:
-     a) the share of moves taken by the first-improvement branch must be
-        substantial, or the rule did not change;
-     b) the cost of the sweep. The control evaluates about a fifth of the
-        neighbourhood; without the prune this cell evaluates more. If the tabu
-        work per run collapses, the comparison is about cost and not about
-        order, and that must be said rather than hidden behind the endpoint.
+     a) the number of stall restarts per run must be above zero, or the
+        mechanism never fired. A first attempt at 0.4 of the budget fired once
+        in four runs and left the makespans identical to the control's, which
+        is why the threshold is 0.2;
+     b) the generations per run, which says what the rebuilds cost.
 1. PRIMARY: the per-instance mean, paired by instance, Wilcoxon, symmetric
    Pocock boundary p <= 0.0142 at each of six looks.
 2. Reported and deciding nothing: best-of-five and the outright best.

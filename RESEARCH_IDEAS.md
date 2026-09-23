@@ -302,6 +302,7 @@ bucle y están aquí para que no se repitan; sus cifras están en el JOURNAL.
 | I-003 | el explorador del ABC reinyecta un **elite pateado** en vez de una solución aleatoria | un arranque aleatorio a mitad de tirada no puede alcanzar a la población; uno dentro de una cuenca buena sí | kick−control = **+1.43** (ta23 −0.27, ta29 +0.70, ta30 −0.50, ta45 **+5.80**); regla > +2 descarta → **pasa, por poco y en contra** | 4 mirillas de 6: −1.02, −0.57, **−0.03**, +0.44; kick mejor en 9-10 de 21 siempre; p entre 0.55 y 0.88, la frontera nunca se acerca | **detenida en la 4ª** (2026-09-21) por cambio de dirección del PI, no por sus datos. Sin aceptación: es un cero |
 | H-4 | N8 contra N2 (y contra N1, N3, N_ext), fase B del paper de COR | un vecindario más rico gana | -- | 82 instancias x 30 runs, 2460 bloques pareados: N2 1846.50 contra N8 1847.94, dif −1.45, p_adj = 3.9e−4, r = 0.077 (**despreciable**); rangos de Friedman N2 2.1315 el mejor de cinco, N8 2.2400 | **descartada** (antes del bucle; `experiments/cor_tabu_2026/`) |
 | I-012 | **escapar del estado todo-tabú, solo eso** | la celda informativa de I-010 dio −1.11 y mejor en 15 de 21 (p = 0.033) sin frontera | esc−control = −1.82, pasa | 6 mirillas, 30 runs: +1.30, +1.09, +0.59, +0.27, +0.39, **+0.07**; mejor en 10 de 21, p = 0.835 | **descartada** (2026-09-22). La señal de I-010 **no se reprodujo** |
+| I-015 | **levantar el veto de meseta** (B-14): conservar la mejora que iguala exactamente el makespan del incumbente, en el cruce y en la escritura lamarckiana del tabú | I-014 dice que la búsqueda no sale de su cuenca; en JSP moverse de lado por la meseta del incumbente es cómo se sale, y el veto lo prohíbe | pendiente | pendiente | **lanzada** (2026-09-23) |
 | I-014 | **reiniciar la población alrededor del incumbente** cuando la tirada lleva 0.2 del presupuesto sin mejorar | entre el 18 y el 44 % de cada tirada se gasta con riesgo de mejora medido en ~0 %; convertir ese tramo en búsqueda nueva **sin perder el incumbente** debe bajar la media | mecanismo **1.36 reinicios/tirada**; restart−control = **−0.70**, pasa (descartaba si > +2.0) | mirillas media: **-0.70** (w1, 13 de 21, p = 0.186), **-0.37** (w2, 12 de 21, p = 0.271), **-0.15** (w3, 9 de 21, p = 0.805), **-0.17** (w4, 11 de 21, p = 0.664), **-0.10** (w5, 10 de 21, p = 0.702), **-0.16** (w6, 10 de 21, **p = 0.516**) | **descartada** (2026-09-23) por no cruzar en la sexta, con el mecanismo disparándose en todas las mirillas |
 | I-013 | **primera mejora sobre un barrido rotatorio de N2**: sin ordenar, sin podar, desde una posición que rota, el primer vecino elegible que mejore | con la regla *el mejor* el orden es irrelevante, y por eso I-004, el defecto de las colas e I-005 dieron cero; al abandonarla, el orden decide el movimiento | mecanismo **al 69.7 %**; first−control = **+21.55** (ta45 +30.83, ta23 +29.27, ta30 +16.90, ta29 +9.20); regla > +2 → **DESCARTA** | -- | **descartada** (2026-09-23) en el filtro, y con una cifra que mide algo |
 | I-011 | `[COLA]` **cartera de configuraciones**: cada tirada sortea una combinación de los interruptores ya medidos como neutros | una mezcla de componentes neutros conserva la media y **suma varianza entre componentes**, así que alarga la cola por construcción | cola: bo5 cartera−control = **−2.54**, pasa (descartaba si > +2.0). Mecanismo **plano**: razón de dispersión 1.03, más ancha en 2 de 4 | mirillas bo5: **+1.43** (w1, 7 de 21, p = 0.574), **-0.43** (w2, 12 de 21, p = 0.602), **-1.46** (w3, 15 de 21, p = 0.106), **-0.79** (w4, 14 de 21, p = 0.213), **-0.79** (w5, 13 de 21, p = 0.192), **-0.32** (w6, 10 de 21, **p = 0.777**) | **descartada** (2026-09-23) por no cruzar en la sexta; y su mecanismo nunca se ejerció |
@@ -2326,3 +2327,67 @@ una lectura de reloj por generación.
 **Sin récords**: `iter/I-014/records.txt`, el mejor de las 1260 tiradas por
 instancia, ninguno igualando ni bajando su BKS; el más cerca es `ta29` a 1629
 contra 1625. Esperable con los presupuestos por clase.
+
+### I-015 — levantar el veto de meseta
+
+**La idea** es B-14, que estaba medida desde el 21 de septiembre y nunca se
+había probado. En `ArtificialBeeColonyPSO` hay dos sitios —el reemplazo tras el
+cruce y la escritura lamarckiana del tabú— donde un descendiente que mejora a
+su individuo **hasta igualar exactamente** el makespan del incumbente se
+descarta y se cuenta como intento fallido. El interruptor
+`abc.plateau = allow` quita esa condición en los dos. **Cero parámetros.**
+
+**Por qué ahora.** I-014 acaba de cerrar con el cero más limpio del bucle y una
+conclusión: el incumbente de una tirada estancada está en una cuenca de la que
+ni una perturbación de 1 a 10 movimientos ni la búsqueda que la sigue lo sacan.
+En JSP las mesetas al valor del incumbente son enormes y **moverse de lado por
+ellas es precisamente cómo se sale de una cuenca**. El veto prohíbe ese
+movimiento. Es un filtro de duplicados hecho sobre el fitness en lugar de sobre
+el genotipo: rechaza soluciones **distintas** por empatar y admite clones con
+makespan distinto.
+
+**El riesgo contrario, declarado antes**: el veto puede estar haciendo trabajo
+real como filtro de duplicados tosco, y sin él la población puede llenarse de
+soluciones al valor del incumbente y perder diversidad. Si eso pasa, el filtro
+lo verá como un empeoramiento.
+
+**Comprobado antes de lanzar** (ta29 y ta41, una tirada por celda):
+
+| | ta29 control | ta29 allow | ta41 control | ta41 allow |
+|---|---|---|---|---|
+| vetos en la búsqueda local | 1304 | 0 | 99 | 0 |
+| vetos en el cruce | 93 | 0 | 14 | 0 |
+| admitidos en la búsqueda local | 0 | **1898** | 0 | **74** |
+| admitidos en el cruce | 0 | **287** | 0 | **94** |
+| generaciones | 95 | 91 | 195 | 181 |
+
+El interruptor convierte los vetos en admisiones, los horarios son factibles y
+las celdas difieren en las dos instancias. Las generaciones bajan un 4-7 %:
+conservar esos movimientos cuesta algo de trabajo, y eso entra en la
+comprobación de mecanismo.
+
+**Una verificación de paso sobre el binario**, porque su tamaño salía idéntico
+build tras build: las claves nuevas `abc.plateau` y `abc.restart` están dentro,
+pero `localsearch.select` no aparece como cadena contigua. Tampoco
+`localsearch.tails`, `localsearch.deadend` ni `localsearch.filter`, que es parte
+de la configuración congelada y funciona seguro: las cuatro se construyen en la
+lista de inicialización del constructor y GCC las emite como inmediatos (14
+`movabs` en `LocalSearch.o`). No afecta a I-013, cuyo mecanismo ya lo demostró
+disparándose al 69.7 %.
+
+**Y un defecto de documentación en I-014, corregido.** Su `analyze.py`
+conservaba en el docstring el párrafo de mecanismo de I-013: la sustitución que
+debía reemplazarlo usaba un `replace` sin comprobar, no encontró el texto
+—faltaba el `a) ` inicial en el patrón— y falló en silencio. **El código estaba
+bien** —la lista de estadísticas y el aviso eran los correctos, y son los que
+imprimieron `stall restarts per run` en las seis mirillas—, así que ningún
+resultado cambia; solo el texto describía otra idea. Los generadores de
+ficheros usan desde ahora una sustitución que **falla si no encuentra el
+patrón**.
+
+**Celdas**: `control` y `allow`. **Endpoint primario**: la media por
+instancia, Wilcoxon pareado por las 21, frontera de Pocock simétrica
+p <= 0.0142 en seis mirillas. **Regla del filtro**: descartar si la media de
+`allow − control` sobre las cuatro instancias supera +2.0. **Mecanismo,
+primero**: admisiones por tirada en la búsqueda local, y generaciones por
+tirada para ver qué cuestan.
