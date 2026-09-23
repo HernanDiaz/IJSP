@@ -2127,3 +2127,55 @@ revisión externa y nuestras propias medidas de reinicio.
 `localsearch.select` se queda implementado y **desactivado por defecto**, como
 `tails`, `scout`, `deadend` y `tiebreak`, y la configuración congelada recorre
 exactamente el mismo camino que antes.
+
+### El riesgo de mejora sí decae con la edad del estancamiento, y la cola estéril es menor de lo que decía B-7
+
+Medido 2026-09-23 sobre datos ya en disco, sin correr nada: las 120 tiradas
+de control del filtro de I-013, cuatro instancias, configuración congelada,
+presupuestos por clase. Cada traza por generación trae `Runtime` y
+`Best Cmax`, así que el riesgo se cuenta directamente
+(`scripts/stall_hazard.py`).
+
+El **riesgo** a edad `a` es la fracción de generaciones observadas con `a`
+segundos desde la última mejora del mejor global que producen una mejora
+nueva:
+
+| edad del estancamiento | ta23 | ta29 | ta30 | ta45 |
+|---|---|---|---|---|
+| < 1 s | 38.75 % | 45.91 % | 41.20 % | 32.73 % |
+| 1-2 s | 22.54 % | 24.83 % | 22.43 % | 28.36 % |
+| 2-4 s | 15.56 % | 10.89 % | 15.13 % | 17.15 % |
+| 4-8 s | 8.62 % | 3.55 % | 7.41 % | 12.77 % |
+| 8-16 s | 2.53 % | 1.08 % | 2.76 % | 7.66 % |
+| 16-32 s | **0.00 %** | **0.00 %** | 0.85 % | 2.23 % |
+| 32-64 s | -- | -- | -- | 0.82 % |
+
+**La comprobación que pedía la revisión externa pasa**: el riesgo decae
+monótonamente y en un orden de magnitud, y a partir de los 16 segundos en las
+instancias de 40 s es **cero o casi**. El tiempo que se gasta ahí es
+demostrablemente estéril, no es una impresión.
+
+**Y la misma medida corrige a la baja la cifra con la que B-7 se justificaba.**
+El backlog dice que la última mejora llega en la mediana al **0.32** del
+presupuesto y que el **61.8 %** de la tirada se gasta después. Con los
+presupuestos que de verdad se usan:
+
+| | ta23 | ta29 | ta30 | ta45 |
+|---|---|---|---|---|
+| última mejora, mediana del presupuesto | 0.75 | 0.56 | 0.73 | 0.82 |
+| fracción de la tirada gastada después | 25.3 % | 44.2 % | 26.6 % | 18.0 % |
+
+Aquella cifra se midió a **300 s**; a 40 y 150 segundos la cola estéril es del
+**18 al 44 %**, no del 62 %. El margen de la idea es menor de lo que el
+backlog prometía, y hay que decirlo antes de gastar máquina, no después.
+
+**Consecuencia sobre la forma de la idea.** B-7 proponía *terminar la tirada*
+antes y dejar que el arnés arranque la siguiente. Eso choca con dos
+intocables del protocolo —la definición de la métrica y los presupuestos por
+clase—, porque cambia cuántas tiradas caben en un trabajo y con ello el
+endpoint. La misma evidencia admite una forma que no toca ninguno de los dos:
+**reiniciar la población dentro de la tirada** cuando el estancamiento alcanza
+la edad a la que el riesgo ya es cero, conservando el mejor global, y seguir
+hasta agotar el mismo presupuesto. Mismo presupuesto, mismo número de
+tiradas, mismo endpoint, y el tiempo estéril se convierte en búsqueda nueva.
+Eso es I-014.
