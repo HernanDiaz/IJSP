@@ -2135,3 +2135,46 @@ other thirteen drained, so the batch lasted as long as its longest job. The
 change touches neither configuration nor seeds, brings a wave from about 41
 minutes to about 29, and removes the last structural asymmetry between the
 cells.
+
+## I-011 is rejected, and its mechanism never moved once
+
+Six waves, 1260 confirmation runs, thirty per cell and instance, no infeasible
+schedule. The tail endpoint, mean of bests over blocks of five, portfolio minus
+control, across the six looks: +1.43, -0.43, -1.46, -0.79, -0.79, -0.32, with
+p at 0.574, 0.602, 0.106, 0.213, 0.192, 0.777 against a symmetric Pocock
+boundary of 0.0142. No crossing in either direction, so the idea is discarded.
+
+The number to read is not the rejection but the dispersion ratio: 1.03, 1.03,
+1.14, 1.09, 1.04, 1.05, plus 1.03 in the filter. Across seven independent
+readings the portfolio never spread meaningfully wider than the control. The
+hypothesis was arithmetic: a mixture of mean-neutral components keeps the mean
+and adds between-component variance, so its lower tail is longer by
+construction. The arithmetic is right; the empirical premise is wrong. Adding
+between-component variance requires the components to produce different
+distributions, and if the four switches produce essentially the same
+distribution, the mixture is the frozen configuration itself. That is what
+I-001, I-003, I-004 and I-012 measured when they called the switches neutral,
+and I read "neutral in the mean" where the data said something stronger.
+
+The lesson outlives the iteration: neutral in the mean and equivalent in
+distribution are not the same thing, but in these four cases they turned out to
+be, and a portfolio can only lengthen a tail if its components differ. Before
+proposing another mixture, check first that the components have different
+distributions, which is cheap on data that already exists, instead of assuming
+it.
+
+The filter keeps its place. It returned -2.54 in favour with the mechanism
+already flat, and six looks returned -0.32. This is the second time in this
+loop that an unbounded measurement failed to reproduce under a boundary: the
+first was I-010's informational cell at -1.11, 15 of 21, p = 0.0325 against
+I-012 at +0.07, 10 of 21, p = 0.835. Two out of two. A filter exists to discard
+cheaply, not to suggest findings, and when look 3 produced 15 of 21, the exact
+shape that fooled I-010, the boundary did its job and waited.
+
+Nothing to revert: I-011 was a job-generation matter and never touched the
+solver. The four switches remain implemented and off by default.
+
+No records: the best of the 1260 runs per instance is in iter/I-011/records.txt
+and none is at or below its best known solution, as expected from waves that
+run the per-class budgets of 40, 100 and 150 seconds rather than the 300 of a
+record attempt.
