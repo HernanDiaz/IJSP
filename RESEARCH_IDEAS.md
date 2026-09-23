@@ -318,6 +318,7 @@ bucle y están aquí para que no se repitan; sus cifras están en el JOURNAL.
 | I-003 | el explorador del ABC reinyecta un **elite pateado** en vez de una solución aleatoria | un arranque aleatorio a mitad de tirada no puede alcanzar a la población; uno dentro de una cuenca buena sí | kick−control = **+1.43** (ta23 −0.27, ta29 +0.70, ta30 −0.50, ta45 **+5.80**); regla > +2 descarta → **pasa, por poco y en contra** | 4 mirillas de 6: −1.02, −0.57, **−0.03**, +0.44; kick mejor en 9-10 de 21 siempre; p entre 0.55 y 0.88, la frontera nunca se acerca | **detenida en la 4ª** (2026-09-21) por cambio de dirección del PI, no por sus datos. Sin aceptación: es un cero |
 | H-4 | N8 contra N2 (y contra N1, N3, N_ext), fase B del paper de COR | un vecindario más rico gana | -- | 82 instancias x 30 runs, 2460 bloques pareados: N2 1846.50 contra N8 1847.94, dif −1.45, p_adj = 3.9e−4, r = 0.077 (**despreciable**); rangos de Friedman N2 2.1315 el mejor de cinco, N8 2.2400 | **descartada** (antes del bucle; `experiments/cor_tabu_2026/`) |
 | I-012 | **escapar del estado todo-tabú, solo eso** | la celda informativa de I-010 dio −1.11 y mejor en 15 de 21 (p = 0.033) sin frontera | esc−control = −1.82, pasa | 6 mirillas, 30 runs: +1.30, +1.09, +0.59, +0.27, +0.39, **+0.07**; mejor en 10 de 21, p = 0.835 | **descartada** (2026-09-22). La señal de I-010 **no se reprodujo** |
+| I-019 | **intento de récord con la configuración nueva** (I-018) sobre la lista corta, vieja contra nueva, 75 tiradas por celda e instancia, semillas 2001-2075 | la media bajó 3.38 y el mejor de cinco 4.19; el récord vive en la cola, que es donde hay que llevarla | -- | pendiente | **lanzada** (2026-09-24) |
 | I-018 | **el segundo tabú siempre al mejor hijo**: lo que el fallo de índice hace por accidente el 53 % de las veces, hecho siempre | I-017 midió que bajarlo al 0 % cuesta +4.87; subirlo al 100 % debería ganar si la relación es monótona, y además es más barato | mecanismo exacto, 100 % al mejor, generaciones **+5 a +49 %**; best−control = **−1.12** (ta30 −3.07, ta45 −2.40, ta29 −0.30, ta23 +1.30), pasa (descartaba si > +2.0) | mirillas media: **-1.84** (w1, 13 de 21, p = 0.164), **-2.60** (w2, 16 de 21, p = 0.046), **-3.38** (w3, **18 de 21**, **p = 0.0010**) → cruza | **ACEPTADA** (2026-09-24) en la mirilla 3 de 6. **Primer mecanismo aceptado del bucle**; pasa a la configuración vigente (`setup/ref_I-018.txt`) |
 | I-017 | **el segundo tabú va al hijo sorteado**: en MALS_SOME la segunda llamada se aplica al contador del bucle y no al individuo sorteado, y la mitad de las veces repasa el hijo ya pulido | cada hijo pulido una vez vale más que el 10-18 % de generaciones que cuesta | mecanismo exacto: 100 % de las segundas llamadas al otro hijo (control 47/53); chosen−control = **+4.87** (ta23 +8.40, ta45 +8.27, ta29 +1.93, ta30 +0.87); regla > +2 → **DESCARTA** | -- | **descartada** (2026-09-23) en el filtro: el fallo estaba ayudando, repasar el mejor hijo vale más que pulir el otro |
 | I-016 | **siembra desde el círculo** (idea del PI) y, de paso, **el generador aleatorio hecho uniforme** | que la población inicial represente todas las zonas del espacio; medido antes: el círculo cubre igual que el azar, pero el generador aleatorio del solver está sesgado y empieza un 6-7 % peor | mecanismo: las dos arrancan **~156 mejor** en la generación 0; al final circle−control = **+0.00**, uniform−control = **+0.71**; pasan las dos (descartaba si > +2.0) | mirillas media: w1: circle **+1.94** (8 de 21, p = 0.186), uniform **+3.22** (4 de 21, p = 0.018), w2: circle **+0.98** (9 de 21, p = 0.297), uniform **+1.95** (6 de 21, p = 0.048), w3: circle **+1.38** (7 de 21, p = 0.089), uniform **+1.74** (6 de 21, p = 0.036), w4: circle **+2.19** (6 de 21, p = 0.024), uniform **+2.01** (5 de 21, p = 0.011), w5: circle **+1.79** (7 de 21, p = 0.030), uniform **+1.03** (8 de 21, p = 0.198), w6: circle **+1.28** (7 de 21, **p = 0.054**), uniform **+0.82** (7 de 21, **p = 0.299**) | **descartadas las dos** (2026-09-23) por no cruzar en la sexta; arrancar ~160 mejor no ayuda, y en las seis mirillas va en contra |
@@ -2880,3 +2881,27 @@ quedan medidos contra la nueva; no se reabren salvo con una razón nueva.
 *Nota menor*: el analizador imprime "the fix crosses" por un texto heredado de
 la plantilla de I-017; la decisión la toma la condición `p <= 0.0142` con rango
 menor, que es la correcta.
+
+### I-019 — intento de récord con la configuración nueva
+
+**No hay hipótesis que aceptar ni rechazar**, como en I-006: un récord se
+demuestra con el horario. Es el paso que B-6 pide intercalar, y el momento lo
+elige I-018: la primera aceptación del bucle movió la media por instancia
+**−3.38** y el mejor de cinco **−4.19**, y lo segundo es lo que consume un
+intento de récord.
+
+**Lista corta, presupuesto y endpoints, los de I-006**: `ta29`, `ta30`, `ta23`
+y `ta22`, las 20x20 más cerca del BKS; 75 tiradas de 40 s por celda e
+instancia, 600 en total, en 120 trabajos de 5 tiradas. Endpoints en este orden:
+récord (en el BKS o por debajo, verificado y con el horario guardado); mejor
+de las 75 por instancia y celda; media de los tres más bajos; contraste de
+signos entre celdas sobre el mejor de bloques de 5.
+
+**Dos celdas**: `control` es `prereg2`, la configuración anterior a I-018;
+`best` es `setup/ref_I-018.txt`. Mantener la vieja al lado convierte el intento
+en una medida de si la ganancia aceptada **llega a la cola**. **Semillas nuevas,
+2001 a 2075**, que ninguna tanda anterior ha usado.
+
+**Qué pasa si sale un récord**: se verifica con `verify_certificate.py`, se
+guarda el certificado, y la prueba es él. Nada se incorpora ni se retira de la
+configuración por este resultado.
