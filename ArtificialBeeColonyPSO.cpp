@@ -275,6 +275,8 @@ namespace FuzzyFW {
 		stats.push_back(std::pair<std::string, double>
 			("LS second call on the other child", (double)this->lsSecondOnOther));
 		stats.push_back(std::pair<std::string, double>
+			("LS second call skipped", (double)this->lsSecondSkipped));
+		stats.push_back(std::pair<std::string, double>
 			("Plateau moves admitted in crossover", (double)this->plateauAdmittedCross));
 		stats.push_back(std::pair<std::string, double>
 			("Plateau moves admitted in local search", (double)this->plateauAdmittedLS));
@@ -467,6 +469,9 @@ namespace FuzzyFW {
 		// I-018: the second call always searches the best again.
 		this->lsPickBest =
 			(params->getStringLower(LS_PICK).compare("best") == 0);
+		// I-020: no second call at all.
+		this->lsPickNone =
+			(params->getStringLower(LS_PICK).compare("none") == 0);
 		this->scoutKick = false;
 		this->scoutKicks = 0;
 		std::string scoutValue = params->getStringLower(SCOUT_MODE);
@@ -550,6 +555,7 @@ namespace FuzzyFW {
 		this->lsOtherCalls = 0;
 		this->lsSecondOnBest = 0;
 		this->lsSecondOnOther = 0;
+		this->lsSecondSkipped = 0;
 		this->deepLsDone = false;
 		this->deepLsCalls = 0;
 		this->deepLsTime = 0;
@@ -988,11 +994,17 @@ namespace FuzzyFW {
 				else {
 					// I-017: the default applies it to i, the loop counter,
 					// throwing the draw away; "chosen" applies it to the draw.
-					unsigned int target = this->lsPickChosen ? chosen
-						: (this->lsPickBest ? best : i);
-					if (target == best) this->lsSecondOnBest++;
-					else this->lsSecondOnOther++;
-					this->applyLocalSearch(population, target);
+					if (this->lsPickNone) {
+						// I-020: the second call is not made at all
+						this->lsSecondSkipped++;
+					}
+					else {
+						unsigned int target = this->lsPickChosen ? chosen
+							: (this->lsPickBest ? best : i);
+						if (target == best) this->lsSecondOnBest++;
+						else this->lsSecondOnOther++;
+						this->applyLocalSearch(population, target);
+					}
 				}
 			}
 		}

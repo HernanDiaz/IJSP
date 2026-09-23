@@ -112,6 +112,9 @@ namespace FuzzyFW {
 //              optimum with an empty tabu list, which is what the index bug
 //              does by accident a little over half the time. I-017 measured
 //              that removing it entirely costs +4.87.
+//   "none"   : I-020, no second call at all. Cheaper still than "best", so
+//              even more generations, but without the extra depth on the
+//              better child: it separates the two things "best" does at once.
 // The loop draws a random individual without replacement, skips it if it is
 // the best, and then applies the tabu search to individual i instead of to the
 // one it drew, so the draw is computed and thrown away. The only call site the
@@ -363,6 +366,8 @@ namespace FuzzyFW {
 		// I-017: the switch, and what the second call reaches.
 		bool lsPickChosen;
 		bool lsPickBest;       // I-018
+		bool lsPickNone;       // I-020
+		unsigned long lsSecondSkipped;   // I-020: second calls not made
 		unsigned long lsPairCalls;        // group-of-two invocations
 		unsigned long lsOtherCalls;       // invocations on any other group size
 		unsigned long lsSecondOnBest;     // second call on the already searched best

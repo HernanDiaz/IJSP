@@ -318,6 +318,7 @@ bucle y están aquí para que no se repitan; sus cifras están en el JOURNAL.
 | I-003 | el explorador del ABC reinyecta un **elite pateado** en vez de una solución aleatoria | un arranque aleatorio a mitad de tirada no puede alcanzar a la población; uno dentro de una cuenca buena sí | kick−control = **+1.43** (ta23 −0.27, ta29 +0.70, ta30 −0.50, ta45 **+5.80**); regla > +2 descarta → **pasa, por poco y en contra** | 4 mirillas de 6: −1.02, −0.57, **−0.03**, +0.44; kick mejor en 9-10 de 21 siempre; p entre 0.55 y 0.88, la frontera nunca se acerca | **detenida en la 4ª** (2026-09-21) por cambio de dirección del PI, no por sus datos. Sin aceptación: es un cero |
 | H-4 | N8 contra N2 (y contra N1, N3, N_ext), fase B del paper de COR | un vecindario más rico gana | -- | 82 instancias x 30 runs, 2460 bloques pareados: N2 1846.50 contra N8 1847.94, dif −1.45, p_adj = 3.9e−4, r = 0.077 (**despreciable**); rangos de Friedman N2 2.1315 el mejor de cinco, N8 2.2400 | **descartada** (antes del bucle; `experiments/cor_tabu_2026/`) |
 | I-012 | **escapar del estado todo-tabú, solo eso** | la celda informativa de I-010 dio −1.11 y mejor en 15 de 21 (p = 0.033) sin frontera | esc−control = −1.82, pasa | 6 mirillas, 30 runs: +1.30, +1.09, +0.59, +0.27, +0.39, **+0.07**; mejor en 10 de 21, p = 0.835 | **descartada** (2026-09-22). La señal de I-010 **no se reprodujo** |
+| I-020 | **¿profundidad o generaciones?** Suprimir la segunda llamada al tabú (`abc.ls.pick = none`), contra la configuración vigente | I-018 profundiza sobre el mejor hijo **y** corre más generaciones; `none` conserva y amplía lo segundo (+68-75 %) y quita lo primero | pendiente | pendiente | **lanzada** (2026-09-24) |
 | I-019 | **intento de récord con la configuración nueva** (I-018) sobre la lista corta, vieja contra nueva, 75 tiradas por celda e instancia, semillas 2001-2075 | la media bajó 3.38 y el mejor de cinco 4.19; el récord vive en la cola, que es donde hay que llevarla | -- | 600 tiradas: **sin récord ni casi**. Mejor de 75, vieja → nueva: ta30 1598 → **1589**, ta29 1631 → 1630, ta23 1566 → 1565, ta22 1614 → 1613. Bloques de 5: **nueva mejor en 40, peor en 16, p = 0.002** | **cerrada** (2026-09-24): sin récord; la ganancia de I-018 **llega a la cola**, con semillas nuevas |
 | I-018 | **el segundo tabú siempre al mejor hijo**: lo que el fallo de índice hace por accidente el 53 % de las veces, hecho siempre | I-017 midió que bajarlo al 0 % cuesta +4.87; subirlo al 100 % debería ganar si la relación es monótona, y además es más barato | mecanismo exacto, 100 % al mejor, generaciones **+5 a +49 %**; best−control = **−1.12** (ta30 −3.07, ta45 −2.40, ta29 −0.30, ta23 +1.30), pasa (descartaba si > +2.0) | mirillas media: **-1.84** (w1, 13 de 21, p = 0.164), **-2.60** (w2, 16 de 21, p = 0.046), **-3.38** (w3, **18 de 21**, **p = 0.0010**) → cruza | **ACEPTADA** (2026-09-24) en la mirilla 3 de 6. **Primer mecanismo aceptado del bucle**; pasa a la configuración vigente (`setup/ref_I-018.txt`) |
 | I-017 | **el segundo tabú va al hijo sorteado**: en MALS_SOME la segunda llamada se aplica al contador del bucle y no al individuo sorteado, y la mitad de las veces repasa el hijo ya pulido | cada hijo pulido una vez vale más que el 10-18 % de generaciones que cuesta | mecanismo exacto: 100 % de las segundas llamadas al otro hijo (control 47/53); chosen−control = **+4.87** (ta23 +8.40, ta45 +8.27, ta29 +1.93, ta30 +0.87); regla > +2 → **DESCARTA** | -- | **descartada** (2026-09-23) en el filtro: el fallo estaba ayudando, repasar el mejor hijo vale más que pulir el otro |
@@ -2947,3 +2948,30 @@ no la cruza.
 
 *Nota*: el analizador de I-006 se copió con una sustitución que convirtió
 "from I-006 on" en "from I-019 on" dentro de su docstring; corregido.
+
+### I-020 — ¿profundidad o generaciones?
+
+**Es la pregunta que I-018 dejó abierta**, declarada antes de lanzarla: la
+celda aceptada hace dos cosas a la vez. Da al mejor hijo de cada pareja una
+segunda búsqueda tabú, más profunda, y como repasar un óptimo local es barato,
+también corre más generaciones.
+
+**La celda `none` separa las dos**: `abc.ls.pick = none` suprime la segunda
+llamada. Conserva, y amplía, el lado del rendimiento —en la comprobación previa
+las generaciones pasan de 89 a 156 en ta23 y de 208 a 349 en ta45, un 68-75 %
+más— y quita el de la profundidad. Cero parámetros.
+
+**Control: la configuración vigente**, `setup/ref_I-018.txt`, la primera
+iteración que se mide contra ella. La celda `none` **sustituye** la línea
+`abc.ls.pick = best` en lugar de añadir otra, comprobado: una sola línea
+`abc.ls.pick` por setup.
+
+**Qué decide**: si `none` sale **peor**, lo que compró I-018 es la profundidad
+sobre el mejor hijo, y la línea siguiente es darle más. Si **empata o gana**,
+era el rendimiento, la segunda llamada no vale su tiempo, y `none` sería
+candidata a aceptarse.
+
+**Filtro**: descartar si `none − control` supera +2.0, semillas 1001 a 1030.
+**Endpoint**: media por instancia, Pocock simétrica p <= 0.0142 en seis
+mirillas. **Mecanismo, primero**: segundas llamadas suprimidas y generaciones
+por tirada.
