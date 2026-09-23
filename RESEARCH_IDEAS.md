@@ -2582,4 +2582,15 @@ que no llegara a probarse.
 **Qué se revierte**: nada de los registros. `abc.plateau` queda implementado y
 **desactivado por defecto**.
 
-**Sin récords**: `iter/I-015/records.txt`.
+**Sin récords, pero dos igualadas de `ta30`, y las dos en la celda `allow`.**
+El mejor conocido de `ta30` es 1584 y se alcanzó dos veces, a 40 s por
+tirada: en el filtro (`I-015_filter_p25_allow`) y en la oleada 5
+(`I-015_w5_p05_allow`). Los dos horarios son identical, verificados con el
+comprobador independiente contra los datos originales de OR-Library y
+guardados en `iter/I-015/evidence/`. En el control, ninguna. Con 60 tiradas de
+`ta30` por celda, dos contra cero **no es estadísticamente nada** (Fisher,
+p = 0.50) y no cambia la decisión. Se anota porque encaja con el mecanismo
+—moverse por la meseta al valor del incumbente— y porque es la segunda y la
+tercera vez que el bucle iguala `ta30`, después de la del control de I-012.
+La primera vez que se me escapó: el guion de récords solo miraba las oleadas y
+no el filtro, y el cierre decía "sin récords" sin mencionar la igualada.

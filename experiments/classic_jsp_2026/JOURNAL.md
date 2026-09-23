@@ -2402,3 +2402,14 @@ did for I-010's signal.
 The mechanism was exercised throughout, 2149 to 2879 plateau moves admitted per
 run at no cost in generations. abc.plateau stays implemented and off by
 default. No records.
+
+Correction to the I-015 closing: there are no records, but there are two
+matches of ta30's best known 1584, both in the allow cell, at 40 seconds per
+run: one in the filter and one in wave 5. The two schedules are identical, both
+verified by the independent checker against the original OR-Library data and
+kept in iter/I-015/evidence/. The control matched none. Two against zero over
+60 runs per cell is nothing statistically (Fisher p = 0.50) and changes no
+decision; it is recorded because it fits the mechanism, moving along the
+plateau at the incumbent's value, and because it is the loop's second and third
+match of ta30. The records script had looked only at the waves, so the first
+closing said "no records" without mentioning the match.
