@@ -1,0 +1,32 @@
+=== 1. RECORDS and near misses (within 2 of the BKS) ===
+none: no run came within 2 of a BKS
+
+=== 2. best of N, and its gap to the BKS ===
+inst      BKS                control                  best
+ta22     1600         1614 ( +14)             1613 ( +13)     
+ta23     1557         1566 (  +9)             1565 (  +8)     
+ta29     1625         1631 (  +6)             1630 (  +5)     
+ta30     1584         1598 ( +14)             1589 (  +5)     
+
+=== 3. mean of the three lowest (expected-shortfall proxy) ===
+inst          control          best
+ta22           1616.3        1613.0
+ta23           1570.0        1568.7
+ta29           1631.0        1630.3
+ta30           1603.7        1595.0
+
+=== 4. best of blocks of 5 runs, best against control ===
+ta22   best better on 11 of 15 blocks (worse 4, tied 0)
+ta23   best better on 10 of 15 blocks (worse 5, tied 0)
+ta29   best better on 7 of 15 blocks (worse 4, tied 4)
+ta30   best better on 12 of 15 blocks (worse 3, tied 0)
+pooled: best better on 40, worse on 16, tied 4 -> sign test p = 0.002
+
+=== reported, deciding nothing: per-instance mean ===
+inst          control          best
+ta22           1627.7        1625.7
+ta23           1587.4        1583.7
+ta29           1641.1        1640.4
+ta30           1621.7        1616.4
+
+runs per cell and instance: 75

@@ -2543,3 +2543,23 @@ abc.ls.pick = best enters the configuration in setup/ref_I-018.txt, which is
 the control from I-019 on; prereg2 is left untouched so that every earlier
 iteration stays reproducible. This is acceptance 1 of 3 before the 300-second
 recomparison against the original reference.
+
+## I-019: no record, and I-018's gain reaches the tail
+
+600 verified runs, no infeasible schedule, fresh seeds 2001 to 2075. No record
+and no near miss: nothing came within two units of a best known.
+
+Best of 75, old configuration against the new one: ta22 1614 to 1613, ta23
+1566 to 1565, ta29 1631 to 1630, ta30 1598 to 1589. Mean of the three lowest,
+better with the new configuration on all four, ta30 1603.7 to 1595.0. On
+best-of-five blocks the new configuration wins 40, loses 16 and ties 4, sign
+test p = 0.002.
+
+I-018 was accepted on the mean. This attempt, on seeds no batch had used, says
+the gain reaches the tail, which is what a record consumes. It is not a second
+acceptance, since an attempt has no boundary, but it is an independent
+replication in the direction of the accepted mechanism, exactly what I-010 and
+I-015 lacked.
+
+ta29 and ta30 sit at +5 after 75 runs of 40 seconds. Own bests are unchanged,
+so the new configuration brings the tail closer without crossing it.

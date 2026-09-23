@@ -15,7 +15,7 @@ Pre-declared, in order:
    it so a near miss can be chased.
 2. Best of N per instance and cell, and the gap of that best to the BKS.
 3. The mean of the three lowest makespans per instance and cell, the
-   expected-shortfall proxy the protocol asks for from I-019 on.
+   expected-shortfall proxy the protocol asks for from I-006 on.
 4. A sign test between the two cells on the best of blocks of five
    consecutive runs, which is what a record attempt actually consumes.
 
