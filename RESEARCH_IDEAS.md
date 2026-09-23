@@ -302,7 +302,7 @@ bucle y están aquí para que no se repitan; sus cifras están en el JOURNAL.
 | I-003 | el explorador del ABC reinyecta un **elite pateado** en vez de una solución aleatoria | un arranque aleatorio a mitad de tirada no puede alcanzar a la población; uno dentro de una cuenca buena sí | kick−control = **+1.43** (ta23 −0.27, ta29 +0.70, ta30 −0.50, ta45 **+5.80**); regla > +2 descarta → **pasa, por poco y en contra** | 4 mirillas de 6: −1.02, −0.57, **−0.03**, +0.44; kick mejor en 9-10 de 21 siempre; p entre 0.55 y 0.88, la frontera nunca se acerca | **detenida en la 4ª** (2026-09-21) por cambio de dirección del PI, no por sus datos. Sin aceptación: es un cero |
 | H-4 | N8 contra N2 (y contra N1, N3, N_ext), fase B del paper de COR | un vecindario más rico gana | -- | 82 instancias x 30 runs, 2460 bloques pareados: N2 1846.50 contra N8 1847.94, dif −1.45, p_adj = 3.9e−4, r = 0.077 (**despreciable**); rangos de Friedman N2 2.1315 el mejor de cinco, N8 2.2400 | **descartada** (antes del bucle; `experiments/cor_tabu_2026/`) |
 | I-012 | **escapar del estado todo-tabú, solo eso** | la celda informativa de I-010 dio −1.11 y mejor en 15 de 21 (p = 0.033) sin frontera | esc−control = −1.82, pasa | 6 mirillas, 30 runs: +1.30, +1.09, +0.59, +0.27, +0.39, **+0.07**; mejor en 10 de 21, p = 0.835 | **descartada** (2026-09-22). La señal de I-010 **no se reprodujo** |
-| I-015 | **levantar el veto de meseta** (B-14): conservar la mejora que iguala exactamente el makespan del incumbente, en el cruce y en la escritura lamarckiana del tabú | I-014 dice que la búsqueda no sale de su cuenca; en JSP moverse de lado por la meseta del incumbente es cómo se sale, y el veto lo prohíbe | pendiente | pendiente | **lanzada** (2026-09-23) |
+| I-015 | **levantar el veto de meseta** (B-14): conservar la mejora que iguala exactamente el makespan del incumbente, en el cruce y en la escritura lamarckiana del tabú | I-014 dice que la búsqueda no sale de su cuenca; en JSP moverse de lado por la meseta del incumbente es cómo se sale, y el veto lo prohíbe | mecanismo **~3000 admisiones/tirada**, sin coste; allow−control = **−2.38** (ta45 −3.83, ta30 −3.00, ta23 −2.67, ta29 −0.03), pasa (descartaba si > +2.0) | pendiente | **en oleadas** (2026-09-23) |
 | I-014 | **reiniciar la población alrededor del incumbente** cuando la tirada lleva 0.2 del presupuesto sin mejorar | entre el 18 y el 44 % de cada tirada se gasta con riesgo de mejora medido en ~0 %; convertir ese tramo en búsqueda nueva **sin perder el incumbente** debe bajar la media | mecanismo **1.36 reinicios/tirada**; restart−control = **−0.70**, pasa (descartaba si > +2.0) | mirillas media: **-0.70** (w1, 13 de 21, p = 0.186), **-0.37** (w2, 12 de 21, p = 0.271), **-0.15** (w3, 9 de 21, p = 0.805), **-0.17** (w4, 11 de 21, p = 0.664), **-0.10** (w5, 10 de 21, p = 0.702), **-0.16** (w6, 10 de 21, **p = 0.516**) | **descartada** (2026-09-23) por no cruzar en la sexta, con el mecanismo disparándose en todas las mirillas |
 | I-013 | **primera mejora sobre un barrido rotatorio de N2**: sin ordenar, sin podar, desde una posición que rota, el primer vecino elegible que mejore | con la regla *el mejor* el orden es irrelevante, y por eso I-004, el defecto de las colas e I-005 dieron cero; al abandonarla, el orden decide el movimiento | mecanismo **al 69.7 %**; first−control = **+21.55** (ta45 +30.83, ta23 +29.27, ta30 +16.90, ta29 +9.20); regla > +2 → **DESCARTA** | -- | **descartada** (2026-09-23) en el filtro, y con una cifra que mide algo |
 | I-011 | `[COLA]` **cartera de configuraciones**: cada tirada sortea una combinación de los interruptores ya medidos como neutros | una mezcla de componentes neutros conserva la media y **suma varianza entre componentes**, así que alarga la cola por construcción | cola: bo5 cartera−control = **−2.54**, pasa (descartaba si > +2.0). Mecanismo **plano**: razón de dispersión 1.03, más ancha en 2 de 4 | mirillas bo5: **+1.43** (w1, 7 de 21, p = 0.574), **-0.43** (w2, 12 de 21, p = 0.602), **-1.46** (w3, 15 de 21, p = 0.106), **-0.79** (w4, 14 de 21, p = 0.213), **-0.79** (w5, 13 de 21, p = 0.192), **-0.32** (w6, 10 de 21, **p = 0.777**) | **descartada** (2026-09-23) por no cruzar en la sexta; y su mecanismo nunca se ejerció |
@@ -2391,3 +2391,34 @@ p <= 0.0142 en seis mirillas. **Regla del filtro**: descartar si la media de
 `allow − control` sobre las cuatro instancias supera +2.0. **Mecanismo,
 primero**: admisiones por tirada en la búsqueda local, y generaciones por
 tirada para ver qué cuestan.
+
+### I-015, filtro: pasa con el resultado más favorable del bucle, y eso obliga a más cautela, no a menos
+
+240 trabajos, cero infactibles, 30 tiradas por celda e instancia.
+
+**Mecanismo, primero, y en verde en sus dos mitades.** La celda `allow` admite
+por tirada 2457, 5252, 2010 y 2394 movimientos de meseta en la búsqueda local
+(ta23, ta29, ta30, ta45) y entre 265 y 426 en el cruce; unos **3000 por
+tirada** que el control tira. Y **no cuestan**: las generaciones por tirada
+**suben**, 94.8 → 99.2, 100.1 → 103.4, 91.0 → 96.4, 227.9 → 234.5. La bajada
+del 4-7 % que vio la comprobación previa era ruido de una tirada.
+
+| instancia | media control | media allow | d | bo5 control | bo5 allow | d |
+|---|---|---|---|---|---|---|
+| ta23 | 1586.9 | 1584.3 | −2.67 | 1576.5 | 1575.3 | −1.17 |
+| ta29 | 1641.1 | 1641.0 | −0.03 | 1636.5 | 1635.2 | −1.33 |
+| ta30 | 1623.4 | 1620.4 | −3.00 | 1613.8 | 1607.7 | **−6.17** |
+| ta45 | 2041.5 | 2037.7 | **−3.83** | 2029.3 | 2026.5 | −2.83 |
+
+Media **−2.38**, regla *descartar si > +2.0*: **pasa**. Las cuatro instancias
+van a favor o empatan, y la cola informada se mueve en la misma dirección
+(−2.87).
+
+**Es el filtro más favorable del bucle, y precisamente por eso hay que leerlo
+con más cautela.** El de I-011 dio −2.54, casi lo mismo, y sus seis mirillas
+acabaron en −0.32. Dos cosas lo distinguen de aquel, y ninguna es prueba: el
+mecanismo de I-011 estaba **plano** en el propio filtro (dispersión 1.03), y el
+de I-015 se ejerce con fuerza y sin coste; y el efecto de I-011 no lo cargaba
+ningún interruptor, mientras que aquí hay una única causa posible. **Nada de
+eso sustituye a la frontera.** Van las oleadas, y decide la sexta mirilla o el
+cruce, lo que llegue antes.

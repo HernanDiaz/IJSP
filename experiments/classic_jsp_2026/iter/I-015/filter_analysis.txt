@@ -1,0 +1,29 @@
+=== 0. MECHANISM CHECK ===
+inst   statistic                                     control      allow
+ta23   Plateau moves admitted in local search           0.00    2457.23
+ta23   Plateau moves admitted in crossover              0.00     267.10
+ta23   Number of Generations                           94.77      99.23
+ta29   Plateau moves admitted in local search           0.00    5251.73
+ta29   Plateau moves admitted in crossover              0.00     399.50
+ta29   Number of Generations                          100.07     103.43
+ta30   Plateau moves admitted in local search           0.00    2009.93
+ta30   Plateau moves admitted in crossover              0.00     264.67
+ta30   Number of Generations                           91.00      96.40
+ta45   Plateau moves admitted in local search           0.00    2394.20
+ta45   Plateau moves admitted in crossover              0.00     425.73
+ta45   Number of Generations                          227.93     234.50
+
+plateau moves admitted in the local search per run: 3028.3 on average
+
+=== I-015 filter: per-instance mean (primary), best-of-5 (reported) ===
+inst     mean ctrl  mean allow         d      bo5 ctrl   bo5 allow         d
+ta23        1586.9      1584.3     -2.67        1576.5      1575.3     -1.17
+ta29        1641.1      1641.0     -0.03        1636.5      1635.2     -1.33
+ta30        1623.4      1620.4     -3.00        1613.8      1607.7     -6.17
+ta45        2041.5      2037.7     -3.83        2029.3      2026.5     -2.83
+
+runs per cell and instance: 30
+
+filter rule, on the MEAN: mean(allow - control) = -2.38;
+discard if > +2.0 -> PASS, go to the waves
+best-of-5 moved -2.87, and decides nothing here.

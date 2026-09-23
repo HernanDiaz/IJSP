@@ -2278,3 +2278,27 @@ Nothing is reverted from the records. abc.restart stays implemented and off by
 default like the switches before it. No records: the best of the 1260 runs per
 instance is in iter/I-014/records.txt, the closest being ta29 at 1629 against
 1625.
+
+## I-015's filter passes with the most favourable figure yet, which calls for more caution, not less
+
+240 jobs, no infeasible schedule, thirty runs per cell and instance.
+
+The mechanism is green in both halves. The allow cell admits 2457, 5252, 2010
+and 2394 plateau moves per run in the local search on ta23, ta29, ta30 and
+ta45, and 265 to 426 in the crossover, about 3000 per run that the control
+throws away. They cost nothing: generations per run rise, 94.8 to 99.2, 100.1
+to 103.4, 91.0 to 96.4, 227.9 to 234.5. The 4 to 7 percent drop the pre-launch
+check showed was single-run noise.
+
+Per-instance means, allow minus control: ta23 -2.67, ta29 -0.03, ta30 -3.00,
+ta45 -3.83, mean -2.38 against a rule that discards above +2.0. It passes.
+Every instance moves in favour or ties, and best-of-five moves the same way,
+-2.87, with ta30 at -6.17.
+
+This is the most favourable filter in the loop, and that is a reason for more
+caution. I-011's filter gave -2.54, nearly the same, and its six looks ended at
+-0.32. Two things set this one apart and neither is evidence: I-011's mechanism
+was already flat in its own filter while I-015's is exercised hard and at no
+cost, and I-011's effect was carried by no single switch while here there is
+only one possible cause. None of that replaces the boundary. The waves go, and
+the sixth look or a crossing decides, whichever comes first.
