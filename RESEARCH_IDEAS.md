@@ -302,6 +302,7 @@ bucle y están aquí para que no se repitan; sus cifras están en el JOURNAL.
 | I-003 | el explorador del ABC reinyecta un **elite pateado** en vez de una solución aleatoria | un arranque aleatorio a mitad de tirada no puede alcanzar a la población; uno dentro de una cuenca buena sí | kick−control = **+1.43** (ta23 −0.27, ta29 +0.70, ta30 −0.50, ta45 **+5.80**); regla > +2 descarta → **pasa, por poco y en contra** | 4 mirillas de 6: −1.02, −0.57, **−0.03**, +0.44; kick mejor en 9-10 de 21 siempre; p entre 0.55 y 0.88, la frontera nunca se acerca | **detenida en la 4ª** (2026-09-21) por cambio de dirección del PI, no por sus datos. Sin aceptación: es un cero |
 | H-4 | N8 contra N2 (y contra N1, N3, N_ext), fase B del paper de COR | un vecindario más rico gana | -- | 82 instancias x 30 runs, 2460 bloques pareados: N2 1846.50 contra N8 1847.94, dif −1.45, p_adj = 3.9e−4, r = 0.077 (**despreciable**); rangos de Friedman N2 2.1315 el mejor de cinco, N8 2.2400 | **descartada** (antes del bucle; `experiments/cor_tabu_2026/`) |
 | I-012 | **escapar del estado todo-tabú, solo eso** | la celda informativa de I-010 dio −1.11 y mejor en 15 de 21 (p = 0.033) sin frontera | esc−control = −1.82, pasa | 6 mirillas, 30 runs: +1.30, +1.09, +0.59, +0.27, +0.39, **+0.07**; mejor en 10 de 21, p = 0.835 | **descartada** (2026-09-22). La señal de I-010 **no se reprodujo** |
+| I-013 | **primera mejora sobre un barrido rotatorio de N2**: sin ordenar, sin podar, desde una posición que rota, el primer vecino elegible que mejore | con la regla *el mejor* el orden es irrelevante, y por eso I-004, el defecto de las colas e I-005 dieron cero; al abandonarla, el orden decide el movimiento | mecanismo **al 69.7 %**; first−control = **+21.55** (ta45 +30.83, ta23 +29.27, ta30 +16.90, ta29 +9.20); regla > +2 → **DESCARTA** | -- | **descartada** (2026-09-23) en el filtro, y con una cifra que mide algo |
 | I-011 | `[COLA]` **cartera de configuraciones**: cada tirada sortea una combinación de los interruptores ya medidos como neutros | una mezcla de componentes neutros conserva la media y **suma varianza entre componentes**, así que alarga la cola por construcción | cola: bo5 cartera−control = **−2.54**, pasa (descartaba si > +2.0). Mecanismo **plano**: razón de dispersión 1.03, más ancha en 2 de 4 | mirillas bo5: **+1.43** (w1, 7 de 21, p = 0.574), **-0.43** (w2, 12 de 21, p = 0.602), **-1.46** (w3, 15 de 21, p = 0.106), **-0.79** (w4, 14 de 21, p = 0.213), **-0.79** (w5, 13 de 21, p = 0.192), **-0.32** (w6, 10 de 21, **p = 0.777**) | **descartada** (2026-09-23) por no cruzar en la sexta; y su mecanismo nunca se ejerció |
 | I-010 | **escapar del estado todo-tabú** y con ello hacer alcanzable la profundidad | la profundidad la limita el callejón sin salida, no el parámetro | dscp−control = −0.86, pasa | 6 mirillas, 30 runs: +0.16, −0.32, −0.13, −0.06, −0.41, **−0.25**; mejor en 10 de 21, p = 0.639 | **descartada** (2026-09-22) por no cruzar en la sexta |
 | I-009 | una llamada profunda al tabú sobre el incumbente, **una sola por tirada** | nunca hay una trayectoria profunda | deep−control = −0.02, pasa | -- | **retirada** (2026-09-22): infradimensionada por construcción, la llamada era el 0.06-2.3 % del trabajo del tabú |
@@ -2066,3 +2067,63 @@ Las cuatro comparten una premisa que ninguna ha tocado: **la regla sigue
 siendo *coge el mejor***. Con cota exacta y regla del mejor, el orden de
 visita es matemáticamente irrelevante, y por eso las cuatro dieron cero. El
 orden solo puede decidir algo si se abandona la regla. Eso es I-013.
+
+### I-013, descartada en el filtro: el orden importa, y el algoritmo ya está en el lado bueno
+
+240 trabajos, cero infactibles, 30 tiradas por celda e instancia.
+
+**El mecanismo se ejerció, y con holgura**, que es lo primero que había que
+comprobar: la rama de primera mejora se lleva el **69.7 %** de los
+movimientos, el barrido pasa de evaluar el 20 % del vecindario a evaluar el
+55 %, y las iteraciones del tabú por llamada **suben** de 26-42 a 39-61,
+porque al mejorar más a menudo se reinicia el contador de iteraciones
+estériles. No es una idea que no llegara a probarse; es una idea que se probó
+entera.
+
+| instancia | media control | media first | d | bo5 control | bo5 first | d |
+|---|---|---|---|---|---|---|
+| ta23 | 1587.4 | 1616.6 | **+29.27** | 1576.7 | 1600.5 | +23.83 |
+| ta29 | 1640.8 | 1650.0 | +9.20 | 1635.8 | 1643.0 | +7.17 |
+| ta30 | 1623.2 | 1640.1 | +16.90 | 1613.7 | 1629.3 | +15.67 |
+| ta45 | 2042.7 | 2073.5 | **+30.83** | 2030.8 | 2063.7 | +32.83 |
+
+Media **+21.55**, regla *descartar si > +2.0*: **descarta**, por un factor de
+diez y en las cuatro instancias.
+
+**Y esta cifra vale más que el descarte.** Doce iteraciones midiendo ceros
+—+0.01, +0.07, 0.9 unidades, planos— y la primera que toca **la regla de
+decisión** en vez de los datos que la alimentan salta a +21.55. Es decir: el
+orden en que se visitan los vecinos de N2 **sí decide el resultado, y decide
+mucho**; lo que pasa es que la regla vigente, *coger el mejor*, ya está en el
+extremo bueno de esa palanca, y vale unas **21 unidades de makespan** frente
+a la alternativa natural.
+
+**La atribución es limpia.** La celda cambia tres cosas —regla, orden y
+poda—, pero las dos últimas existen solo para encontrar el mejor: bajo la
+regla del mejor, ordenar y podar no cambian *qué* movimiento se toma salvo
+por la cota rota, y eso es exactamente lo que I-004 midió en **+0.01** sobre
+1260 tiradas. Las 21 unidades son de la regla.
+
+**Qué queda dicho sobre la vía del orden de los vecinos**, que el PI venía
+señalando desde el principio y que ahora tiene cinco medidas:
+
+| medida | qué cambia | resultado |
+|---|---|---|
+| I-004 | el barrido ve el mejor **de verdad** | +0.01 |
+| defecto de las colas | desordena el vecindario en 2/3 de los casos | sin efecto |
+| I-005 | desempata entre los empatados en el mejor | +2.55 |
+| sondeo 2026-09-23 | la elección está equivocada el 25 % de las veces | corregirla no cambia nada |
+| **I-013** | **deja de coger el mejor** | **+21.55** |
+
+La lectura conjunta ya no es "el orden no importa" sino algo más útil:
+**dentro de la regla del mejor todo da igual, y fuera de ella se pierde
+mucho**. La superficie es plana alrededor del óptimo voraz y cae en cuanto se
+sale. Eso cierra la vía de *cuál vecino se coge* con una medida positiva y no
+con un cero, y manda el foco a **qué se hace con el movimiento elegido** y a
+**cuánto tiempo se le da a cada tirada**, que es lo que dicen a la vez la
+revisión externa y nuestras propias medidas de reinicio.
+
+**Qué se revierte**: nada de los registros. El interruptor
+`localsearch.select` se queda implementado y **desactivado por defecto**, como
+`tails`, `scout`, `deadend` y `tiebreak`, y la configuración congelada recorre
+exactamente el mismo camino que antes.

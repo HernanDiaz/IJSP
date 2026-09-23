@@ -2178,3 +2178,44 @@ No records: the best of the 1260 runs per instance is in iter/I-011/records.txt
 and none is at or below its best known solution, as expected from waves that
 run the per-class budgets of 40, 100 and 150 seconds rather than the 300 of a
 record attempt.
+
+## I-013 is discarded, and it is the first measurement in this loop with a number in it
+
+240 jobs, no infeasible schedule, thirty runs per cell and instance.
+
+The mechanism was exercised with room to spare, which is the first thing to
+check: the first-improvement branch takes 69.7% of the moves, the sweep goes
+from evaluating 20% of the neighbourhood to 55%, and tabu iterations per call
+rise from 26-42 to 39-61, because improving more often resets the
+non-improving counter. This is not an idea that failed to fire.
+
+Per-instance means, first minus control: ta23 +29.27, ta29 +9.20, ta30 +16.90,
+ta45 +30.83, mean +21.55 against a rule that discards above +2.0. Discarded, by
+a factor of ten and on all four instances.
+
+The number matters more than the discard. Twelve iterations measured zeros:
++0.01, +0.07, 0.9 units, flat dispersion ratios. The first one to touch the
+decision rule rather than the data feeding it jumps to +21.55. The order in
+which N2's neighbours are visited does decide the result, and decides it
+heavily; the standing rule, take the best, already sits at the good end of that
+lever and is worth about 21 makespan units against the natural alternative.
+
+Attribution is clean. The cell changes rule, order and prune together, but the
+last two exist only to find the best: under a best rule they do not change
+which move is taken except through the broken bound, and that is exactly what
+I-004 measured at +0.01 over 1260 runs. The 21 units belong to the rule.
+
+Five measurements now cover the neighbour-order avenue: I-004 made the sweep
+see the true best, +0.01; the tails defect scrambled the order in two thirds of
+cases with no effect; I-005's tie-break gave +2.55; the probe found the choice
+wrong a quarter of the time and correcting it changed nothing; and I-013
+abandoned the rule and lost 21.55. Read together they say something more useful
+than "order does not matter": inside the best rule everything is flat, and
+outside it a great deal is lost. The surface is flat around the greedy optimum
+and falls away as soon as you leave it. That closes the question of which
+neighbour to take with a positive measurement rather than a zero, and sends the
+focus to what is done with the chosen move and how long each run is given.
+
+Nothing is reverted from the records. localsearch.select stays implemented and
+off by default, like tails, scout, deadend and tiebreak, and the frozen
+configuration walks exactly the same path as before.
