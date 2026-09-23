@@ -302,6 +302,7 @@ bucle y están aquí para que no se repitan; sus cifras están en el JOURNAL.
 | I-003 | el explorador del ABC reinyecta un **elite pateado** en vez de una solución aleatoria | un arranque aleatorio a mitad de tirada no puede alcanzar a la población; uno dentro de una cuenca buena sí | kick−control = **+1.43** (ta23 −0.27, ta29 +0.70, ta30 −0.50, ta45 **+5.80**); regla > +2 descarta → **pasa, por poco y en contra** | 4 mirillas de 6: −1.02, −0.57, **−0.03**, +0.44; kick mejor en 9-10 de 21 siempre; p entre 0.55 y 0.88, la frontera nunca se acerca | **detenida en la 4ª** (2026-09-21) por cambio de dirección del PI, no por sus datos. Sin aceptación: es un cero |
 | H-4 | N8 contra N2 (y contra N1, N3, N_ext), fase B del paper de COR | un vecindario más rico gana | -- | 82 instancias x 30 runs, 2460 bloques pareados: N2 1846.50 contra N8 1847.94, dif −1.45, p_adj = 3.9e−4, r = 0.077 (**despreciable**); rangos de Friedman N2 2.1315 el mejor de cinco, N8 2.2400 | **descartada** (antes del bucle; `experiments/cor_tabu_2026/`) |
 | I-012 | **escapar del estado todo-tabú, solo eso** | la celda informativa de I-010 dio −1.11 y mejor en 15 de 21 (p = 0.033) sin frontera | esc−control = −1.82, pasa | 6 mirillas, 30 runs: +1.30, +1.09, +0.59, +0.27, +0.39, **+0.07**; mejor en 10 de 21, p = 0.835 | **descartada** (2026-09-22). La señal de I-010 **no se reprodujo** |
+| I-014 | **reiniciar la población alrededor del incumbente** cuando la tirada lleva 0.2 del presupuesto sin mejorar | entre el 18 y el 44 % de cada tirada se gasta con riesgo de mejora medido en ~0 %; convertir ese tramo en búsqueda nueva **sin perder el incumbente** debe bajar la media | pendiente | pendiente | **lanzada** (2026-09-23) |
 | I-013 | **primera mejora sobre un barrido rotatorio de N2**: sin ordenar, sin podar, desde una posición que rota, el primer vecino elegible que mejore | con la regla *el mejor* el orden es irrelevante, y por eso I-004, el defecto de las colas e I-005 dieron cero; al abandonarla, el orden decide el movimiento | mecanismo **al 69.7 %**; first−control = **+21.55** (ta45 +30.83, ta23 +29.27, ta30 +16.90, ta29 +9.20); regla > +2 → **DESCARTA** | -- | **descartada** (2026-09-23) en el filtro, y con una cifra que mide algo |
 | I-011 | `[COLA]` **cartera de configuraciones**: cada tirada sortea una combinación de los interruptores ya medidos como neutros | una mezcla de componentes neutros conserva la media y **suma varianza entre componentes**, así que alarga la cola por construcción | cola: bo5 cartera−control = **−2.54**, pasa (descartaba si > +2.0). Mecanismo **plano**: razón de dispersión 1.03, más ancha en 2 de 4 | mirillas bo5: **+1.43** (w1, 7 de 21, p = 0.574), **-0.43** (w2, 12 de 21, p = 0.602), **-1.46** (w3, 15 de 21, p = 0.106), **-0.79** (w4, 14 de 21, p = 0.213), **-0.79** (w5, 13 de 21, p = 0.192), **-0.32** (w6, 10 de 21, **p = 0.777**) | **descartada** (2026-09-23) por no cruzar en la sexta; y su mecanismo nunca se ejerció |
 | I-010 | **escapar del estado todo-tabú** y con ello hacer alcanzable la profundidad | la profundidad la limita el callejón sin salida, no el parámetro | dscp−control = −0.86, pasa | 6 mirillas, 30 runs: +0.16, −0.32, −0.13, −0.06, −0.41, **−0.25**; mejor en 10 de 21, p = 0.639 | **descartada** (2026-09-22) por no cruzar en la sexta |
@@ -2179,3 +2180,65 @@ la edad a la que el riesgo ya es cero, conservando el mejor global, y seguir
 hasta agotar el mismo presupuesto. Mismo presupuesto, mismo número de
 tiradas, mismo endpoint, y el tiempo estéril se convierte en búsqueda nueva.
 Eso es I-014.
+
+### I-014 — reiniciar alrededor del incumbente, y dos correcciones antes de gastar máquina
+
+**La idea.** Cuando pasan **0.2 del presupuesto** sin mejorar el mejor global,
+se reconstruye la población con el incumbente más copias suyas perturbadas
+—entre 1 y 10 mutaciones cada una— y la tirada sigue hasta agotar el mismo
+presupuesto. Reiniciar **dentro** de la tirada, y no acortarla, es lo que
+permite no tocar ninguno de los intocables: mismo presupuesto por clase, mismo
+número de tiradas, mismo endpoint.
+
+**Ninguna constante se ajusta, las dos salen de una medida.** El 0.2 sale del
+riesgo de estancamiento por una regla enunciada: *el primer borde en que el
+riesgo cae por debajo de la décima parte de su valor en el primer segundo*, que
+da 0.20 en ta23 y ta30, 0.10 en ta29 y 0.107 en ta45; se toma el más
+conservador. El abanico de 1 a 10 se queda por debajo del alcance de una
+llamada del tabú, medido en 26-41 movimientos, para que la perturbación no la
+deshaga la búsqueda local que viene detrás.
+
+**Primera corrección: el umbral estaba donde no pasaba nada.** Lo puse en 0.4,
+la edad a la que el riesgo llega a **cero**. Pero para acumular 60 s de
+estancamiento en una tirada de 150 la última mejora tiene que caer antes de los
+90 s, y su mediana está en 123. La comprobación previa lo enseñó: el mecanismo
+se disparó **una vez en cuatro tiradas** y los makespans salieron **idénticos**
+a los del control. Un umbral donde no ocurre nada no mide nada, que es lo que
+I-009 costó cuatro rediseños. Corregido a 0.2 **antes** de lanzar.
+
+**Segunda corrección, y más seria: la forma fría de la idea se retira.** El
+reinicio original reconstruía con el operador de creación. Las trazas que ya
+estaban en disco dicen que eso no puede pagar
+(`scripts/cold_catchup.py`, 120 tiradas de control):
+
+| desde frío | ta23 | ta29 | ta30 | ta45 |
+|---|---|---|---|---|
+| al 20 % del presupuesto | +55.0 | +27.5 | +34.5 | +55.0 |
+| al 40 % | +21.5 | +4.5 | +10.0 | +22.0 |
+| al 60 % | +8.0 | +1.0 | +6.0 | +6.5 |
+| al 80 % | +2.5 | +0.0 | +1.0 | +0.0 |
+
+Una población fría necesita el **80 % del presupuesto** para ponerse a unas
+pocas unidades de lo que la tirada acaba consiguiendo. Y el reinicio por
+estancamiento se dispara **tarde por construcción**, porque exige 0.2 del
+presupuesto de estancamiento *después* de la última mejora, que llega en la
+mediana al 0.56-0.82. Le queda justo el tramo donde una población fría está más
+atrás. **No es que la idea fuera mala, es que esa forma era imposible**, y se
+retira igual que I-009, sin gastar las 4.5 horas de CPU del filtro. Poblar
+alrededor del incumbente cuesta cero en recuperación, así que lo que se somete
+a prueba pasa a ser la diversidad y no un lastre.
+
+**La implementación está verificada, no supuesta.** Con el reinicio templado la
+comprobación previa sigue dando makespans iguales en una tirada por instancia,
+así que fui a la traza: las dos celdas son idénticas hasta t = 54 s y luego
+divergen, **354 generaciones contra 372**. El reinicio ocurre y cambia la
+trayectoria; lo que pasa en esa tirada es que encontró su respuesta final a los
+50 s de 150 y los tres reinicios posteriores no mejoraron nada. Una tirada por
+instancia no concluye; para eso está el filtro.
+
+**Celdas**: `control` y `restart`. **Endpoint primario**: la media por
+instancia, Wilcoxon pareado por las 21, frontera de Pocock simétrica
+p <= 0.0142 en seis mirillas. **Regla del filtro**: descartar si la media de
+`restart − control` sobre las cuatro instancias supera +2.0. **Comprobación de
+mecanismo, primero**: reinicios por tirada por encima de cero, y generaciones
+por tirada para ver qué cuestan las reconstrucciones.

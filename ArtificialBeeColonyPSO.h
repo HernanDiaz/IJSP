@@ -54,6 +54,46 @@ namespace FuzzyFW {
 // I-003: what replaces an exhausted food source in the scout step.
 //   "random" (default, the classical ABC): a freshly created solution
 //   "kick"  : a clone of a random elite with abc.scout.kicks mutations applied
+// I-014. Restart the population when the run has stalled long enough that a
+// further improvement has stopped being likely.
+//   "no"    (default, unchanged)
+//   "stall" : when STALL_RESTART_SHARE of the budget has passed with no new
+//             global best, rebuild the population AROUND THE INCUMBENT -- the
+//             global best itself plus perturbed copies of it, 1 to 10 mutations
+//             each -- and go on to the same budget.
+// The cold form of this, rebuilding with the creation operator, was WITHDRAWN
+// on 2026-09-23 before any machine time was spent, because the traces already
+// on disk say it cannot pay (scripts/cold_catchup.py, 120 control runs). A cold
+// population needs about 80 % of the budget to come within a few units of what
+// the run finally reaches: at 40 % of the budget it is still +4.5 to +22 away,
+// at 20 % it is +27 to +55. A stall restart fires late by construction, since
+// it needs 0.2 of the budget of stall AFTER the last improvement and that
+// improvement lands at a median 0.56 to 0.82 of the budget, so it is handed the
+// stretch where a cold start is furthest behind. The check bore it out: the
+// mechanism fired 1 and 3 times and the makespans came out IDENTICAL to the
+// control's. Rebuilding around the incumbent costs nothing to catch up, so what
+// is being tested is diversity rather than a handicap.
+// The spread of 1 to 10 mutations is fixed and not tuned: it sits below the
+// reach of one tabu call, measured at 26 to 41 moves, so the perturbation is
+// not simply undone by the local search that follows it.
+// The share is FIXED BY A STATED RULE over the measured stall hazard
+// (scripts/stall_hazard.py, 120 control runs, 2026-09-23) and is not a
+// tunable: the FIRST bin edge at which the hazard has fallen below a tenth of
+// its value in the first second. That gives 8 s of 40 on ta23 and ta30, 4 s of
+// 40 on ta29 and 16 s of 150 on ta45, i.e. 0.10 to 0.20 of the budget, and the
+// most conservative of them is taken.
+// The first attempt used 0.4, the age at which the hazard reaches ZERO, and
+// that was a calibration mistake caught before any machine time was spent: on
+// a 150 s budget a 60 s stall can only be reached if the last improvement came
+// before 90 s, while its median is 123 s. The mechanism fired once in four
+// runs and the makespans came out identical to the control's. A threshold
+// where nothing ever happens measures nothing, which is what I-009 cost four
+// redesigns to learn.
+// Restarting INSIDE the run keeps the per-class budget, the number of runs and
+// the endpoint exactly as they are, which ending the run early would not.
+#define  STALL_RESTART "abc.restart"
+#define  STALL_RESTART_SHARE 0.2
+
 #define SCOUT_MODE  "abc.scout"        //random | kick
 #define SCOUT_KICKS "abc.scout.kicks"  //mutations applied to the cloned elite
 #define SCOUT_MODE_KICK "kick"
@@ -274,6 +314,14 @@ namespace FuzzyFW {
 		* Local Search should be applied or not
 		*/
 		virtual void evaluatePopulation(Population *current);
+
+		// I-014: restart on a stalled run. stallRestart is the switch;
+		// lastImprovementSec is when the global best last moved, in the same
+		// seconds the stopping criterion counts; stallRestarts is the
+		// mechanism check, because an idea that never fires was never tested.
+		bool stallRestart;
+		double lastImprovementSec;
+		unsigned long stallRestarts;
 
 
 		/**

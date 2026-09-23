@@ -265,6 +265,8 @@ namespace FuzzyFW {
 		stats.push_back(std::pair<std::string, double>
 			("N2 estimate above real value", (double)LS_Tabu::diagBoundBreaks));
 		stats.push_back(std::pair<std::string, double>
+			("Stall restarts", (double)this->stallRestarts));
+		stats.push_back(std::pair<std::string, double>
 			("N2 moves by first improvement", (double)LS_Tabu::firstHits));
 		stats.push_back(std::pair<std::string, double>
 			("N2 sweeps with no improving move", (double)LS_Tabu::fallbackHits));
@@ -440,6 +442,10 @@ namespace FuzzyFW {
 		// a setup that says nothing behaves exactly as before.
 		this->deepLsTrigger = (unsigned int)params->getInteger(DEEP_LS_TRIGGER, 0);
 		this->deepLsShare = (unsigned int)params->getInteger(DEEP_LS_SHARE, 0);
+		// I-014: restart the population once the stall is old enough that the
+		// measured hazard of a further improvement is zero.
+		this->stallRestart =
+			(params->getStringLower(STALL_RESTART).compare("stall") == 0);
 		this->scoutKick = false;
 		this->scoutKicks = 0;
 		std::string scoutValue = params->getStringLower(SCOUT_MODE);
@@ -520,6 +526,8 @@ namespace FuzzyFW {
 		this->deepLsDone = false;
 		this->deepLsCalls = 0;
 		this->deepLsTime = 0;
+		this->lastImprovementSec = 0.0;
+		this->stallRestarts = 0;
 
 		evolutionStats.clear();
 
@@ -731,14 +739,55 @@ namespace FuzzyFW {
 			}
 			this->generation++;
 
+			double nowSec =
+				(this->totalRuntime + (clock() - algorithmTime))
+					/ (double)CLOCKS_PER_SEC;
 			if (currentPopulation->getBest(sharedVariables)->getFitness()
 				->isBetterThan(this->bestSoFar->getFitness())) {
 				this->iterationsNI = 0;
+				this->lastImprovementSec = nowSec;
 				// A new episode may fire again.
 				if (this->deepLsShare > 0) this->deepLsDone = false;
 			}
 			else
 				this->iterationsNI++;
+
+			// I-014. The run has gone STALL_RESTART_SHARE of its budget with
+			// no new global best, and at that age the measured hazard of one
+			// arriving is zero. Rebuild the population from the creation
+			// operator, carry the incumbent into it so nothing is lost, and
+			// spend the rest of the budget searching somewhere else. The
+			// budget, the number of runs and the endpoint are untouched.
+			if (this->stallRestart && this->maxRuntime > 0
+				&& nowSec - this->lastImprovementSec
+					>= STALL_RESTART_SHARE * this->maxRuntime) {
+				// Around the incumbent, not from scratch. A cold population
+				// cannot catch up in what the budget leaves after a stall,
+				// measured on 2026-09-23 and the reason the cold form was
+				// withdrawn: +4.5 to +22 at 40 % of the budget, +27 to +55 at
+				// 20 %. Every individual here starts at the incumbent's
+				// quality, so what is injected is diversity, not a handicap.
+				Population *fresh = new Population();
+				fresh->addIndividual(this->bestSoFar->clone());
+				for (unsigned int i = 1; i < this->populationSize; i++) {
+					Individual *kicked = this->bestSoFar->clone();
+					kicked->setNumTrials(0);
+					kicked->id = (int)i;
+					unsigned int kicks = 1 + (i % 10);
+					for (unsigned int k = 0; k < kicks; k++)
+						this->mutation->apply(kicked, this->sharedVariables);
+					fresh->addIndividual(kicked);
+				}
+				this->evaluator->evaluatePopulation(
+					this->sharedVariables, fresh, true);
+				if (this->lsFrequency == LS_Frequency::MALS_INITIAL)
+					this->applyLocalSearch(fresh);
+				delete currentPopulation;
+				currentPopulation = fresh;
+				this->lastImprovementSec = nowSec;
+				this->iterationsNI = 0;
+				this->stallRestarts++;
+			}
 
 			// I-009. The local search of this solver is about 242 shallow dips
 			// per generation, each ending after 15 non-improving iterations
