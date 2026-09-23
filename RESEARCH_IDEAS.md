@@ -303,7 +303,7 @@ bucle y están aquí para que no se repitan; sus cifras están en el JOURNAL.
 | H-4 | N8 contra N2 (y contra N1, N3, N_ext), fase B del paper de COR | un vecindario más rico gana | -- | 82 instancias x 30 runs, 2460 bloques pareados: N2 1846.50 contra N8 1847.94, dif −1.45, p_adj = 3.9e−4, r = 0.077 (**despreciable**); rangos de Friedman N2 2.1315 el mejor de cinco, N8 2.2400 | **descartada** (antes del bucle; `experiments/cor_tabu_2026/`) |
 | I-012 | **escapar del estado todo-tabú, solo eso** | la celda informativa de I-010 dio −1.11 y mejor en 15 de 21 (p = 0.033) sin frontera | esc−control = −1.82, pasa | 6 mirillas, 30 runs: +1.30, +1.09, +0.59, +0.27, +0.39, **+0.07**; mejor en 10 de 21, p = 0.835 | **descartada** (2026-09-22). La señal de I-010 **no se reprodujo** |
 | I-016 | **siembra desde el círculo** (idea del PI) y, de paso, **el generador aleatorio hecho uniforme** | que la población inicial represente todas las zonas del espacio; medido antes: el círculo cubre igual que el azar, pero el generador aleatorio del solver está sesgado y empieza un 6-7 % peor | mecanismo: las dos arrancan **~156 mejor** en la generación 0; al final circle−control = **+0.00**, uniform−control = **+0.71**; pasan las dos (descartaba si > +2.0) | pendiente | **en oleadas** (2026-09-23), tras cerrar I-015 |
-| I-015 | **levantar el veto de meseta** (B-14): conservar la mejora que iguala exactamente el makespan del incumbente, en el cruce y en la escritura lamarckiana del tabú | I-014 dice que la búsqueda no sale de su cuenca; en JSP moverse de lado por la meseta del incumbente es cómo se sale, y el veto lo prohíbe | mecanismo **~3000 admisiones/tirada**, sin coste; allow−control = **−2.38** (ta45 −3.83, ta30 −3.00, ta23 −2.67, ta29 −0.03), pasa (descartaba si > +2.0) | mirillas media: **+1.46** (w1, 7 de 21, p = 0.237), **+0.62** (w2, 8 de 21, p = 0.848), **+0.22** (w3, 9 de 21, p = 0.674), **+0.50** (w4, 13 de 21, p = 0.715), **-0.38** (w5, 13 de 21, p = 0.434) | **en oleadas** (2026-09-23) |
+| I-015 | **levantar el veto de meseta** (B-14): conservar la mejora que iguala exactamente el makespan del incumbente, en el cruce y en la escritura lamarckiana del tabú | I-014 dice que la búsqueda no sale de su cuenca; en JSP moverse de lado por la meseta del incumbente es cómo se sale, y el veto lo prohíbe | mecanismo **~3000 admisiones/tirada**, sin coste; allow−control = **−2.38** (ta45 −3.83, ta30 −3.00, ta23 −2.67, ta29 −0.03), pasa (descartaba si > +2.0) | mirillas media: **+1.46** (w1, 7 de 21, p = 0.237), **+0.62** (w2, 8 de 21, p = 0.848), **+0.22** (w3, 9 de 21, p = 0.674), **+0.50** (w4, 13 de 21, p = 0.715), **-0.38** (w5, 13 de 21, p = 0.434), **-0.78** (w6, 14 de 21, **p = 0.122**) | **descartada** (2026-09-23) por no cruzar en la sexta; el final más favorable del bucle, a diez veces la frontera |
 | I-014 | **reiniciar la población alrededor del incumbente** cuando la tirada lleva 0.2 del presupuesto sin mejorar | entre el 18 y el 44 % de cada tirada se gasta con riesgo de mejora medido en ~0 %; convertir ese tramo en búsqueda nueva **sin perder el incumbente** debe bajar la media | mecanismo **1.36 reinicios/tirada**; restart−control = **−0.70**, pasa (descartaba si > +2.0) | mirillas media: **-0.70** (w1, 13 de 21, p = 0.186), **-0.37** (w2, 12 de 21, p = 0.271), **-0.15** (w3, 9 de 21, p = 0.805), **-0.17** (w4, 11 de 21, p = 0.664), **-0.10** (w5, 10 de 21, p = 0.702), **-0.16** (w6, 10 de 21, **p = 0.516**) | **descartada** (2026-09-23) por no cruzar en la sexta, con el mecanismo disparándose en todas las mirillas |
 | I-013 | **primera mejora sobre un barrido rotatorio de N2**: sin ordenar, sin podar, desde una posición que rota, el primer vecino elegible que mejore | con la regla *el mejor* el orden es irrelevante, y por eso I-004, el defecto de las colas e I-005 dieron cero; al abandonarla, el orden decide el movimiento | mecanismo **al 69.7 %**; first−control = **+21.55** (ta45 +30.83, ta23 +29.27, ta30 +16.90, ta29 +9.20); regla > +2 → **DESCARTA** | -- | **descartada** (2026-09-23) en el filtro, y con una cifra que mide algo |
 | I-011 | `[COLA]` **cartera de configuraciones**: cada tirada sortea una combinación de los interruptores ya medidos como neutros | una mezcla de componentes neutros conserva la media y **suma varianza entre componentes**, así que alarga la cola por construcción | cola: bo5 cartera−control = **−2.54**, pasa (descartaba si > +2.0). Mecanismo **plano**: razón de dispersión 1.03, más ancha en 2 de 4 | mirillas bo5: **+1.43** (w1, 7 de 21, p = 0.574), **-0.43** (w2, 12 de 21, p = 0.602), **-1.46** (w3, 15 de 21, p = 0.106), **-0.79** (w4, 14 de 21, p = 0.213), **-0.79** (w5, 13 de 21, p = 0.192), **-0.32** (w6, 10 de 21, **p = 0.777**) | **descartada** (2026-09-23) por no cruzar en la sexta; y su mecanismo nunca se ejerció |
@@ -2544,3 +2544,42 @@ desde dónde empieza ni con qué se la alimenta**.
 **Orden**: primero se cierran las mirillas 3 a 6 de I-015, que está en pausa y
 más cerca de decidir; después las seis oleadas de I-016, cuyos trabajos ya
 están generados y verificados, con los círculos de las 21 instancias.
+
+### I-015, cierre: el final más favorable del bucle, y aun así no cruza
+
+Seis oleadas, 1260 tiradas de confirmación, 30 por celda e instancia, cero
+infactibles. Media por instancia, `allow − control`:
+
+| mirilla | tiradas/celda | media | mejor en | p | admisiones/tirada |
+|---|---|---|---|---|---|
+| filtro | 30 (4 inst.) | −2.38 | -- | -- | ~3000 |
+| 1 | 5 | +1.46 | 7 de 21 | 0.237 | 2879 |
+| 2 | 10 | +0.62 | 8 de 21 | 0.848 | 2299 |
+| 3 | 15 | +0.22 | 9 de 21 | 0.674 | 2166 |
+| 4 | 20 | +0.50 | 13 de 21 | 0.715 | 2149 |
+| 5 | 25 | −0.38 | 13 de 21 | 0.434 | 2373 |
+| 6 | 30 | **−0.78** | **14** de 21 | **0.122** | 2457 |
+
+Frontera de Pocock 0.0142, simétrica. **No cruza: descartada.** No hay séptima
+mirada.
+
+**Es el final más favorable de todas las iteraciones**, y conviene decirlo en
+los dos sentidos. A favor: la media va hacia abajo en las tres últimas miradas
+(+0.50, −0.38, −0.78), mejora en 14 de 21, y las diferencias negativas grandes
+(ta43 −4.33, ta45 −3.80, ta48 −3.60, ta23 −3.20) pesan más que las positivas,
+que no pasan de +2.77. En contra: p = 0.122 está a casi **diez veces** la
+frontera, el filtro prometía −2.38 y las primeras miradas fueron en contra, y
+este bucle ya ha visto dos veces cómo una señal de esta forma no se reproduce
+(I-010 frente a I-012; el filtro de I-011 frente a sus mirillas). **La decisión
+es la que dice la regla.** Si más adelante se quisiera, lo correcto no sería
+mirar otra vez estos datos sino **una réplica con semillas nuevas**, como I-012
+hizo con la señal de I-010, preinscrita como idea propia.
+
+**El mecanismo se ejerció siempre** —entre 2149 y 2879 movimientos de meseta
+admitidos por tirada, sin coste en generaciones—, así que esto no es una idea
+que no llegara a probarse.
+
+**Qué se revierte**: nada de los registros. `abc.plateau` queda implementado y
+**desactivado por defecto**.
+
+**Sin récords**: `iter/I-015/records.txt`.

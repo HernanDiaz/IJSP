@@ -2379,3 +2379,26 @@ what it is fed.
 
 I-015's looks 3 to 6 run first, then I-016's six waves, whose jobs are already
 generated and verified with circles for all 21 instances.
+
+## I-015 is rejected with the most favourable final of any iteration
+
+Six waves, 1260 confirmation runs, thirty per cell and instance, no infeasible
+schedule. Per-instance mean, allow minus control, across the looks: +1.46,
++0.62, +0.22, +0.50, -0.38, -0.78, with p at 0.237, 0.848, 0.674, 0.715, 0.434,
+0.122 against a symmetric Pocock boundary of 0.0142. No crossing; discarded,
+and there is no seventh look.
+
+It is the most favourable final of any iteration, which deserves stating both
+ways. For it: the mean fell across the last three looks, the treatment wins on
+14 of 21 instances, and the large favourable differences (ta43 -4.33, ta45
+-3.80, ta48 -3.60, ta23 -3.20) outweigh unfavourable ones that never pass
++2.77. Against it: p = 0.122 sits nearly ten times the boundary, the filter
+promised -2.38 while the first looks ran the other way, and this loop has twice
+seen a signal of this shape fail to reproduce. The decision is the rule's. If
+the question is ever reopened, the right move is not another look at these data
+but a replication with fresh seeds, pre-registered as its own idea, as I-012
+did for I-010's signal.
+
+The mechanism was exercised throughout, 2149 to 2879 plateau moves admitted per
+run at no cost in generations. abc.plateau stays implemented and off by
+default. No records.
