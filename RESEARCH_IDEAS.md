@@ -213,6 +213,15 @@ quince veces. **`queue exit 0` no garantiza nada cuando varios trabajos
 comparten directorio.** Desde ahora el par (tag de resultados, instancia) es
 único por construcción y se comprueba antes de lanzar.
 
+**El filtro usa semillas propias, fuera del rango de las oleadas.** Regla
+nueva (2026-09-23), desde I-017. Hasta I-016 el filtro usaba las semillas 1 a
+30 y las seis oleadas volvían a recorrer las mismas 1 a 30, así que en las
+cuatro instancias del filtro sus tiradas y las de las oleadas **no eran
+independientes**: I-015 encontró el mismo horario de `ta30` en el filtro y en la
+oleada 5, con la misma semilla. Ninguna decisión se vio afectada, porque la
+frontera solo usa las oleadas, pero el filtro dejaba de ser una muestra aparte.
+Desde ahora el filtro usa las semillas 1001 a 1030.
+
 **Ejecución**: un solo experimento en la máquina a la vez, nunca dos
 apilados (regla del PI). `queue_jobs.sh` corre todas las celdas de una tanda
 por una única cola, alternadas, como máximo un solver por núcleo, y se niega
@@ -302,6 +311,7 @@ bucle y están aquí para que no se repitan; sus cifras están en el JOURNAL.
 | I-003 | el explorador del ABC reinyecta un **elite pateado** en vez de una solución aleatoria | un arranque aleatorio a mitad de tirada no puede alcanzar a la población; uno dentro de una cuenca buena sí | kick−control = **+1.43** (ta23 −0.27, ta29 +0.70, ta30 −0.50, ta45 **+5.80**); regla > +2 descarta → **pasa, por poco y en contra** | 4 mirillas de 6: −1.02, −0.57, **−0.03**, +0.44; kick mejor en 9-10 de 21 siempre; p entre 0.55 y 0.88, la frontera nunca se acerca | **detenida en la 4ª** (2026-09-21) por cambio de dirección del PI, no por sus datos. Sin aceptación: es un cero |
 | H-4 | N8 contra N2 (y contra N1, N3, N_ext), fase B del paper de COR | un vecindario más rico gana | -- | 82 instancias x 30 runs, 2460 bloques pareados: N2 1846.50 contra N8 1847.94, dif −1.45, p_adj = 3.9e−4, r = 0.077 (**despreciable**); rangos de Friedman N2 2.1315 el mejor de cinco, N8 2.2400 | **descartada** (antes del bucle; `experiments/cor_tabu_2026/`) |
 | I-012 | **escapar del estado todo-tabú, solo eso** | la celda informativa de I-010 dio −1.11 y mejor en 15 de 21 (p = 0.033) sin frontera | esc−control = −1.82, pasa | 6 mirillas, 30 runs: +1.30, +1.09, +0.59, +0.27, +0.39, **+0.07**; mejor en 10 de 21, p = 0.835 | **descartada** (2026-09-22). La señal de I-010 **no se reprodujo** |
+| I-017 | **el segundo tabú va al hijo sorteado**: en MALS_SOME la segunda llamada se aplica al contador del bucle y no al individuo sorteado, y la mitad de las veces repasa el hijo ya pulido | cada hijo pulido una vez vale más que el 10-18 % de generaciones que cuesta | pendiente | pendiente | **lanzada** (2026-09-23) |
 | I-016 | **siembra desde el círculo** (idea del PI) y, de paso, **el generador aleatorio hecho uniforme** | que la población inicial represente todas las zonas del espacio; medido antes: el círculo cubre igual que el azar, pero el generador aleatorio del solver está sesgado y empieza un 6-7 % peor | mecanismo: las dos arrancan **~156 mejor** en la generación 0; al final circle−control = **+0.00**, uniform−control = **+0.71**; pasan las dos (descartaba si > +2.0) | mirillas media: w1: circle **+1.94** (8 de 21, p = 0.186), uniform **+3.22** (4 de 21, p = 0.018), w2: circle **+0.98** (9 de 21, p = 0.297), uniform **+1.95** (6 de 21, p = 0.048), w3: circle **+1.38** (7 de 21, p = 0.089), uniform **+1.74** (6 de 21, p = 0.036), w4: circle **+2.19** (6 de 21, p = 0.024), uniform **+2.01** (5 de 21, p = 0.011), w5: circle **+1.79** (7 de 21, p = 0.030), uniform **+1.03** (8 de 21, p = 0.198), w6: circle **+1.28** (7 de 21, **p = 0.054**), uniform **+0.82** (7 de 21, **p = 0.299**) | **descartadas las dos** (2026-09-23) por no cruzar en la sexta; arrancar ~160 mejor no ayuda, y en las seis mirillas va en contra |
 | I-015 | **levantar el veto de meseta** (B-14): conservar la mejora que iguala exactamente el makespan del incumbente, en el cruce y en la escritura lamarckiana del tabú | I-014 dice que la búsqueda no sale de su cuenca; en JSP moverse de lado por la meseta del incumbente es cómo se sale, y el veto lo prohíbe | mecanismo **~3000 admisiones/tirada**, sin coste; allow−control = **−2.38** (ta45 −3.83, ta30 −3.00, ta23 −2.67, ta29 −0.03), pasa (descartaba si > +2.0) | mirillas media: **+1.46** (w1, 7 de 21, p = 0.237), **+0.62** (w2, 8 de 21, p = 0.848), **+0.22** (w3, 9 de 21, p = 0.674), **+0.50** (w4, 13 de 21, p = 0.715), **-0.38** (w5, 13 de 21, p = 0.434), **-0.78** (w6, 14 de 21, **p = 0.122**) | **descartada** (2026-09-23) por no cruzar en la sexta; el final más favorable del bucle, a diez veces la frontera |
 | I-014 | **reiniciar la población alrededor del incumbente** cuando la tirada lleva 0.2 del presupuesto sin mejorar | entre el 18 y el 44 % de cada tirada se gasta con riesgo de mejora medido en ~0 %; convertir ese tramo en búsqueda nueva **sin perder el incumbente** debe bajar la media | mecanismo **1.36 reinicios/tirada**; restart−control = **−0.70**, pasa (descartaba si > +2.0) | mirillas media: **-0.70** (w1, 13 de 21, p = 0.186), **-0.37** (w2, 12 de 21, p = 0.271), **-0.15** (w3, 9 de 21, p = 0.805), **-0.17** (w4, 11 de 21, p = 0.664), **-0.10** (w5, 10 de 21, p = 0.702), **-0.16** (w6, 10 de 21, **p = 0.516**) | **descartada** (2026-09-23) por no cruzar en la sexta, con el mecanismo disparándose en todas las mirillas |
@@ -2654,3 +2664,49 @@ implementado y desactivado por defecto; la creación sembrada ya existía.
 **Sin récords ni igualadas** en las 2250 tiradas, filtro y oleadas incluidos
 (`iter/I-016/records.txt`, con el guion nuevo `scripts/records_any.py`, que ya
 no se deja el filtro fuera).
+
+### I-017 — el segundo tabú va al hijo que se sorteó
+
+**El fallo, encontrado leyendo el código** mientras corría I-016. Cada fuente de
+alimento genera una **pareja de hijos** (el cruce de una fuente élite con la
+fuente mutada) y sobre esa pareja se llama al reparto de la búsqueda local en
+modo `MALS_SOME`. El código aplica el tabú al mejor de los dos, que es
+correcto; luego sortea los demás al azar sin reemplazo, se salta al mejor, y
+**aplica el tabú a `i`, el contador del bucle, en lugar de a `chosen`, el
+individuo sorteado** (`ArtificialBeeColonyPSO.cpp`). El sorteo se calcula y se
+tira. Con una pareja, además, la cuota sale `trunc(0.4645 x 2) - 1 = -1`, que en
+un entero sin signo da la vuelta a unos cuatro mil millones; el bucle recorre
+los dos hijos y **la segunda llamada cae siempre sobre el hijo 0**. Cuando el
+mejor es el hijo 0, se busca **dos veces** —la segunda desde un óptimo local— y
+el otro hijo **nunca**.
+
+**Medido, no deducido** (2026-09-23, una tirada por instancia, contadores
+nuevos):
+
+| | invocaciones, todas en parejas | 2.ª llamada sobre el mejor ya pulido | 2.ª llamada sobre el otro hijo | generaciones | iteraciones por llamada |
+|---|---|---|---|---|---|
+| ta23, actual | 37791 | **20085 (53 %)** | 17706 | 153 | 28.7 |
+| ta23, arreglado | 33839 | 0 | 33839 | 137 | 31.0 |
+| ta45, actual | 86944 | **45333 (52 %)** | 41611 | 352 | 38.4 |
+| ta45, arreglado | 71383 | 0 | 71383 | 289 | 50.1 |
+
+Ninguna invocación llega con un grupo de otro tamaño, así que el único camino
+que ejecuta la configuración congelada es éste. **Algo más de la mitad de las
+segundas llamadas al tabú repasan un hijo ya pulido**, y en esos casos el otro
+se evalúa sin pulir.
+
+**El arreglo** es una palabra: `abc.ls.pick = chosen` aplica el tabú al individuo
+sorteado. Cero parámetros; por defecto nada cambia.
+
+**Y no es gratis, que es justo lo que se mide.** Repasar un óptimo local se
+agota enseguida, en 15 iteraciones sin mejora; pulir un hijo nuevo lleva más.
+Con el arreglo las iteraciones por llamada suben (38.4 → 50.1 en ta45) y las
+generaciones bajan un 10-18 %. La pregunta es si **más hijos pulidos** valen más
+que **más generaciones**.
+
+**Celdas**: `control` y `chosen`. **Endpoint primario**: media por instancia,
+Wilcoxon pareado por las 21, frontera de Pocock simétrica p <= 0.0142 en seis
+mirillas. **Filtro**: descartar si `chosen − control` supera +2.0 de media en
+las cuatro instancias, **con semillas 1001 a 1030** por la regla nueva.
+**Mecanismo, primero**: adónde va la segunda llamada (todas al otro hijo en
+`chosen`, ~48/52 en el control) y las generaciones por tirada.

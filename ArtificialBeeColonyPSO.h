@@ -104,6 +104,18 @@ namespace FuzzyFW {
 // run discarded in the write-back on ta29 and 3,415 on ta41, 2.4 % of the
 // useful tabu work, with a spread of 71 to 8,073 between runs.
 #define  PLATEAU_MODE "abc.plateau"
+// I-017. Which individual the second local-search call of MALS_SOME reaches.
+//   "index"  (default, unchanged): individual i, the loop counter
+//   "chosen" : the individual just drawn at random, as the code intends
+// The loop draws a random individual without replacement, skips it if it is
+// the best, and then applies the tabu search to individual i instead of to the
+// one it drew, so the draw is computed and thrown away. The only call site the
+// frozen configuration reaches is the pair of children of each food source,
+// where the quota trunc(0.4645 x 2) - 1 = -1 wraps round to about four billion
+// in an unsigned int, so the loop walks both children and the second call
+// always lands on child 0. When the better child is child 0 it is searched
+// TWICE, the second time from a local optimum, and the other child never is.
+#define  LS_PICK "abc.ls.pick"
 
 #define  STALL_RESTART "abc.restart"
 #define  STALL_RESTART_SHARE 0.2
@@ -342,6 +354,13 @@ namespace FuzzyFW {
 		bool plateauAllow;
 		unsigned long plateauAdmittedCross;
 		unsigned long plateauAdmittedLS;
+
+		// I-017: the switch, and what the second call reaches.
+		bool lsPickChosen;
+		unsigned long lsPairCalls;        // group-of-two invocations
+		unsigned long lsOtherCalls;       // invocations on any other group size
+		unsigned long lsSecondOnBest;     // second call on the already searched best
+		unsigned long lsSecondOnOther;    // second call on the other child
 
 
 		/**

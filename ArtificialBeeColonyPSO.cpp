@@ -267,6 +267,14 @@ namespace FuzzyFW {
 		stats.push_back(std::pair<std::string, double>
 			("Stall restarts", (double)this->stallRestarts));
 		stats.push_back(std::pair<std::string, double>
+			("LS invocations on a pair", (double)this->lsPairCalls));
+		stats.push_back(std::pair<std::string, double>
+			("LS invocations on other group sizes", (double)this->lsOtherCalls));
+		stats.push_back(std::pair<std::string, double>
+			("LS second call on the searched best", (double)this->lsSecondOnBest));
+		stats.push_back(std::pair<std::string, double>
+			("LS second call on the other child", (double)this->lsSecondOnOther));
+		stats.push_back(std::pair<std::string, double>
 			("Plateau moves admitted in crossover", (double)this->plateauAdmittedCross));
 		stats.push_back(std::pair<std::string, double>
 			("Plateau moves admitted in local search", (double)this->plateauAdmittedLS));
@@ -453,6 +461,9 @@ namespace FuzzyFW {
 		// I-015: keep improvements that land exactly on the incumbent's value.
 		this->plateauAllow =
 			(params->getStringLower(PLATEAU_MODE).compare("allow") == 0);
+		// I-017: send the second local-search call where the draw says.
+		this->lsPickChosen =
+			(params->getStringLower(LS_PICK).compare("chosen") == 0);
 		this->scoutKick = false;
 		this->scoutKicks = 0;
 		std::string scoutValue = params->getStringLower(SCOUT_MODE);
@@ -532,6 +543,10 @@ namespace FuzzyFW {
 		this->plateauVetoesLS = 0;
 		this->plateauAdmittedCross = 0;
 		this->plateauAdmittedLS = 0;
+		this->lsPairCalls = 0;
+		this->lsOtherCalls = 0;
+		this->lsSecondOnBest = 0;
+		this->lsSecondOnOther = 0;
 		this->deepLsDone = false;
 		this->deepLsCalls = 0;
 		this->deepLsTime = 0;
@@ -926,6 +941,8 @@ namespace FuzzyFW {
 		std::vector<unsigned int> selection(population->size());
 		unsigned int targetIndividuals, chosen, best, position;
 		best = NULL;
+		if (population->size() == 2) this->lsPairCalls++;
+		else this->lsOtherCalls++;
 
 		if (this->lsTarget == LS_Target::MALS_BEST
 			|| this->lsTarget == LS_Target::MALS_SOME) {
@@ -966,7 +983,12 @@ namespace FuzzyFW {
 				if (chosen == best)
 					i--;
 				else {
-					this->applyLocalSearch(population, i);
+					// I-017: the default applies it to i, the loop counter,
+					// throwing the draw away; "chosen" applies it to the draw.
+					unsigned int target = this->lsPickChosen ? chosen : i;
+					if (target == best) this->lsSecondOnBest++;
+					else this->lsSecondOnOther++;
+					this->applyLocalSearch(population, target);
 				}
 			}
 		}
