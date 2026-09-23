@@ -107,6 +107,11 @@ namespace FuzzyFW {
 // I-017. Which individual the second local-search call of MALS_SOME reaches.
 //   "index"  (default, unchanged): individual i, the loop counter
 //   "chosen" : the individual just drawn at random, as the code intends
+//   "best"   : I-018, always the best of the group again, the one the first
+//              call already searched: a second tabu search from its local
+//              optimum with an empty tabu list, which is what the index bug
+//              does by accident a little over half the time. I-017 measured
+//              that removing it entirely costs +4.87.
 // The loop draws a random individual without replacement, skips it if it is
 // the best, and then applies the tabu search to individual i instead of to the
 // one it drew, so the draw is computed and thrown away. The only call site the
@@ -357,6 +362,7 @@ namespace FuzzyFW {
 
 		// I-017: the switch, and what the second call reaches.
 		bool lsPickChosen;
+		bool lsPickBest;       // I-018
 		unsigned long lsPairCalls;        // group-of-two invocations
 		unsigned long lsOtherCalls;       // invocations on any other group size
 		unsigned long lsSecondOnBest;     // second call on the already searched best

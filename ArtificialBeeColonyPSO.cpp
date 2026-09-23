@@ -464,6 +464,9 @@ namespace FuzzyFW {
 		// I-017: send the second local-search call where the draw says.
 		this->lsPickChosen =
 			(params->getStringLower(LS_PICK).compare("chosen") == 0);
+		// I-018: the second call always searches the best again.
+		this->lsPickBest =
+			(params->getStringLower(LS_PICK).compare("best") == 0);
 		this->scoutKick = false;
 		this->scoutKicks = 0;
 		std::string scoutValue = params->getStringLower(SCOUT_MODE);
@@ -985,7 +988,8 @@ namespace FuzzyFW {
 				else {
 					// I-017: the default applies it to i, the loop counter,
 					// throwing the draw away; "chosen" applies it to the draw.
-					unsigned int target = this->lsPickChosen ? chosen : i;
+					unsigned int target = this->lsPickChosen ? chosen
+						: (this->lsPickBest ? best : i);
 					if (target == best) this->lsSecondOnBest++;
 					else this->lsSecondOnOther++;
 					this->applyLocalSearch(population, target);
