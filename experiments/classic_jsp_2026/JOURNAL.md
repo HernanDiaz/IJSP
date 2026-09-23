@@ -2241,3 +2241,40 @@ seen two unbounded measurements fail to reproduce under a boundary: I-010's
 informational cell at -1.11, p = 0.0325 against I-012 at +0.07, p = 0.835, and
 I-011's filter at -2.54 against its six looks at -0.32. A filter discards
 cheaply; it does not suggest findings. The waves decide.
+
+## I-014 is rejected, and it is the cleanest zero this loop has produced
+
+Six waves, 1260 confirmation runs, thirty per cell and instance, no infeasible
+schedule. Per-instance mean, restart minus control, across the looks: -0.70,
+-0.37, -0.15, -0.17, -0.10, -0.16, with p at 0.186, 0.271, 0.805, 0.664, 0.702,
+0.516 against a symmetric Pocock boundary of 0.0142. No crossing; discarded.
+All 21 final differences lie between -1.67 and +1.30.
+
+The zero is clean, which is what makes it worth having. I-014 is the first idea
+in this loop to reach the waves with both halves of its mechanism check green:
+it fired at every look, 1.01 to 1.36 restarts per run, and it took no work away
+from the tabu search, since generations per run went up rather than down when
+repopulating around the incumbent spared any ground to make up. It was not
+under-exercised and it did not cost more than it returned. It was exercised in
+full and did nothing.
+
+The stall hazard measures about zero over the last 18% to 44% of every run, so
+that stretch really is sterile. I-014 offered it the best exit available without
+touching the metric, a restart from the incumbent with diversity and no
+catch-up cost, and it did not help. The incumbent of a stalled run sits in a
+basin that neither a 1-to-10-move perturbation nor the search that follows it
+can improve on in the time left. That agrees with the kicked scout (I-003,
+flat), the all-tabu escape (I-010 and I-012, flat) and leaving the greedy rule
+(I-013, +21.55): everything tried so far to move the search away from where it
+settles either does nothing or makes things worse.
+
+The correction made before launch is vindicated after the fact. The cold form
+was withdrawn because the traces said a fresh population could not reach the
+incumbent in the budget left. The warm form, which had no such handicap, gives
+zero; the cold one would have given zero or worse, at the cost of the same
+filter and probably six waves to measure what was already known.
+
+Nothing is reverted from the records. abc.restart stays implemented and off by
+default like the switches before it. No records: the best of the 1260 runs per
+instance is in iter/I-014/records.txt, the closest being ta29 at 1629 against
+1625.
