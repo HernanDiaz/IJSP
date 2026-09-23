@@ -302,7 +302,7 @@ bucle y están aquí para que no se repitan; sus cifras están en el JOURNAL.
 | I-003 | el explorador del ABC reinyecta un **elite pateado** en vez de una solución aleatoria | un arranque aleatorio a mitad de tirada no puede alcanzar a la población; uno dentro de una cuenca buena sí | kick−control = **+1.43** (ta23 −0.27, ta29 +0.70, ta30 −0.50, ta45 **+5.80**); regla > +2 descarta → **pasa, por poco y en contra** | 4 mirillas de 6: −1.02, −0.57, **−0.03**, +0.44; kick mejor en 9-10 de 21 siempre; p entre 0.55 y 0.88, la frontera nunca se acerca | **detenida en la 4ª** (2026-09-21) por cambio de dirección del PI, no por sus datos. Sin aceptación: es un cero |
 | H-4 | N8 contra N2 (y contra N1, N3, N_ext), fase B del paper de COR | un vecindario más rico gana | -- | 82 instancias x 30 runs, 2460 bloques pareados: N2 1846.50 contra N8 1847.94, dif −1.45, p_adj = 3.9e−4, r = 0.077 (**despreciable**); rangos de Friedman N2 2.1315 el mejor de cinco, N8 2.2400 | **descartada** (antes del bucle; `experiments/cor_tabu_2026/`) |
 | I-012 | **escapar del estado todo-tabú, solo eso** | la celda informativa de I-010 dio −1.11 y mejor en 15 de 21 (p = 0.033) sin frontera | esc−control = −1.82, pasa | 6 mirillas, 30 runs: +1.30, +1.09, +0.59, +0.27, +0.39, **+0.07**; mejor en 10 de 21, p = 0.835 | **descartada** (2026-09-22). La señal de I-010 **no se reprodujo** |
-| I-014 | **reiniciar la población alrededor del incumbente** cuando la tirada lleva 0.2 del presupuesto sin mejorar | entre el 18 y el 44 % de cada tirada se gasta con riesgo de mejora medido en ~0 %; convertir ese tramo en búsqueda nueva **sin perder el incumbente** debe bajar la media | pendiente | pendiente | **lanzada** (2026-09-23) |
+| I-014 | **reiniciar la población alrededor del incumbente** cuando la tirada lleva 0.2 del presupuesto sin mejorar | entre el 18 y el 44 % de cada tirada se gasta con riesgo de mejora medido en ~0 %; convertir ese tramo en búsqueda nueva **sin perder el incumbente** debe bajar la media | mecanismo **1.36 reinicios/tirada**; restart−control = **−0.70**, pasa (descartaba si > +2.0) | pendiente | **en oleadas** (2026-09-23) |
 | I-013 | **primera mejora sobre un barrido rotatorio de N2**: sin ordenar, sin podar, desde una posición que rota, el primer vecino elegible que mejore | con la regla *el mejor* el orden es irrelevante, y por eso I-004, el defecto de las colas e I-005 dieron cero; al abandonarla, el orden decide el movimiento | mecanismo **al 69.7 %**; first−control = **+21.55** (ta45 +30.83, ta23 +29.27, ta30 +16.90, ta29 +9.20); regla > +2 → **DESCARTA** | -- | **descartada** (2026-09-23) en el filtro, y con una cifra que mide algo |
 | I-011 | `[COLA]` **cartera de configuraciones**: cada tirada sortea una combinación de los interruptores ya medidos como neutros | una mezcla de componentes neutros conserva la media y **suma varianza entre componentes**, así que alarga la cola por construcción | cola: bo5 cartera−control = **−2.54**, pasa (descartaba si > +2.0). Mecanismo **plano**: razón de dispersión 1.03, más ancha en 2 de 4 | mirillas bo5: **+1.43** (w1, 7 de 21, p = 0.574), **-0.43** (w2, 12 de 21, p = 0.602), **-1.46** (w3, 15 de 21, p = 0.106), **-0.79** (w4, 14 de 21, p = 0.213), **-0.79** (w5, 13 de 21, p = 0.192), **-0.32** (w6, 10 de 21, **p = 0.777**) | **descartada** (2026-09-23) por no cruzar en la sexta; y su mecanismo nunca se ejerció |
 | I-010 | **escapar del estado todo-tabú** y con ello hacer alcanzable la profundidad | la profundidad la limita el callejón sin salida, no el parámetro | dscp−control = −0.86, pasa | 6 mirillas, 30 runs: +0.16, −0.32, −0.13, −0.06, −0.41, **−0.25**; mejor en 10 de 21, p = 0.639 | **descartada** (2026-09-22) por no cruzar en la sexta |
@@ -2242,3 +2242,32 @@ p <= 0.0142 en seis mirillas. **Regla del filtro**: descartar si la media de
 `restart − control` sobre las cuatro instancias supera +2.0. **Comprobación de
 mecanismo, primero**: reinicios por tirada por encima de cero, y generaciones
 por tirada para ver qué cuestan las reconstrucciones.
+
+### I-014, filtro: pasa, y el mecanismo por fin se ejerce
+
+240 trabajos, cero infactibles, 30 tiradas por celda e instancia.
+
+**Comprobación de mecanismo, leída primero y esta vez satisfactoria**: 1.36
+reinicios por tirada de media (1.07 en ta23, 1.90 en ta29, 1.27 en ta30, 1.20
+en ta45) contra 0.00 en el control. Con el umbral de 0.4 eran 0.25; con 0.2 el
+mecanismo ocurre de verdad. Y **las reconstrucciones casi no cuestan**: las
+generaciones por tirada suben en lugar de bajar (90.4 → 101.8 en ta23, 228.5 →
+243.5 en ta45) y las iteraciones por llamada del tabú se mueven menos del 3 %.
+Repoblar alrededor del incumbente es barato, como se esperaba de no tener que
+recuperar terreno.
+
+| instancia | media control | media restart | d | bo5 control | bo5 restart | d |
+|---|---|---|---|---|---|---|
+| ta23 | 1587.5 | 1587.0 | −0.50 | 1576.8 | 1576.8 | +0.00 |
+| ta29 | 1641.1 | 1640.2 | −0.90 | 1636.5 | 1634.0 | −2.50 |
+| ta30 | 1623.3 | 1623.6 | +0.37 | 1613.7 | 1614.0 | +0.33 |
+| ta45 | 2042.2 | 2040.4 | −1.77 | 2029.3 | 2029.3 | +0.00 |
+
+Media **−0.70**, regla *descartar si > +2.0*: **pasa**.
+
+**Y eso es literalmente todo lo que dice.** −0.70 sobre cuatro instancias está
+dentro del ruido —el error típico agregado del filtro ronda 1.0— y este bucle
+ya lleva **dos** medidas sin frontera que no se reprodujeron con una: la celda
+informativa de I-010 (−1.11, p = 0.0325) contra I-012 (+0.07, p = 0.835), y el
+filtro de I-011 (−2.54) contra sus seis mirillas (−0.32). El filtro descarta
+barato; **no sugiere hallazgos**. Deciden las oleadas.

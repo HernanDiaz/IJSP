@@ -2219,3 +2219,25 @@ focus to what is done with the chosen move and how long each run is given.
 Nothing is reverted from the records. localsearch.select stays implemented and
 off by default, like tails, scout, deadend and tiebreak, and the frozen
 configuration walks exactly the same path as before.
+
+## I-014's filter passes, and this time the mechanism is genuinely exercised
+
+240 jobs, no infeasible schedule, thirty runs per cell and instance.
+
+The mechanism check comes first and is finally satisfactory: 1.36 stall
+restarts per run on average, 1.07 on ta23, 1.90 on ta29, 1.27 on ta30, 1.20 on
+ta45, against 0.00 in the control. At the withdrawn 0.4 threshold it was 0.25.
+The rebuilds cost almost nothing: generations per run rise rather than fall,
+90.4 to 101.8 on ta23 and 228.5 to 243.5 on ta45, and tabu iterations per call
+move by under 3%. Repopulating around the incumbent is cheap, as it should be
+when there is no ground to make up.
+
+Per-instance means, restart minus control: ta23 -0.50, ta29 -0.90, ta30 +0.37,
+ta45 -1.77, mean -0.70 against a rule that discards above +2.0. It passes.
+
+That is all it says. A -0.70 over four instances sits inside the noise, the
+filter's aggregate standard error being about 1.0, and this loop has already
+seen two unbounded measurements fail to reproduce under a boundary: I-010's
+informational cell at -1.11, p = 0.0325 against I-012 at +0.07, p = 0.835, and
+I-011's filter at -2.54 against its six looks at -0.32. A filter discards
+cheaply; it does not suggest findings. The waves decide.

@@ -1,0 +1,29 @@
+=== 0. MECHANISM CHECK ===
+inst   statistic                                     control    restart
+ta23   Stall restarts                                   0.00       1.07
+ta23   Number of Generations                           90.37     101.80
+ta23   Avg. Iterations per LS                          31.93      31.08
+ta29   Stall restarts                                   0.00       1.90
+ta29   Number of Generations                          106.07     108.13
+ta29   Avg. Iterations per LS                          26.51      26.28
+ta30   Stall restarts                                   0.00       1.27
+ta30   Number of Generations                           93.60      95.47
+ta30   Avg. Iterations per LS                          32.23      31.57
+ta45   Stall restarts                                   0.00       1.20
+ta45   Number of Generations                          228.53     243.53
+ta45   Avg. Iterations per LS                          41.71      40.61
+
+stall restarts per run: 1.36 on average
+
+=== I-014 filter: per-instance mean (primary), best-of-5 (reported) ===
+inst     mean ctrl mean restart         d      bo5 ctrl bo5 restart         d
+ta23        1587.5      1587.0     -0.50        1576.8      1576.8     +0.00
+ta29        1641.1      1640.2     -0.90        1636.5      1634.0     -2.50
+ta30        1623.3      1623.6     +0.37        1613.7      1614.0     +0.33
+ta45        2042.2      2040.4     -1.77        2029.3      2029.3     +0.00
+
+runs per cell and instance: 30
+
+filter rule, on the MEAN: mean(restart - control) = -0.70;
+discard if > +2.0 -> PASS, go to the waves
+best-of-5 moved -0.54, and decides nothing here.
