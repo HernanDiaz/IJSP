@@ -2413,3 +2413,17 @@ decision; it is recorded because it fits the mechanism, moving along the
 plateau at the incumbent's value, and because it is the loop's second and third
 match of ta30. The records script had looked only at the waves, so the first
 closing said "no records" without mentioning the match.
+
+A second correction to the same note: the two ta30 schedules are identical,
+and it is one match seen twice, not two. The filter's job 25 and wave 5's job 5
+carry the same seed, 25, because the filter uses seeds 1 to 30 and the six
+waves cover the same 1 to 30 again; with the same seed and configuration the two
+runs took the same path to the same schedule despite the wall-clock budget. One
+against zero means nothing.
+
+It also exposes a design fact that holds for every iteration: on the four
+filter instances the filter's runs and the waves' runs are not independent,
+since they share seeds. No decision is affected, because the boundary uses only
+wave data, but it partly explains why filter and waves agree on those
+instances more than fresh seeds would, and future filters should draw seeds
+outside the waves' range.

@@ -2582,15 +2582,28 @@ que no llegara a probarse.
 **Qué se revierte**: nada de los registros. `abc.plateau` queda implementado y
 **desactivado por defecto**.
 
-**Sin récords, pero dos igualadas de `ta30`, y las dos en la celda `allow`.**
-El mejor conocido de `ta30` es 1584 y se alcanzó dos veces, a 40 s por
-tirada: en el filtro (`I-015_filter_p25_allow`) y en la oleada 5
-(`I-015_w5_p05_allow`). Los dos horarios son identical, verificados con el
-comprobador independiente contra los datos originales de OR-Library y
-guardados en `iter/I-015/evidence/`. En el control, ninguna. Con 60 tiradas de
-`ta30` por celda, dos contra cero **no es estadísticamente nada** (Fisher,
-p = 0.50) y no cambia la decisión. Se anota porque encaja con el mecanismo
-—moverse por la meseta al valor del incumbente— y porque es la segunda y la
-tercera vez que el bucle iguala `ta30`, después de la del control de I-012.
-La primera vez que se me escapó: el guion de récords solo miraba las oleadas y
-no el filtro, y el cierre decía "sin récords" sin mencionar la igualada.
+**Sin récords, pero una igualada de `ta30`, en la celda `allow`, vista dos
+veces.** El mejor conocido de `ta30`, 1584, aparece en el filtro
+(`I-015_filter_p25_allow`) y en la oleada 5 (`I-015_w5_p05_allow`), a 40 s por
+tirada, verificado con el comprobador independiente contra los datos
+originales de OR-Library y guardado en `iter/I-015/evidence/`. **Los dos
+horarios son idénticos**, y la razón es de diseño: el trabajo 25 del filtro y
+el 5 de la oleada 5 llevan **la misma semilla, la 25**, porque el filtro usa
+las semillas 1 a 30 y las seis oleadas vuelven a recorrer las mismas 1 a 30.
+Con la misma semilla y la misma configuración, las dos tiradas hicieron el
+mismo recorrido y llegaron al mismo horario pese a que el presupuesto es de
+reloj. Es **una sola igualada**, no dos, y en el control ninguna: uno contra
+cero no significa nada y no cambia la decisión. Se anota porque encaja con el
+mecanismo y porque es la segunda igualada de `ta30` del bucle, tras la del
+control de I-012.
+
+**Y deja a la vista un hecho del diseño que vale para todas las iteraciones**:
+en las cuatro instancias del filtro, sus tiradas y las de las oleadas **no son
+independientes**, porque comparten semillas. No afecta a ninguna decisión —la
+frontera se aplica solo a los datos de las oleadas—, pero explica en parte por
+qué el filtro y las oleadas coinciden más de lo que coincidirían con semillas
+distintas en esas cuatro instancias, y sugiere que el filtro de las próximas
+iteraciones use semillas propias, fuera del rango de las oleadas.
+
+La igualada se me escapó en el primer cierre: el guion de récords solo miraba
+las oleadas.
