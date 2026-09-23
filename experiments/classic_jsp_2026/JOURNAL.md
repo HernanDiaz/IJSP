@@ -2427,3 +2427,33 @@ since they share seeds. No decision is affected, because the boundary uses only
 wave data, but it partly explains why filter and waves agree on those
 instances more than fresh seeds would, and future filters should draw seeds
 outside the waves' range.
+
+## I-016 is rejected in both cells: a better start does not help, and leaned against at every look
+
+Six waves, three cells, 1890 confirmation runs, thirty per cell and instance,
+no infeasible schedule, the boundary split to p <= 0.0071 per treated cell.
+Circle minus control across the looks: +1.94, +0.98, +1.38, +2.19, +1.79,
++1.28, final p = 0.054. Uniform minus control: +3.22, +1.95, +1.74, +2.01,
++1.03, +0.82, final p = 0.299, having come within one step of the control-side
+boundary at look 4 (p = 0.011). Neither crosses either way; both are rejected.
+The mechanism held at every look: both cells start 159 to 162 units better at
+generation 0.
+
+Both cells were worse at every look, by +0.8 to +3.2 on average and on 14 to 17
+of the 21 instances. Without a formal control-side crossing it cannot be claimed
+that a better start hurts, but the direction held across six independent looks
+and two cells. Together with I-001, where a 294-unit head start left 0.9 units,
+this is the second measurement saying that the quality of the starting point
+does not improve this algorithm's result, and this one suggests it can
+subtract: a more uniform and better initial population converges sooner onto
+the same place.
+
+On the PI's idea itself: the circle covers the space exactly as random sampling
+does, because 247 points represent no areas in a space of 10^501 however they
+are placed, and its head start came from uniform sampling rather than from the
+circle. It did leave a side finding, the biased random creation, now fixable
+with creation.random.draw = uniform; fixing it does not improve the result, so
+the frozen configuration keeps the original generator.
+
+No records or matches in the 2250 runs, filter and waves included, checked with
+the new scripts/records_any.py, which no longer leaves the filter out.
