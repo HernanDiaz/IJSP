@@ -1,0 +1,99 @@
+=== 0. MECHANISM CHECK ===
+inst   statistic                                     control       best
+ta22   LS second call on the searched best          13543.00   29294.20
+ta22   LS second call on the other child            12293.20       0.00
+ta22   Number of Generations                          104.60     118.60
+ta23   LS second call on the searched best          12003.40   30825.60
+ta23   LS second call on the other child            10720.60       0.00
+ta23   Number of Generations                           92.00     124.80
+ta25   LS second call on the searched best          12511.00   22180.60
+ta25   LS second call on the other child            11151.60       0.00
+ta25   Number of Generations                           95.80      89.80
+ta26   LS second call on the searched best          12461.80   27417.00
+ta26   LS second call on the other child            11250.20       0.00
+ta26   Number of Generations                           96.00     111.00
+ta27   LS second call on the searched best          11294.80   24897.60
+ta27   LS second call on the other child            10342.40       0.00
+ta27   Number of Generations                           87.60     100.80
+ta29   LS second call on the searched best          14149.60   27515.80
+ta29   LS second call on the other child            12378.20       0.00
+ta29   Number of Generations                          107.40     111.40
+ta30   LS second call on the searched best          11531.80   27268.80
+ta30   LS second call on the other child            10352.40       0.00
+ta30   Number of Generations                           88.60     110.40
+ta32   LS second call on the searched best          28012.20   56513.60
+ta32   LS second call on the other child            25537.40       0.00
+ta32   Number of Generations                          216.80     228.80
+ta33   LS second call on the searched best          26954.00   56513.60
+ta33   LS second call on the other child            24718.40       0.00
+ta33   Number of Generations                          209.20     228.80
+ta34   LS second call on the searched best          29120.00   59033.00
+ta34   LS second call on the other child            27196.00       0.00
+ta34   Number of Generations                          228.00     239.00
+ta40   LS second call on the searched best          28622.00   63232.00
+ta40   LS second call on the other child            26409.60       0.00
+ta40   Number of Generations                          222.80     256.00
+ta41   LS second call on the searched best          28222.00   63034.40
+ta41   LS second call on the other child            25821.60       0.00
+ta41   Number of Generations                          218.80     255.20
+ta42   LS second call on the searched best          29243.60   67184.00
+ta42   LS second call on the other child            26924.20       0.00
+ta42   Number of Generations                          227.40     272.00
+ta43   LS second call on the searched best          26979.80   58094.40
+ta43   LS second call on the other child            24791.40       0.00
+ta43   Number of Generations                          209.60     235.20
+ta44   LS second call on the searched best          29004.00   64615.20
+ta44   LS second call on the other child            26472.20       0.00
+ta44   Number of Generations                          224.60     261.60
+ta45   LS second call on the searched best          28576.40   64911.60
+ta45   LS second call on the other child            26307.00       0.00
+ta45   Number of Generations                          222.20     262.80
+ta46   LS second call on the searched best          27779.20   60366.80
+ta46   LS second call on the other child            25622.20       0.00
+ta46   Number of Generations                          216.20     244.40
+ta47   LS second call on the searched best          30573.00   64318.80
+ta47   LS second call on the other child            28163.60       0.00
+ta47   Number of Generations                          237.80     260.40
+ta48   LS second call on the searched best          31061.40   70197.40
+ta48   LS second call on the other child            28465.60       0.00
+ta48   Number of Generations                          241.00     284.20
+ta49   LS second call on the searched best          32527.20   61453.60
+ta49   LS second call on the other child            29766.20       0.00
+ta49   Number of Generations                          252.20     248.80
+ta50   LS second call on the searched best          27834.40   62738.00
+ta50   LS second call on the other child            25814.00       0.00
+ta50   Number of Generations                          217.20     254.00
+
+second calls on the better child per run: 50553 on average
+(the control sends a little over half of them there, by accident)
+
+=== I-018 waves 1..1: per-instance mean (primary), best-of-5 (reported) ===
+inst     mean ctrl   mean best         d      bo5 ctrl    bo5 best         d
+ta22        1624.8      1622.2     -2.60        1620.0      1620.0     +0.00
+ta23        1582.4      1586.4     +4.00        1574.0      1578.0     +4.00
+ta25        1638.0      1638.2     +0.20        1631.0      1633.0     +2.00
+ta26        1683.2      1695.4    +12.20        1660.0      1687.0    +27.00
+ta27        1714.4      1715.4     +1.00        1705.0      1711.0     +6.00
+ta29        1640.4      1643.2     +2.80        1634.0      1638.0     +4.00
+ta30        1624.8      1618.4     -6.40        1614.0      1608.0     -6.00
+ta32        1829.6      1849.6    +20.00        1815.0      1824.0     +9.00
+ta33        1856.6      1851.4     -5.20        1849.0      1837.0    -12.00
+ta34        1883.2      1882.4     -0.80        1866.0      1856.0    -10.00
+ta40        1724.4      1725.0     +0.60        1717.0      1717.0     +0.00
+ta41        2088.0      2087.0     -1.00        2082.0      2069.0    -13.00
+ta42        2003.0      1989.4    -13.60        1996.0      1983.0    -13.00
+ta43        1937.8      1923.6    -14.20        1922.0      1909.0    -13.00
+ta44        2044.4      2032.4    -12.00        2035.0      2025.0    -10.00
+ta45        2044.2      2035.0     -9.20        2028.0      2030.0     +2.00
+ta46        2087.2      2084.2     -3.00        2066.0      2068.0     +2.00
+ta47        1974.2      1967.4     -6.80        1958.0      1951.0     -7.00
+ta48        2021.0      2019.2     -1.80        1998.0      2002.0     +4.00
+ta49        2011.6      2016.2     +4.60        1997.0      2004.0     +7.00
+ta50        2003.8      1996.4     -7.40        1992.0      1986.0     -6.00
+
+runs per cell and instance: 5
+
+look 1 of 6, symmetric boundary p <= 0.0142 (Pocock, six looks)
+PRIMARY, per-instance mean: -1.84, best better on 13 of 21, W = 75.5, p = 0.1644
+reported, deciding nothing: best-of-5 moved -1.10
+-> continue: run wave 2
