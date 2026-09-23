@@ -1,0 +1,30 @@
+=== 0. MECHANISM CHECK ===
+inst   statistic                                     control       best
+ta23   LS second call on the searched best          10336.27   20723.30
+ta23   LS second call on the other child             9341.40       0.00
+ta23   Number of Generations                           79.67      83.90
+ta29   LS second call on the searched best          14561.03   28405.00
+ta29   LS second call on the other child            12773.63       0.00
+ta29   Number of Generations                          110.67     115.00
+ta30   LS second call on the searched best          11795.47   24477.70
+ta30   LS second call on the other child            10632.13       0.00
+ta30   Number of Generations                           90.80      99.10
+ta45   LS second call on the searched best          22965.63   65998.40
+ta45   LS second call on the other child            21222.67       0.00
+ta45   Number of Generations                          178.90     267.20
+
+second calls on the better child per run: 34901 on average
+(the control sends a little over half of them there, by accident)
+
+=== I-018 filter: per-instance mean (primary), best-of-5 (reported) ===
+inst     mean ctrl   mean best         d      bo5 ctrl    bo5 best         d
+ta23        1585.5      1586.8     +1.30        1576.2      1576.2     +0.00
+ta29        1640.4      1640.1     -0.30        1631.5      1634.2     +2.67
+ta30        1620.9      1617.8     -3.07        1608.3      1605.7     -2.67
+ta45        2041.1      2038.7     -2.40        2029.0      2024.0     -5.00
+
+runs per cell and instance: 30
+
+filter rule, on the MEAN: mean(best - control) = -1.12;
+discard if > +2.0 -> PASS, go to the waves
+best-of-5 moved -1.25, and decides nothing here.

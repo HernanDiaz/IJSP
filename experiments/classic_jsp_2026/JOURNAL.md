@@ -2487,3 +2487,21 @@ given at every pair, tens of thousands of times a run.
 
 abc.ls.pick stays implemented and off by default, and I-018 builds on it. No
 records or matches in the 240 runs.
+
+## I-018's filter passes at -1.12, and the curve is asymmetric
+
+240 jobs, no infeasible schedule, seeds 1001 to 1030, independent of the waves.
+The mechanism is exact and cheap: every second call lands on the better child
+and generations rise on all four instances, on ta45 from 178.9 to 267.2, +49%,
+because re-searching a local optimum stops quickly.
+
+Best minus control: ta23 +1.30, ta29 -0.30, ta30 -3.07, ta45 -2.40, mean -1.12
+against a rule that discards above +2.0. It passes, best-of-five moving the
+same way at -1.25.
+
+The curve is asymmetric: going from 53% of second calls on the better child to
+0% cost 4.87 in I-017, going to 100% gains 1.12 at the filter. There is a slope,
+but it flattens on the good side; what the bug already does by accident
+collects much of the benefit. A -1.12 over four instances is inside the
+filter's noise and is not evidence. The waves decide. It is at least the
+loop's first favourable filter drawn on seeds of its own.
