@@ -1,0 +1,98 @@
+=== 0. MECHANISM CHECK ===
+inst   statistic                                     control      allow
+ta22   Plateau moves admitted in local search           0.00    2962.80
+ta22   Plateau moves admitted in crossover              0.00     277.75
+ta22   Number of Generations                           84.50      90.10
+ta23   Plateau moves admitted in local search           0.00    1505.75
+ta23   Plateau moves admitted in crossover              0.00     178.85
+ta23   Number of Generations                           83.55      85.30
+ta25   Plateau moves admitted in local search           0.00    1285.40
+ta25   Plateau moves admitted in crossover              0.00     190.60
+ta25   Number of Generations                           76.25      75.60
+ta26   Plateau moves admitted in local search           0.00    1785.70
+ta26   Plateau moves admitted in crossover              0.00     199.50
+ta26   Number of Generations                           82.65      80.95
+ta27   Plateau moves admitted in local search           0.00     673.75
+ta27   Plateau moves admitted in crossover              0.00     126.85
+ta27   Number of Generations                           77.10      74.30
+ta29   Plateau moves admitted in local search           0.00    4465.75
+ta29   Plateau moves admitted in crossover              0.00     361.95
+ta29   Number of Generations                           85.45      91.65
+ta30   Plateau moves admitted in local search           0.00    1682.45
+ta30   Plateau moves admitted in crossover              0.00     214.75
+ta30   Number of Generations                           81.40      83.50
+ta32   Plateau moves admitted in local search           0.00    2482.75
+ta32   Plateau moves admitted in crossover              0.00     403.70
+ta32   Number of Generations                          189.10     187.35
+ta33   Plateau moves admitted in local search           0.00    1699.30
+ta33   Plateau moves admitted in crossover              0.00     324.45
+ta33   Number of Generations                          194.10     180.70
+ta34   Plateau moves admitted in local search           0.00    3197.95
+ta34   Plateau moves admitted in crossover              0.00     545.45
+ta34   Number of Generations                          194.85     196.60
+ta40   Plateau moves admitted in local search           0.00    2608.20
+ta40   Plateau moves admitted in crossover              0.00     395.05
+ta40   Number of Generations                          191.65     193.95
+ta41   Plateau moves admitted in local search           0.00    1380.00
+ta41   Plateau moves admitted in crossover              0.00     277.85
+ta41   Number of Generations                          186.85     190.80
+ta42   Plateau moves admitted in local search           0.00    2596.35
+ta42   Plateau moves admitted in crossover              0.00     392.50
+ta42   Number of Generations                          210.40     213.25
+ta43   Plateau moves admitted in local search           0.00    1071.90
+ta43   Plateau moves admitted in crossover              0.00     239.65
+ta43   Number of Generations                          184.50     187.25
+ta44   Plateau moves admitted in local search           0.00    2500.50
+ta44   Plateau moves admitted in crossover              0.00     350.55
+ta44   Number of Generations                          193.45     194.45
+ta45   Plateau moves admitted in local search           0.00    1188.35
+ta45   Plateau moves admitted in crossover              0.00     246.60
+ta45   Number of Generations                          195.40     191.55
+ta46   Plateau moves admitted in local search           0.00     858.70
+ta46   Plateau moves admitted in crossover              0.00     242.10
+ta46   Number of Generations                          186.30     189.45
+ta47   Plateau moves admitted in local search           0.00    2853.35
+ta47   Plateau moves admitted in crossover              0.00     431.70
+ta47   Number of Generations                          210.45     217.20
+ta48   Plateau moves admitted in local search           0.00    2613.75
+ta48   Plateau moves admitted in crossover              0.00     430.55
+ta48   Number of Generations                          234.50     230.80
+ta49   Plateau moves admitted in local search           0.00    3069.40
+ta49   Plateau moves admitted in crossover              0.00     425.60
+ta49   Number of Generations                          209.10     210.45
+ta50   Plateau moves admitted in local search           0.00    2640.20
+ta50   Plateau moves admitted in crossover              0.00     366.15
+ta50   Number of Generations                          188.90     201.10
+
+plateau moves admitted in the local search per run: 2148.7 on average
+
+=== I-015 waves 1..4: per-instance mean (primary), best-of-5 (reported) ===
+inst     mean ctrl  mean allow         d      bo5 ctrl   bo5 allow         d
+ta22        1627.3      1630.0     +2.65        1620.5      1622.0     +1.50
+ta23        1589.7      1587.2     -2.45        1577.5      1577.0     -0.50
+ta25        1637.5      1638.5     +1.10        1629.2      1629.0     -0.25
+ta26        1691.5      1691.0     -0.55        1679.5      1682.8     +3.25
+ta27        1714.2      1719.5     +5.35        1706.0      1710.0     +4.00
+ta29        1641.3      1640.8     -0.55        1637.0      1637.0     +0.00
+ta30        1623.8      1623.0     -0.75        1613.5      1612.8     -0.75
+ta32        1837.8      1842.3     +4.55        1824.2      1826.5     +2.25
+ta33        1856.3      1858.8     +2.40        1848.8      1852.5     +3.75
+ta34        1889.7      1892.5     +2.80        1878.8      1882.0     +3.25
+ta40        1728.4      1723.6     -4.80        1715.8      1710.0     -5.75
+ta41        2091.4      2098.2     +6.80        2078.5      2081.0     +2.50
+ta42        2001.6      2001.3     -0.30        1992.5      1990.2     -2.25
+ta43        1930.7      1928.6     -2.10        1914.2      1911.2     -3.00
+ta44        2045.1      2042.8     -2.25        2039.0      2032.8     -6.25
+ta45        2044.5      2041.8     -2.70        2032.2      2033.0     +0.75
+ta46        2088.3      2087.7     -0.70        2073.0      2072.5     -0.50
+ta47        1969.2      1968.2     -1.05        1958.2      1950.2     -8.00
+ta48        2024.5      2023.2     -1.35        2009.5      2007.8     -1.75
+ta49        2013.8      2013.8     -0.10        2003.5      2003.2     -0.25
+ta50        2000.2      2004.7     +4.50        1989.0      1991.0     +2.00
+
+runs per cell and instance: 20
+
+look 4 of 6, symmetric boundary p <= 0.0142 (Pocock, six looks)
+PRIMARY, per-instance mean: +0.50, allow better on 13 of 21, W = 105.0, p = 0.7151
+reported, deciding nothing: best-of-5 moved -0.29
+-> continue: run wave 5
