@@ -37,6 +37,21 @@ namespace FuzzyFW {
 // nothing at all.
 #define  FUZZYFW_LOCAL_SEARCH_DEADEND "localsearch.deadend"
 
+// I-013. Which neighbour of N2 the tabu search accepts.
+//   "best"  (default, unchanged): the best of the whole neighbourhood. The
+//           sweep sorts by the heads&tails estimate and prunes, so it reads
+//           about a fifth of the neighbourhood and still returns the best.
+//   "first" : visit N2 in its own order from a ROTATING start and accept the
+//           first eligible neighbour that improves the current solution; if
+//           none does, fall back to the best eligible of the full sweep so the
+//           search still moves. The sort and the prune are skipped, because
+//           both exist to find the best and the point here is not to.
+// Why this and not another ordering rule: under a best-improvement rule the
+// visiting order cannot change which move is taken, which is why I-004
+// (exact bound), the tails defect (scrambled order) and I-005 (tie-break)
+// each measured zero. Order can only decide something once the rule goes.
+#define  FUZZYFW_LOCAL_SEARCH_SELECT "localsearch.select"
+
 #define FUZZYFW_LOCAL_SEARCH_TABUITER "localsearch.bad-iterations"
 
 
@@ -75,6 +90,9 @@ protected:
 
 	std::string deadEndLabel;
 	bool deadEndEscape;
+
+	std::string selectLabel;
+	bool firstImprovement;
 
 	Neighbourhood * neighbourhood;
 

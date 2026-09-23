@@ -29,7 +29,8 @@ LocalSearch::LocalSearch(ParameterDB *parameters)
 	guideLabel(FUZZYFW_LOCAL_SEARCH_DRIVE), estimationGuided(false),
 	filterLabel(FUZZYFW_LOCAL_SEARCH_FILTER), estimationFilter(false),
 	tailsLabel(FUZZYFW_LOCAL_SEARCH_TAILS), fullTails(false),
-	deadEndLabel(FUZZYFW_LOCAL_SEARCH_DEADEND), deadEndEscape(false)
+	deadEndLabel(FUZZYFW_LOCAL_SEARCH_DEADEND), deadEndEscape(false),
+	selectLabel(FUZZYFW_LOCAL_SEARCH_SELECT), firstImprovement(false)
 	{
 	if (parameters != NULL)
 		this->setup(parameters);
@@ -46,6 +47,8 @@ LocalSearch::LocalSearch(const LocalSearch &source)
 	filterLabel(source.filterLabel), estimationFilter(source.estimationFilter),
 	tailsLabel(source.tailsLabel), fullTails(source.fullTails),
 	deadEndLabel(source.deadEndLabel), deadEndEscape(source.deadEndEscape),
+	selectLabel(source.selectLabel),
+	firstImprovement(source.firstImprovement),
 	neighbours(source.neighbours) {
 
 	if (source.neighbourhood != NULL)
@@ -83,6 +86,10 @@ void LocalSearch::setup(ParameterDB *parameters) {
 		(parameters->getStringLower(this->tailsLabel).compare("full") == 0);
 	this->deadEndEscape =
 		(parameters->getStringLower(this->deadEndLabel).compare("escape") == 0);
+	// I-013: "first" abandons best-improvement, which is the only way the
+	// order in which N2's neighbours are visited can decide anything.
+	this->firstImprovement =
+		(parameters->getStringLower(this->selectLabel).compare("first") == 0);
 }
 
 
@@ -286,7 +293,7 @@ FullSolution LS_GradientDescent::apply(const Solution *solution,
 LS_Tabu::LS_Tabu(ParameterDB *parameters)
 	: LocalSearch(parameters), maxBadIterations(0),
 	badIterationsLabel(FUZZYFW_LOCAL_SEARCH_TABUITER),
-	badIterations(0)
+	badIterations(0), scanStart(0)
 {
 	tabuList = new TabuList(parameters);
 }
@@ -296,7 +303,7 @@ LS_Tabu::LS_Tabu(ParameterDB *parameters)
 LS_Tabu::LS_Tabu(const LS_Tabu &source)
 	: LocalSearch(source), maxBadIterations(source.maxBadIterations),
 	badIterationsLabel(badIterationsLabel),
-	badIterations(source.badIterations)
+	badIterations(source.badIterations), scanStart(source.scanStart)
 {
 	tabuList = source.tabuList->clone();
 }
@@ -352,6 +359,8 @@ unsigned long LS_Tabu::deepDeadEnd = 0;
 unsigned long LS_Tabu::deepBadStop = 0;
 unsigned long LS_Tabu::deepTimeStop = 0;
 unsigned long LS_Tabu::deepEscapes = 0;
+unsigned long LS_Tabu::firstHits = 0;
+unsigned long LS_Tabu::fallbackHits = 0;
 
 FullSolution LS_Tabu::apply(const Solution *solution,
 	const Fitness *fitness, const SharedVars *svars) {
@@ -430,7 +439,11 @@ FullSolution LS_Tabu::apply(const Solution *solution,
 				if (nb != NULL) nb->recomputeAllTails();
 			}
 		}
-		this->neighbourhood->sortByEstimation(svars);
+		// I-013: the sort exists to put the best first so the prune can cut.
+		// In first-improvement mode neither is wanted: the neighbourhood is
+		// visited in its own order, which is the whole point.
+		if (!this->firstImprovement)
+			this->neighbourhood->sortByEstimation(svars);
 
 		index = 0;
 		int escapeNeighbor = -1;          // best ignoring the tabu status
@@ -438,7 +451,66 @@ FullSolution LS_Tabu::apply(const Solution *solution,
 		unsigned long diagTies = 0;               // eligible neighbours at the best value
 		double diagBestSeen = 0.0;
 		bool diagHaveBest = false;
-		while (index < nNeighbours) {
+		if (this->firstImprovement) {
+			// I-013. Visit N2 from a rotating start, in the neighbourhood's
+			// own order, and take the FIRST eligible neighbour that improves
+			// the current solution. No sort and no prune: both serve the best
+			// rule that this cell abandons. If nothing improves, take the best
+			// eligible of the full sweep, because a tabu search must move.
+			Fitness *curFit = current.second;
+			int fallback = -1;
+			Fitness *fallbackValue = NULL;
+			int start = (nNeighbours > 0)
+				? (int)(this->scanStart % (unsigned int)nNeighbours) : 0;
+			for (int step = 0; step < nNeighbours; step++) {
+				int at = start + step;
+				if (at >= nNeighbours) at -= nNeighbours;
+				estimation = this->neighbourhood->getEstimation(at, svars);
+				isTabu = this->tabuList->isTabu(
+					this->neighbourhood->getNeighbour(at));
+				isLastNeighbour = 0;
+				if (lastNeighbour != NULL)
+					isLastNeighbour = lastNeighbour->isReverse(
+						this->neighbourhood->getNeighbour(at));
+				realValue =
+					this->neighbourhood->evaluateNeighbour(at, svars, false);
+				this->evaluations++;
+				if (realValue == NULL) continue;
+				LS_Tabu::diagScanned++;
+				if (estimation != NULL && estimation->isWorseThan(realValue))
+					LS_Tabu::diagBoundBreaks++;
+				bool eligibleMove =
+					(!isTabu || realValue->isBetterThan(bestSolution.second))
+					&& (lastNeighbour == NULL || !isLastNeighbour);
+				if (!eligibleMove) continue;
+				if (this->deadEndEscape
+					&& (escapeValue == NULL
+						|| realValue->isBetterThan(escapeValue))) {
+					escapeValue = realValue;
+					escapeNeighbor = at;
+				}
+				if (curFit != NULL && realValue->isBetterThan(curFit)) {
+					best = realValue;
+					bestNeighbor = at;
+					LS_Tabu::firstHits++;
+					break;
+				}
+				if (fallbackValue == NULL
+					|| realValue->isBetterThan(fallbackValue)) {
+					fallbackValue = realValue;
+					fallback = at;
+				}
+			}
+			if (bestNeighbor < 0 && fallback >= 0) {
+				best = fallbackValue;
+				bestNeighbor = fallback;
+				LS_Tabu::fallbackHits++;
+			}
+			if (bestNeighbor >= 0)
+				this->scanStart = (unsigned int)(bestNeighbor + 1);
+			index = nNeighbours;
+		}
+		while (!this->firstImprovement && index < nNeighbours) {
 			estimation = this->neighbourhood->getEstimation(index, svars);
 			isTabu = this->tabuList->isTabu(this->neighbourhood->getNeighbour(index));
 			if(lastNeighbour != NULL)

@@ -265,6 +265,16 @@ namespace FuzzyFW {
 		stats.push_back(std::pair<std::string, double>
 			("N2 estimate above real value", (double)LS_Tabu::diagBoundBreaks));
 		stats.push_back(std::pair<std::string, double>
+			("N2 moves by first improvement", (double)LS_Tabu::firstHits));
+		stats.push_back(std::pair<std::string, double>
+			("N2 sweeps with no improving move", (double)LS_Tabu::fallbackHits));
+		stats.push_back(std::pair<std::string, double>
+			("N2 share of moves by first improvement %",
+			(LS_Tabu::firstHits + LS_Tabu::fallbackHits)
+				? 100.0 * (double)LS_Tabu::firstHits
+					/ (double)(LS_Tabu::firstHits + LS_Tabu::fallbackHits)
+				: 0.0));
+		stats.push_back(std::pair<std::string, double>
 			("Deep LS calls", (double)this->deepLsCalls));
 		stats.push_back(std::pair<std::string, double>
 			("Deep iters per call",

@@ -26,6 +26,9 @@ protected:
 	unsigned int maxBadIterations;
 	std::string badIterationsLabel;
 	unsigned int badIterations;
+	// I-013: where the next sweep starts, carried across calls so the order
+	// rotates instead of always favouring the front of the neighbourhood.
+	unsigned int scanStart;
 
 public:
 		//-----  DIAGNOSTIC 2026-09-21  --------------------------------------
@@ -54,6 +57,14 @@ public:
 		static unsigned long deepBadStop;    // the non-improving counter ran out
 		static unsigned long deepTimeStop;   // the per-call time cap
 		static unsigned long deepEscapes;    // all-tabu states escaped from
+
+		//-----  I-013: first improvement over a rotating sweep  -------------
+		// The mechanism check reads these before the endpoint. If the first
+		// branch almost never fires, the rule did not change and the idea was
+		// not tested; if the sweep cost explodes, the comparison is about cost
+		// and not about order, and that has to be said out loud.
+		static unsigned long firstHits;      // moves taken by first improvement
+		static unsigned long fallbackHits;   // sweeps with no improving move
 
 		//-----  I-005: directed tie-breaking  -------------------------------
 		// N2 offers 1.5 to 2.0 eligible neighbours tied at the best value on
