@@ -2352,3 +2352,30 @@ effect that does not end at generation 0.
 
 I-015 pauses between its second and third looks, which the Pocock design
 tolerates at no cost, so that two experiments never share the machine.
+
+## I-016's filter passes both cells, and what it measures is I-001's lesson again
+
+360 jobs, no infeasible schedule, thirty runs per cell and instance.
+
+The mechanism is green in both cells: the average makespan of generation 0
+falls by about 156 units on every instance, from 2949 to 2752 on ta45, and the
+circle and the uniform draw start identically, 2752.2 against 2751.7, as the
+earlier measurement predicted. What improves the start is uniform sampling,
+not the circle.
+
+At the end of the run nothing is left. Per-instance means against the control:
+circle +1.43, -0.80, -1.90, +1.27, mean +0.00; uniform +4.10, -0.93, -1.63,
++1.30, mean +0.71. Neither exceeds +2.0, so both pass and go to the waves with
+the boundary split to 0.0071 each. A filter only discards; it neither accepts
+nor rejects a zero.
+
+What it already says, without a boundary and claiming no more: a 156-unit head
+start at generation 0 evaporates completely, as I-001's 294 did. The uniform
+cell, which also improves the 500 to 800 scouts of every run, leaves no trace
+on the mean either, so a scout that arrives in better shape does not change
+where the run ends. That agrees with everything before it: what decides the
+result is what the local search does during the run, not where it starts or
+what it is fed.
+
+I-015's looks 3 to 6 run first, then I-016's six waves, whose jobs are already
+generated and verified with circles for all 21 instances.

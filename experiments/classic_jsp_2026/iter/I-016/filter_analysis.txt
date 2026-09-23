@@ -1,0 +1,30 @@
+=== 0. MECHANISM CHECK: average makespan of generation 0 ===
+inst      control     circle    uniform
+ta23       2263.0     2122.4     2121.2
+ta29       2398.6     2235.5     2234.1
+ta30       2308.1     2185.5     2183.3
+ta45       2949.2     2752.2     2751.7
+circle starts -155.8 against the control on average
+uniform starts -157.2 against the control on average
+
+=== I-016 filter: per-instance mean (primary), best-of-5 (reported) ===
+
+-- circle - control --
+inst    mean ctrl mean circl         d     bo5 ctrl  bo5 circl         d
+ta23       1586.8     1588.2     +1.43       1576.2     1577.7     +1.50
+ta29       1641.1     1640.3     -0.80       1636.5     1634.8     -1.67
+ta30       1623.3     1621.4     -1.90       1614.0     1613.8     -0.17
+ta45       2041.7     2043.0     +1.27       2030.0     2033.0     +3.00
+
+-- uniform - control --
+inst    mean ctrl mean unifo         d     bo5 ctrl  bo5 unifo         d
+ta23       1586.8     1590.9     +4.10       1576.2     1580.3     +4.17
+ta29       1641.1     1640.1     -0.93       1636.5     1634.7     -1.83
+ta30       1623.3     1621.6     -1.63       1614.0     1610.5     -3.50
+ta45       2041.7     2043.0     +1.30       2030.0     2027.2     -2.83
+
+runs per cell and instance: 30
+
+filter rule, circle: mean(circle - control) = +0.00; discard if > +2.0 -> PASS
+filter rule, uniform: mean(uniform - control) = +0.71; discard if > +2.0 -> PASS
+cells for the waves: control, circle, uniform

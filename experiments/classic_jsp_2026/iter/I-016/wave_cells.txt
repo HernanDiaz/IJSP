@@ -1,0 +1,4 @@
+# written by analyze.py filter
+control
+circle
+uniform

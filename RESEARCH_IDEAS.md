@@ -302,7 +302,7 @@ bucle y están aquí para que no se repitan; sus cifras están en el JOURNAL.
 | I-003 | el explorador del ABC reinyecta un **elite pateado** en vez de una solución aleatoria | un arranque aleatorio a mitad de tirada no puede alcanzar a la población; uno dentro de una cuenca buena sí | kick−control = **+1.43** (ta23 −0.27, ta29 +0.70, ta30 −0.50, ta45 **+5.80**); regla > +2 descarta → **pasa, por poco y en contra** | 4 mirillas de 6: −1.02, −0.57, **−0.03**, +0.44; kick mejor en 9-10 de 21 siempre; p entre 0.55 y 0.88, la frontera nunca se acerca | **detenida en la 4ª** (2026-09-21) por cambio de dirección del PI, no por sus datos. Sin aceptación: es un cero |
 | H-4 | N8 contra N2 (y contra N1, N3, N_ext), fase B del paper de COR | un vecindario más rico gana | -- | 82 instancias x 30 runs, 2460 bloques pareados: N2 1846.50 contra N8 1847.94, dif −1.45, p_adj = 3.9e−4, r = 0.077 (**despreciable**); rangos de Friedman N2 2.1315 el mejor de cinco, N8 2.2400 | **descartada** (antes del bucle; `experiments/cor_tabu_2026/`) |
 | I-012 | **escapar del estado todo-tabú, solo eso** | la celda informativa de I-010 dio −1.11 y mejor en 15 de 21 (p = 0.033) sin frontera | esc−control = −1.82, pasa | 6 mirillas, 30 runs: +1.30, +1.09, +0.59, +0.27, +0.39, **+0.07**; mejor en 10 de 21, p = 0.835 | **descartada** (2026-09-22). La señal de I-010 **no se reprodujo** |
-| I-016 | **siembra desde el círculo** (idea del PI) y, de paso, **el generador aleatorio hecho uniforme** | que la población inicial represente todas las zonas del espacio; medido antes: el círculo cubre igual que el azar, pero el generador aleatorio del solver está sesgado y empieza un 6-7 % peor | pendiente | pendiente | **lanzada** (2026-09-23), con I-015 en pausa entre sus mirillas 2 y 3 |
+| I-016 | **siembra desde el círculo** (idea del PI) y, de paso, **el generador aleatorio hecho uniforme** | que la población inicial represente todas las zonas del espacio; medido antes: el círculo cubre igual que el azar, pero el generador aleatorio del solver está sesgado y empieza un 6-7 % peor | mecanismo: las dos arrancan **~156 mejor** en la generación 0; al final circle−control = **+0.00**, uniform−control = **+0.71**; pasan las dos (descartaba si > +2.0) | pendiente | **en oleadas** (2026-09-23), tras cerrar I-015 |
 | I-015 | **levantar el veto de meseta** (B-14): conservar la mejora que iguala exactamente el makespan del incumbente, en el cruce y en la escritura lamarckiana del tabú | I-014 dice que la búsqueda no sale de su cuenca; en JSP moverse de lado por la meseta del incumbente es cómo se sale, y el veto lo prohíbe | mecanismo **~3000 admisiones/tirada**, sin coste; allow−control = **−2.38** (ta45 −3.83, ta30 −3.00, ta23 −2.67, ta29 −0.03), pasa (descartaba si > +2.0) | mirillas media: **+1.46** (w1, 7 de 21, p = 0.237), **+0.62** (w2, 8 de 21, p = 0.848) | **en oleadas** (2026-09-23) |
 | I-014 | **reiniciar la población alrededor del incumbente** cuando la tirada lleva 0.2 del presupuesto sin mejorar | entre el 18 y el 44 % de cada tirada se gasta con riesgo de mejora medido en ~0 %; convertir ese tramo en búsqueda nueva **sin perder el incumbente** debe bajar la media | mecanismo **1.36 reinicios/tirada**; restart−control = **−0.70**, pasa (descartaba si > +2.0) | mirillas media: **-0.70** (w1, 13 de 21, p = 0.186), **-0.37** (w2, 12 de 21, p = 0.271), **-0.15** (w3, 9 de 21, p = 0.805), **-0.17** (w4, 11 de 21, p = 0.664), **-0.10** (w5, 10 de 21, p = 0.702), **-0.16** (w6, 10 de 21, **p = 0.516**) | **descartada** (2026-09-23) por no cruzar en la sexta, con el mecanismo disparándose en todas las mirillas |
 | I-013 | **primera mejora sobre un barrido rotatorio de N2**: sin ordenar, sin podar, desde una posición que rota, el primer vecino elegible que mejore | con la regla *el mejor* el orden es irrelevante, y por eso I-004, el defecto de las colas e I-005 dieron cero; al abandonarla, el orden decide el movimiento | mecanismo **al 69.7 %**; first−control = **+21.55** (ta45 +30.83, ta23 +29.27, ta30 +16.90, ta29 +9.20); regla > +2 → **DESCARTA** | -- | **descartada** (2026-09-23) en el filtro, y con una cifra que mide algo |
@@ -2501,3 +2501,46 @@ en la generación 0, porque se repite en cada explorador.
 
 **Orden de ejecución**: I-015 queda en pausa entre sus mirillas 2 y 3, lo que
 el diseño de Pocock admite sin coste, y nunca hay dos experimentos a la vez.
+
+### I-016, filtro: las dos celdas pasan, y lo que miden es la lección de I-001 otra vez
+
+360 trabajos, cero infactibles, 30 tiradas por celda e instancia.
+
+**Mecanismo, en verde en las dos celdas.** Makespan medio de la generación 0:
+
+| instancia | control | círculo | uniforme |
+|---|---|---|---|
+| ta23 | 2263.0 | 2122.4 | 2121.2 |
+| ta29 | 2398.6 | 2235.5 | 2234.1 |
+| ta30 | 2308.1 | 2185.5 | 2183.3 |
+| ta45 | 2949.2 | 2752.2 | 2751.7 |
+
+Las dos arrancan unas **156 unidades mejor**, y **exactamente igual entre
+sí**, como había anticipado la medida previa: lo que mejora el arranque no es el
+círculo, es muestrear uniformemente.
+
+**Al final de la tirada no queda nada.** Media por instancia contra el control:
+
+| instancia | círculo | uniforme |
+|---|---|---|
+| ta23 | +1.43 | +4.10 |
+| ta29 | −0.80 | −0.93 |
+| ta30 | −1.90 | −1.63 |
+| ta45 | +1.27 | +1.30 |
+| **media** | **+0.00** | **+0.71** |
+
+Ninguna supera +2.0: **pasan las dos** y van a oleadas con la frontera repartida,
+p <= 0.0071 cada una. El filtro solo descarta; no acepta, y tampoco rechaza por
+un cero.
+
+**Lo que dice ya, sin frontera y sin pretender más.** Una ventaja de 156
+unidades en la generación 0 se evapora entera, como se evaporaron las 294 de
+I-001. La celda uniforme, que mejora además los 500-800 exploradores de cada
+tirada, tampoco deja rastro en la media, así que el explorador que llega mejor
+tampoco cambia el destino de la tirada. Es coherente con todo lo anterior: **lo
+que decide el resultado es lo que hace la búsqueda local durante la tirada, no
+desde dónde empieza ni con qué se la alimenta**.
+
+**Orden**: primero se cierran las mirillas 3 a 6 de I-015, que está en pausa y
+más cerca de decidir; después las seis oleadas de I-016, cuyos trabajos ya
+están generados y verificados, con los círculos de las 21 instancias.
