@@ -1,0 +1,30 @@
+=== 0. MECHANISM CHECK ===
+inst   statistic                                     control     repeat
+ta23   LS repeat calls beyond the second                0.00   17252.33
+ta23   LS longest chain of calls on one child           2.00       9.90
+ta23   Number of Generations                          100.10      74.53
+ta29   LS repeat calls beyond the second                0.00   13733.37
+ta29   LS longest chain of calls on one child           2.00       9.90
+ta29   Number of Generations                          117.20      91.97
+ta30   LS repeat calls beyond the second                0.00   15732.53
+ta30   LS longest chain of calls on one child           2.00       9.93
+ta30   Number of Generations                           98.17      72.73
+ta45   LS repeat calls beyond the second                0.00   53131.97
+ta45   LS longest chain of calls on one child           2.00      10.90
+ta45   Number of Generations                          249.33     196.13
+
+repeat calls beyond the second per run: 24963 on average
+(the control makes none)
+
+=== I-021 filter: per-instance mean (primary), best-of-5 (reported) ===
+inst     mean ctrl mean repeat         d      bo5 ctrl  bo5 repeat         d
+ta23        1585.9      1583.3     -2.60        1575.0      1572.5     -2.50
+ta29        1639.8      1639.7     -0.10        1633.2      1635.3     +2.17
+ta30        1618.0      1615.3     -2.67        1605.7      1600.0     -5.67
+ta45        2039.4      2034.4     -4.97        2024.2      2023.2     -1.00
+
+runs per cell and instance: 30
+
+filter rule, on the MEAN: mean(repeat - control) = -2.58;
+discard if > +2.0 -> PASS, go to the waves
+best-of-5 moved -1.75, and decides nothing here.

@@ -2592,3 +2592,13 @@ anyway, gave zero; emptying the list and restarting from the optimum does not.
 It suggests I-021: more of the same, searching again from the better child's
 local optimum for as long as it keeps improving, with no fixed number of
 repeats and so no new parameter.
+
+## I-021's filter passes at -2.58 while running a quarter fewer generations
+
+240 jobs, no infeasible schedule, seeds 1001 to 1030, against the current
+configuration. The mechanism is exercised hard: 13,733 to 53,132 extra calls
+per run on the better child, chains of up to 10 or 11, and 21% to 26% fewer
+generations. Repeat minus control: ta23 -2.60, ta29 -0.10, ta30 -2.67, ta45
+-4.97, mean -2.58, passing a rule that discards above +2.0. It is better on all
+four or tied while running a quarter fewer generations, which is what I-020
+predicts if depth is what counts. The waves decide.
