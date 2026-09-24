@@ -3,13 +3,13 @@
 
 Usage: make_jobs.py hunt
 
-taillard_bounds.csv lists ta18 (15x15) as open: best known 1396, lower bound
+taillard_bounds.csv lists ta18 (20x15) as open: best known 1396, lower bound
 1377, 19 units of room. It is outside the protocol's list of 21 because the
 lists were drawn for 20x20 and larger. It is small, so short runs go far, and
-a hunt costs twenty minutes. A 15x15 instance this studied is unlikely to fall;
+a hunt costs twenty minutes. A 20x15 instance this studied is unlikely to fall;
 this is declared, and the hunt is cheap enough to run anyway.
 
-There is no per-class budget for 15x15; 40 s per run, the 20x20 budget, is
+There is no per-class budget for 20x15; 40 s per run, the 20x20 budget, is
 declared here and no per-class budget is touched. One cell, the current
 configuration, 400 runs on fresh seeds 9001 to 9400. A record is proved by its
 schedule.
