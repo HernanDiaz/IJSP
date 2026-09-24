@@ -338,6 +338,7 @@ bucle y están aquí para que no se repitan; sus cifras están en el JOURNAL.
 | I-003 | el explorador del ABC reinyecta un **elite pateado** en vez de una solución aleatoria | un arranque aleatorio a mitad de tirada no puede alcanzar a la población; uno dentro de una cuenca buena sí | kick−control = **+1.43** (ta23 −0.27, ta29 +0.70, ta30 −0.50, ta45 **+5.80**); regla > +2 descarta → **pasa, por poco y en contra** | 4 mirillas de 6: −1.02, −0.57, **−0.03**, +0.44; kick mejor en 9-10 de 21 siempre; p entre 0.55 y 0.88, la frontera nunca se acerca | **detenida en la 4ª** (2026-09-21) por cambio de dirección del PI, no por sus datos. Sin aceptación: es un cero |
 | H-4 | N8 contra N2 (y contra N1, N3, N_ext), fase B del paper de COR | un vecindario más rico gana | -- | 82 instancias x 30 runs, 2460 bloques pareados: N2 1846.50 contra N8 1847.94, dif −1.45, p_adj = 3.9e−4, r = 0.077 (**despreciable**); rangos de Friedman N2 2.1315 el mejor de cinco, N8 2.2400 | **descartada** (antes del bucle; `experiments/cor_tabu_2026/`) |
 | I-012 | **escapar del estado todo-tabú, solo eso** | la celda informativa de I-010 dio −1.11 y mejor en 15 de 21 (p = 0.033) sin frontera | esc−control = −1.82, pasa | 6 mirillas, 30 runs: +1.30, +1.09, +0.59, +0.27, +0.39, **+0.07**; mejor en 10 de 21, p = 0.835 | **descartada** (2026-09-22). La señal de I-010 **no se reprodujo** |
+| I-036 | **path relinking como cruce**: los hijos son los puntos a 1/3 y 2/3 del camino entre los padres en el espacio de órdenes relativos (`crossover = jsp.pr`) | recombinar a distancia fijada de ambos padres, no el mejor punto del camino, y buscar en profundidad desde ahí, saca de la meseta | pendiente | pendiente | **lanzada** (2026-09-24) |
 | I-035 | **dos cruces por fuente, búsqueda profunda sobre la mejor pareja** (`abc.pair.choice = best-of-two`) | lo que funciona es la profundidad sobre lo mejor; empezarla desde un hijo mejor debería rendir más | mecanismo: ~15000 segundas parejas elegidas por tirada, ~45 unidades mejores en bruto, más generaciones; pair−control = **+1.13** (ta30 +2.70, ta29 +1.57, ta45 +1.27, ta23 −1.03), pasa (descartaba si > +2.0); bo5 +3.29 | mirillas media: **+1.01** (w1, 11 de 21, p = 0.532), **+0.49** (w2, 12 de 21, p = 0.715), **+0.75** (w3, 9 de 21, p = 0.492), **+1.30** (w4, 7 de 21, p = 0.033), **+0.96** (w5, 7 de 21, p = 0.039), **+0.80** (w6, 7 de 21, p = 0.099) | **rechazada y revertida** (2026-09-24) |
 | I-034 | **exploradores pulidos**: cada explorador se busca en cadena antes de entrar (`abc.scout.polish = chain`) | un aleatorio en bruto es un reinicio desperdiciado; pulido entra como un óptimo local nuevo, una cuenca nueva | mecanismo: 10 a 231 exploradores pulidos por tirada; polish−control = **+0.03** (ta45 −3.23, ta23 +3.30, ta29 −0.10, ta30 +0.13), pasa (descartaba si > +2.0); bo5 −1.38 | mirillas media: **-0.14** (w1, 9 de 21, p = 0.862), **-0.11** (w2, 10 de 21, p = 0.949), **-0.10** (w3, 10 de 21, p = 0.945), **+0.21** (w4, 6 de 21, p = 0.175), **+0.30** (w5, 5 de 21, p = 0.076), **+0.31** (w6, 6 de 21, **p = 0.056**) | **descartada** (2026-09-24) por no cruzar en la sexta, del lado del control; **código revertido** y verificado |
 | I-033 | **caza en `ta18`** (20x15), la única instancia abierta que la línea no había tocado, 400 tiradas de 40 s, semillas 9001-9400 | 19 unidades de margen hasta la cota; pequeña, así que las tiradas cortas rinden; improbable, y barata | -- | 400 tiradas, cero infactibles: **sin récord ni igualada**; mejor **1414**, 18 por encima del BKS (1.3 %); cuantil 1 % 1417 | **cerrada** (2026-09-24): `ta18` queda lejos |
@@ -3960,3 +3961,37 @@ del óptimo al que llega la cadena.
 anterior a I-035, sin rastro del interruptor, y el solver recompilado
 reproduce exactamente la referencia a número fijo de generaciones
 (`prereg2_abc_300s`, `ref_I-018`, `ref_I-021`, en ta23 y ta45).
+
+### I-036 — path relinking como cruce del ABC
+
+**De dónde sale**: TS/PR está detrás de muchas de las cotas recientes de
+Taillard. Lo probamos en junio (H-2, IPRTS, rama `experiment/path-relinking`)
+y no dio nada: 0 mejoras en unas 500 llamadas. Revisado ese código, su camino
+recorría solo arcos críticos extremos que discrepaban con la guía y
+**devolvía el mejor punto del camino**, que casi siempre queda pegado al
+origen, así que apenas recombinaba; y el núcleo de búsqueda de entonces era
+somero. Aquí se cambian justo esas dos cosas: el punto se toma **a distancia
+fijada de ambos padres**, y la cadena que sale de él es la profunda de I-021.
+
+**La idea**: `crossover = jsp.pr` en lugar de `jsp.jox`. Cada operación (la
+k-ésima aparición de un trabajo) recibe la clave (1 − a)·posA + a·posB y el
+hijo son las operaciones ordenadas por clave, con **a = 1/3 y a = 2/3,
+fijados de antemano**. Todo par de operaciones que los dos padres ordenan
+igual conserva ese orden; los que discrepan se resuelven según lo separados
+que estén en cada padre. Factible por construcción.
+
+**Primera versión, corregida antes de lanzar**: caminaba intercambiando
+**posiciones** discrepantes; en una secuencia de trabajos eso desordena el
+orden relativo (los padres difieren en 368 de 400 posiciones), y la
+comprobación previa lo cazó: ta23 1663 frente a 1573, generaciones 71 frente a
+122. No llegó a ningún filtro.
+
+**Comprobado antes de lanzar** (versión buena): por defecto, idéntico a la
+referencia a número fijo de generaciones (`prereg2_abc_300s`, `ref_I-018`,
+`ref_I-021`); 27156 cruces PR por tirada en ta23 y 91907 en ta45, con el
+primer hijo a 239 de las 272 posiciones en que difieren los padres;
+generaciones 120 → 112 (ta23) y 280 → 379 (ta45); horarios factibles.
+
+**Filtro**: descartar si `pr − control` supera +2.0, semillas 1001 a 1030.
+**Endpoint**: media por instancia, Pocock simétrica p <= 0.0142. **Mecanismo,
+primero**: cruces PR, distancias padre-padre e hijo-padre, generaciones.
