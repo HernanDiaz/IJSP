@@ -2626,3 +2626,29 @@ every step away has lost.
 No records or matches in the 870 runs. best-repeat enters the configuration as
 setup/ref_I-021.txt, the control from I-022 on. Acceptance 2 of 3; the third
 triggers the 300-second recomparison against the original reference.
+
+## I-022 matches ta29's best known, and I-021's tail gain does not replicate as I-018's did
+
+600 verified runs, no infeasible schedule, fresh seeds 3001 to 3075. No record.
+A match: ta29 = 1625, its best known, from the current configuration at 40
+seconds per run, verified by the independent checker against the original
+OR-Library data and kept in iter/I-022/evidence/.
+
+The analyzer printed "RECORD" and it is not one: a record is strictly below the
+best known. I-006's analyzer, copied for I-019 and I-022, labelled anything at
+or below as a record, the slip I-007 had already fixed in its own. All three
+now tell RECORD from MATCH; only I-022 ever produced a value at the best known,
+so no earlier output changes.
+
+Best of 75, previous against current: ta22 1613 both, ta23 1568 to 1567, ta29
+1630 to 1625, ta30 1599 to 1595. Mean of the three lowest better with the
+current configuration on all four, narrowly. Best-of-five blocks: 32 better,
+25 worse, 3 tied, p = 0.427, with ta30 going the other way.
+
+The match is real and it came from the current configuration, but I-021's
+tail replication does not come out as I-018's did, where the block test gave
+p = 0.002 with clear margins. I-021's accepted gain lives in the mean over 21
+instances; on these four 20x20 instances and in the tail, the step from
+ref_I-018 to ref_I-021 cannot be told from noise. The acceptance stands, being
+about the mean and bounded, but for the record hunt I-021's benefit is small
+at best.

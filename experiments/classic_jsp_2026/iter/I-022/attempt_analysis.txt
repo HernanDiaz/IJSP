@@ -1,0 +1,32 @@
+=== 1. RECORDS and near misses (within 2 of the BKS) ===
+ta29   current   *** MATCH ***  makespan 1625, BKS 1625, gap +0   (chunk c15)
+
+=== 2. best of N, and its gap to the BKS ===
+inst      BKS               previous               current
+ta22     1600         1613 ( +13)             1613 ( +13)     
+ta23     1557         1568 ( +11)             1567 ( +10)     
+ta29     1625         1630 (  +5)             1625 (  +0)     
+ta30     1584         1599 ( +15)             1595 ( +11)     
+
+=== 3. mean of the three lowest (expected-shortfall proxy) ===
+inst         previous       current
+ta22           1613.7        1613.0
+ta23           1569.3        1567.0
+ta29           1630.3        1628.3
+ta30           1600.0        1599.0
+
+=== 4. best of blocks of 5 runs, current against previous ===
+ta22   current better on 8 of 15 blocks (worse 5, tied 2)
+ta23   current better on 10 of 15 blocks (worse 5, tied 0)
+ta29   current better on 9 of 15 blocks (worse 5, tied 1)
+ta30   current better on 5 of 15 blocks (worse 10, tied 0)
+pooled: current better on 32, worse on 25, tied 3 -> sign test p = 0.427
+
+=== reported, deciding nothing: per-instance mean ===
+inst         previous       current
+ta22           1625.4        1624.1
+ta23           1584.8        1582.8
+ta29           1640.4        1638.7
+ta30           1615.9        1617.5
+
+runs per cell and instance: 75

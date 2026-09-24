@@ -262,7 +262,10 @@ nada.
     `iter/I-012/evidence/ta30_1584_control_I-012_fc1_control.csv`.
     **Primera vez de la línea**: el mejor anterior era 1588, del régimen
     largo, y en el régimen corto era 1595.
-  - `ta29` = **1625**, iguala el BKS, tres veces: régimen largo, celda de
+  - `ta29` = **1625**, iguala el BKS **otra vez el 2026-09-24**, con la
+    configuración vigente (`ref_I-021`) a 40 s por tirada, I-022,
+    `iter/I-022/evidence/ta29_1625_current_I-022_c15_run5.csv`. Antes, tres
+    veces: régimen largo, celda de
     300 s de I-007 (`iter/I-007/evidence/`), y celda `escape` del filtro de
     I-012 (`iter/I-012/evidence/`).
   - `ta23` = **1564**, a 7 del BKS, I-006, `iter/I-006/evidence/`.
@@ -320,7 +323,7 @@ bucle y están aquí para que no se repitan; sus cifras están en el JOURNAL.
 | I-003 | el explorador del ABC reinyecta un **elite pateado** en vez de una solución aleatoria | un arranque aleatorio a mitad de tirada no puede alcanzar a la población; uno dentro de una cuenca buena sí | kick−control = **+1.43** (ta23 −0.27, ta29 +0.70, ta30 −0.50, ta45 **+5.80**); regla > +2 descarta → **pasa, por poco y en contra** | 4 mirillas de 6: −1.02, −0.57, **−0.03**, +0.44; kick mejor en 9-10 de 21 siempre; p entre 0.55 y 0.88, la frontera nunca se acerca | **detenida en la 4ª** (2026-09-21) por cambio de dirección del PI, no por sus datos. Sin aceptación: es un cero |
 | H-4 | N8 contra N2 (y contra N1, N3, N_ext), fase B del paper de COR | un vecindario más rico gana | -- | 82 instancias x 30 runs, 2460 bloques pareados: N2 1846.50 contra N8 1847.94, dif −1.45, p_adj = 3.9e−4, r = 0.077 (**despreciable**); rangos de Friedman N2 2.1315 el mejor de cinco, N8 2.2400 | **descartada** (antes del bucle; `experiments/cor_tabu_2026/`) |
 | I-012 | **escapar del estado todo-tabú, solo eso** | la celda informativa de I-010 dio −1.11 y mejor en 15 de 21 (p = 0.033) sin frontera | esc−control = −1.82, pasa | 6 mirillas, 30 runs: +1.30, +1.09, +0.59, +0.27, +0.39, **+0.07**; mejor en 10 de 21, p = 0.835 | **descartada** (2026-09-22). La señal de I-010 **no se reprodujo** |
-| I-022 | **intento de récord con la configuración de dos aceptaciones**, `ref_I-018` contra `ref_I-021`, lista corta, 75 tiradas por celda e instancia, semillas 3001-3075 | I-019 midió que I-018 llega a la cola; falta ver si I-021 también, y el récord vive ahí | -- | pendiente | **lanzada** (2026-09-24) |
+| I-022 | **intento de récord con la configuración de dos aceptaciones**, `ref_I-018` contra `ref_I-021`, lista corta, 75 tiradas por celda e instancia, semillas 3001-3075 | I-019 midió que I-018 llega a la cola; falta ver si I-021 también, y el récord vive ahí | -- | 600 tiradas: **sin récord; iguala el BKS de `ta29`, 1625**, con la configuración vigente a 40 s, verificado. Mejor de 75, previous → current: ta29 1630 → **1625**, ta30 1599 → 1595, ta23 1568 → 1567, ta22 1613 = 1613. Bloques de 5: current mejor en 32, peor en 25, p = 0.427 | **cerrada** (2026-09-24): igualada de `ta29`; la cola de I-021 **no se confirma** como la de I-018 |
 | I-021 | **repetir la búsqueda sobre el mejor hijo mientras mejore** (`abc.ls.pick = best-repeat`) | la profundidad es lo que vale (I-020), y la segunda llamada mejora al hijo dos de cada tres veces | mecanismo: ~25000 llamadas extra por tirada, cadenas de ~10, generaciones **−21 a −26 %**; repeat−control = **−2.58** (ta45 −4.97, ta30 −2.67, ta23 −2.60, ta29 −0.10), pasa (descartaba si > +2.0) | mirillas media: **-3.56** (w1, 14 de 21, p = 0.022), **-2.95** (w2, 15 de 21, p = 0.017), **-2.62** (w3, **16 de 21**, **p = 0.0021**) → cruza | **ACEPTADA** (2026-09-24) en la mirilla 3 de 6, **sobre** I-018. Segunda aceptación; configuración vigente `setup/ref_I-021.txt` |
 | I-020 | **¿profundidad o generaciones?** Suprimir la segunda llamada al tabú (`abc.ls.pick = none`), contra la configuración vigente | I-018 profundiza sobre el mejor hijo **y** corre más generaciones; `none` conserva y amplía lo segundo (+68-75 %) y quita lo primero | mecanismo exacto, sin segunda llamada, generaciones **+56 a +73 %**; none−control = **+5.96** (ta45 +7.77, ta30 +7.33, ta23 +5.97, ta29 +2.77); regla > +2 → **DESCARTA** | -- | **descartada** (2026-09-24) en el filtro: **la ganancia de I-018 es la profundidad**, no el rendimiento |
 | I-019 | **intento de récord con la configuración nueva** (I-018) sobre la lista corta, vieja contra nueva, 75 tiradas por celda e instancia, semillas 2001-2075 | la media bajó 3.38 y el mejor de cinco 4.19; el récord vive en la cola, que es donde hay que llevarla | -- | 600 tiradas: **sin récord ni casi**. Mejor de 75, vieja → nueva: ta30 1598 → **1589**, ta29 1631 → 1630, ta23 1566 → 1565, ta22 1614 → 1613. Bloques de 5: **nueva mejor en 40, peor en 16, p = 0.002** | **cerrada** (2026-09-24): sin récord; la ganancia de I-018 **llega a la cola**, con semillas nuevas |
@@ -3154,3 +3157,52 @@ se midió I-021; `current` = `setup/ref_I-021.txt`. **Lista corta, presupuesto y
 endpoints, los de I-006**: `ta29`, `ta30`, `ta23`, `ta22`; 75 tiradas de 40 s
 por celda e instancia; récord, mejor de 75, media de los tres más bajos y
 contraste de signos sobre bloques de 5. **Semillas nuevas, 3001 a 3075.**
+
+### I-022, cierre: iguala el BKS de `ta29`, y la cola de I-021 no se confirma como la de I-018
+
+600 tiradas verificadas, cero infactibles, semillas 3001 a 3075.
+`iter/I-022/attempt_analysis.txt`.
+
+**1. Récord: no. Igualada: sí, `ta29` = 1625**, el mejor conocido, con la
+configuración vigente (`ref_I-021`), a 40 s por tirada, en la tirada 5 del
+trozo c15. Verificada con el comprobador independiente contra los datos
+originales de OR-Library y guardada en
+`iter/I-022/evidence/ta29_1625_current_I-022_c15_run5.csv`. Ningún otro valor
+entró a dos unidades de un BKS.
+
+**Una corrección de etiqueta, antes de que confunda a nadie.** El analizador
+imprimió `*** RECORD ***`, y **no es un récord**: récord es quedar
+estrictamente por debajo del BKS. El analizador de I-006, que se copió para
+I-019 e I-022, marcaba como récord todo lo que quedara en el BKS o por debajo;
+es el mismo desliz que I-007 ya había corregido en el suyo. Corregido en los
+tres, que ahora distinguen `RECORD` de `MATCH`; solo I-022 produjo un valor en
+el BKS, así que ninguna salida anterior cambia.
+
+**2. Mejor de las 75:**
+
+| inst | BKS | previous (ref_I-018) | current (ref_I-021) |
+|---|---|---|---|
+| ta22 | 1600 | 1613 (+13) | 1613 (+13) |
+| ta23 | 1557 | 1568 (+11) | **1567** (+10) |
+| ta29 | 1625 | 1630 (+5) | **1625 (=)** |
+| ta30 | 1584 | 1599 (+15) | **1595** (+11) |
+
+**3. Media de los tres más bajos**: `current` mejor en las cuatro, por poco
+(ta29 1630.3 → 1628.3, ta23 1569.3 → 1567.0, ta30 1600.0 → 1599.0, ta22 1613.7
+→ 1613.0).
+
+**4. Bloques de 5**: `current` mejor en 32, peor en 25, empate en 3;
+**p = 0.427**. En ta30 va al revés (5 contra 10).
+
+**Lo que dice.** La igualada es real y es con la configuración vigente, pero
+**la réplica de cola de I-021 no sale como salió la de I-018**: allí el
+contraste de bloques dio p = 0.002 con la media de los tres más bajos mejor en
+las cuatro por márgenes claros; aquí da p = 0.427, y la media por instancia
+empeora en ta30. La ganancia aceptada de I-021 está en la media sobre 21
+instancias; en estas cuatro 20x20 y en la cola, el paso de `ref_I-018` a
+`ref_I-021` **no se distingue del ruido**. Nada de esto toca la aceptación, que
+es sobre la media y con su frontera, pero sí dice que para la caza el
+beneficio de I-021 es, como mucho, pequeño.
+
+**Mejores propios**: `ta29` iguala su BKS por cuarta vez en la línea (primera
+con la configuración vigente); los demás no mejoran (`ta30` 1584, `ta23` 1564).

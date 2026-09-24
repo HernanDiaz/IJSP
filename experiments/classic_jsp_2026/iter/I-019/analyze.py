@@ -9,7 +9,8 @@ is a record attempt and its endpoints are about the lower tail.
 
 Pre-declared, in order:
 
-1. RECORD. Any run whose verified makespan is at or below the instance's BKS.
+1. RECORD. Any run whose verified makespan is strictly below the instance's
+   BKS; one equal to it is a MATCH.
    The proof is the schedule, so the certificate file and the run index are
    printed for anything at BKS or below, and for anything within two units of
    it so a near miss can be chased.
@@ -100,7 +101,10 @@ def main():
         for cell in CELLS:
             for value, tag in sorted(data[(cell, inst)]):
                 if target is not None and value <= target + NEAR:
-                    mark = "*** RECORD ***" if value <= target else "near miss"
+                    # A record is strictly below the best known; equal is
+                    # a match (the same slip I-007 fixed in its analyzer).
+                    mark = ("*** RECORD ***" if value < target else
+                            "*** MATCH ***" if value == target else "near miss")
                     print("%-6s %-9s %s  makespan %d, BKS %d, gap %+d   (chunk %s)"
                           % (inst, cell, mark, value, target, value - target, tag))
                     found += 1
