@@ -1,0 +1,2 @@
+
+20 schedules; improved 0 (0.0 %), 0 units; 2839 pair searches, 100.0 % completed within the node limit; 45 s

@@ -336,6 +336,7 @@ bucle y están aquí para que no se repitan; sus cifras están en el JOURNAL.
 | I-003 | el explorador del ABC reinyecta un **elite pateado** en vez de una solución aleatoria | un arranque aleatorio a mitad de tirada no puede alcanzar a la población; uno dentro de una cuenca buena sí | kick−control = **+1.43** (ta23 −0.27, ta29 +0.70, ta30 −0.50, ta45 **+5.80**); regla > +2 descarta → **pasa, por poco y en contra** | 4 mirillas de 6: −1.02, −0.57, **−0.03**, +0.44; kick mejor en 9-10 de 21 siempre; p entre 0.55 y 0.88, la frontera nunca se acerca | **detenida en la 4ª** (2026-09-21) por cambio de dirección del PI, no por sus datos. Sin aceptación: es un cero |
 | H-4 | N8 contra N2 (y contra N1, N3, N_ext), fase B del paper de COR | un vecindario más rico gana | -- | 82 instancias x 30 runs, 2460 bloques pareados: N2 1846.50 contra N8 1847.94, dif −1.45, p_adj = 3.9e−4, r = 0.077 (**despreciable**); rangos de Friedman N2 2.1315 el mejor de cinco, N8 2.2400 | **descartada** (antes del bucle; `experiments/cor_tabu_2026/`) |
 | I-012 | **escapar del estado todo-tabú, solo eso** | la celda informativa de I-010 dio −1.11 y mejor en 15 de 21 (p = 0.033) sin frontera | esc−control = −1.82, pasa | 6 mirillas, 30 runs: +1.30, +1.09, +0.59, +0.27, +0.39, **+0.07**; mejor en 10 de 21, p = 0.835 | **descartada** (2026-09-22). La señal de I-010 **no se reprodujo** |
+| I-028 | **B-12 con dos máquinas**: reoptimización **exacta y conjunta** de dos máquinas, las demás fijas, sobre horarios guardados | lo que falta exige mover operaciones en dos máquinas a la vez | -- | **0 de 20** en el BKS mejoran con **todo** par que incluya una máquina crítica (2839 búsquedas exactas); **20 de 800** finales (2.5 %), igual que con una | **cerrada** (2026-09-24), sondeo sin máquina: tampoco está en dos máquinas |
 | I-027 | **B-12 con una máquina**: reoptimización **exacta** de una máquina entera con las demás fijas, máquina a máquina hasta óptimo local, sobre horarios ya guardados | la salida de la meseta del BKS está en una resecuenciación que N2 no ve | -- | **0 de 20** horarios en el BKS mejoran; **19 de 800** finales de I-024 (2.4 %), de 1 a 4 unidades, ninguno llega al BKS | **cerrada** (2026-09-24), sondeo sin máquina: la salida no está en una sola máquina |
 | I-026 | **la cola extrema a 300 s contra 40 s**, con la configuración vigente: la caza de I-024 repetida a igual CPU con 53 tiradas de 300 s por instancia, semillas 5001-5053 | I-025 dejó abierto si la tirada larga da mejores mínimos; la primera igualada de `ta29` salió a 300 s | -- | 106 tiradas de 300 s, cero infactibles: **sin récord**. Igualadas: `ta29` **0** de 53 (mejor 1631), `ta30` 1 de 53. A igual CPU, I-024 (40 s) dio 1 y 2 | **cerrada** (2026-09-24): la tirada larga no da mejor cola extrema; para cazar, 40 s |
 | I-025 | **B-1: reinicio contra tirada larga a igual CPU**, sobre datos existentes (control de I-001 contra `prereg2_abc`), sin correr nada | el reinicio con presupuesto por clase domina a una tirada de 300 s | -- | mejor-de-k corto mejor en la mediana en **17 de 21**, media −3.50, p = 0.0004; el mínimo absoluto lo da a veces la tirada larga | **cerrada** (2026-09-24), **descriptiva**: dos tandas de días distintos |
@@ -3553,3 +3554,35 @@ nada. La salida de la meseta **no está en una sola máquina**.
 **Qué deja**: B-12 hablaba de **dos** máquinas, y la razón es justamente esta:
 el cambio que falta puede exigir mover operaciones en dos máquinas a la vez.
 Es I-028. Sin cambios en el solver, así que no hay nada que revertir.
+
+### I-028 — B-12 con dos máquinas: tampoco ahí está la salida
+
+**El modelo**, extensión exacta del de I-027: sin los arcos de dos máquinas
+M1 y M2 el grafo es acíclico y da cabezas, colas y precedencias con retardo para
+las operaciones de las dos; la mejor pareja de secuencias se busca por
+ramificación y poda sobre los horarios **activos** de esas dos máquinas
+(Giffler-Thompson restringido a ellas), con la cota de Jackson de cada máquina,
+solo mejoras estrictas, y cada mejora comprobada contra el grafo completo.
+`iter/I-028/`.
+
+**Los horarios en el BKS, de forma exhaustiva.** Un par de máquinas que no toque
+el camino crítico no puede acortarlo, así que basta con **todo par que incluya
+al menos una máquina del camino crítico**: 2839 búsquedas sobre los 20 horarios
+guardados en el BKS de `ta29` y `ta30`, **todas completas y exactas, y ninguna
+mejora**.
+
+**Los 800 finales de I-024**, con los seis pares de las cuatro máquinas más
+críticas: **20 mejoran (2.5 %), 40 unidades**, de 1 a 4; con una máquina eran 19
+y 41. Ninguno llega al BKS.
+
+**Lo que queda dicho, con I-027**: los horarios en el BKS son óptimos frente a
+reordenar **cualquier máquina** y **cualquier par de máquinas** que pueda
+importar, de forma exacta; y en los óptimos locales corrientes del tabú, dos
+máquinas no encuentran nada que no encuentre una. La salida de la meseta, si
+existe, **no está en reordenar una o dos máquinas enteras**.
+
+**Lo que queda de B-12** es su forma literal de **ventana**: liberar todas las
+operaciones que caen en una franja de tiempo, en todas las máquinas a la vez, y
+resolverlas de forma exacta con el resto fijo. Es un vecindario de otra forma
+—estrecho en tiempo pero ancho en máquinas—, y es I-029. Sin cambios en el
+solver, nada que revertir.

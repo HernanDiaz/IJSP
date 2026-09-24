@@ -2790,3 +2790,25 @@ and those at the best known all are. N2 swaps adjacent pairs at the ends of
 critical blocks; this allows any order of a whole machine, and there is still
 nothing. The exit is not on one machine. B-12 spoke of two machines for exactly
 this reason, which is I-028. No solver change, so nothing to roll back.
+
+## I-028: B-12 on two machines; the exit is not there either
+
+The exact extension of I-027: without the arcs of two machines the graph is
+acyclic and gives heads, tails and delayed precedences for both; the best pair
+of sequences is found by branch and bound over the active schedules of those
+two machines (Giffler and Thompson restricted to them), with a Jackson bound on
+each, strict improvements only, each checked against the full graph.
+
+On the stored schedules at the best known it was run exhaustively: a pair not
+touching the critical path cannot shorten it, so every pair with at least one
+critical machine suffices, 2,839 searches over the 20 schedules, all complete
+and exact, and none improves. On I-024's 800 final schedules, with the six
+pairs of the four most critical machines, 20 improve (2.5%) by 40 units, where
+one machine gave 19 and 41; none reaches the best known.
+
+With I-027: the schedules at the best known are optimal against reordering any
+machine and any pair of machines that could matter, exactly, and on ordinary
+tabu optima two machines find nothing one does not. The exit beneath the
+plateau, if there is one, is not in reordering one or two whole machines. What
+is left of B-12 is its literal window form, freeing every operation in a slice
+of time across all machines at once, which is I-029.
