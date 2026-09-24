@@ -1,0 +1,98 @@
+=== 0. MECHANISM CHECK ===
+inst   statistic                                     control     polish
+ta22   Scouts polished                                  0.00      84.40
+ta22   Tabu calls on scouts                             0.00     319.60
+ta22   Number of Generations                           95.80      92.60
+ta23   Scouts polished                                  0.00      57.20
+ta23   Tabu calls on scouts                             0.00     220.40
+ta23   Number of Generations                           80.20      92.00
+ta25   Scouts polished                                  0.00      88.60
+ta25   Tabu calls on scouts                             0.00     320.20
+ta25   Number of Generations                           77.40      82.00
+ta26   Scouts polished                                  0.00      38.20
+ta26   Tabu calls on scouts                             0.00     135.40
+ta26   Number of Generations                           86.00      90.60
+ta27   Scouts polished                                  0.00      16.80
+ta27   Tabu calls on scouts                             0.00      63.80
+ta27   Number of Generations                           79.20      80.00
+ta29   Scouts polished                                  0.00     100.40
+ta29   Tabu calls on scouts                             0.00     365.80
+ta29   Number of Generations                           82.20      96.20
+ta30   Scouts polished                                  0.00      38.00
+ta30   Tabu calls on scouts                             0.00     139.40
+ta30   Number of Generations                           80.60      72.20
+ta32   Scouts polished                                  0.00     208.40
+ta32   Tabu calls on scouts                             0.00     787.00
+ta32   Number of Generations                          186.60     181.00
+ta33   Scouts polished                                  0.00     295.40
+ta33   Tabu calls on scouts                             0.00    1154.40
+ta33   Number of Generations                          176.40     184.80
+ta34   Scouts polished                                  0.00     464.20
+ta34   Tabu calls on scouts                             0.00    1798.80
+ta34   Number of Generations                          206.00     203.80
+ta40   Scouts polished                                  0.00     233.20
+ta40   Tabu calls on scouts                             0.00     921.60
+ta40   Number of Generations                          186.40     183.40
+ta41   Scouts polished                                  0.00     278.20
+ta41   Tabu calls on scouts                             0.00    1096.60
+ta41   Number of Generations                          186.00     197.20
+ta42   Scouts polished                                  0.00     320.60
+ta42   Tabu calls on scouts                             0.00    1260.80
+ta42   Number of Generations                          207.80     204.20
+ta43   Scouts polished                                  0.00     174.40
+ta43   Tabu calls on scouts                             0.00     690.80
+ta43   Number of Generations                          176.40     174.20
+ta44   Scouts polished                                  0.00     360.00
+ta44   Tabu calls on scouts                             0.00    1414.00
+ta44   Number of Generations                          196.00     193.80
+ta45   Scouts polished                                  0.00     262.60
+ta45   Tabu calls on scouts                             0.00    1040.00
+ta45   Number of Generations                          187.20     183.40
+ta46   Scouts polished                                  0.00     183.00
+ta46   Tabu calls on scouts                             0.00     708.60
+ta46   Number of Generations                          175.00     186.40
+ta47   Scouts polished                                  0.00     252.40
+ta47   Tabu calls on scouts                             0.00     992.00
+ta47   Number of Generations                          201.00     191.80
+ta48   Scouts polished                                  0.00     379.80
+ta48   Tabu calls on scouts                             0.00    1507.20
+ta48   Number of Generations                          207.80     202.40
+ta49   Scouts polished                                  0.00     272.20
+ta49   Tabu calls on scouts                             0.00    1055.60
+ta49   Number of Generations                          196.00     193.20
+ta50   Scouts polished                                  0.00     131.00
+ta50   Tabu calls on scouts                             0.00     522.40
+ta50   Number of Generations                          181.00     178.20
+
+scouts polished per run: 202 on average (the control polishes none)
+
+=== I-034 waves 1..1: per-instance mean (primary), best-of-5 (reported) ===
+inst     mean ctrl mean polish         d      bo5 ctrl  bo5 polish         d
+ta22        1625.2      1626.2     +1.00        1621.0      1621.0     +0.00
+ta23        1584.4      1584.6     +0.20        1576.0      1572.0     -4.00
+ta25        1636.2      1636.4     +0.20        1633.0      1633.0     +0.00
+ta26        1684.8      1682.8     -2.00        1678.0      1678.0     +0.00
+ta27        1708.8      1707.4     -1.40        1706.0      1703.0     -3.00
+ta29        1637.2      1637.2     +0.00        1634.0      1634.0     +0.00
+ta30        1613.6      1619.0     +5.40        1591.0      1607.0    +16.00
+ta32        1833.0      1830.4     -2.60        1827.0      1825.0     -2.00
+ta33        1853.4      1851.4     -2.00        1837.0      1832.0     -5.00
+ta34        1883.8      1885.2     +1.40        1879.0      1880.0     +1.00
+ta40        1722.4      1723.4     +1.00        1715.0      1703.0    -12.00
+ta41        2085.0      2085.6     +0.60        2061.0      2064.0     +3.00
+ta42        1995.2      1990.4     -4.80        1985.0      1984.0     -1.00
+ta43        1920.2      1918.8     -1.40        1902.0      1902.0     +0.00
+ta44        2037.8      2040.2     +2.40        2028.0      2029.0     +1.00
+ta45        2038.4      2034.2     -4.20        2029.0      2021.0     -8.00
+ta46        2071.2      2067.0     -4.20        2062.0      2061.0     -1.00
+ta47        1956.8      1959.6     +2.80        1929.0      1935.0     +6.00
+ta48        2020.8      2024.2     +3.40        2011.0      2017.0     +6.00
+ta49        2009.8      2009.2     -0.60        2003.0      2002.0     -1.00
+ta50        1990.0      1991.8     +1.80        1983.0      1981.0     -2.00
+
+runs per cell and instance: 5
+
+look 1 of 6, symmetric boundary p <= 0.0142 (Pocock, six looks)
+PRIMARY, per-instance mean: -0.14, polish better on 9 of 21, W = 100.0, p = 0.8623
+reported, deciding nothing: best-of-5 moved -0.29
+-> continue: run wave 2
