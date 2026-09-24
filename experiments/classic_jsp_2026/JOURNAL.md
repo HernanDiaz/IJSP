@@ -2838,3 +2838,18 @@ schedules on these two instances, the simplest reading is that those values
 are optimal or very nearly so, and that the gap to the lower bounds in
 taillard_bounds.csv reflects weak bounds rather than real room. Not a proof,
 but the strongest evidence the line has about where a record is not.
+
+## I-030: both acceptances hold at 300 s
+
+210 verified runs of 300 s, no infeasible schedule, the two cells interleaved
+in one batch on fresh seeds 6001 to 6005. The current configuration beats the
+original on 18 of 21 instances by a mean of -5.82 units, Wilcoxon p = 0.0010.
+The two acceptances were measured at the short budgets at -3.38 and -2.62,
+about -6 together, and at 300 s the gain stays at that size rather than fading
+with more time. It is largest on the big instances, ta41 -20.2, ta43 -14.2,
+ta33 -13.6, and also clear on the 20x20 instances closest to their best known,
+ta29 -9.2, ta30 -8.0; it loses on ta44 +5.6, ta22 +4.6 and ta32 +2.0, with five
+runs per cell making single instances noisy. One more match, ta29 = 1625 at
+300 s with the current configuration, a schedule distinct from all 4 earlier ta29 matches, verified and kept. What
+was accepted at short budgets is an improvement of the algorithm, not of the
+regime.

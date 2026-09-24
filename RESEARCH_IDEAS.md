@@ -336,7 +336,7 @@ bucle y están aquí para que no se repitan; sus cifras están en el JOURNAL.
 | I-003 | el explorador del ABC reinyecta un **elite pateado** en vez de una solución aleatoria | un arranque aleatorio a mitad de tirada no puede alcanzar a la población; uno dentro de una cuenca buena sí | kick−control = **+1.43** (ta23 −0.27, ta29 +0.70, ta30 −0.50, ta45 **+5.80**); regla > +2 descarta → **pasa, por poco y en contra** | 4 mirillas de 6: −1.02, −0.57, **−0.03**, +0.44; kick mejor en 9-10 de 21 siempre; p entre 0.55 y 0.88, la frontera nunca se acerca | **detenida en la 4ª** (2026-09-21) por cambio de dirección del PI, no por sus datos. Sin aceptación: es un cero |
 | H-4 | N8 contra N2 (y contra N1, N3, N_ext), fase B del paper de COR | un vecindario más rico gana | -- | 82 instancias x 30 runs, 2460 bloques pareados: N2 1846.50 contra N8 1847.94, dif −1.45, p_adj = 3.9e−4, r = 0.077 (**despreciable**); rangos de Friedman N2 2.1315 el mejor de cinco, N8 2.2400 | **descartada** (antes del bucle; `experiments/cor_tabu_2026/`) |
 | I-012 | **escapar del estado todo-tabú, solo eso** | la celda informativa de I-010 dio −1.11 y mejor en 15 de 21 (p = 0.033) sin frontera | esc−control = −1.82, pasa | 6 mirillas, 30 runs: +1.30, +1.09, +0.59, +0.27, +0.39, **+0.07**; mejor en 10 de 21, p = 0.835 | **descartada** (2026-09-22). La señal de I-010 **no se reprodujo** |
-| I-030 | **la configuración vigente contra la original, a 300 s**, intercaladas en la misma tanda, 21 instancias, 5 tiradas por celda, semillas 6001-6005 | las dos aceptaciones se midieron a los presupuestos cortos; ¿aguantan en el régimen ancla? | -- | pendiente | **lanzada** (2026-09-24), 3 oleadas |
+| I-030 | **la configuración vigente contra la original, a 300 s**, intercaladas en la misma tanda, 21 instancias, 5 tiradas por celda, semillas 6001-6005 | las dos aceptaciones se midieron a los presupuestos cortos; ¿aguantan en el régimen ancla? | -- | 210 tiradas de 300 s, cero infactibles: vigente mejor en **18 de 21**, media **−5.82**, Wilcoxon **p = 0.0010**; iguala `ta29` = 1625 | **cerrada** (2026-09-24): **las dos aceptaciones aguantan a 300 s**, en la magnitud esperada |
 | I-029 | **B-12 por ventana**: reoptimización exacta de todas las operaciones de una franja de tiempo, en todas las máquinas a la vez, sobre horarios guardados | la forma literal de B-12 (Beck, Feng y Watson) | -- | **0 de 20** en el BKS mejoran con ventanas de 30 **ni de 60** operaciones; 10 de 800 finales (1.2 %) con 30 | **cerrada** (2026-09-24): **la familia B-12 se cierra**, sin salida de la meseta en ninguna de sus tres formas |
 | I-028 | **B-12 con dos máquinas**: reoptimización **exacta y conjunta** de dos máquinas, las demás fijas, sobre horarios guardados | lo que falta exige mover operaciones en dos máquinas a la vez | -- | **0 de 20** en el BKS mejoran con **todo** par que incluya una máquina crítica (2839 búsquedas exactas); **20 de 800** finales (2.5 %), igual que con una | **cerrada** (2026-09-24), sondeo sin máquina: tampoco está en dos máquinas |
 | I-027 | **B-12 con una máquina**: reoptimización **exacta** de una máquina entera con las demás fijas, máquina a máquina hasta óptimo local, sobre horarios ya guardados | la salida de la meseta del BKS está en una resecuenciación que N2 no ve | -- | **0 de 20** horarios en el BKS mejoran; **19 de 800** finales de I-024 (2.4 %), de 1 a 4 unidades, ninguno llega al BKS | **cerrada** (2026-09-24), sondeo sin máquina: la salida no está en una sola máquina |
@@ -3652,3 +3652,32 @@ propio protocolo. Cinco tiradas por celda e instancia, semillas nuevas 6001 a
 6005, una por trabajo, en tres oleadas de media hora (6001-6002, 6003-6004,
 6005). **Endpoint**: la media por instancia `current − original`, Wilcoxon
 pareado por las 21, y cuántas gana cada lado. **No acepta ni rechaza nada**.
+
+### I-030, cierre: las dos aceptaciones aguantan a 300 s
+
+210 tiradas verificadas de 300 s, cero infactibles en las tres oleadas, las dos
+celdas intercaladas en la misma tanda, semillas 6001 a 6005.
+`iter/I-030/analysis.txt`. Leída la salida del guion de récords antes de
+escribir esto.
+
+**La configuración vigente (`ref_I-021`) es mejor que la original (`prereg2`)
+en 18 de 21 instancias, con una diferencia media de −5.82 unidades, Wilcoxon
+p = 0.0010.** Las dos aceptaciones se midieron a los presupuestos cortos, −3.38
+y −2.62, que suman unas −6: **a 300 s la ganancia se mantiene en esa
+magnitud**, no se diluye con más tiempo.
+
+**Dónde gana**: sobre todo en las grandes —`ta41` **−20.2**, `ta43` −14.2,
+`ta33` −13.6, `ta50` −10.2, `ta42` −10.0—, y también en las 20x20 más cerca del
+BKS —`ta29` −9.2, `ta30` −8.0, `ta23` −7.8—. **Dónde pierde**: `ta44` (+5.6),
+`ta22` (+4.6) y `ta32` (+2.0). Con 5 tiradas por celda las diferencias por
+instancia son ruidosas; el agregado no.
+
+**Una igualada más**: `ta29` = 1625 con la configuración vigente a 300 s,
+verificada y guardada en `iter/I-030/evidence/`, un horario distinct from all 4 earlier ta29 matches. Mejores de
+cada celda: la vigente baja el mejor de la original en 18 de 21 instancias,
+empata en `ta22` y empeora en `ta27` y `ta44`; por ejemplo `ta33` 1849 →
+**1820** y `ta43` 1912 → **1894**.
+
+**Lo que deja**: el protocolo prevé esta recomparación cada tres aceptaciones
+para vigilar la deriva de la referencia; aquí se adelantó, y confirma que lo
+aceptado a presupuestos cortos es una mejora del algoritmo, no del régimen.
