@@ -2873,3 +2873,14 @@ The idea's code is rolled back, the first time under the test, commit, roll
 back cycle: ArtificialBeeColonyPSO returns to its version before I-031 with no
 trace of the switch, and the rebuilt solver reproduces the reference exactly
 at a fixed number of generations on ta23 and ta45. The records stay.
+
+## I-032: no record on ta23, and a new own best, 1561
+
+800 verified runs of 40 s on fresh seeds 8001 to 8800 with the current
+configuration, no infeasible schedule, no record and no match. The best is
+1561, four above the best known 1557 and three below this line's previous best
+of 1564 (I-006), verified by the independent checker and kept in
+iter/I-032/evidence/. The 1% quantile is 1567, the median 1583. The current
+configuration brings ta23 closer too, but unlike ta29 and ta30 the best known
+has not been reached here, so the plateau diagnosis of I-027 to I-029 does not
+apply yet: on ta23 the gap is one of arriving, not of leaving.

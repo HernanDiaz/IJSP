@@ -1,0 +1,5 @@
+=== ta23: BKS 1557, lower bound 1518, 800 runs ===
+1. RECORDS (strictly below the BKS): 0
+2. MATCHES (at the BKS): 0 runs, 0 distinct schedules
+3. best 1561; quantiles 1% 1567, 5% 1570, 10% 1573, 50% 1583; mean 1583.7
+
