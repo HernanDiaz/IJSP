@@ -2702,3 +2702,22 @@ This is the case the backlog keeps B-12 for, exact window repair on the
 incumbent, which the external review named as the one family with a credible
 mechanism for the loose unit N2 cannot see. It is a larger change than the
 loop's and is put to the PI before it starts.
+
+## I-025 (B-1): restarts against one long run at equal CPU, on existing data
+
+Nothing was run. Short side: I-001's control cell, 30 independent runs per
+instance at the per-class budgets. Long side: prereg2_abc, 10 runs at 300 s.
+At equal CPU, one 300 s run against the best of k = 300 / L short runs (7, 3
+and 2), reported as distributions. Declared before reading: the two batches ran
+on different days and the machine drifts about 9% between batches, so this is
+descriptive.
+
+Best-of-k short is better on the median on 17 of 21 instances, worse on 2,
+tied on 2; mean difference of medians -3.50, Wilcoxon p = 0.0004, and the worst
+short sample is almost always better too. But the outright minimum sometimes
+comes from the long run: ta29 1625 at 300 s against 1628, ta27 1698 against
+1703, ta45 2019 against 2024, ta50 1973 against 1982, though 10 long samples
+against 4 short blocks on 20x20 is not a fair contest for the minimum. With the
+configuration of the time, per-class restarts dominate a 300 s run on the
+median; for the extreme tail the question stays open, and it has not been
+measured with the current configuration.

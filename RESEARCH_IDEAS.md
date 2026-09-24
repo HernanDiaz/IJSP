@@ -327,6 +327,7 @@ bucle y están aquí para que no se repitan; sus cifras están en el JOURNAL.
 | I-003 | el explorador del ABC reinyecta un **elite pateado** en vez de una solución aleatoria | un arranque aleatorio a mitad de tirada no puede alcanzar a la población; uno dentro de una cuenca buena sí | kick−control = **+1.43** (ta23 −0.27, ta29 +0.70, ta30 −0.50, ta45 **+5.80**); regla > +2 descarta → **pasa, por poco y en contra** | 4 mirillas de 6: −1.02, −0.57, **−0.03**, +0.44; kick mejor en 9-10 de 21 siempre; p entre 0.55 y 0.88, la frontera nunca se acerca | **detenida en la 4ª** (2026-09-21) por cambio de dirección del PI, no por sus datos. Sin aceptación: es un cero |
 | H-4 | N8 contra N2 (y contra N1, N3, N_ext), fase B del paper de COR | un vecindario más rico gana | -- | 82 instancias x 30 runs, 2460 bloques pareados: N2 1846.50 contra N8 1847.94, dif −1.45, p_adj = 3.9e−4, r = 0.077 (**despreciable**); rangos de Friedman N2 2.1315 el mejor de cinco, N8 2.2400 | **descartada** (antes del bucle; `experiments/cor_tabu_2026/`) |
 | I-012 | **escapar del estado todo-tabú, solo eso** | la celda informativa de I-010 dio −1.11 y mejor en 15 de 21 (p = 0.033) sin frontera | esc−control = −1.82, pasa | 6 mirillas, 30 runs: +1.30, +1.09, +0.59, +0.27, +0.39, **+0.07**; mejor en 10 de 21, p = 0.835 | **descartada** (2026-09-22). La señal de I-010 **no se reprodujo** |
+| I-025 | **B-1: reinicio contra tirada larga a igual CPU**, sobre datos existentes (control de I-001 contra `prereg2_abc`), sin correr nada | el reinicio con presupuesto por clase domina a una tirada de 300 s | -- | mejor-de-k corto mejor en la mediana en **17 de 21**, media −3.50, p = 0.0004; el mínimo absoluto lo da a veces la tirada larga | **cerrada** (2026-09-24), **descriptiva**: dos tandas de días distintos |
 | I-024 | **caza concentrada en `ta29` y `ta30`** con la configuración vigente, 400 tiradas de 40 s por instancia, semillas 4001-4400 | la configuración vigente iguala el BKS en las dos (I-022, I-023), y ninguna está cerrada: quedan 52 y 65 unidades hasta la cota | -- | 800 tiradas, cero infactibles: **sin récord**. Igualadas: `ta29` 1 de 400, `ta30` 2 de 400, **tres horarios nuevos**, distintos entre sí y de todas las igualadas anteriores. Cuantil 1 %: 1628 y 1589 | **cerrada** (2026-09-24): el BKS se alcanza en el 0.25-0.5 % de las tiradas y nunca se baja |
 | I-023 | **patada con reoptimización al final de cada cadena** (B-11): copia del hijo atascado, 3 mutaciones, cadena de búsqueda sobre la copia, y se queda solo si acaba mejor | buscar otra vez desde el mismo punto ya no rinde (1 %); desde un punto movido rinde un 28-35 %, a costa de la mitad de las generaciones | mecanismo como se midió: 29-42 % de copias pateadas acaban mejor, generaciones **−50 a −57 %**; kick−control = **+7.06** (ta30 +10.30, ta45 +8.20, ta23 +7.17, ta29 +2.57); regla > +2 → **DESCARTA** | -- | **descartada** (2026-09-24) en el filtro: la patada acierta, pero la mitad de las generaciones pesa más |
 | I-022 | **intento de récord con la configuración de dos aceptaciones**, `ref_I-018` contra `ref_I-021`, lista corta, 75 tiradas por celda e instancia, semillas 3001-3075 | I-019 midió que I-018 llega a la cola; falta ver si I-021 también, y el récord vive ahí | -- | 600 tiradas: **sin récord; iguala el BKS de `ta29`, 1625**, con la configuración vigente a 40 s, verificado. Mejor de 75, previous → current: ta29 1630 → **1625**, ta30 1599 → 1595, ta23 1568 → 1567, ta22 1613 = 1613. Bloques de 5: current mejor en 32, peor en 25, p = 0.427 | **cerrada** (2026-09-24): igualada de `ta29`; la cola de I-021 **no se confirma** como la de I-018 |
@@ -3393,3 +3394,37 @@ B-12 —reparación exacta por ventana sobre el incumbente—, que la revisión
 externa señaló como la única familia con un mecanismo creíble para encontrar
 la unidad suelta que N2 no ve. Es un cambio mayor que los del bucle y se
 consulta con el PI antes de empezarlo.
+
+### I-025 — B-1: reinicio contra tirada larga, a igual CPU, sobre datos existentes
+
+**No se corre nada.** B-1 pedía confirmar el reinicio con tiradas reales y el
+protocolo avisó de que los presupuestos no coinciden, así que hay que igualar
+CPU antes de comparar. Lado corto: la celda `control` de I-001, 30 tiradas
+independientes por instancia a 40/100/150 s según la clase. Lado largo:
+`results/prereg2_abc`, 10 tiradas a 300 s. **A igual CPU**, una tirada de 300 s
+contra el mejor de `k = 300 / L` tiradas cortas —7, 3 y 2—, con bloques
+disjuntos: 4, 10 y 15 muestras del lado corto, 10 del largo. Se reporta la
+**distribución** (mediana, mejor, peor), como pidió la revisión externa.
+`iter/I-025/analysis.txt`.
+
+**Aviso declarado antes de leer ningún número**: las dos tandas se corrieron en
+días distintos y la máquina tiene una deriva medida de ~9 % en rendimiento entre
+lotes, que un presupuesto de reloj convierte en esfuerzo de búsqueda. **Esto es
+descriptivo y no decide nada.**
+
+**Resultado**: el mejor-de-k corto es mejor en la **mediana en 17 de 21**
+instancias, peor en 2 (ta33 +0.5, ta48 +5.0) y empata en 2; diferencia media
+de medianas **−3.50**, Wilcoxon p = 0.0004. El **peor** de las muestras cortas
+es también casi siempre mejor: la distribución del reinicio es más estrecha por
+arriba.
+
+**Pero el mínimo absoluto lo da a veces la tirada larga**: `ta29` 1625 a 300 s
+contra 1628, `ta27` 1698 contra 1703, `ta45` 2019 contra 2024, `ta50` 1973
+contra 1982. El mínimo no es comparable en igualdad —10 muestras largas contra
+4 bloques cortos en las 20x20—, pero es coherente con I-007: 40 s es el mejor
+corte **por la media**, y la igualada de `ta29` de entonces salió a 300 s.
+
+**Lo que deja**: con la configuración de entonces, el reinicio con presupuesto
+por clase domina a la tirada de 300 s en la mediana, que es lo que la revisión
+decía que las trazas sugerían y no probaban; para la **cola extrema** la
+pregunta sigue abierta. Con la configuración vigente no se ha medido.
