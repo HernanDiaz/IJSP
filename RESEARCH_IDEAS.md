@@ -320,6 +320,7 @@ bucle y están aquí para que no se repitan; sus cifras están en el JOURNAL.
 | I-003 | el explorador del ABC reinyecta un **elite pateado** en vez de una solución aleatoria | un arranque aleatorio a mitad de tirada no puede alcanzar a la población; uno dentro de una cuenca buena sí | kick−control = **+1.43** (ta23 −0.27, ta29 +0.70, ta30 −0.50, ta45 **+5.80**); regla > +2 descarta → **pasa, por poco y en contra** | 4 mirillas de 6: −1.02, −0.57, **−0.03**, +0.44; kick mejor en 9-10 de 21 siempre; p entre 0.55 y 0.88, la frontera nunca se acerca | **detenida en la 4ª** (2026-09-21) por cambio de dirección del PI, no por sus datos. Sin aceptación: es un cero |
 | H-4 | N8 contra N2 (y contra N1, N3, N_ext), fase B del paper de COR | un vecindario más rico gana | -- | 82 instancias x 30 runs, 2460 bloques pareados: N2 1846.50 contra N8 1847.94, dif −1.45, p_adj = 3.9e−4, r = 0.077 (**despreciable**); rangos de Friedman N2 2.1315 el mejor de cinco, N8 2.2400 | **descartada** (antes del bucle; `experiments/cor_tabu_2026/`) |
 | I-012 | **escapar del estado todo-tabú, solo eso** | la celda informativa de I-010 dio −1.11 y mejor en 15 de 21 (p = 0.033) sin frontera | esc−control = −1.82, pasa | 6 mirillas, 30 runs: +1.30, +1.09, +0.59, +0.27, +0.39, **+0.07**; mejor en 10 de 21, p = 0.835 | **descartada** (2026-09-22). La señal de I-010 **no se reprodujo** |
+| I-022 | **intento de récord con la configuración de dos aceptaciones**, `ref_I-018` contra `ref_I-021`, lista corta, 75 tiradas por celda e instancia, semillas 3001-3075 | I-019 midió que I-018 llega a la cola; falta ver si I-021 también, y el récord vive ahí | -- | pendiente | **lanzada** (2026-09-24) |
 | I-021 | **repetir la búsqueda sobre el mejor hijo mientras mejore** (`abc.ls.pick = best-repeat`) | la profundidad es lo que vale (I-020), y la segunda llamada mejora al hijo dos de cada tres veces | mecanismo: ~25000 llamadas extra por tirada, cadenas de ~10, generaciones **−21 a −26 %**; repeat−control = **−2.58** (ta45 −4.97, ta30 −2.67, ta23 −2.60, ta29 −0.10), pasa (descartaba si > +2.0) | mirillas media: **-3.56** (w1, 14 de 21, p = 0.022), **-2.95** (w2, 15 de 21, p = 0.017), **-2.62** (w3, **16 de 21**, **p = 0.0021**) → cruza | **ACEPTADA** (2026-09-24) en la mirilla 3 de 6, **sobre** I-018. Segunda aceptación; configuración vigente `setup/ref_I-021.txt` |
 | I-020 | **¿profundidad o generaciones?** Suprimir la segunda llamada al tabú (`abc.ls.pick = none`), contra la configuración vigente | I-018 profundiza sobre el mejor hijo **y** corre más generaciones; `none` conserva y amplía lo segundo (+68-75 %) y quita lo primero | mecanismo exacto, sin segunda llamada, generaciones **+56 a +73 %**; none−control = **+5.96** (ta45 +7.77, ta30 +7.33, ta23 +5.97, ta29 +2.77); regla > +2 → **DESCARTA** | -- | **descartada** (2026-09-24) en el filtro: **la ganancia de I-018 es la profundidad**, no el rendimiento |
 | I-019 | **intento de récord con la configuración nueva** (I-018) sobre la lista corta, vieja contra nueva, 75 tiradas por celda e instancia, semillas 2001-2075 | la media bajó 3.38 y el mejor de cinco 4.19; el récord vive en la cola, que es donde hay que llevarla | -- | 600 tiradas: **sin récord ni casi**. Mejor de 75, vieja → nueva: ta30 1598 → **1589**, ta29 1631 → 1630, ta23 1566 → 1565, ta22 1614 → 1613. Bloques de 5: **nueva mejor en 40, peor en 16, p = 0.002** | **cerrada** (2026-09-24): sin récord; la ganancia de I-018 **llega a la cola**, con semillas nuevas |
@@ -3123,3 +3124,33 @@ hasta 10-11.
 **Consecuencias.** `abc.ls.pick = best-repeat` pasa a la configuración vigente
 en `setup/ref_I-021.txt`, que es el control desde I-022. **Aceptación 2 de 3**:
 a la tercera toca la recomparación a 300 s contra la referencia original.
+
+### Sondeo: el veto de meseta con la configuración nueva tira menos trabajo, no más
+
+Motivo del sondeo (2026-09-24): I-015, levantar el veto de meseta, fue la
+rechazada más favorable del bucle (−0.78, p = 0.122) **contra la configuración
+vieja**, y se pensó que las cadenas profundas aceptadas en I-018 e I-021
+producirían muchas más mejoras que igualan exactamente al incumbente, de modo
+que el veto tiraría ahora más trabajo útil. Eso sería una razón nueva para
+reabrirla, como pide el protocolo.
+
+Medido con la misma semilla e instancias que la comprobación previa de I-015
+(ta29, ta41, semilla 901, una tirada): vetos en la búsqueda local
+**2787 → 108** en ta29 y **261 → 174** en ta41; en el cruce, 172 → 12 y 24 → 29.
+**Al revés de la hipótesis.** Con la varianza enorme que ya se midió entre
+tiradas (de 71 a 8073) una tirada no afina el número, pero no hay rastro de que
+el veto pese más ahora. **I-015 no se reabre.**
+
+### I-022 — intento de récord con la configuración de dos aceptaciones
+
+Sin hipótesis que aceptar ni rechazar, como I-006 e I-019. Dos aceptaciones se
+apilan ya —I-018 manda la segunda llamada al mejor hijo, I-021 la repite
+mientras mejora—, y I-019 midió que la ganancia de la primera **llega a la
+cola**. Este intento hace lo mismo con la segunda mientras gasta las tiradas
+donde nuestro mejor está más cerca del BKS.
+
+**Celdas**: `previous` = `setup/ref_I-018.txt`, la configuración contra la que
+se midió I-021; `current` = `setup/ref_I-021.txt`. **Lista corta, presupuesto y
+endpoints, los de I-006**: `ta29`, `ta30`, `ta23`, `ta22`; 75 tiradas de 40 s
+por celda e instancia; récord, mejor de 75, media de los tres más bajos y
+contraste de signos sobre bloques de 5. **Semillas nuevas, 3001 a 3075.**
