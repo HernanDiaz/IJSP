@@ -132,58 +132,6 @@ void NB_ParallelBase_MakespanJSP::setInitialSolution(
 }
 
 
-//-----  Recompute every tail from scratch  -----------------------------------
-// DIAGNOSTIC 2026-09-22. The tails are maintained incrementally by
-// acceptNeighbour, whose backward sweep only continues while a tail changes.
-// This recomputes all of them the way setInitialSolution does, so the
-// incremental maintenance can be checked against the truth. Enabled by the
-// environment variable N2_FULL_TAILS, off otherwise.
-void NB_ParallelBase_MakespanJSP::recomputeAllTails() {
-	int mp, jp, ms, js, taskIdx, mac;
-	std::queue<int> taskQueue;
-	std::vector<char> visited(this->tails.size(), false);
-
-	for (size_t i = 0; i < schedule->lastTaskJob.size(); i++) {
-		taskIdx = schedule->lastTaskJob[i];
-		mac = schedule->taskInfo[taskIdx].task->machine;
-		if (taskIdx == schedule->lastTaskMachine[mac])
-			taskQueue.push(taskIdx);
-	}
-
-	while (taskQueue.size() > 0) {
-		taskIdx = taskQueue.front();
-		taskQueue.pop();
-
-		ms = schedule->taskInfo[taskIdx].ms;
-		js = schedule->taskInfo[taskIdx].task->js;
-
-		if (ms != -1 && js != -1)
-			this->tails[taskIdx] =
-			std::max(this->tails[ms] + schedule->taskInfo[ms].task->p, this->tails[js] + schedule->taskInfo[js].task->p);
-		else if (ms != -1)
-			this->tails[taskIdx] =
-			this->tails[ms] + schedule->taskInfo[ms].task->p;
-		else if (js != -1)
-			this->tails[taskIdx] = this->tails[js] + schedule->taskInfo[js].task->p;
-		else this->tails[taskIdx] = FuzzyFW::Crisp(0);
-
-		mp = schedule->taskInfo[taskIdx].mp;
-		jp = schedule->taskInfo[taskIdx].task->jp;
-
-		if (mp != -1) {
-			if (visited[mp] || schedule->taskInfo[mp].task->js == -1)
-				taskQueue.push(mp);
-			else visited[mp] = true;
-		}
-		if (jp != -1) {
-			if (visited[jp] || schedule->taskInfo[jp].ms == -1)
-				taskQueue.push(jp);
-			else visited[jp] = true;
-		}
-	}
-}
-
-
 //-----  Get the estimation  --------------------------------------------------
 FuzzyFW::Fitness *NB_ParallelBase_MakespanJSP::getEstimation(
 	const unsigned int idx, const FuzzyFW::SharedVars *svars) {

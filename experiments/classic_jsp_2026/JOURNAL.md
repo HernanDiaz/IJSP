@@ -2732,3 +2732,33 @@ against 1616, but not the extreme tail. The ta30 match is a schedule different f
 verified and kept in iter/I-026/evidence/. Descriptive, two batches at
 different hours, but there is no sign that longer runs bring the record closer
 with the current configuration; hunting stays at 40 s.
+
+## The code of every discarded idea is rolled back
+
+The protocol says to revert only the idea's code when it is discarded, never
+the records, and the PI pointed out that I was not doing it: the cycle is test,
+commit what works, roll back what does not. I had been leaving every discarded
+idea in the solver behind a switch that was off by default.
+
+Nine files go back to their version at the loop's starting commit, 6544637,
+removing the full tails (I-004), frequency tie-break (I-005), deep call
+(I-009), dead-end escape (I-010, I-012), first improvement (I-013), kicked
+scout (I-003), stall restart (I-014), plateau veto switch (I-015), uniform
+draw (I-016), the chosen, none and best-patient modes (I-017, I-020, the probe),
+the chain-end kick (I-023) and all their diagnostic counters. What stays is
+what was accepted, abc.ls.pick with index as the original default, best
+(I-018) and best-repeat (I-021) and their mechanism counters; the genuine bug
+fixes, N8's head propagation and the abc_replacements counter that never
+counted; and the jsp.seeded port, part of the declared starting point. The
+difference from 6544637 falls from 1323 lines in 14 files to 360 in 7.
+
+Verified rather than assumed: with a fixed number of generations and a time
+limit that never binds, runs are deterministic, and the binaries before and
+after produce identical makespans and identical per-generation traces on all
+three configurations in use, prereg2, ref_I-018 and ref_I-021, on ta23 and
+ta45, two runs each.
+
+One slip on the way, fixed before any push: git checkout of a commit's files
+stages them, so the next commit, I-026's closing, swept in a half-done rollback
+with the accepted mechanism missing. It was unpushed, so a soft reset undid it
+without losing anything and the work was redone as two commits.

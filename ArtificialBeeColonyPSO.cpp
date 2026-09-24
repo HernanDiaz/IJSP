@@ -6,7 +6,6 @@
 */
 
 #include "ArtificialBeeColonyPSO.h"
-#include "LS_Tabu.h"
 #include <iostream>
 #include <set>
 
@@ -244,95 +243,13 @@ namespace FuzzyFW {
 			("Total replacements in ABC",
 			(double)this->abc_replacements));
 		stats.push_back(std::pair<std::string, double>
-			("N2 ties at best per tabu iteration",
-			LS_Tabu::diagIters ? (double)LS_Tabu::diagTieSum / LS_Tabu::diagIters : 0.0));
-		stats.push_back(std::pair<std::string, double>
-			("N2 largest tie seen", (double)LS_Tabu::diagTieMax));
-		stats.push_back(std::pair<std::string, double>
-			("N2 neighbours evaluated", (double)LS_Tabu::diagScanned));
-		stats.push_back(std::pair<std::string, double>
-			("N2 neighbours offered", (double)LS_Tabu::diagGenerated));
-		stats.push_back(std::pair<std::string, double>
-			("N2 fraction of neighbourhood scanned %",
-			LS_Tabu::diagGenerated
-				? 100.0 * (double)LS_Tabu::diagScanned / (double)LS_Tabu::diagGenerated
-				: 0.0));
-		stats.push_back(std::pair<std::string, double>
-			("N2 neighbours offered per tabu iteration",
-			LS_Tabu::diagIters
-				? (double)LS_Tabu::diagGenerated / (double)LS_Tabu::diagIters
-				: 0.0));
-		stats.push_back(std::pair<std::string, double>
-			("N2 estimate above real value", (double)LS_Tabu::diagBoundBreaks));
-		stats.push_back(std::pair<std::string, double>
-			("Stall restarts", (double)this->stallRestarts));
-		stats.push_back(std::pair<std::string, double>
-			("LS invocations on a pair", (double)this->lsPairCalls));
-		stats.push_back(std::pair<std::string, double>
-			("LS invocations on other group sizes", (double)this->lsOtherCalls));
-		stats.push_back(std::pair<std::string, double>
 			("LS second call on the searched best", (double)this->lsSecondOnBest));
-		stats.push_back(std::pair<std::string, double>
-			("LS second call on the other child", (double)this->lsSecondOnOther));
-		stats.push_back(std::pair<std::string, double>
-			("LS second call skipped", (double)this->lsSecondSkipped));
 		stats.push_back(std::pair<std::string, double>
 			("LS second calls that improved the child", (double)this->lsSecondImproved));
 		stats.push_back(std::pair<std::string, double>
 			("LS repeat calls beyond the second", (double)this->lsRepeatCalls));
 		stats.push_back(std::pair<std::string, double>
 			("LS longest chain of calls on one child", (double)this->lsRepeatLongest));
-		stats.push_back(std::pair<std::string, double>
-			("LS calls right after a failed call", (double)this->lsAfterFailCalls));
-		stats.push_back(std::pair<std::string, double>
-			("LS calls after a failure that improved", (double)this->lsAfterFailImproved));
-		stats.push_back(std::pair<std::string, double>
-			("LS kicks at the end of a chain", (double)this->lsKickTries));
-		stats.push_back(std::pair<std::string, double>
-			("LS kicked copies that ended better", (double)this->lsKickWins));
-		stats.push_back(std::pair<std::string, double>
-			("LS tabu calls on kicked copies", (double)this->lsKickCalls));
-		stats.push_back(std::pair<std::string, double>
-			("Plateau moves admitted in crossover", (double)this->plateauAdmittedCross));
-		stats.push_back(std::pair<std::string, double>
-			("Plateau moves admitted in local search", (double)this->plateauAdmittedLS));
-		stats.push_back(std::pair<std::string, double>
-			("N2 moves by first improvement", (double)LS_Tabu::firstHits));
-		stats.push_back(std::pair<std::string, double>
-			("N2 sweeps with no improving move", (double)LS_Tabu::fallbackHits));
-		stats.push_back(std::pair<std::string, double>
-			("N2 share of moves by first improvement %",
-			(LS_Tabu::firstHits + LS_Tabu::fallbackHits)
-				? 100.0 * (double)LS_Tabu::firstHits
-					/ (double)(LS_Tabu::firstHits + LS_Tabu::fallbackHits)
-				: 0.0));
-		stats.push_back(std::pair<std::string, double>
-			("Deep LS calls", (double)this->deepLsCalls));
-		stats.push_back(std::pair<std::string, double>
-			("Deep iters per call",
-			LS_Tabu::deepCalls ? (double)LS_Tabu::deepIters / LS_Tabu::deepCalls : 0.0));
-		stats.push_back(std::pair<std::string, double>
-			("Deep stops: dead end", (double)LS_Tabu::deepDeadEnd));
-		stats.push_back(std::pair<std::string, double>
-			("Deep escapes from all-tabu", (double)LS_Tabu::deepEscapes));
-		stats.push_back(std::pair<std::string, double>
-			("Deep stops: counter", (double)LS_Tabu::deepBadStop));
-		stats.push_back(std::pair<std::string, double>
-			("Deep stops: time cap", (double)LS_Tabu::deepTimeStop));
-		stats.push_back(std::pair<std::string, double>
-			("Deep LS share of LS time %",
-			this->localSearchTime > 0
-				? 100.0 * (double)this->deepLsTime / (double)this->localSearchTime
-				: 0.0));
-		stats.push_back(std::pair<std::string, double>
-			("Plateau vetoes in crossover",
-			(double)this->plateauVetoesCross));
-		stats.push_back(std::pair<std::string, double>
-			("Plateau vetoes in local search",
-			(double)this->plateauVetoesLS));
-		stats.push_back(std::pair<std::string, double>
-			("Improvements kept by local search",
-			(double)this->improvementsLS));
 		stats.push_back(std::pair<std::string, double>
 			("Best solution", this->bestSoFar->getFitness()->toDouble()));
 		return stats;
@@ -467,49 +384,12 @@ namespace FuzzyFW {
 		this->lsLamarckism =
 			params->getBoolean(MA_LOCAL_SEARCH_LAMARCKISM, true);
 
-		// Loads the common parameters
-		// Scout phase. Default is the classical ABC, a fresh random solution, so
-		// a setup that says nothing behaves exactly as before.
-		this->deepLsTrigger = (unsigned int)params->getInteger(DEEP_LS_TRIGGER, 0);
-		this->deepLsShare = (unsigned int)params->getInteger(DEEP_LS_SHARE, 0);
-		// I-014: restart the population once the stall is old enough that the
-		// measured hazard of a further improvement is zero.
-		this->stallRestart =
-			(params->getStringLower(STALL_RESTART).compare("stall") == 0);
-		// I-015: keep improvements that land exactly on the incumbent's value.
-		this->plateauAllow =
-			(params->getStringLower(PLATEAU_MODE).compare("allow") == 0);
-		// I-017: send the second local-search call where the draw says.
-		this->lsPickChosen =
-			(params->getStringLower(LS_PICK).compare("chosen") == 0);
-		// I-018: the second call always searches the best again.
-		this->lsPickBest =
-			(params->getStringLower(LS_PICK).compare("best") == 0);
-		// I-020: no second call at all.
-		this->lsPickNone =
-			(params->getStringLower(LS_PICK).compare("none") == 0);
-		// I-021: again on the better child while the last call improved it.
-		this->lsPickRepeat =
-			(params->getStringLower(LS_PICK).compare("best-repeat") == 0);
-		if (this->lsPickRepeat) this->lsPickBest = true;
-		// Probe: tolerate one failed call before ending the chain.
-		this->lsPickPatient =
-			(params->getStringLower(LS_PICK).compare("best-patient") == 0);
-		if (this->lsPickPatient) { this->lsPickRepeat = true; this->lsPickBest = true; }
-		// I-023: kick a copy of the stuck child and search it again.
-		this->lsKickChainEnd =
-			(params->getStringLower(LS_KICK).compare("chain-end") == 0);
-		this->scoutKick = false;
-		this->scoutKicks = 0;
-		std::string scoutValue = params->getStringLower(SCOUT_MODE);
-		if (scoutValue.compare(SCOUT_MODE_KICK) == 0) {
-			this->scoutKick = true;
-			this->scoutKicks = (unsigned int)params->getInteger(SCOUT_KICKS, 3);
-			if (this->scoutKicks == 0)
-				throw FuzzyFWException("Artificial Bee Colony PSO",
-					"abc.scout = kick needs abc.scout.kicks greater than zero");
-		}
+		// I-018 / I-021: where the second local-search call goes.
+		value = params->getStringLower(LS_PICK);
+		this->lsPickRepeat = (value.compare("best-repeat") == 0);
+		this->lsPickBest = this->lsPickRepeat || (value.compare("best") == 0);
 
+		// Loads the common parameters
 		GeneticAlgorithm::prepareToRun(params);
 
 		this->neighbourhood->setup(params);
@@ -574,29 +454,10 @@ namespace FuzzyFW {
 		this->localSearchTime = 0;
 		this->iterationsNI = 0;
 		this->abc_replacements = 0;
-		this->plateauVetoesCross = 0;
-		this->plateauVetoesLS = 0;
-		this->plateauAdmittedCross = 0;
-		this->plateauAdmittedLS = 0;
-		this->lsPairCalls = 0;
-		this->lsOtherCalls = 0;
 		this->lsSecondOnBest = 0;
-		this->lsSecondOnOther = 0;
-		this->lsSecondSkipped = 0;
-		this->lsRepeatCalls = 0;
 		this->lsSecondImproved = 0;
+		this->lsRepeatCalls = 0;
 		this->lsRepeatLongest = 0;
-		this->lsAfterFailCalls = 0;
-		this->lsAfterFailImproved = 0;
-		this->lsKickTries = 0;
-		this->lsKickWins = 0;
-		this->lsKickCalls = 0;
-		this->deepLsDone = false;
-		this->deepLsCalls = 0;
-		this->deepLsTime = 0;
-		this->lastImprovementSec = 0.0;
-		this->stallRestarts = 0;
-
 		evolutionStats.clear();
 
 		this->generation = 0;
@@ -734,18 +595,8 @@ namespace FuzzyFW {
 				this->evaluator->evaluatePopulation(this->sharedVariables, &currentFoodSources, false);
 				Individual* bestLocal = currentFoodSources.getBest(this->sharedVariables);
 				//If the best local food source is better than the currentFoodSource we replace it
-				// INSTRUMENTED 2026-09-21: how often does the second clause, the
-				// plateau veto, decide this branch on its own?
 				if (bestLocal->getFitness()->isBetterThan(currentFoodSource->getFitness())
-					&& bestLocal->getFitness()->isEqualTo(this->bestSoFar->getFitness())) {
-					if (this->plateauAllow) this->plateauAdmittedCross++;
-					else this->plateauVetoesCross++;
-				}
-				// I-015: with abc.plateau = allow the tie with the incumbent no
-				// longer vetoes the replacement.
-				if (bestLocal->getFitness()->isBetterThan(currentFoodSource->getFitness())
-					&& (this->plateauAllow
-						|| !bestLocal->getFitness()->isEqualTo(this->bestSoFar->getFitness()))) {
+					&& !bestLocal->getFitness()->isEqualTo(this->bestSoFar->getFitness())) {
 					Individual* bestlocalClone = bestLocal->clone();
 					delete currentPopulation->replaceIndividual(i, bestlocalClone);
 					bestlocalClone->setNumTrials(0);
@@ -764,46 +615,16 @@ namespace FuzzyFW {
 				}
 
 				if (currentFoodSource->getNumTrials() >= this->sharedVariables->parameters->getInteger(MAX_NUM_TRIALS)) {
-					// INSTRUMENTED 2026-09-21. This is the abandonment of an
-					// exhausted food source, and it is the only one in this class.
-					// The inherited counter abc_replacements was initialised here
-					// and never incremented, so the statistic "Total replacements
-					// in ABC" read 0 in every run and measured nothing at all.
-					this->abc_replacements++;
-					// I-003. The classical ABC injects a fresh random solution
-					// here, and this fires 496 times per run on ta29 and 815 on
-					// ta41 (measured 2026-09-21). I-001 measured that a random
-					// start is 294 makespan units worse at generation 0 and that
-					// 0.3 % of that gap survives to the end of a run, so each of
-					// those hundreds of injections lands outside every basin the
-					// population occupies, with no budget left to catch up.
-					// abc.scout = kick replaces it with a clone of a random elite
-					// under abc.scout.kicks mutations: the same abandonment, but
-					// restarting a trajectory inside a promising basin.
-					Population* newPopulation;
-					if (this->scoutKick) {
-						int eliteCount =
-							this->sharedVariables->parameters->getInteger(ELITE_SIZE);
-						if (eliteCount < 1) eliteCount = 1;
-						unsigned int pick =
-							this->sharedVariables->rng->getInteger(0, eliteCount);
-						Individual *kicked =
-							currentPopulation->getBest(this->sharedVariables, pick)->clone();
-						kicked->setNumTrials(0);
-						for (unsigned int k = 0; k < this->scoutKicks; k++)
-							this->mutation->apply(kicked, this->sharedVariables);
-						kicked->id = 0;
-						newPopulation = new Population();
-						newPopulation->addIndividual(kicked);
-					}
-					else
-						newPopulation = this->creation->createPopulation(1, this->sharedVariables);
+					Population* newPopulation = this->creation->createPopulation(1, this->sharedVariables);
 					this->evaluator->evaluatePopulation(this->sharedVariables, newPopulation, false);
 
 					if (this->lsFrequency == LS_Frequency::MALS_INITIAL) {
 						this->applyLocalSearch(newPopulation);
 					}
 					delete currentPopulation->replaceIndividual(i, newPopulation->getBest(this->sharedVariables, 0));
+					// A bug fix, not an idea: this counter was declared and
+					// reported but never incremented (found 2026-09-21).
+					this->abc_replacements++;
 					newPopulation->clear(false);
 					delete newPopulation;
 					this->evaluator->evaluatePopulation(this->sharedVariables, currentPopulation, true);
@@ -812,99 +633,11 @@ namespace FuzzyFW {
 			}
 			this->generation++;
 
-			double nowSec =
-				(this->totalRuntime + (clock() - algorithmTime))
-					/ (double)CLOCKS_PER_SEC;
 			if (currentPopulation->getBest(sharedVariables)->getFitness()
-				->isBetterThan(this->bestSoFar->getFitness())) {
+				->isBetterThan(this->bestSoFar->getFitness()))
 				this->iterationsNI = 0;
-				this->lastImprovementSec = nowSec;
-				// A new episode may fire again.
-				if (this->deepLsShare > 0) this->deepLsDone = false;
-			}
 			else
 				this->iterationsNI++;
-
-			// I-014. The run has gone STALL_RESTART_SHARE of its budget with
-			// no new global best, and at that age the measured hazard of one
-			// arriving is zero. Rebuild the population from the creation
-			// operator, carry the incumbent into it so nothing is lost, and
-			// spend the rest of the budget searching somewhere else. The
-			// budget, the number of runs and the endpoint are untouched.
-			if (this->stallRestart && this->maxRuntime > 0
-				&& nowSec - this->lastImprovementSec
-					>= STALL_RESTART_SHARE * this->maxRuntime) {
-				// Around the incumbent, not from scratch. A cold population
-				// cannot catch up in what the budget leaves after a stall,
-				// measured on 2026-09-23 and the reason the cold form was
-				// withdrawn: +4.5 to +22 at 40 % of the budget, +27 to +55 at
-				// 20 %. Every individual here starts at the incumbent's
-				// quality, so what is injected is diversity, not a handicap.
-				Population *fresh = new Population();
-				fresh->addIndividual(this->bestSoFar->clone());
-				for (unsigned int i = 1; i < this->populationSize; i++) {
-					Individual *kicked = this->bestSoFar->clone();
-					kicked->setNumTrials(0);
-					kicked->id = (int)i;
-					unsigned int kicks = 1 + (i % 10);
-					for (unsigned int k = 0; k < kicks; k++)
-						this->mutation->apply(kicked, this->sharedVariables);
-					fresh->addIndividual(kicked);
-				}
-				this->evaluator->evaluatePopulation(
-					this->sharedVariables, fresh, true);
-				if (this->lsFrequency == LS_Frequency::MALS_INITIAL)
-					this->applyLocalSearch(fresh);
-				delete currentPopulation;
-				currentPopulation = fresh;
-				this->lastImprovementSec = nowSec;
-				this->iterationsNI = 0;
-				this->stallRestarts++;
-			}
-
-			// I-009. The local search of this solver is about 242 shallow dips
-			// per generation, each ending after 15 non-improving iterations
-			// having made 26 to 41 moves in total (measured 2026-09-21). There
-			// is never ONE deep trajectory. irace swept the depth between 5
-			// and 40 and chose 15 (H-5), but in its space one depth applied to
-			// the whole population, so the uneven allocation was never
-			// explored. This fires a single deep call on the incumbent the
-			// first time the run stalls, and never again in that run, so the
-			// cost is bounded by the existing per-call time cap.
-			// With a share declared, the QUOTA is the only limiter: fire on
-			// every stagnant generation and let the time budget stop it. The
-			// once-per-episode gate was measured on 2026-09-22 to cap the
-			// mechanism at 0.03 % of local-search time, because episodes are
-			// few (1.3 on ta29, 7.7 on ta41 per run) while the quota asks for
-			// 25 %. Limiting opportunities and limiting cost are different
-			// things, and only the second one belongs here.
-			bool deepAllowed = this->deepLsTrigger > 0
-				&& this->iterationsNI >= this->deepLsTrigger
-				&& (this->deepLsShare > 0 || !this->deepLsDone);
-			if (deepAllowed && this->deepLsShare > 0) {
-				// Keep the deep calls under their declared share of all
-				// local-search time, so the mechanism gets a real slice of the
-				// search and the cost limits itself.
-				double spent = (double)this->deepLsTime;
-				double allLS = (double)this->localSearchTime;
-				if (allLS > 0.0
-					&& spent >= allLS * (double)this->deepLsShare / 100.0)
-					deepAllowed = false;
-			}
-			if (deepAllowed) {
-				LS_Tabu *tabu = dynamic_cast<LS_Tabu *>(this->localSearch);
-				if (tabu != NULL) {
-					int saved = tabu->getMaxBadIterations();
-					tabu->setMaxBadIterations(DEEP_LS_DEPTH);
-					clock_t before = clock();
-					this->applyLocalSearch(currentPopulation,
-						currentPopulation->whoIsBest(this->sharedVariables));
-					this->deepLsTime += clock() - before;
-					tabu->setMaxBadIterations(saved);
-					this->deepLsCalls++;
-				}
-				this->deepLsDone = true;
-			}
 
 			if (this->bestSoFar != NULL) {
 				if (currentPopulation->getBest(this->sharedVariables)->getFitness()->isBetterThan(this->bestSoFar->getFitness())) {
@@ -985,8 +718,6 @@ namespace FuzzyFW {
 		std::vector<unsigned int> selection(population->size());
 		unsigned int targetIndividuals, chosen, best, position;
 		best = NULL;
-		if (population->size() == 2) this->lsPairCalls++;
-		else this->lsOtherCalls++;
 
 		if (this->lsTarget == LS_Target::MALS_BEST
 			|| this->lsTarget == LS_Target::MALS_SOME) {
@@ -1027,84 +758,28 @@ namespace FuzzyFW {
 				if (chosen == best)
 					i--;
 				else {
-					// I-017: the default applies it to i, the loop counter,
-					// throwing the draw away; "chosen" applies it to the draw.
-					if (this->lsPickNone) {
-						// I-020: the second call is not made at all
-						this->lsSecondSkipped++;
-					}
-					else {
-						unsigned int target = this->lsPickChosen ? chosen
-							: (this->lsPickBest ? best : i);
-						if (target == best) this->lsSecondOnBest++;
-						else this->lsSecondOnOther++;
-						double before = population->getIndividual(target)
-							->getFitness()->toDouble();
+					// I-018 / I-021. The default applies the call to i, the
+					// loop counter, as the original code always did.
+					unsigned int target = this->lsPickBest ? best : i;
+					if (target == best) this->lsSecondOnBest++;
+					double before = population->getIndividual(target)
+						->getFitness()->toDouble();
+					this->applyLocalSearch(population, target);
+					double after = population->getIndividual(target)
+						->getFitness()->toDouble();
+					if (after < before) this->lsSecondImproved++;
+					unsigned long chain = 2;
+					while (this->lsPickRepeat && target == best
+						&& after < before) {
+						before = after;
 						this->applyLocalSearch(population, target);
-						double after = population->getIndividual(target)
+						after = population->getIndividual(target)
 							->getFitness()->toDouble();
-						if (after < before) this->lsSecondImproved++;
-						// I-021: keep searching the better child from its new
-						// local optimum while the last call improved it.
-						unsigned long chain = 2;
-						// Consecutive calls that did not improve the child.
-						// best-repeat stops at the first (the accepted
-						// behaviour, unchanged); best-patient at the second.
-						unsigned int failsInRow = (after < before) ? 0 : 1;
-						unsigned int allowedFails = this->lsPickPatient ? 2 : 1;
-						while (this->lsPickRepeat && target == best
-							&& failsInRow < allowedFails) {
-							bool previousFailed = (failsInRow > 0);
-							before = after;
-							this->applyLocalSearch(population, target);
-							after = population->getIndividual(target)
-								->getFitness()->toDouble();
-							this->lsRepeatCalls++;
-							chain++;
-							if (previousFailed) {
-								this->lsAfterFailCalls++;
-								if (after < before) this->lsAfterFailImproved++;
-							}
-							if (after < before) failsInRow = 0;
-							else failsInRow++;
-						}
-						if (chain > this->lsRepeatLongest)
-							this->lsRepeatLongest = chain;
-
-						// I-023: the chain has ended on a failed call, so the
-						// child sits in an optimum the tabu search does not
-						// leave. Kick a copy, search it as a chain, and keep it
-						// only if it ends better than the child.
-						if (this->lsKickChainEnd && this->lsPickRepeat
-							&& target == best) {
-							Individual *child = population->getIndividual(target);
-							Individual *kicked = child->clone();
-							kicked->setNumTrials(0);
-							for (unsigned int k = 0; k < LS_KICK_MUTATIONS; k++)
-								this->mutation->apply(kicked, this->sharedVariables);
-							Population trial;
-							trial.addIndividual(kicked);
-							this->evaluator->evaluatePopulation(
-								this->sharedVariables, &trial, false);
-							this->lsKickTries++;
-							double kb, ka;
-							do {
-								kb = trial.getIndividual(0)->getFitness()->toDouble();
-								this->applyLocalSearch(&trial, 0);
-								ka = trial.getIndividual(0)->getFitness()->toDouble();
-								this->lsKickCalls++;
-							} while (ka < kb);
-							if (trial.getIndividual(0)->getFitness()
-								->isBetterThan(child->getFitness())) {
-								Individual *winner = trial.getIndividual(0);
-								trial.clear(false);      // hand it over, do not delete
-								delete population->replaceIndividual(target, winner);
-								population->setSorted(false);
-								this->lsKickWins++;
-							}
-							// otherwise the trial population deletes the copy
-						}
+						this->lsRepeatCalls++;
+						chain++;
 					}
+					if (chain > this->lsRepeatLongest)
+						this->lsRepeatLongest = chain;
 				}
 			}
 		}
@@ -1127,19 +802,8 @@ namespace FuzzyFW {
 		this->iterationsLS += this->localSearch->getIterations();
 		this->callsLS++;
 
-		// INSTRUMENTED 2026-09-21: the same veto inside the Lamarckian write-back.
-		// When the tabu search improves an individual to exactly the incumbent
-		// makespan, the improvement is discarded and a trial failure is counted.
 		if (optimised.second->isBetterThan(target->getFitness())
-			&& optimised.second->isEqualTo(this->bestSoFar->getFitness())) {
-			if (this->plateauAllow) this->plateauAdmittedLS++;
-			else this->plateauVetoesLS++;
-		}
-		// I-015: with abc.plateau = allow an improvement that lands exactly on
-		// the incumbent's makespan is written back instead of discarded.
-		if (optimised.second->isBetterThan(target->getFitness())
-			&& (this->plateauAllow
-				|| !optimised.second->isEqualTo(this->bestSoFar->getFitness()))) {
+			&& !optimised.second->isEqualTo(this->bestSoFar->getFitness())) {
 			// Lamarckism
 			if (this->lsLamarckism)
 				this->sharedVariables->encoder->encode(optimised.first,

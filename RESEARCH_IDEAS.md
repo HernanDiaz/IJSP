@@ -222,6 +222,15 @@ oleada 5, con la misma semilla. Ninguna decisión se vio afectada, porque la
 frontera solo usa las oleadas, pero el filtro dejaba de ser una muestra aparte.
 Desde ahora el filtro usa las semillas 1001 a 1030.
 
+**Ciclo: se prueba, lo que funciona se comitea, lo que no se revierte.**
+Regla del PI (2026-09-24), que el protocolo ya decía y que yo no cumplía: el
+código de toda idea **descartada se retira del solver**; se quedan solo los
+mecanismos **aceptados** y los **arreglos de fallos reales**. Los registros
+—historial, `iter/`, resultados— no se tocan nunca, y el código retirado sigue
+en el historial de git, así que cada iteración se reproduce desde su commit.
+Hasta el 2026-09-24 dejé el código de cada idea descartada detrás de un
+interruptor apagado; se retiró todo de una vez, verificado (abajo).
+
 **Ejecución**: un solo experimento en la máquina a la vez, nunca dos
 apilados (regla del PI). `queue_jobs.sh` corre todas las celdas de una tanda
 por una única cola, alternadas, como máximo un solver por núcleo, y se niega
@@ -3469,3 +3478,39 @@ es un horario **distinto de las siete igualadas anteriores de `ta30`**,
 verificado y guardado en `iter/I-026/evidence/`. Dos tandas de horas distintas,
 así que es descriptivo; pero no hay rastro de que alargar la tirada acerque el
 récord con la configuración vigente, y la caza sigue a 40 s.
+
+### Reversión del código de las ideas descartadas (2026-09-24)
+
+**Por qué**: el protocolo dice "si se descarta, revertir SOLO el código de la
+idea, nunca los registros", y el PI lo recordó: se prueba, se comitea lo que
+funciona y se revierte lo que no. Yo había ido dejando en el solver, detrás de
+interruptores apagados por defecto, el código de todas las ideas descartadas.
+
+**Qué se retiró**, devolviendo nueve ficheros a su versión del commit de partida
+`6544637`: colas completas (I-004), desempate por frecuencia (I-005), llamada
+profunda (I-009), escape del callejón (I-010, I-012), primera mejora (I-013),
+explorador pateado (I-003), reinicio por estancamiento (I-014), veto de meseta
+(I-015), generador uniforme (I-016), los modos `chosen`, `none` y
+`best-patient` de `abc.ls.pick` (I-017, I-020 y el sondeo), la patada al final
+de la cadena (I-023), y los contadores de diagnóstico de todas ellas.
+
+**Qué se quedó**: lo **aceptado**, `abc.ls.pick` con `index` (por defecto, el
+código original), `best` (I-018) y `best-repeat` (I-021) y sus contadores de
+mecanismo; los **arreglos de fallos reales**, la propagación de cabezas de N8 y
+el contador `abc_replacements`, que nunca se incrementaba; y el porte de
+`jsp.seeded`, que forma parte del punto de partida declarado. La diferencia
+con `6544637` pasa de 1323 líneas en 14 ficheros a 360 en 7.
+
+**Verificado, no supuesto** (`scripts/rollback_verify.sh`): con un número fijo
+de generaciones (12) y un límite de tiempo que no llega a actuar, las tiradas
+son deterministas, y el binario de antes y el de después dan **los mismos
+makespans y la misma traza generación a generación** en las tres
+configuraciones en uso —`prereg2`, `ref_I-018` y `ref_I-021`—, en `ta23` y
+`ta45`, dos tiradas cada una. Seis de seis idénticas.
+
+**Un tropiezo al hacerlo, corregido antes de empujar**: `git checkout <commit>
+-- ficheros` deja los ficheros preparados para el commit, y el siguiente commit
+(el cierre de I-026) se llevó la reversión a medio hacer, con
+`ArtificialBeeColonyPSO` sin el mecanismo aceptado. Como no estaba empujado, se
+deshizo con `git reset --soft` —sin perder nada— y se rehízo en dos commits:
+el cierre de I-026 solo con registros, y esta reversión aparte y verificada.

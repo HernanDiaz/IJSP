@@ -5,9 +5,6 @@
 */
 
 #include "LocalSearch.h"
-#include "NeighbourhoodJSP_Base.h"
-#include "NeighbourJSP.h"
-#include <cstdlib>
 #include <time.h>
 
 namespace FuzzyFW {
@@ -27,10 +24,7 @@ LocalSearch::LocalSearch(ParameterDB *parameters)
 	evaluations(0), timeLabel(FUZZYFW_LOCAL_SEARCH_TIME), maxTime(0.0),
 	neighbours(0), iterations(0), neighbourhood(NULL),
 	guideLabel(FUZZYFW_LOCAL_SEARCH_DRIVE), estimationGuided(false),
-	filterLabel(FUZZYFW_LOCAL_SEARCH_FILTER), estimationFilter(false),
-	tailsLabel(FUZZYFW_LOCAL_SEARCH_TAILS), fullTails(false),
-	deadEndLabel(FUZZYFW_LOCAL_SEARCH_DEADEND), deadEndEscape(false),
-	selectLabel(FUZZYFW_LOCAL_SEARCH_SELECT), firstImprovement(false)
+	filterLabel(FUZZYFW_LOCAL_SEARCH_FILTER), estimationFilter(false)
 	{
 	if (parameters != NULL)
 		this->setup(parameters);
@@ -45,10 +39,6 @@ LocalSearch::LocalSearch(const LocalSearch &source)
 	timeLabel(source.timeLabel), maxTime(source.maxTime),
 	guideLabel(source.guideLabel), estimationGuided(source.estimationGuided),
 	filterLabel(source.filterLabel), estimationFilter(source.estimationFilter),
-	tailsLabel(source.tailsLabel), fullTails(source.fullTails),
-	deadEndLabel(source.deadEndLabel), deadEndEscape(source.deadEndEscape),
-	selectLabel(source.selectLabel),
-	firstImprovement(source.firstImprovement),
 	neighbours(source.neighbours) {
 
 	if (source.neighbourhood != NULL)
@@ -71,25 +61,6 @@ void LocalSearch::setup(ParameterDB *parameters) {
 
 	// Loads the filter mechanism
 	this->estimationFilter = parameters->getBoolean(this->filterLabel, false);
-
-	// How the tails feeding the heads&tails estimate are maintained.
-	//   "incremental" (default, unchanged): the backward sweep of
-	//       acceptNeighbour, which only continues while a tail changes
-	//   "full"       : recomputed from scratch before every estimation
-	// Measured 2026-09-22 on ta29: with the incremental tails the estimate
-	// exceeds the true value of the neighbour in 882,481 of 1,362,270
-	// evaluations, 64.8 %, so it is not a lower bound, the neighbourhood is
-	// sorted wrongly and the estimation filter prunes away moves that are
-	// actually better. Recomputed from scratch, the violations are 0 of
-	// 1,352,160 and the throughput cost is under 1 %.
-	this->fullTails =
-		(parameters->getStringLower(this->tailsLabel).compare("full") == 0);
-	this->deadEndEscape =
-		(parameters->getStringLower(this->deadEndLabel).compare("escape") == 0);
-	// I-013: "first" abandons best-improvement, which is the only way the
-	// order in which N2's neighbours are visited can decide anything.
-	this->firstImprovement =
-		(parameters->getStringLower(this->selectLabel).compare("first") == 0);
 }
 
 
@@ -293,7 +264,7 @@ FullSolution LS_GradientDescent::apply(const Solution *solution,
 LS_Tabu::LS_Tabu(ParameterDB *parameters)
 	: LocalSearch(parameters), maxBadIterations(0),
 	badIterationsLabel(FUZZYFW_LOCAL_SEARCH_TABUITER),
-	badIterations(0), scanStart(0)
+	badIterations(0)
 {
 	tabuList = new TabuList(parameters);
 }
@@ -303,7 +274,7 @@ LS_Tabu::LS_Tabu(ParameterDB *parameters)
 LS_Tabu::LS_Tabu(const LS_Tabu &source)
 	: LocalSearch(source), maxBadIterations(source.maxBadIterations),
 	badIterationsLabel(badIterationsLabel),
-	badIterations(source.badIterations), scanStart(source.scanStart)
+	badIterations(source.badIterations)
 {
 	tabuList = source.tabuList->clone();
 }
@@ -313,11 +284,6 @@ LS_Tabu::LS_Tabu(const LS_Tabu &source)
 //-----  Setup method  --------------------------------------------------------
 void LS_Tabu::setup(ParameterDB *parameters) {
 	LocalSearch::setup(parameters);
-	this->tieBreakLabel = FUZZYFW_LOCAL_SEARCH_TIEBREAK;
-	this->tieBreakFrequency =
-		(parameters->getStringLower(this->tieBreakLabel).compare("frequency") == 0);
-	this->arcUses.clear();
-	this->arcUsesTasks = 0;
 	// Configure the tabu list with the parameters from the setup file
 	this->tabuList->setup(parameters);
 	// Loads the maximum number of iterations without improvement
@@ -347,21 +313,6 @@ bool LS_Tabu::stoppingCriteria() {
 //		METHODS
 //=============================================================================
 //-----  Apply method  --------------------------------------------------------
-unsigned long LS_Tabu::diagTieSum = 0;
-unsigned long LS_Tabu::diagIters = 0;
-unsigned long LS_Tabu::diagScanned = 0;
-unsigned long LS_Tabu::diagGenerated = 0;
-unsigned long LS_Tabu::diagBoundBreaks = 0;
-unsigned long LS_Tabu::diagTieMax = 0;
-unsigned long LS_Tabu::deepCalls = 0;
-unsigned long LS_Tabu::deepIters = 0;
-unsigned long LS_Tabu::deepDeadEnd = 0;
-unsigned long LS_Tabu::deepBadStop = 0;
-unsigned long LS_Tabu::deepTimeStop = 0;
-unsigned long LS_Tabu::deepEscapes = 0;
-unsigned long LS_Tabu::firstHits = 0;
-unsigned long LS_Tabu::fallbackHits = 0;
-
 FullSolution LS_Tabu::apply(const Solution *solution,
 	const Fitness *fitness, const SharedVars *svars) {
 
@@ -392,17 +343,6 @@ FullSolution LS_Tabu::apply(const Solution *solution,
 
 	bool improves = true;
 	this->tabuList->clear();
-	if (this->tieBreakFrequency) {
-		JSP::NB_ParallelBase_MakespanJSP *nb0 =
-			dynamic_cast<JSP::NB_ParallelBase_MakespanJSP *>(this->neighbourhood);
-		if (nb0 != NULL) {
-			unsigned int n = (unsigned int)nb0->getScheduledTasksCount();
-			if (n > 0 && this->arcUsesTasks != n) {
-				this->arcUsesTasks = n;
-				this->arcUses.assign((size_t)n * n, 0u);
-			}
-		}
-	}
 
 	while (!this->stoppingCriteria()) {
 		this->runtime = clock() - _startClock;
@@ -427,108 +367,16 @@ FullSolution LS_Tabu::apply(const Solution *solution,
 		nNeighbours =
 			this->neighbourhood->findNewNeighbours(svars);
 		this->neighbours += nNeighbours;
-		LS_Tabu::diagGenerated += (unsigned long)nNeighbours;
-		// DIAGNOSTIC: with N2_FULL_TAILS set, rebuild every tail from scratch
-		// before the estimations are computed, so that the estimator works on
-		// exact data instead of on whatever the incremental maintenance left.
-		{
-			const bool fullTails = this->fullTails;
-			if (fullTails) {
-				JSP::NB_ParallelBase_MakespanJSP *nb =
-					dynamic_cast<JSP::NB_ParallelBase_MakespanJSP *>(this->neighbourhood);
-				if (nb != NULL) nb->recomputeAllTails();
-			}
-		}
-		// I-013: the sort exists to put the best first so the prune can cut.
-		// In first-improvement mode neither is wanted: the neighbourhood is
-		// visited in its own order, which is the whole point.
-		if (!this->firstImprovement)
-			this->neighbourhood->sortByEstimation(svars);
+		this->neighbourhood->sortByEstimation(svars);
 
 		index = 0;
-		int escapeNeighbor = -1;          // best ignoring the tabu status
-		Fitness *escapeValue = NULL;
-		unsigned long diagTies = 0;               // eligible neighbours at the best value
-		double diagBestSeen = 0.0;
-		bool diagHaveBest = false;
-		if (this->firstImprovement) {
-			// I-013. Visit N2 from a rotating start, in the neighbourhood's
-			// own order, and take the FIRST eligible neighbour that improves
-			// the current solution. No sort and no prune: both serve the best
-			// rule that this cell abandons. If nothing improves, take the best
-			// eligible of the full sweep, because a tabu search must move.
-			Fitness *curFit = current.second;
-			int fallback = -1;
-			Fitness *fallbackValue = NULL;
-			int start = (nNeighbours > 0)
-				? (int)(this->scanStart % (unsigned int)nNeighbours) : 0;
-			for (int step = 0; step < nNeighbours; step++) {
-				int at = start + step;
-				if (at >= nNeighbours) at -= nNeighbours;
-				estimation = this->neighbourhood->getEstimation(at, svars);
-				isTabu = this->tabuList->isTabu(
-					this->neighbourhood->getNeighbour(at));
-				isLastNeighbour = 0;
-				if (lastNeighbour != NULL)
-					isLastNeighbour = lastNeighbour->isReverse(
-						this->neighbourhood->getNeighbour(at));
-				realValue =
-					this->neighbourhood->evaluateNeighbour(at, svars, false);
-				this->evaluations++;
-				if (realValue == NULL) continue;
-				LS_Tabu::diagScanned++;
-				if (estimation != NULL && estimation->isWorseThan(realValue))
-					LS_Tabu::diagBoundBreaks++;
-				bool eligibleMove =
-					(!isTabu || realValue->isBetterThan(bestSolution.second))
-					&& (lastNeighbour == NULL || !isLastNeighbour);
-				if (!eligibleMove) continue;
-				if (this->deadEndEscape
-					&& (escapeValue == NULL
-						|| realValue->isBetterThan(escapeValue))) {
-					escapeValue = realValue;
-					escapeNeighbor = at;
-				}
-				if (curFit != NULL && realValue->isBetterThan(curFit)) {
-					best = realValue;
-					bestNeighbor = at;
-					LS_Tabu::firstHits++;
-					break;
-				}
-				if (fallbackValue == NULL
-					|| realValue->isBetterThan(fallbackValue)) {
-					fallbackValue = realValue;
-					fallback = at;
-				}
-			}
-			if (bestNeighbor < 0 && fallback >= 0) {
-				best = fallbackValue;
-				bestNeighbor = fallback;
-				LS_Tabu::fallbackHits++;
-			}
-			if (bestNeighbor >= 0)
-				this->scanStart = (unsigned int)(bestNeighbor + 1);
-			index = nNeighbours;
-		}
-		while (!this->firstImprovement && index < nNeighbours) {
+		while (index < nNeighbours) {
 			estimation = this->neighbourhood->getEstimation(index, svars);
 			isTabu = this->tabuList->isTabu(this->neighbourhood->getNeighbour(index));
 			if(lastNeighbour != NULL)
 				isLastNeighbour = lastNeighbour->isReverse(this->neighbourhood->getNeighbour(index));
 
-			// With directed tie-breaking the sweep must not stop at an
-			// estimate merely EQUAL to the best real value, or the tied moves
-			// stay invisible. Sound because the cell also sets
-			// localsearch.tails = full, which makes the estimate a true lower
-			// bound (I-004: 0 violations of 1.35 million).
-			bool passFilter;
-			if (!this->estimationFilter || best == NULL)
-				passFilter = true;
-			else if (this->tieBreakFrequency)
-				passFilter = !estimation->isWorseThan(best);
-			else
-				passFilter = estimation->isBetterThan(best);
-			if (passFilter) {
+			if (!this->estimationFilter || best == NULL || estimation->isBetterThan(best)) {
 				if (this->estimationGuided) {
 					if ((best == NULL || estimation->isBetterThan(best))
 						&& (!isTabu || estimation->isBetterThan(bestSolution.second))) {
@@ -539,53 +387,10 @@ FullSolution LS_Tabu::apply(const Solution *solution,
 				else {
 					realValue = this->neighbourhood->evaluateNeighbour(index, svars, false);
 					this->evaluations++;
-					// DIAGNOSTIC: is the estimate a lower bound, and how many
-					// eligible neighbours tie at the best value?
-					if (realValue != NULL) {
-						LS_Tabu::diagScanned++;
-						if (estimation != NULL
-							&& estimation->isWorseThan(realValue))
-							LS_Tabu::diagBoundBreaks++;
-						bool eligible =
-							(!isTabu || realValue->isBetterThan(bestSolution.second))
-							&& (lastNeighbour == NULL || !isLastNeighbour);
-						if (eligible) {
-							double v = realValue->toDouble();
-							if (!diagHaveBest || v < diagBestSeen) {
-								diagBestSeen = v; diagHaveBest = true; diagTies = 1;
-							}
-							else if (v == diagBestSeen)
-								diagTies++;
-						}
-					}
-					if (this->deadEndEscape && realValue != NULL
-						&& (escapeValue == NULL
-							|| realValue->isBetterThan(escapeValue))) {
-						escapeValue = realValue;
-						escapeNeighbor = index;
-					}
-					bool eligibleMove = (realValue != NULL)
+					if (realValue != NULL
+						&& (best == NULL || realValue->isBetterThan(best))
 						&& (!isTabu || realValue->isBetterThan(bestSolution.second))
-						&& (lastNeighbour == NULL || !isLastNeighbour);
-					if (eligibleMove && best != NULL && this->tieBreakFrequency
-						&& realValue->isEqualTo(best) && bestNeighbor >= 0) {
-						// A tie at the best value: keep the less used arc.
-						const JSP::NeighbourJSP_Arc *cand = dynamic_cast<const JSP::NeighbourJSP_Arc *>(
-							this->neighbourhood->getNeighbour(index));
-						const JSP::NeighbourJSP_Arc *held = dynamic_cast<const JSP::NeighbourJSP_Arc *>(
-							this->neighbourhood->getNeighbour(bestNeighbor));
-						if (cand != NULL && held != NULL && this->arcUsesTasks > 0) {
-							unsigned int ci = cand->x * this->arcUsesTasks + cand->y;
-							unsigned int hi = held->x * this->arcUsesTasks + held->y;
-							if (ci < this->arcUses.size() && hi < this->arcUses.size()
-								&& this->arcUses[ci] < this->arcUses[hi]) {
-								best = realValue;
-								bestNeighbor = index;
-							}
-						}
-					}
-					else if (eligibleMove
-						&& (best == NULL || realValue->isBetterThan(best))) {
+						&& (lastNeighbour == NULL || !isLastNeighbour)) {
 						best = realValue;
 						bestNeighbor = index;
 					}
@@ -596,24 +401,11 @@ FullSolution LS_Tabu::apply(const Solution *solution,
 				index = nNeighbours;
 		}
 
-		if (diagHaveBest) {
-			LS_Tabu::diagIters++;
-			LS_Tabu::diagTieSum += diagTies;
-			if (diagTies > LS_Tabu::diagTieMax) LS_Tabu::diagTieMax = diagTies;
-		}
 		if (bestNeighbor >= 0) {
 			if (lastNeighbour != NULL)
 				delete lastNeighbour;
 			lastNeighbour = this->neighbourhood->getNeighbour(bestNeighbor)->clone();
 
-			if (this->tieBreakFrequency && this->arcUsesTasks > 0) {
-				const JSP::NeighbourJSP_Arc *taken = dynamic_cast<const JSP::NeighbourJSP_Arc *>(
-					this->neighbourhood->getNeighbour(bestNeighbor));
-				if (taken != NULL) {
-					unsigned int ti = taken->x * this->arcUsesTasks + taken->y;
-					if (ti < this->arcUses.size()) this->arcUses[ti]++;
-				}
-			}
 			this->tabuList->addNeighbour(this->neighbourhood->getNeighbour(bestNeighbor));
 			this->neighbourhood->acceptNeighbour(bestNeighbor, svars);
 			current = this->neighbourhood->getCurrentSolution();
@@ -632,47 +424,11 @@ FullSolution LS_Tabu::apply(const Solution *solution,
 			else
 				this->badIterations++;
 		}
-		// No admissible neighbour. Every move is tabu without aspiring, or is
-		// the reverse of the last one. Measured 2026-09-22: this is how EVERY
-		// deep call ends, after 75 to 92 moves, so it and not
-		// localsearch.bad-iterations is what caps the depth of this search.
-		else if (this->deadEndEscape && escapeNeighbor >= 0) {
-			// The classical way out: take the best move anyway and carry on.
-			if (this->maxBadIterations > 100) LS_Tabu::deepEscapes++;
-			if (lastNeighbour != NULL) delete lastNeighbour;
-			lastNeighbour =
-				this->neighbourhood->getNeighbour(escapeNeighbor)->clone();
-			this->tabuList->addNeighbour(
-				this->neighbourhood->getNeighbour(escapeNeighbor));
-			this->neighbourhood->acceptNeighbour(escapeNeighbor, svars);
-			current = this->neighbourhood->getCurrentSolution();
-			this->iterations++;
-			if (current.second->isBetterThan(bestSolution.second)) {
-				delete bestSolution.first;
-				delete bestSolution.second;
-				bestSolution.first = current.first->clone();
-				bestSolution.second = current.second->clone();
-				improves = true;
-				this->badIterations = 0;
-			}
-			else
-				this->badIterations++;
-		}
-		else {
-			if (this->maxBadIterations > 100) LS_Tabu::deepDeadEnd++;
+		// No neihgbours: Dead end
+		else
 			this->badIterations = this->maxBadIterations;
-		}
 	}
 
-	if (this->maxBadIterations > 100) {
-		LS_Tabu::deepCalls++;
-		LS_Tabu::deepIters += this->iterations;
-		double elapsed = this->runtime / (double)CLOCKS_PER_SEC;
-		if (this->maxTime > 0 && elapsed >= this->maxTime * 0.9)
-			LS_Tabu::deepTimeStop++;
-		else if (this->badIterations >= this->maxBadIterations)
-			LS_Tabu::deepBadStop++;
-	}
 	if(lastNeighbour != NULL)
 		delete lastNeighbour;
 	return bestSolution;

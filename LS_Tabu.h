@@ -5,7 +5,6 @@
 */
 #pragma once
 
-#include <vector>
 #include "LocalSearch.h"
 
 namespace FuzzyFW {
@@ -26,70 +25,8 @@ protected:
 	unsigned int maxBadIterations;
 	std::string badIterationsLabel;
 	unsigned int badIterations;
-	// I-013: where the next sweep starts, carried across calls so the order
-	// rotates instead of always favouring the front of the neighbourhood.
-	unsigned int scanStart;
 
 public:
-		//-----  DIAGNOSTIC 2026-09-21  --------------------------------------
-		// Does the order in which N2's neighbours are visited decide anything?
-		// It cannot change which VALUE is best, but isBetterThan is strict, so
-		// among several neighbours attaining that value the scan keeps the
-		// FIRST one it reaches, and with the estimation filter on it never even
-		// evaluates the others. These counters measure how often that choice
-		// exists, and whether the heads&tails estimate is a true lower bound.
-		// Run them with localsearch.filter = no, so every neighbour is seen.
-		static unsigned long diagTieSum;        // ties at the best eligible value
-		static unsigned long diagIters;         // tabu iterations counted
-		static unsigned long diagScanned;       // neighbours evaluated
-		static unsigned long diagGenerated;     // neighbours offered by N2
-		static unsigned long diagBoundBreaks;   // estimation strictly worse than the real value
-		static unsigned long diagTieMax;        // the largest tie seen
-
-		//-----  Why does a DEEP call stop?  ---------------------------------
-		// Counted only for calls whose depth limit is above 100, that is the
-		// deep calls of I-010. Raising the limit from 1000 to 30000 changed
-		// neither the share of time nor the average iterations, so something
-		// other than the counter ends them. These say what.
-		static unsigned long deepCalls;
-		static unsigned long deepIters;
-		static unsigned long deepDeadEnd;    // no admissible neighbour at all
-		static unsigned long deepBadStop;    // the non-improving counter ran out
-		static unsigned long deepTimeStop;   // the per-call time cap
-		static unsigned long deepEscapes;    // all-tabu states escaped from
-
-		//-----  I-013: first improvement over a rotating sweep  -------------
-		// The mechanism check reads these before the endpoint. If the first
-		// branch almost never fires, the rule did not change and the idea was
-		// not tested; if the sweep cost explodes, the comparison is about cost
-		// and not about order, and that has to be said out loud.
-		static unsigned long firstHits;      // moves taken by first improvement
-		static unsigned long fallbackHits;   // sweeps with no improving move
-
-		//-----  I-005: directed tie-breaking  -------------------------------
-		// N2 offers 1.5 to 2.0 eligible neighbours tied at the best value on
-		// average, and up to 27. Which one is taken is decided today by the
-		// random pivot of the quicksort that orders the neighbourhood, and
-		// I-004 showed that making that order CORRECT changes nothing. This
-		// picks among the tied moves the arc used fewest times so far in the
-		// run: long-term frequency memory, the piece of the TSAB family that
-		// TabuList does not have, acting at the one point where the algorithm
-		// currently chooses blind.
-		bool tieBreakFrequency;
-
-	public:
-		/**
-		* I-009: read and set the depth of a tabu call, so one call can be run
-		* deeper than the frozen 15 non-improving iterations without touching
-		* the setup. The caller saves the old value and restores it.
-		*/
-		int getMaxBadIterations() const { return this->maxBadIterations; }
-		void setMaxBadIterations(int value) { this->maxBadIterations = value; }
-	public:
-		std::string tieBreakLabel;
-		std::vector<unsigned int> arcUses;   // indexed by x * nTasks + y
-		unsigned int arcUsesTasks;
-
 	explicit LS_Tabu(ParameterDB *parameters = NULL);
 	LS_Tabu(const LS_Tabu &source);
 

@@ -21,19 +21,6 @@ namespace JSP {
 	// Creation parameters defined in this header file
 #define CREATION_SGS "creation.sgs"
 #define CREATION_RANDOM_RATIO "creation.randomratio"
-// I-016. How the random creation draws the next job of a sequence.
-//   "job"     (default, unchanged): uniformly among the jobs that still have
-//             operations left, however many they have left
-//   "uniform" : in proportion to the operations each job has left, which makes
-//             every sequence of the instance equally likely
-// The default is biased. A job that happens to be drawn early runs out early,
-// and the tail of the sequence fills with the last operations of the few jobs
-// left behind, in blocks, which decodes badly. Measured 2026-09-23 at
-// generation 0, three runs each: the default averages 2269 on ta23 and 2952 on
-// ta45, uniformly random sequences 2117 and 2753, 6 to 7 % better, at the same
-// diversity. The scouts draw through this same creation, 500 to 800 times a
-// run, so the bias reaches far more than the first population.
-#define CREATION_RANDOM_DRAW "creation.random.draw"
 
 
 //=============================================================================
@@ -56,7 +43,6 @@ namespace JSP {
 		const std::string sgsLabel;
 		std::unique_ptr<SGS_JSP> sgs;
 		double randomRatio;
-		bool uniformDraw;      // I-016
 
 
 		//=========================================================================
@@ -64,12 +50,10 @@ namespace JSP {
 		//=========================================================================
 	public:
 		explicit CreationRandomSchedule(FuzzyFW::ParameterDB *parameters = NULL)
-			: sgsLabel(CREATION_SGS), Creation(parameters), randomRatio(0),
-			  uniformDraw(false) { }
+			: sgsLabel(CREATION_SGS), Creation(parameters), randomRatio(0) { }
 
 		CreationRandomSchedule(const CreationRandomSchedule &source)
-			: Creation(source), sgsLabel(CREATION_SGS), randomRatio(source.randomRatio),
-			  uniformDraw(source.uniformDraw) { }
+			: Creation(source), sgsLabel(CREATION_SGS), randomRatio(source.randomRatio) { }
 
 		/**
 		* Loads the needed parameters: Read the minimum/maximum
