@@ -251,6 +251,9 @@ namespace FuzzyFW {
 		stats.push_back(std::pair<std::string, double>
 			("LS longest chain of calls on one child", (double)this->lsRepeatLongest));
 		stats.push_back(std::pair<std::string, double>
+			("Mean parent distance", this->partnerCount
+				? this->partnerDistSum / this->partnerCount : 0.0));
+		stats.push_back(std::pair<std::string, double>
 			("Best solution", this->bestSoFar->getFitness()->toDouble()));
 		return stats;
 	}
@@ -313,6 +316,14 @@ namespace FuzzyFW {
 	//=============================================================================
 	//		METHODS
 	//=============================================================================
+	// I-031: the genotype distance the statistics already use, on the
+	// integer-array individuals this solver works with.
+	static double parentDistance(Individual *a, Individual *b) {
+		IndividualArrayInt *x = dynamic_cast<IndividualArrayInt *>(a);
+		IndividualArrayInt *y = dynamic_cast<IndividualArrayInt *>(b);
+		return (x != NULL && y != NULL) ? x->hammingDistance(y) : 0.0;
+	}
+
 	//-----  prepareToRun  --------------------------------------------------------
 	void ArtificialBeeColonyPSO::prepareToRun(ParameterDB *params) {
 		// Loads the specific parameters
@@ -389,6 +400,11 @@ namespace FuzzyFW {
 		this->lsPickRepeat = (value.compare("best-repeat") == 0);
 		this->lsPickBest = this->lsPickRepeat || (value.compare("best") == 0);
 
+		// I-031: how the crossover partner is chosen among the elite.
+		value = params->getStringLower(PARTNER_MODE);
+		this->partnerMode = (value.compare("far") == 0) ? 1
+			: (value.compare("near") == 0) ? 2 : 0;
+
 		// Loads the common parameters
 		GeneticAlgorithm::prepareToRun(params);
 
@@ -458,6 +474,8 @@ namespace FuzzyFW {
 		this->lsSecondImproved = 0;
 		this->lsRepeatCalls = 0;
 		this->lsRepeatLongest = 0;
+		this->partnerDistSum = 0.0;
+		this->partnerCount = 0;
 		evolutionStats.clear();
 
 		this->generation = 0;
@@ -559,12 +577,35 @@ namespace FuzzyFW {
 				if (bestFoodSource != NULL) {
 					delete bestFoodSource;
 				}
+				if (this->partnerMode != 0) {
+					// I-031: the elite candidate farthest from (or nearest
+					// to) this food source, instead of a random one.
+					// Candidate 0 is the global best, k >= 1 the k-th best.
+					Individual *self = currentPopulation->getIndividual(i);
+					double pick = (this->partnerMode == 1) ? -1.0 : 2.0;
+					int pickK = 0;
+					for (int k = 0; k <= elite_size; k++) {
+						if (k > 0 && k - 1 >= (int)currentPopulation->size()) break;
+						Individual *cand = (k == 0) ? this->bestSoFar
+							: currentPopulation->getBest(this->sharedVariables, k - 1);
+						double d = parentDistance(self, cand);
+						if (this->partnerMode == 1 ? d > pick
+							: (d > 0.0 && d < pick)) {
+							pick = d;
+							pickK = k;
+						}
+					}
+					foodSourceID = (unsigned int)pickK;
+				}
 				if (foodSourceID == 0) {
 					bestFoodSource = this->bestSoFar->clone();
 				}
 				else {
 					bestFoodSource = currentPopulation->getBest(this->sharedVariables, foodSourceID - 1)->clone();
 				}
+				this->partnerDistSum += parentDistance(
+					currentPopulation->getIndividual(i), bestFoodSource);
+				this->partnerCount++;
 				this->selectionTime += clock() - timePoint;
 				timePoint = clock();
 				Population currentFoodSources;

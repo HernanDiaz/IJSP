@@ -336,6 +336,7 @@ bucle y están aquí para que no se repitan; sus cifras están en el JOURNAL.
 | I-003 | el explorador del ABC reinyecta un **elite pateado** en vez de una solución aleatoria | un arranque aleatorio a mitad de tirada no puede alcanzar a la población; uno dentro de una cuenca buena sí | kick−control = **+1.43** (ta23 −0.27, ta29 +0.70, ta30 −0.50, ta45 **+5.80**); regla > +2 descarta → **pasa, por poco y en contra** | 4 mirillas de 6: −1.02, −0.57, **−0.03**, +0.44; kick mejor en 9-10 de 21 siempre; p entre 0.55 y 0.88, la frontera nunca se acerca | **detenida en la 4ª** (2026-09-21) por cambio de dirección del PI, no por sus datos. Sin aceptación: es un cero |
 | H-4 | N8 contra N2 (y contra N1, N3, N_ext), fase B del paper de COR | un vecindario más rico gana | -- | 82 instancias x 30 runs, 2460 bloques pareados: N2 1846.50 contra N8 1847.94, dif −1.45, p_adj = 3.9e−4, r = 0.077 (**despreciable**); rangos de Friedman N2 2.1315 el mejor de cinco, N8 2.2400 | **descartada** (antes del bucle; `experiments/cor_tabu_2026/`) |
 | I-012 | **escapar del estado todo-tabú, solo eso** | la celda informativa de I-010 dio −1.11 y mejor en 15 de 21 (p = 0.033) sin frontera | esc−control = −1.82, pasa | 6 mirillas, 30 runs: +1.30, +1.09, +0.59, +0.27, +0.39, **+0.07**; mejor en 10 de 21, p = 0.835 | **descartada** (2026-09-22). La señal de I-010 **no se reprodujo** |
+| I-031 | **compañero de cruce por distancia**: entre los mismos candidatos élite, el más lejano (`far`) o el más cercano (`near`) en vez de uno al azar | el hueco en las grandes está en qué cuencas se exploran, y eso lo decide la recombinación | pendiente | pendiente | **lanzada** (2026-09-24), filtro de tres celdas |
 | I-030 | **la configuración vigente contra la original, a 300 s**, intercaladas en la misma tanda, 21 instancias, 5 tiradas por celda, semillas 6001-6005 | las dos aceptaciones se midieron a los presupuestos cortos; ¿aguantan en el régimen ancla? | -- | 210 tiradas de 300 s, cero infactibles: vigente mejor en **18 de 21**, media **−5.82**, Wilcoxon **p = 0.0010**; iguala `ta29` = 1625 | **cerrada** (2026-09-24): **las dos aceptaciones aguantan a 300 s**, en la magnitud esperada |
 | I-029 | **B-12 por ventana**: reoptimización exacta de todas las operaciones de una franja de tiempo, en todas las máquinas a la vez, sobre horarios guardados | la forma literal de B-12 (Beck, Feng y Watson) | -- | **0 de 20** en el BKS mejoran con ventanas de 30 **ni de 60** operaciones; 10 de 800 finales (1.2 %) con 30 | **cerrada** (2026-09-24): **la familia B-12 se cierra**, sin salida de la meseta en ninguna de sus tres formas |
 | I-028 | **B-12 con dos máquinas**: reoptimización **exacta y conjunta** de dos máquinas, las demás fijas, sobre horarios guardados | lo que falta exige mover operaciones en dos máquinas a la vez | -- | **0 de 20** en el BKS mejoran con **todo** par que incluya una máquina crítica (2839 búsquedas exactas); **20 de 800** finales (2.5 %), igual que con una | **cerrada** (2026-09-24), sondeo sin máquina: tampoco está en dos máquinas |
@@ -3698,3 +3699,30 @@ grandes **no está en ordenar mejor localmente sino en qué cuencas se llegan a
 explorar**, y eso lo decide la recombinación: con quién se cruza cada fuente.
 Es de donde sale I-031. Y el operador de I-027 queda definitivamente fuera del
 solver.
+
+### I-031 — el compañero de cruce, por distancia en vez de al azar
+
+**De dónde sale**: los sondeos tras I-029 dicen que los óptimos del tabú son
+óptimos, de forma exacta, frente a reordenar cualquier máquina incluso a un
+2-3 % del BKS en las instancias grandes. Lo que queda no está en ordenar mejor
+localmente sino en **qué cuencas se llegan a explorar**, y eso lo decide la
+recombinación: con quién se cruza cada fuente.
+
+**La idea**: hoy cada fuente se cruza (JOX) con un candidato élite **al azar**
+—el mejor global o uno de los 86 mejores—. `abc.partner = far` elige el
+candidato **más lejano** en distancia de Hamming; `abc.partner = near`, el
+**más cercano** con distancia no nula. Mismo conjunto de candidatos, **ningún
+parámetro nuevo**. `far` es la apuesta por cuencas nuevas que la cadena
+profunda de I-021 explota; `near`, la contraria, intensificar. Las dos
+variantes se separan en el filtro, como pide el protocolo.
+
+**Comprobado antes de lanzar**: con `random` el binario nuevo da exactamente lo
+mismo que el de referencia a número fijo de generaciones; la distancia media
+entre padres pasa de 0.83-0.92 (`random`) a **0.96-0.97** (`far`) y
+**0.67-0.73** (`near`); todos los horarios factibles. Con padres lejanos las
+cadenas son más largas y las generaciones bajan (160 → 129 en ta45).
+
+**Filtro**: tres celdas, cada tratada por su cuenta, descartar si supera +2.0
+contra el control, semillas 1001 a 1030; las supervivientes a
+`wave_cells.txt`, frontera repartida (0.0071) si pasan las dos. **Mecanismo,
+primero**: distancia media entre padres y generaciones.
