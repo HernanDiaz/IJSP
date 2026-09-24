@@ -134,6 +134,21 @@ namespace FuzzyFW {
 // always lands on child 0. When the better child is child 0 it is searched
 // TWICE, the second time from a local optimum, and the other child never is.
 #define  LS_PICK "abc.ls.pick"
+// I-023 (B-11). A kick with reoptimisation at the end of each chain.
+//   "no"  (default, unchanged)
+//   "chain-end" : when the chain on the better child ends -- a call with an
+//              empty tabu list has just failed, and the probe after I-022
+//              measured that another call from there improves only 1 % of the
+//              time -- copy the child, apply LS_KICK_MUTATIONS mutations,
+//              search the copy as a chain too, and keep it only if it ends
+//              better than the child. Iterated local search, applied where the
+//              child is known to be stuck.
+// The count of 3 is B-11's, fixed in the backlog before any of this was
+// measured, and is not tuned. B-11 spoke of three random critical moves; this
+// uses three applications of the solver's own mutation operator, as the kicked
+// scout of I-003 did, which is the move the code already has.
+#define  LS_KICK "abc.ls.kick"
+#define  LS_KICK_MUTATIONS 3
 
 #define  STALL_RESTART "abc.restart"
 #define  STALL_RESTART_SHARE 0.2
@@ -379,6 +394,10 @@ namespace FuzzyFW {
 		bool lsPickNone;       // I-020
 		bool lsPickRepeat;     // I-021
 		bool lsPickPatient;    // probe after I-022
+		bool lsKickChainEnd;   // I-023
+		unsigned long lsKickTries;   // kicks made
+		unsigned long lsKickWins;    // kicked copies that ended better
+		unsigned long lsKickCalls;   // tabu calls spent on kicked copies
 		unsigned long lsAfterFailCalls;     // calls made right after a failed one
 		unsigned long lsAfterFailImproved;  // ... that improved the child
 		unsigned long lsRepeatCalls;     // I-021: calls beyond the second

@@ -287,6 +287,12 @@ namespace FuzzyFW {
 		stats.push_back(std::pair<std::string, double>
 			("LS calls after a failure that improved", (double)this->lsAfterFailImproved));
 		stats.push_back(std::pair<std::string, double>
+			("LS kicks at the end of a chain", (double)this->lsKickTries));
+		stats.push_back(std::pair<std::string, double>
+			("LS kicked copies that ended better", (double)this->lsKickWins));
+		stats.push_back(std::pair<std::string, double>
+			("LS tabu calls on kicked copies", (double)this->lsKickCalls));
+		stats.push_back(std::pair<std::string, double>
 			("Plateau moves admitted in crossover", (double)this->plateauAdmittedCross));
 		stats.push_back(std::pair<std::string, double>
 			("Plateau moves admitted in local search", (double)this->plateauAdmittedLS));
@@ -490,6 +496,9 @@ namespace FuzzyFW {
 		this->lsPickPatient =
 			(params->getStringLower(LS_PICK).compare("best-patient") == 0);
 		if (this->lsPickPatient) { this->lsPickRepeat = true; this->lsPickBest = true; }
+		// I-023: kick a copy of the stuck child and search it again.
+		this->lsKickChainEnd =
+			(params->getStringLower(LS_KICK).compare("chain-end") == 0);
 		this->scoutKick = false;
 		this->scoutKicks = 0;
 		std::string scoutValue = params->getStringLower(SCOUT_MODE);
@@ -579,6 +588,9 @@ namespace FuzzyFW {
 		this->lsRepeatLongest = 0;
 		this->lsAfterFailCalls = 0;
 		this->lsAfterFailImproved = 0;
+		this->lsKickTries = 0;
+		this->lsKickWins = 0;
+		this->lsKickCalls = 0;
 		this->deepLsDone = false;
 		this->deepLsCalls = 0;
 		this->deepLsTime = 0;
@@ -1058,6 +1070,40 @@ namespace FuzzyFW {
 						}
 						if (chain > this->lsRepeatLongest)
 							this->lsRepeatLongest = chain;
+
+						// I-023: the chain has ended on a failed call, so the
+						// child sits in an optimum the tabu search does not
+						// leave. Kick a copy, search it as a chain, and keep it
+						// only if it ends better than the child.
+						if (this->lsKickChainEnd && this->lsPickRepeat
+							&& target == best) {
+							Individual *child = population->getIndividual(target);
+							Individual *kicked = child->clone();
+							kicked->setNumTrials(0);
+							for (unsigned int k = 0; k < LS_KICK_MUTATIONS; k++)
+								this->mutation->apply(kicked, this->sharedVariables);
+							Population trial;
+							trial.addIndividual(kicked);
+							this->evaluator->evaluatePopulation(
+								this->sharedVariables, &trial, false);
+							this->lsKickTries++;
+							double kb, ka;
+							do {
+								kb = trial.getIndividual(0)->getFitness()->toDouble();
+								this->applyLocalSearch(&trial, 0);
+								ka = trial.getIndividual(0)->getFitness()->toDouble();
+								this->lsKickCalls++;
+							} while (ka < kb);
+							if (trial.getIndividual(0)->getFitness()
+								->isBetterThan(child->getFitness())) {
+								Individual *winner = trial.getIndividual(0);
+								trial.clear(false);      // hand it over, do not delete
+								delete population->replaceIndividual(target, winner);
+								population->setSorted(false);
+								this->lsKickWins++;
+							}
+							// otherwise the trial population deletes the copy
+						}
 					}
 				}
 			}

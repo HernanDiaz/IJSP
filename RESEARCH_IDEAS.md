@@ -323,6 +323,7 @@ bucle y están aquí para que no se repitan; sus cifras están en el JOURNAL.
 | I-003 | el explorador del ABC reinyecta un **elite pateado** en vez de una solución aleatoria | un arranque aleatorio a mitad de tirada no puede alcanzar a la población; uno dentro de una cuenca buena sí | kick−control = **+1.43** (ta23 −0.27, ta29 +0.70, ta30 −0.50, ta45 **+5.80**); regla > +2 descarta → **pasa, por poco y en contra** | 4 mirillas de 6: −1.02, −0.57, **−0.03**, +0.44; kick mejor en 9-10 de 21 siempre; p entre 0.55 y 0.88, la frontera nunca se acerca | **detenida en la 4ª** (2026-09-21) por cambio de dirección del PI, no por sus datos. Sin aceptación: es un cero |
 | H-4 | N8 contra N2 (y contra N1, N3, N_ext), fase B del paper de COR | un vecindario más rico gana | -- | 82 instancias x 30 runs, 2460 bloques pareados: N2 1846.50 contra N8 1847.94, dif −1.45, p_adj = 3.9e−4, r = 0.077 (**despreciable**); rangos de Friedman N2 2.1315 el mejor de cinco, N8 2.2400 | **descartada** (antes del bucle; `experiments/cor_tabu_2026/`) |
 | I-012 | **escapar del estado todo-tabú, solo eso** | la celda informativa de I-010 dio −1.11 y mejor en 15 de 21 (p = 0.033) sin frontera | esc−control = −1.82, pasa | 6 mirillas, 30 runs: +1.30, +1.09, +0.59, +0.27, +0.39, **+0.07**; mejor en 10 de 21, p = 0.835 | **descartada** (2026-09-22). La señal de I-010 **no se reprodujo** |
+| I-023 | **patada con reoptimización al final de cada cadena** (B-11): copia del hijo atascado, 3 mutaciones, cadena de búsqueda sobre la copia, y se queda solo si acaba mejor | buscar otra vez desde el mismo punto ya no rinde (1 %); desde un punto movido rinde un 28-35 %, a costa de la mitad de las generaciones | pendiente | pendiente | **lanzada** (2026-09-24) |
 | I-022 | **intento de récord con la configuración de dos aceptaciones**, `ref_I-018` contra `ref_I-021`, lista corta, 75 tiradas por celda e instancia, semillas 3001-3075 | I-019 midió que I-018 llega a la cola; falta ver si I-021 también, y el récord vive ahí | -- | 600 tiradas: **sin récord; iguala el BKS de `ta29`, 1625**, con la configuración vigente a 40 s, verificado. Mejor de 75, previous → current: ta29 1630 → **1625**, ta30 1599 → 1595, ta23 1568 → 1567, ta22 1613 = 1613. Bloques de 5: current mejor en 32, peor en 25, p = 0.427 | **cerrada** (2026-09-24): igualada de `ta29`; la cola de I-021 **no se confirma** como la de I-018 |
 | I-021 | **repetir la búsqueda sobre el mejor hijo mientras mejore** (`abc.ls.pick = best-repeat`) | la profundidad es lo que vale (I-020), y la segunda llamada mejora al hijo dos de cada tres veces | mecanismo: ~25000 llamadas extra por tirada, cadenas de ~10, generaciones **−21 a −26 %**; repeat−control = **−2.58** (ta45 −4.97, ta30 −2.67, ta23 −2.60, ta29 −0.10), pasa (descartaba si > +2.0) | mirillas media: **-3.56** (w1, 14 de 21, p = 0.022), **-2.95** (w2, 15 de 21, p = 0.017), **-2.62** (w3, **16 de 21**, **p = 0.0021**) → cruza | **ACEPTADA** (2026-09-24) en la mirilla 3 de 6, **sobre** I-018. Segunda aceptación; configuración vigente `setup/ref_I-021.txt` |
 | I-020 | **¿profundidad o generaciones?** Suprimir la segunda llamada al tabú (`abc.ls.pick = none`), contra la configuración vigente | I-018 profundiza sobre el mejor hijo **y** corre más generaciones; `none` conserva y amplía lo segundo (+68-75 %) y quita lo primero | mecanismo exacto, sin segunda llamada, generaciones **+56 a +73 %**; none−control = **+5.96** (ta45 +7.77, ta30 +7.33, ta23 +5.97, ta29 +2.77); regla > +2 → **DESCARTA** | -- | **descartada** (2026-09-24) en el filtro: **la ganancia de I-018 es la profundidad**, no el rendimiento |
@@ -3247,3 +3248,37 @@ mucho entre sondeos hechos a distintas horas (133 aquí en ta23 frente a 73 en
 la comprobación previa de I-021). Es la deriva de la máquina que el protocolo ya
 conoce; dentro de una tanda afecta a las dos celdas por igual porque se
 intercalan, pero no permite comparar sondeos de horas distintas.
+
+### I-023 — patada con reoptimización al final de cada cadena (B-11)
+
+**De dónde sale**: el sondeo tras I-022 midió que, cuando una llamada con la
+lista tabú vacía no mejora al hijo, otra llamada desde el mismo punto lo mejora
+**el 1 % de las veces**: volver a buscar desde el mismo sitio ha tocado techo, y
+para seguir hay que **mover el sitio**. Es B-11, la búsqueda local iterada, que
+el backlog tenía pendiente y que ahora tiene un lugar preciso donde aplicarse.
+
+**La idea**: `abc.ls.kick = chain-end`. Cuando termina la cadena de I-021 sobre
+el mejor hijo, se copia el hijo, se le aplican **tres** mutaciones, se busca la
+copia también en cadena, y **se queda solo si acaba mejor** que el hijo; si no,
+se descarta. El tres es el de B-11, fijado en el backlog antes de medir nada de
+esto, y no se ajusta. B-11 hablaba de tres movimientos críticos al azar; aquí
+son tres aplicaciones del operador de mutación del propio solver, como hizo la
+patada del explorador de I-003, porque es el movimiento que el código ya tiene.
+
+**Comprobado antes de lanzar** (una tirada, semilla 1001, sobre `ref_I-021`):
+
+| | patadas | copia pateada que acaba mejor | llamadas extra | generaciones |
+|---|---|---|---|---|
+| ta23 | 13585 | **4779 (35 %)** | 41084 | 134 → **55** |
+| ta45 | 35568 | **9847 (28 %)** | 105739 | 294 → **144** |
+
+**La patada sí saca al hijo de su óptimo, una de cada tres veces**, frente al 1 %
+de volver a buscar desde el mismo punto. **Y cuesta mucho**: unas tres llamadas
+más por pareja y **menos de la mitad de generaciones**. Es el mismo intercambio
+que I-021, más fuerte en las dos direcciones: I-020 dijo que la profundidad
+vale más que las generaciones; esto pregunta si vale tanto más.
+
+**Celdas**: `control` (`ref_I-021`) y `kick`. **Filtro**: descartar si
+`kick − control` supera +2.0, semillas 1001 a 1030. **Endpoint**: media por
+instancia, Pocock simétrica p <= 0.0142. **Mecanismo, primero**: patadas y
+copias que acaban mejor por tirada, y generaciones.
