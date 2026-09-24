@@ -2902,3 +2902,22 @@ a rule that discards above +2.0, which at a filter only means it is not
 discarded; best-of-five leans slightly in favour at -1.38, mostly on ta45. The
 ta30 match in the control is again seed 1009's schedule, reproduced a third
 time. The waves go.
+
+## I-034 is rejected and rolled back: polished scouts do not help
+
+Filter and six waves, 1500 runs, no infeasible schedule, against ref_I-021.
+Polish minus control: +0.03 at the filter, then -0.14, -0.11, -0.10, +0.21,
++0.30, +0.31, final p = 0.056, better on only 6 of 21. No crossing, ending on
+the control's side, with the mechanism exercised throughout at about 203
+polished scouts per run.
+
+Bringing new, independent local optima into the population, a polished restart
+for every abandoned food source, does not improve the result. With I-003 and
+I-014 (reinjecting around what is held), I-016 (better random scouts) and I-031
+(crossing by distance), that is five different ways of steering the search
+towards other basins from inside the population, and none helps. What has
+worked is added depth on the best the population already has, I-018 and I-021.
+
+No records; the only match is the known ta30 schedule of seed 1009. The code is
+rolled back and the rebuilt solver reproduces the reference exactly at a fixed
+number of generations.

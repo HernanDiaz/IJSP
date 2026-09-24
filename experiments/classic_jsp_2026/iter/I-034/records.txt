@@ -1,9 +1,26 @@
 inst     best    BKS     gap
+ta22     1614   1600  +0.88%
 ta23     1564   1557  +0.45%
+ta25     1617   1595  +1.38%
+ta26     1669   1643  +1.58%
+ta27     1694   1680  +0.83%
 ta29     1630   1625  +0.31%
 ta30     1584   1584  +0.00%
+ta32     1819   1784  +1.96%
+ta33     1832   1791  +2.29%
+ta34     1847   1829  +0.98%
+ta40     1695   1669  +1.56%
+ta41     2061   2005  +2.79%
+ta42     1977   1937  +2.07%
+ta43     1894   1846  +2.60%
+ta44     2027   1979  +2.43%
 ta45     2016   2000  +0.80%
+ta46     2049   2004  +2.25%
+ta47     1929   1889  +2.12%
+ta48     1996   1937  +3.05%
+ta49     1996   1961  +1.78%
+ta50     1968   1923  +2.34%
 
-240 runs recomputed from their schedules
+1500 runs recomputed from their schedules
 at or below the best known: 1
   ta30 1584 (match) results/I-034_filter_p09_control/ta30_20260924145304_Certificate.csv run 1

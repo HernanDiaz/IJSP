@@ -64,14 +64,6 @@ namespace FuzzyFW {
 //            improved it; the first call that does not ends the chain (I-021:
 //            a further -2.62, 16 of 21, p = 0.0021).
 #define  LS_PICK "abc.ls.pick"
-// I-034. What a scout brings in when a food source is abandoned.
-//   "none"  (default, unchanged): a random solution, unpolished
-//   "chain" : the same random solution searched as a chain first -- tabu calls
-//             for as long as each improves it, as I-021 does for the better
-//             child -- so it enters as a new, independent local optimum of the
-//             population's quality instead of a raw solution that never
-//             competes. A restart at the level of one food source.
-#define  SCOUT_POLISH "abc.scout.polish"
 #define	ELITE_SIZE	"elite.size" //Selection mechanism to select number of elements in elite 
 
 
@@ -154,11 +146,6 @@ namespace FuzzyFW {
 		unsigned long lsSecondImproved;   // ... that improved it
 		unsigned long lsRepeatCalls;      // calls beyond the second
 		unsigned long lsRepeatLongest;    // longest chain of calls on one child
-
-		// I-034: polished scouts, and the work they cost.
-		bool scoutPolish;
-		unsigned long scoutsPolished;
-		unsigned long scoutPolishCalls;
 		unsigned int improvementsLS;
 		unsigned int enworstmentsLS;
 		unsigned int neutralLS;
