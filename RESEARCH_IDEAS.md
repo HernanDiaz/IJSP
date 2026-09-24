@@ -338,7 +338,7 @@ bucle y están aquí para que no se repitan; sus cifras están en el JOURNAL.
 | I-003 | el explorador del ABC reinyecta un **elite pateado** en vez de una solución aleatoria | un arranque aleatorio a mitad de tirada no puede alcanzar a la población; uno dentro de una cuenca buena sí | kick−control = **+1.43** (ta23 −0.27, ta29 +0.70, ta30 −0.50, ta45 **+5.80**); regla > +2 descarta → **pasa, por poco y en contra** | 4 mirillas de 6: −1.02, −0.57, **−0.03**, +0.44; kick mejor en 9-10 de 21 siempre; p entre 0.55 y 0.88, la frontera nunca se acerca | **detenida en la 4ª** (2026-09-21) por cambio de dirección del PI, no por sus datos. Sin aceptación: es un cero |
 | H-4 | N8 contra N2 (y contra N1, N3, N_ext), fase B del paper de COR | un vecindario más rico gana | -- | 82 instancias x 30 runs, 2460 bloques pareados: N2 1846.50 contra N8 1847.94, dif −1.45, p_adj = 3.9e−4, r = 0.077 (**despreciable**); rangos de Friedman N2 2.1315 el mejor de cinco, N8 2.2400 | **descartada** (antes del bucle; `experiments/cor_tabu_2026/`) |
 | I-012 | **escapar del estado todo-tabú, solo eso** | la celda informativa de I-010 dio −1.11 y mejor en 15 de 21 (p = 0.033) sin frontera | esc−control = −1.82, pasa | 6 mirillas, 30 runs: +1.30, +1.09, +0.59, +0.27, +0.39, **+0.07**; mejor en 10 de 21, p = 0.835 | **descartada** (2026-09-22). La señal de I-010 **no se reprodujo** |
-| I-038 | **dejar de registrar la diversidad de Hamming en cada generación** (quitar `statistics.3 = hamming` del setup; sin código) | la estadística, "registrada pero no probada", se come una quinta parte del tiempo; devuelto a la búsqueda son ~25 % más generaciones con el mismo presupuesto | pendiente | pendiente | **lanzada** (2026-09-25) |
+| I-038 | **dejar de registrar la diversidad de Hamming en cada generación** (quitar `statistics.3 = hamming` del setup; sin código) | la estadística, "registrada pero no probada", se come una quinta parte del tiempo; devuelto a la búsqueda son ~25 % más generaciones con el mismo presupuesto | nostat−control = **−0.15** (ta30 −0.23, ta45 −0.20, ta29 −0.10, ta23 −0.07), pasa; pero **el mecanismo no aparece**: generaciones 79 → 78 (ta23), 95 → 95 (ta29), 80 → 78 (ta30), 177 → 190 (ta45) | no se corren | **retirada** (2026-09-25): con 14 procesos a la vez la estadística no cuesta nada medible; las oleadas solo medirían ruido de temporización |
 | I-037 | **una llamada de profundidad doble antes de que acabe la cadena** (`abc.ls.escalate = double`) | la cadena de I-021 muere en la primera llamada de 15 iteraciones que no mejora; una más profunda sobre ese mismo hijo cruza la meseta | mecanismo: ~18700 llamadas dobles por tirada, 8-16 % mejoran, un tercio menos de generaciones (75 → 47 en ta23, 179 → 117 en ta45); esc−control = **+2.36** (ta30 +7.93, ta45 +1.23, ta23 +1.10, ta29 −0.83), **descarta** (si > +2.0); bo5 +5.25 | no se corren | **descartada por el filtro y revertida** (2026-09-25) |
 | I-036 | **path relinking como cruce**: los hijos son los puntos a 1/3 y 2/3 del camino entre los padres en el espacio de órdenes relativos (`crossover = jsp.pr`) | recombinar a distancia fijada de ambos padres, no el mejor punto del camino, y buscar en profundidad desde ahí, saca de la meseta | mecanismo: ~36800 cruces PR por tirada, hijo a ~208 de ~245 posiciones del padre, más generaciones (81 → 110 en ta23, 187 → 280 en ta45); pr−control = **+25.17** (ta45 +35.47, ta23 +32.10, ta30 +21.60, ta29 +11.50), **descarta** (si > +2.0); bo5 +26.88 | no se corren | **descartada por el filtro y revertida** (2026-09-24) |
 | I-035 | **dos cruces por fuente, búsqueda profunda sobre la mejor pareja** (`abc.pair.choice = best-of-two`) | lo que funciona es la profundidad sobre lo mejor; empezarla desde un hijo mejor debería rendir más | mecanismo: ~15000 segundas parejas elegidas por tirada, ~45 unidades mejores en bruto, más generaciones; pair−control = **+1.13** (ta30 +2.70, ta29 +1.57, ta45 +1.27, ta23 −1.03), pasa (descartaba si > +2.0); bo5 +3.29 | mirillas media: **+1.01** (w1, 11 de 21, p = 0.532), **+0.49** (w2, 12 de 21, p = 0.715), **+0.75** (w3, 9 de 21, p = 0.492), **+1.30** (w4, 7 de 21, p = 0.033), **+0.96** (w5, 7 de 21, p = 0.039), **+0.80** (w6, 7 de 21, p = 0.099) | **rechazada y revertida** (2026-09-24) |
@@ -4112,3 +4112,37 @@ torno a un cuarto.
 **Nota para la lectura de lo anterior**: todas las comparaciones desde el 20
 de septiembre llevaban el mismo lastre **en las dos celdas**, así que sus
 diferencias siguen valiendo; lo que no valía era su nivel absoluto.
+
+### I-038, filtro y retirada: el 20 % solo existe con la máquina vacía
+
+240 trabajos, cero infactibles, semillas 1001 a 1030. Media por instancia
+`nostat − control`: ta23 −0.07, ta29 −0.10, ta30 −0.23, ta45 −0.20,
+**−0.15**; la regla del filtro **pasa**. Pero el mecanismo, que se lee
+primero, **no aparece**: generaciones por tirada 79.3 → 77.7 (ta23), 95.2 →
+95.3 (ta29), 80.4 → 77.6 (ta30), 176.8 → 189.8 (ta45). Las diferencias de
+makespan son de décimas porque las tiradas recorren la misma trayectoria.
+
+**Por qué**: la medida de antes de lanzar se hizo con **un solo proceso** en
+la máquina. En producción corren 14 a la vez, y ahí el número de
+generaciones de una misma configuración y semilla depende sobre todo de dónde
+cae cada proceso: en ta23 va de 55 a 97 dentro de una misma celda, y las
+últimas tiradas de la cola, con la máquina medio vacía, hacen más. Medido
+directamente con 14 procesos a la vez, 7 de cada celda con semillas
+emparejadas: lanzando primero el control, `nostat` hizo **menos**
+generaciones en las 7 parejas; lanzando primero `nostat`, **608 frente a
+605**. Las trazas son idénticas generación a generación, así que la
+diferencia es solo de velocidad, y con esa carga la estadística **no cuesta
+nada medible** frente al ruido de colocación.
+
+**Decisión**: **retirada**, como I-009, porque el mecanismo que la idea
+necesitaba no existe en el régimen en que se mide. Correr las oleadas sería
+medir ruido de temporización sobre trayectorias idénticas. No hay código que
+revertir: era una línea de configuración, y `ref_I-021` se queda como está.
+
+**Lo que se aprende, y vale para lo que venga**: una aceleración medida con
+un proceso solo **no se traslada** al régimen de 14 procesos. Cualquier idea
+de velocidad se mide con 14 procesos a la vez, semillas emparejadas y el
+orden de lanzamiento alternado.
+
+**Sin récords**; la única igualada es la conocida de `ta30` (1584), en la
+celda **de control**.

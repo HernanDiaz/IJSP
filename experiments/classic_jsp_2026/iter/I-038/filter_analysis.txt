@@ -1,0 +1,25 @@
+=== 0. MECHANISM CHECK ===
+inst   statistic                                     control     nostat
+ta23   Number of Generations                           79.30      77.73
+ta23   Number of Calls to LS                        57103.47   56071.27
+ta29   Number of Generations                           95.17      95.33
+ta29   Number of Calls to LS                        61000.27   61227.83
+ta30   Number of Generations                           80.43      77.63
+ta30   Number of Calls to LS                        56433.37   54744.53
+ta45   Number of Generations                          176.80     189.77
+ta45   Number of Calls to LS                       136480.80  145608.13
+
+generations per run in the nostat cell: 110 on average
+
+=== I-038 filter: per-instance mean (primary), best-of-5 (reported) ===
+inst     mean ctrl   mean nost         d      bo5 ctrl    bo5 nost         d
+ta23        1583.3      1583.2     -0.07        1571.5      1571.3     -0.17
+ta29        1639.6      1639.5     -0.10        1635.2      1635.2     +0.00
+ta30        1614.6      1614.3     -0.23        1599.0      1598.8     -0.17
+ta45        2035.0      2034.8     -0.20        2024.2      2023.8     -0.33
+
+runs per cell and instance: 30
+
+filter rule, on the MEAN: mean(nostat - control) = -0.15;
+discard if > +2.0 -> PASS, go to the waves
+best-of-5 moved -0.17, and decides nothing here.

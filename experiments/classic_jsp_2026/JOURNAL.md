@@ -2981,3 +2981,20 @@ depth on the better child reads: more normal calls, yes; deeper calls, no.
 
 No records and no matches. The code is rolled back and the rebuilt solver
 reproduces the reference exactly.
+
+## I-038 is withdrawn: the fifth of the time exists only on an empty machine
+
+The filter passes (nostat minus control -0.15), but the mechanism read first is
+absent: generations per run 79 to 78, 95 to 95, 80 to 78 and 177 to 190. The
+pre-launch timing had one process on the machine; production runs 14 at once,
+and there generations for the same configuration and seed depend mostly on
+placement (55 to 97 within one cell on ta23). Measured directly with 14
+concurrent processes, 7 per cell on paired seeds: launching the control first,
+nostat did fewer generations in all 7 pairs; launching nostat first, 608
+against 605. Traces are identical generation by generation, so the difference
+is speed only, and under that load the statistic costs nothing measurable.
+
+Withdrawn, as I-009 was, because the mechanism the idea needs does not exist in
+the regime where it is measured. Nothing to roll back: it was one setup line.
+Lesson for any speed idea: measure with 14 concurrent processes, paired seeds
+and alternated launch order, never with one process alone.
