@@ -338,7 +338,7 @@ bucle y están aquí para que no se repitan; sus cifras están en el JOURNAL.
 | I-003 | el explorador del ABC reinyecta un **elite pateado** en vez de una solución aleatoria | un arranque aleatorio a mitad de tirada no puede alcanzar a la población; uno dentro de una cuenca buena sí | kick−control = **+1.43** (ta23 −0.27, ta29 +0.70, ta30 −0.50, ta45 **+5.80**); regla > +2 descarta → **pasa, por poco y en contra** | 4 mirillas de 6: −1.02, −0.57, **−0.03**, +0.44; kick mejor en 9-10 de 21 siempre; p entre 0.55 y 0.88, la frontera nunca se acerca | **detenida en la 4ª** (2026-09-21) por cambio de dirección del PI, no por sus datos. Sin aceptación: es un cero |
 | H-4 | N8 contra N2 (y contra N1, N3, N_ext), fase B del paper de COR | un vecindario más rico gana | -- | 82 instancias x 30 runs, 2460 bloques pareados: N2 1846.50 contra N8 1847.94, dif −1.45, p_adj = 3.9e−4, r = 0.077 (**despreciable**); rangos de Friedman N2 2.1315 el mejor de cinco, N8 2.2400 | **descartada** (antes del bucle; `experiments/cor_tabu_2026/`) |
 | I-012 | **escapar del estado todo-tabú, solo eso** | la celda informativa de I-010 dio −1.11 y mejor en 15 de 21 (p = 0.033) sin frontera | esc−control = −1.82, pasa | 6 mirillas, 30 runs: +1.30, +1.09, +0.59, +0.27, +0.39, **+0.07**; mejor en 10 de 21, p = 0.835 | **descartada** (2026-09-22). La señal de I-010 **no se reprodujo** |
-| I-039 | **JOX con probabilidad de conservar uniforme**: en cada cruce se sortea en U(0,1) la probabilidad de conservar cada trabajo, en vez de 1/2 fija (`crossover.jox.mask = uniform`) | I-036 mostró que quitar variedad al cruce hunde el resultado; más variedad de distancia debería ayudar | pendiente | pendiente | **lanzada** (2026-09-25) |
+| I-039 | **JOX con probabilidad de conservar uniforme**: en cada cruce se sortea en U(0,1) la probabilidad de conservar cada trabajo, en vez de 1/2 fija (`crossover.jox.mask = uniform`) | I-036 mostró que quitar variedad al cruce hunde el resultado; más variedad de distancia debería ayudar | mecanismo: ~37400 cruces con máscara sorteada por tirada, media 0.50 y desviación 0.25; generaciones 72 → 111 (ta23), 191 → 292 (ta45); umask−control = **+11.70** (ta45 +18.63, ta23 +13.20, ta30 +8.70, ta29 +6.27), **descarta** (si > +2.0); bo5 +8.54 | no se corren | **descartada por el filtro y revertida** (2026-09-25) |
 | I-038 | **dejar de registrar la diversidad de Hamming en cada generación** (quitar `statistics.3 = hamming` del setup; sin código) | la estadística, "registrada pero no probada", se come una quinta parte del tiempo; devuelto a la búsqueda son ~25 % más generaciones con el mismo presupuesto | nostat−control = **−0.15** (ta30 −0.23, ta45 −0.20, ta29 −0.10, ta23 −0.07), pasa; pero **el mecanismo no aparece**: generaciones 79 → 78 (ta23), 95 → 95 (ta29), 80 → 78 (ta30), 177 → 190 (ta45) | no se corren | **retirada** (2026-09-25): con 14 procesos a la vez la estadística no cuesta nada medible; las oleadas solo medirían ruido de temporización |
 | I-037 | **una llamada de profundidad doble antes de que acabe la cadena** (`abc.ls.escalate = double`) | la cadena de I-021 muere en la primera llamada de 15 iteraciones que no mejora; una más profunda sobre ese mismo hijo cruza la meseta | mecanismo: ~18700 llamadas dobles por tirada, 8-16 % mejoran, un tercio menos de generaciones (75 → 47 en ta23, 179 → 117 en ta45); esc−control = **+2.36** (ta30 +7.93, ta45 +1.23, ta23 +1.10, ta29 −0.83), **descarta** (si > +2.0); bo5 +5.25 | no se corren | **descartada por el filtro y revertida** (2026-09-25) |
 | I-036 | **path relinking como cruce**: los hijos son los puntos a 1/3 y 2/3 del camino entre los padres en el espacio de órdenes relativos (`crossover = jsp.pr`) | recombinar a distancia fijada de ambos padres, no el mejor punto del camino, y buscar en profundidad desde ahí, saca de la meseta | mecanismo: ~36800 cruces PR por tirada, hijo a ~208 de ~245 posiciones del padre, más generaciones (81 → 110 en ta23, 187 → 280 en ta45); pr−control = **+25.17** (ta45 +35.47, ta23 +32.10, ta30 +21.60, ta29 +11.50), **descarta** (si > +2.0); bo5 +26.88 | no se corren | **descartada por el filtro y revertida** (2026-09-24) |
@@ -4172,3 +4172,29 @@ Horarios factibles.
 **Endpoint**: media por instancia, Pocock simétrica p <= 0.0142. **Mecanismo,
 primero**: cruces con máscara sorteada, probabilidad media y su desviación,
 generaciones.
+
+### I-039, filtro: descartada y revertida
+
+240 trabajos, cero infactibles, semillas 1001 a 1030, control en `ref_I-021`.
+**Mecanismo, ejercido**: unos 37400 cruces por tirada con la probabilidad
+sorteada, media 0.50 y desviación media 0.25, como una uniforme; y las
+generaciones **suben** mucho: 72 → 111 (ta23), 90 → 112 (ta29), 73 → 102
+(ta30), 191 → 292 (ta45). Media por instancia `umask − control`: ta23
++13.20, ta29 +6.27, ta30 +8.70, ta45 +18.63, **+11.70**; regla *descartar si
+> +2.0*: **descarta**, en las cuatro.
+
+**Lo que dice, junto con I-036**: los dos cruces que **suben las
+generaciones** son los que **hunden** el resultado. Un hijo cerca de uno de
+sus padres está casi en el óptimo local de ese padre: la cadena acaba enseguida
+y vuelve donde ya se estaba. La máscara de 1/2 de JOX es la que pone al hijo
+**lo más lejos posible de los dos padres** a la vez, y eso es lo que alimenta a
+la cadena profunda con sitios nuevos. Las generaciones altas aquí no son
+velocidad, son **síntoma de cadenas cortas**. Queda como regla de lectura:
+una idea que sube mucho las generaciones sin haber acelerado nada está, casi
+seguro, dando a la búsqueda local puntos que ya conoce.
+
+**Sin récords ni igualadas.**
+
+**Código revertido**: `CrossoverJSP_JOX.{h,cpp}` vuelven a su versión anterior
+a I-039, y el solver recompilado reproduce exactamente la referencia a número
+fijo de generaciones.

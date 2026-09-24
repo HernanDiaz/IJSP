@@ -2998,3 +2998,20 @@ Withdrawn, as I-009 was, because the mechanism the idea needs does not exist in
 the regime where it is measured. Nothing to roll back: it was one setup line.
 Lesson for any speed idea: measure with 14 concurrent processes, paired seeds
 and alternated launch order, never with one process alone.
+
+## I-039 is discarded by its filter and rolled back: JOX's half mask is right
+
+240 jobs, no infeasible schedule. About 37,400 crossings per run with the keep
+probability drawn from U(0,1), mean 0.50, mean deviation 0.25; generations rise
+sharply (72 to 111 on ta23, 191 to 292 on ta45). Umask minus control: ta23
++13.20, ta29 +6.27, ta30 +8.70, ta45 +18.63, mean +11.70, far above +2.0.
+
+With I-036, the two crossovers that raise the generations are the two that sink
+the result. A child near one of its parents sits almost in that parent's local
+optimum: the chain ends at once and returns where the search already was.
+JOX's half mask puts the child as far as possible from both parents at once,
+and that is what feeds the deep chain new places. Here high generation counts
+are not speed but a symptom of short chains.
+
+No records and no matches. The code is rolled back and the rebuilt solver
+reproduces the reference exactly.

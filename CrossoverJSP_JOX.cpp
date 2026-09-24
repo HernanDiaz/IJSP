@@ -7,10 +7,6 @@
 
 #include "CrossoverJSP_JOX.h"
 
-#include <cmath>
-#include <cstdio>
-#include <cstdlib>
-
 namespace JSP {
 
 //=============================================================================
@@ -18,32 +14,9 @@ namespace JSP {
 //	Class Crossover_JOX
 //
 //=============================================================================
-//-----  I-039 mask counters, printed to stderr at exit (mechanism check)  ---
-namespace {
-	unsigned long joxCrossings = 0;
-	double joxKeepSum = 0.0;
-	double joxDeviationSum = 0.0;
-
-	void printJoxCounters() {
-		std::fprintf(stderr, "JOX crossings %lu, mean keep %.3f, "
-			"mean deviation %.3f%s", joxCrossings,
-			joxCrossings ? joxKeepSum / joxCrossings : 0.0,
-			joxCrossings ? joxDeviationSum / joxCrossings : 0.0, "\n");
-	}
-}
-
 //=============================================================================
 //		METHODS
 //=============================================================================
-//=====  Setup  ===============================================================
-void Crossover_JOX::setup(FuzzyFW::ParameterDB *parameters) {
-	CrossoverJSP_Base::setup(parameters);
-	this->uniformMask =
-		(parameters->getStringLower(JOX_MASK).compare("uniform") == 0);
-	if (this->uniformMask)
-		std::atexit(printJoxCounters);
-}
-
 //=====  Apply (Permutation)  =================================================
 void Crossover_JOX::applyPermutation(FuzzyFW::IndividualArrayInt *ind1,
 	FuzzyFW::IndividualArrayInt *ind2,
@@ -64,19 +37,10 @@ void Crossover_JOX::applyPermutation(FuzzyFW::IndividualArrayInt *ind1,
 		throw JSPException("Creation", errorMsg);
 	}
 
-	// Choose the jobs to keep in position. I-039: with the uniform mask the
-	// keep probability is drawn at every crossing; the default keeps 1/2 and
-	// draws nothing extra, exactly as before.
-	double keep = 0.5;
-	if (this->uniformMask) {
-		keep = svars->rng->getProbability();
-		joxCrossings++;
-		joxKeepSum += keep;
-		joxDeviationSum += std::fabs(keep - 0.5);
-	}
+	// Choose the jobs to keep in position
 	mask.resize(fuzzyProb->getNumberJobs());
 	for (unsigned int i = 0; i < fuzzyProb->getNumberJobs(); i++) {
-		if (svars->rng->getProbability() < 1.0 - keep)
+		if (svars->rng->getProbability() < 0.5)
 			mask[i] = 0;
 		else mask[i] = 1;
 	}
@@ -167,19 +131,10 @@ void Crossover_JOX::applyJobPermutation(FuzzyFW::IndividualArrayInt *ind1,
 		throw JSPException("Creation", errorMsg);
 	}
 
-	// Choose the jobs to keep in position. I-039: with the uniform mask the
-	// keep probability is drawn at every crossing; the default keeps 1/2 and
-	// draws nothing extra, exactly as before.
-	double keep = 0.5;
-	if (this->uniformMask) {
-		keep = svars->rng->getProbability();
-		joxCrossings++;
-		joxKeepSum += keep;
-		joxDeviationSum += std::fabs(keep - 0.5);
-	}
+	// Choose the jobs to keep in position
 	mask.resize(fuzzyProb->getNumberJobs());
 	for (unsigned int i = 0; i < fuzzyProb->getNumberJobs(); i++) {
-		if (svars->rng->getProbability() < 1.0 - keep)
+		if (svars->rng->getProbability() < 0.5)
 			mask[i] = 0;
 		else mask[i] = 1;
 	}

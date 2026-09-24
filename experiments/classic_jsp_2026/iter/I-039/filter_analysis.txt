@@ -1,0 +1,33 @@
+=== 0. MECHANISM CHECK ===
+inst   statistic                                     control      umask
+ta23   log:JOX crossings                                0.00   26916.30
+ta23   log:mean keep                                    0.00       0.50
+ta23   log:mean deviation                               0.00       0.25
+ta23   Number of Generations                           72.20     110.97
+ta29   log:JOX crossings                                0.00   27214.80
+ta29   log:mean keep                                    0.00       0.50
+ta29   log:mean deviation                               0.00       0.25
+ta29   Number of Generations                           89.80     112.17
+ta30   log:JOX crossings                                0.00   24763.00
+ta30   log:mean keep                                    0.00       0.50
+ta30   log:mean deviation                               0.00       0.25
+ta30   Number of Generations                           73.00     102.10
+ta45   log:JOX crossings                                0.00   70891.97
+ta45   log:mean keep                                    0.00       0.50
+ta45   log:mean deviation                               0.00       0.25
+ta45   Number of Generations                          190.73     292.30
+
+JOX crossings with a drawn mask per run: 37447 on average (the control makes none)
+
+=== I-039 filter: per-instance mean (primary), best-of-5 (reported) ===
+inst     mean ctrl   mean umsk         d      bo5 ctrl    bo5 umsk         d
+ta23        1583.4      1596.6    +13.20        1571.8      1585.3    +13.50
+ta29        1639.8      1646.0     +6.27        1635.8      1634.2     -1.67
+ta30        1615.2      1623.9     +8.70        1600.0      1611.0    +11.00
+ta45        2034.5      2053.1    +18.63        2023.7      2035.0    +11.33
+
+runs per cell and instance: 30
+
+filter rule, on the MEAN: mean(umask - control) = +11.70;
+discard if > +2.0 -> DISCARD
+best-of-5 moved +8.54, and decides nothing here.
