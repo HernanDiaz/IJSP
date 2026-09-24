@@ -327,7 +327,7 @@ bucle y están aquí para que no se repitan; sus cifras están en el JOURNAL.
 | I-003 | el explorador del ABC reinyecta un **elite pateado** en vez de una solución aleatoria | un arranque aleatorio a mitad de tirada no puede alcanzar a la población; uno dentro de una cuenca buena sí | kick−control = **+1.43** (ta23 −0.27, ta29 +0.70, ta30 −0.50, ta45 **+5.80**); regla > +2 descarta → **pasa, por poco y en contra** | 4 mirillas de 6: −1.02, −0.57, **−0.03**, +0.44; kick mejor en 9-10 de 21 siempre; p entre 0.55 y 0.88, la frontera nunca se acerca | **detenida en la 4ª** (2026-09-21) por cambio de dirección del PI, no por sus datos. Sin aceptación: es un cero |
 | H-4 | N8 contra N2 (y contra N1, N3, N_ext), fase B del paper de COR | un vecindario más rico gana | -- | 82 instancias x 30 runs, 2460 bloques pareados: N2 1846.50 contra N8 1847.94, dif −1.45, p_adj = 3.9e−4, r = 0.077 (**despreciable**); rangos de Friedman N2 2.1315 el mejor de cinco, N8 2.2400 | **descartada** (antes del bucle; `experiments/cor_tabu_2026/`) |
 | I-012 | **escapar del estado todo-tabú, solo eso** | la celda informativa de I-010 dio −1.11 y mejor en 15 de 21 (p = 0.033) sin frontera | esc−control = −1.82, pasa | 6 mirillas, 30 runs: +1.30, +1.09, +0.59, +0.27, +0.39, **+0.07**; mejor en 10 de 21, p = 0.835 | **descartada** (2026-09-22). La señal de I-010 **no se reprodujo** |
-| I-024 | **caza concentrada en `ta29` y `ta30`** con la configuración vigente, 400 tiradas de 40 s por instancia, semillas 4001-4400 | la configuración vigente iguala el BKS en las dos (I-022, I-023), y ninguna está cerrada: quedan 52 y 65 unidades hasta la cota | -- | pendiente | **lanzada** (2026-09-24) |
+| I-024 | **caza concentrada en `ta29` y `ta30`** con la configuración vigente, 400 tiradas de 40 s por instancia, semillas 4001-4400 | la configuración vigente iguala el BKS en las dos (I-022, I-023), y ninguna está cerrada: quedan 52 y 65 unidades hasta la cota | -- | 800 tiradas, cero infactibles: **sin récord**. Igualadas: `ta29` 1 de 400, `ta30` 2 de 400, **tres horarios nuevos**, distintos entre sí y de todas las igualadas anteriores. Cuantil 1 %: 1628 y 1589 | **cerrada** (2026-09-24): el BKS se alcanza en el 0.25-0.5 % de las tiradas y nunca se baja |
 | I-023 | **patada con reoptimización al final de cada cadena** (B-11): copia del hijo atascado, 3 mutaciones, cadena de búsqueda sobre la copia, y se queda solo si acaba mejor | buscar otra vez desde el mismo punto ya no rinde (1 %); desde un punto movido rinde un 28-35 %, a costa de la mitad de las generaciones | mecanismo como se midió: 29-42 % de copias pateadas acaban mejor, generaciones **−50 a −57 %**; kick−control = **+7.06** (ta30 +10.30, ta45 +8.20, ta23 +7.17, ta29 +2.57); regla > +2 → **DESCARTA** | -- | **descartada** (2026-09-24) en el filtro: la patada acierta, pero la mitad de las generaciones pesa más |
 | I-022 | **intento de récord con la configuración de dos aceptaciones**, `ref_I-018` contra `ref_I-021`, lista corta, 75 tiradas por celda e instancia, semillas 3001-3075 | I-019 midió que I-018 llega a la cola; falta ver si I-021 también, y el récord vive ahí | -- | 600 tiradas: **sin récord; iguala el BKS de `ta29`, 1625**, con la configuración vigente a 40 s, verificado. Mejor de 75, previous → current: ta29 1630 → **1625**, ta30 1599 → 1595, ta23 1568 → 1567, ta22 1613 = 1613. Bloques de 5: current mejor en 32, peor en 25, p = 0.427 | **cerrada** (2026-09-24): igualada de `ta29`; la cola de I-021 **no se confirma** como la de I-018 |
 | I-021 | **repetir la búsqueda sobre el mejor hijo mientras mejore** (`abc.ls.pick = best-repeat`) | la profundidad es lo que vale (I-020), y la segunda llamada mejora al hijo dos de cada tres veces | mecanismo: ~25000 llamadas extra por tirada, cadenas de ~10, generaciones **−21 a −26 %**; repeat−control = **−2.58** (ta45 −4.97, ta30 −2.67, ta23 −2.60, ta29 −0.10), pasa (descartaba si > +2.0) | mirillas media: **-3.56** (w1, 14 de 21, p = 0.022), **-2.95** (w2, 15 de 21, p = 0.017), **-2.62** (w3, **16 de 21**, **p = 0.0021**) → cruza | **ACEPTADA** (2026-09-24) en la mirilla 3 de 6, **sobre** I-018. Segunda aceptación; configuración vigente `setup/ref_I-021.txt` |
@@ -3361,3 +3361,35 @@ bajos de la distribución.
 
 **Regla de cierre nueva, por lo que pasó en I-023**: el cierre se escribe
 **después** de leer la salida del guion de récords, nunca antes.
+
+### I-024, cierre: el BKS se alcanza con distintos horarios, y nunca se baja
+
+800 tiradas verificadas, cero infactibles, semillas 4001 a 4400, configuración
+vigente. `iter/I-024/hunt_analysis.txt`. El cierre se escribe después de leer
+la salida del guion de récords, como manda la regla nueva.
+
+| inst | BKS | cota | récords | igualadas | mejor | cuantil 1 % | 5 % | 10 % | mediana |
+|---|---|---|---|---|---|---|---|---|---|
+| ta29 | 1625 | 1573 | **0** | 1 de 400 | 1625 | 1628 | 1631 | 1631 | 1639 |
+| ta30 | 1584 | 1519 | **0** | 2 de 400 | 1584 | 1589 | 1599 | 1604 | 1616 |
+
+**Los tres horarios en el BKS son nuevos**: distintos entre sí y de todas las
+igualadas anteriores de su instancia (4 de `ta29` y 5 de `ta30` guardadas en
+`iter/*/evidence/`). Verificados con el comprobador independiente y guardados
+en `iter/I-024/evidence/`.
+
+**Lo que dice.** Con la configuración vigente, el mejor conocido se alcanza en
+el **0.25 % de las tiradas de 40 s en `ta29` y el 0.5 % en `ta30`**, y **se
+alcanza con muchos horarios distintos**: entre las iteraciones ya van cinco en
+`ta29` y ocho en `ta30`. En el BKS hay una **meseta ancha**, y en 800 tiradas
+más ninguna la ha atravesado hacia abajo. Eso no prueba que el BKS sea el
+óptimo —las cotas inferiores de estas instancias están lejos, 52 y 65
+unidades—, pero sí que **muestrear más con este algoritmo no lo va a batir**: el
+problema ya no es llegar a la meseta, sino encontrar la salida por debajo, y
+N2 con tabú desde el mismo tipo de puntos no la está encontrando.
+
+**Dónde deja la línea.** Es exactamente el caso para el que el backlog guarda
+B-12 —reparación exacta por ventana sobre el incumbente—, que la revisión
+externa señaló como la única familia con un mecanismo creíble para encontrar
+la unidad suelta que N2 no ve. Es un cambio mayor que los del bucle y se
+consulta con el PI antes de empezarlo.

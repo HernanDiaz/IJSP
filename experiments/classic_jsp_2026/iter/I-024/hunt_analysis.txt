@@ -1,0 +1,13 @@
+=== ta29: BKS 1625, lower bound 1573, 400 runs ===
+1. RECORDS (strictly below the BKS): 0
+2. MATCHES (at the BKS): 1 runs, 1 distinct schedules
+   schedule 1: results/I-024_c41/ta29_20260924064411_Certificate.csv run 5
+3. best 1625; quantiles 1% 1628, 5% 1631, 10% 1631, 50% 1639; mean 1638.9
+
+=== ta30: BKS 1584, lower bound 1519, 400 runs ===
+1. RECORDS (strictly below the BKS): 0
+2. MATCHES (at the BKS): 2 runs, 2 distinct schedules
+   schedule 1: results/I-024_c11/ta30_20260924062614_Certificate.csv run 5
+   schedule 2: results/I-024_c70/ta30_20260924070214_Certificate.csv run 2
+3. best 1584; quantiles 1% 1589, 5% 1599, 10% 1604, 50% 1616; mean 1615.5
+

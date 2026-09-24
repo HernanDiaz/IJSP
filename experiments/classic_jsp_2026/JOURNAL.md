@@ -2679,3 +2679,26 @@ schedule from the earlier ta30 matches, all 400 start times differing from
 I-012's and 146 from I-015's, so there are several distinct solutions at 1584.
 The first closing said "no records or matches"; the records script had found
 it and the sentence was written before its output was read.
+
+## I-024: the best known is reached with many schedules, and never undercut
+
+800 verified runs, no infeasible schedule, fresh seeds 4001 to 4400, the
+current configuration. No record. ta29 reached its best known 1625 once in 400
+runs, ta30 reached 1584 twice; all three schedules are new, different from one
+another and from every earlier match, verified and kept in
+iter/I-024/evidence/. The 1% quantile sits at 1628 and 1589, the median at
+1639 and 1616.
+
+With the current configuration the best known is reached in 0.25% of 40-second
+runs on ta29 and 0.5% on ta30, and reached through many distinct schedules,
+five on ta29 and eight on ta30 across the iterations. There is a wide plateau
+at the best known, and 800 more runs found no way below it. That does not show
+the best known is optimal, since the lower bounds sit 52 and 65 units away,
+but it does show that more sampling with this algorithm will not beat it: the
+problem is no longer reaching the plateau but finding the exit beneath it, and
+N2 tabu search from the same kind of starting points is not finding it.
+
+This is the case the backlog keeps B-12 for, exact window repair on the
+incumbent, which the external review named as the one family with a credible
+mechanism for the loose unit N2 cannot see. It is a larger change than the
+loop's and is put to the PI before it starts.
