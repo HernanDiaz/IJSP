@@ -2670,3 +2670,12 @@ chain: search again from the same point while it pays, stop at the first
 failure. Going past it costs more than it returns at these budgets, whether by
 repeating from the same place or by moving it. The kick's three was fixed
 beforehand; trying another value now would be tuning on these data.
+
+Correction to the I-023 entry: there is no record, but there is a match. ta30
+reached its best known, 1584, in the control cell of I-023's filter, that is
+with the current configuration ref_I-021 at 40 seconds, verified by the
+independent checker and kept in iter/I-023/evidence/. It is a different
+schedule from the earlier ta30 matches, all 400 start times differing from
+I-012's and 146 from I-015's, so there are several distinct solutions at 1584.
+The first closing said "no records or matches"; the records script had found
+it and the sentence was written before its output was read.

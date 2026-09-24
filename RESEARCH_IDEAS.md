@@ -257,6 +257,10 @@ nada.
   volver a correr la configuración vigente contra ella a 300 s.
 - **Mejores verificados de la línea, igualando el BKS** (la prueba es el
   horario, y los horarios están guardados):
+  - `ta30` = **1584**, iguala el BKS **otra vez el 2026-09-24**, con la
+    configuración vigente (`ref_I-021`) a 40 s, en el control del filtro de
+    I-023, con un horario distinto de los anteriores:
+    `iter/I-023/evidence/ta30_1584_control-ref_I-021_I-023_filter_p09.csv`.
   - `ta30` = **1584**, **iguala el BKS**, 2026-09-22, celda `control` del
     filtro de I-012, 40 s por tirada.
     `iter/I-012/evidence/ta30_1584_control_I-012_fc1_control.csv`.
@@ -3324,4 +3328,12 @@ valor ahora sería ajustar sobre estos datos, y no se hace.
 **Qué se revierte**: nada de los registros. `abc.ls.kick` y `best-patient`
 quedan implementados y desactivados.
 
-**Sin récords ni igualadas** (`iter/I-023/records.txt`).
+**Sin récords, pero una igualada de `ta30` = 1584 en la celda de control**, es
+decir, con la configuración vigente (`ref_I-021`), a 40 s por tirada, en el
+trabajo 9 del filtro. Verificada con el comprobador independiente y guardada en
+`iter/I-023/evidence/ta30_1584_control-ref_I-021_I-023_filter_p09.csv`. **Es un
+horario distinto de las igualadas anteriores de `ta30`**: difieren los 400
+inicios respecto al de I-012 y 146 respecto al de I-015, así que en 1584 hay
+varias soluciones distintas, una meseta. *Corrección*: el primer cierre de esta
+sección decía "sin récords ni igualadas"; el guion de récords sí la había
+encontrado y la afirmación se escribió antes de leer su salida.
