@@ -336,6 +336,7 @@ bucle y están aquí para que no se repitan; sus cifras están en el JOURNAL.
 | I-003 | el explorador del ABC reinyecta un **elite pateado** en vez de una solución aleatoria | un arranque aleatorio a mitad de tirada no puede alcanzar a la población; uno dentro de una cuenca buena sí | kick−control = **+1.43** (ta23 −0.27, ta29 +0.70, ta30 −0.50, ta45 **+5.80**); regla > +2 descarta → **pasa, por poco y en contra** | 4 mirillas de 6: −1.02, −0.57, **−0.03**, +0.44; kick mejor en 9-10 de 21 siempre; p entre 0.55 y 0.88, la frontera nunca se acerca | **detenida en la 4ª** (2026-09-21) por cambio de dirección del PI, no por sus datos. Sin aceptación: es un cero |
 | H-4 | N8 contra N2 (y contra N1, N3, N_ext), fase B del paper de COR | un vecindario más rico gana | -- | 82 instancias x 30 runs, 2460 bloques pareados: N2 1846.50 contra N8 1847.94, dif −1.45, p_adj = 3.9e−4, r = 0.077 (**despreciable**); rangos de Friedman N2 2.1315 el mejor de cinco, N8 2.2400 | **descartada** (antes del bucle; `experiments/cor_tabu_2026/`) |
 | I-012 | **escapar del estado todo-tabú, solo eso** | la celda informativa de I-010 dio −1.11 y mejor en 15 de 21 (p = 0.033) sin frontera | esc−control = −1.82, pasa | 6 mirillas, 30 runs: +1.30, +1.09, +0.59, +0.27, +0.39, **+0.07**; mejor en 10 de 21, p = 0.835 | **descartada** (2026-09-22). La señal de I-010 **no se reprodujo** |
+| I-030 | **la configuración vigente contra la original, a 300 s**, intercaladas en la misma tanda, 21 instancias, 5 tiradas por celda, semillas 6001-6005 | las dos aceptaciones se midieron a los presupuestos cortos; ¿aguantan en el régimen ancla? | -- | pendiente | **lanzada** (2026-09-24), 3 oleadas |
 | I-029 | **B-12 por ventana**: reoptimización exacta de todas las operaciones de una franja de tiempo, en todas las máquinas a la vez, sobre horarios guardados | la forma literal de B-12 (Beck, Feng y Watson) | -- | **0 de 20** en el BKS mejoran con ventanas de 30 **ni de 60** operaciones; 10 de 800 finales (1.2 %) con 30 | **cerrada** (2026-09-24): **la familia B-12 se cierra**, sin salida de la meseta en ninguna de sus tres formas |
 | I-028 | **B-12 con dos máquinas**: reoptimización **exacta y conjunta** de dos máquinas, las demás fijas, sobre horarios guardados | lo que falta exige mover operaciones en dos máquinas a la vez | -- | **0 de 20** en el BKS mejoran con **todo** par que incluya una máquina crítica (2839 búsquedas exactas); **20 de 800** finales (2.5 %), igual que con una | **cerrada** (2026-09-24), sondeo sin máquina: tampoco está en dos máquinas |
 | I-027 | **B-12 con una máquina**: reoptimización **exacta** de una máquina entera con las demás fijas, máquina a máquina hasta óptimo local, sobre horarios ya guardados | la salida de la meseta del BKS está en una resecuenciación que N2 no ve | -- | **0 de 20** horarios en el BKS mejoran; **19 de 800** finales de I-024 (2.4 %), de 1 a 4 unidades, ninguno llega al BKS | **cerrada** (2026-09-24), sondeo sin máquina: la salida no está en una sola máquina |
@@ -3627,3 +3628,27 @@ real. No es una prueba —ningún vecindario acotado lo es—, pero sí la evide
 más fuerte que tiene la línea sobre dónde **no** hay un récord.
 
 Sin cambios en el solver, nada que revertir.
+
+### I-030 — la configuración vigente contra la original, a 300 s
+
+**Por qué ahora.** El protocolo pide volver a correr la configuración vigente a
+300 s, el régimen ancla, cada tres aceptaciones; van dos (I-018, I-021), las dos
+medidas a los presupuestos cortos por clase. Con el backlog agotado y B-12
+cerrado, es lo más útil que queda: si las mejoras aguantan fuera de los
+presupuestos donde se midieron.
+
+**Una idea considerada y no lanzada**, para que conste: llevar al solver el
+operador exacto de una máquina de I-027 como pulido al final de cada cadena.
+Sobre los finales de I-024 mejora el 2.4 %, y los mejorables no se concentran
+en los peores horarios —en `ta30` van de 1601 a 1631 alrededor de su mediana,
+1616—, así que no hay indicio de que a mitad de tirada rindiera más. No se
+implementa.
+
+**Diseño**: las dos celdas **en la misma tanda e intercaladas**, para que la
+deriva de la máquina entre días (~9 %) no se confunda con un efecto: `original`
+= `prereg2`, `current` = `ref_I-021`. 300 s por tirada sobre las 21 instancias
+abiertas; los presupuestos por clase no se tocan, este es el régimen ancla del
+propio protocolo. Cinco tiradas por celda e instancia, semillas nuevas 6001 a
+6005, una por trabajo, en tres oleadas de media hora (6001-6002, 6003-6004,
+6005). **Endpoint**: la media por instancia `current − original`, Wilcoxon
+pareado por las 21, y cuántas gana cada lado. **No acepta ni rechaza nada**.
