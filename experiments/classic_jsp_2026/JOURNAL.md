@@ -2721,3 +2721,14 @@ against 4 short blocks on 20x20 is not a fair contest for the minimum. With the
 configuration of the time, per-class restarts dominate a 300 s run on the
 median; for the extreme tail the question stays open, and it has not been
 measured with the current configuration.
+
+## I-026: a long run does not give a better extreme tail
+
+106 verified runs of 300 s on fresh seeds 5001 to 5053 with the current
+configuration, no infeasible schedule, no record. At the same CPU as I-024's
+400 runs of 40 s: ta29 matched its best known 0 times (best 1631) against 1,
+ta30 once against 2. The 300 s runs improve ta30's median a little, 1613
+against 1616, but not the extreme tail. The ta30 match is a schedule different from all 7 earlier ta30 matches,
+verified and kept in iter/I-026/evidence/. Descriptive, two batches at
+different hours, but there is no sign that longer runs bring the record closer
+with the current configuration; hunting stays at 40 s.
