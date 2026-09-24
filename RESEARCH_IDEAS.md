@@ -338,7 +338,7 @@ bucle y están aquí para que no se repitan; sus cifras están en el JOURNAL.
 | I-003 | el explorador del ABC reinyecta un **elite pateado** en vez de una solución aleatoria | un arranque aleatorio a mitad de tirada no puede alcanzar a la población; uno dentro de una cuenca buena sí | kick−control = **+1.43** (ta23 −0.27, ta29 +0.70, ta30 −0.50, ta45 **+5.80**); regla > +2 descarta → **pasa, por poco y en contra** | 4 mirillas de 6: −1.02, −0.57, **−0.03**, +0.44; kick mejor en 9-10 de 21 siempre; p entre 0.55 y 0.88, la frontera nunca se acerca | **detenida en la 4ª** (2026-09-21) por cambio de dirección del PI, no por sus datos. Sin aceptación: es un cero |
 | H-4 | N8 contra N2 (y contra N1, N3, N_ext), fase B del paper de COR | un vecindario más rico gana | -- | 82 instancias x 30 runs, 2460 bloques pareados: N2 1846.50 contra N8 1847.94, dif −1.45, p_adj = 3.9e−4, r = 0.077 (**despreciable**); rangos de Friedman N2 2.1315 el mejor de cinco, N8 2.2400 | **descartada** (antes del bucle; `experiments/cor_tabu_2026/`) |
 | I-012 | **escapar del estado todo-tabú, solo eso** | la celda informativa de I-010 dio −1.11 y mejor en 15 de 21 (p = 0.033) sin frontera | esc−control = −1.82, pasa | 6 mirillas, 30 runs: +1.30, +1.09, +0.59, +0.27, +0.39, **+0.07**; mejor en 10 de 21, p = 0.835 | **descartada** (2026-09-22). La señal de I-010 **no se reprodujo** |
-| I-036 | **path relinking como cruce**: los hijos son los puntos a 1/3 y 2/3 del camino entre los padres en el espacio de órdenes relativos (`crossover = jsp.pr`) | recombinar a distancia fijada de ambos padres, no el mejor punto del camino, y buscar en profundidad desde ahí, saca de la meseta | pendiente | pendiente | **lanzada** (2026-09-24) |
+| I-036 | **path relinking como cruce**: los hijos son los puntos a 1/3 y 2/3 del camino entre los padres en el espacio de órdenes relativos (`crossover = jsp.pr`) | recombinar a distancia fijada de ambos padres, no el mejor punto del camino, y buscar en profundidad desde ahí, saca de la meseta | mecanismo: ~36800 cruces PR por tirada, hijo a ~208 de ~245 posiciones del padre, más generaciones (81 → 110 en ta23, 187 → 280 en ta45); pr−control = **+25.17** (ta45 +35.47, ta23 +32.10, ta30 +21.60, ta29 +11.50), **descarta** (si > +2.0); bo5 +26.88 | no se corren | **descartada por el filtro y revertida** (2026-09-24) |
 | I-035 | **dos cruces por fuente, búsqueda profunda sobre la mejor pareja** (`abc.pair.choice = best-of-two`) | lo que funciona es la profundidad sobre lo mejor; empezarla desde un hijo mejor debería rendir más | mecanismo: ~15000 segundas parejas elegidas por tirada, ~45 unidades mejores en bruto, más generaciones; pair−control = **+1.13** (ta30 +2.70, ta29 +1.57, ta45 +1.27, ta23 −1.03), pasa (descartaba si > +2.0); bo5 +3.29 | mirillas media: **+1.01** (w1, 11 de 21, p = 0.532), **+0.49** (w2, 12 de 21, p = 0.715), **+0.75** (w3, 9 de 21, p = 0.492), **+1.30** (w4, 7 de 21, p = 0.033), **+0.96** (w5, 7 de 21, p = 0.039), **+0.80** (w6, 7 de 21, p = 0.099) | **rechazada y revertida** (2026-09-24) |
 | I-034 | **exploradores pulidos**: cada explorador se busca en cadena antes de entrar (`abc.scout.polish = chain`) | un aleatorio en bruto es un reinicio desperdiciado; pulido entra como un óptimo local nuevo, una cuenca nueva | mecanismo: 10 a 231 exploradores pulidos por tirada; polish−control = **+0.03** (ta45 −3.23, ta23 +3.30, ta29 −0.10, ta30 +0.13), pasa (descartaba si > +2.0); bo5 −1.38 | mirillas media: **-0.14** (w1, 9 de 21, p = 0.862), **-0.11** (w2, 10 de 21, p = 0.949), **-0.10** (w3, 10 de 21, p = 0.945), **+0.21** (w4, 6 de 21, p = 0.175), **+0.30** (w5, 5 de 21, p = 0.076), **+0.31** (w6, 6 de 21, **p = 0.056**) | **descartada** (2026-09-24) por no cruzar en la sexta, del lado del control; **código revertido** y verificado |
 | I-033 | **caza en `ta18`** (20x15), la única instancia abierta que la línea no había tocado, 400 tiradas de 40 s, semillas 9001-9400 | 19 unidades de margen hasta la cota; pequeña, así que las tiradas cortas rinden; improbable, y barata | -- | 400 tiradas, cero infactibles: **sin récord ni igualada**; mejor **1414**, 18 por encima del BKS (1.3 %); cuantil 1 % 1417 | **cerrada** (2026-09-24): `ta18` queda lejos |
@@ -3995,3 +3995,29 @@ generaciones 120 → 112 (ta23) y 280 → 379 (ta45); horarios factibles.
 **Filtro**: descartar si `pr − control` supera +2.0, semillas 1001 a 1030.
 **Endpoint**: media por instancia, Pocock simétrica p <= 0.0142. **Mecanismo,
 primero**: cruces PR, distancias padre-padre e hijo-padre, generaciones.
+
+### I-036, filtro: descartada y revertida
+
+240 trabajos, cero infactibles, semillas 1001 a 1030, control en `ref_I-021`.
+**Mecanismo, ejercido**: unos 36800 cruces PR por tirada, con el primer hijo a
+unas 208 de las 245 posiciones en que difieren los padres, y **más
+generaciones** (81 → 110 en ta23, 187 → 280 en ta45): las cadenas desde estos
+hijos son más cortas. Media por instancia `pr − control`: ta23 +32.10, ta29
++11.50, ta30 +21.60, ta45 +35.47, **+25.17**; regla *descartar si > +2.0*:
+**descarta**, y por mucho, en las cuatro instancias.
+
+**Lo que dice**: el punto intermedio del camino **empeora mucho** frente a JOX.
+Una lectura, no demostrada: la interpolación es **determinista** dados los
+padres y conserva todo lo que comparten, así que los hijos caen en la región
+entre ellos, las cadenas terminan antes y la búsqueda pierde la variedad que
+JOX le da con su máscara aleatoria de trabajos. Junto con H-2, que devolvía el
+mejor punto del camino, son dos formas de path relinking y ninguna ayuda en
+este algoritmo; la recombinación que funciona es JOX.
+
+**Sin récords**; la única igualada es la conocida de `ta30` (1584), y está en
+la celda **de control**.
+
+**Código revertido**: `CrossoverJSP_PR.{h,cpp}` borrados, y `CrossoverJSP.h`,
+`GeneticClassRegister.h` y `Makefile` vuelven a su versión anterior a I-036;
+el solver reenlazado ya no contiene el operador y reproduce exactamente la
+referencia a número fijo de generaciones.

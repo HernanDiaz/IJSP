@@ -2947,3 +2947,22 @@ does not predict the quality of the optimum the chain reaches.
 
 No records and no matches. The code is rolled back and the rebuilt solver
 reproduces the reference exactly at a fixed number of generations.
+
+## I-036 is discarded by its filter and rolled back: path relinking hurts
+
+240 jobs, no infeasible schedule, seeds 1001 to 1030. About 36,800 PR
+crossings per run, the first child some 208 of 245 differing positions away
+from its parent, and more generations (81 to 110 on ta23, 187 to 280 on ta45).
+PR minus control: ta23 +32.10, ta29 +11.50, ta30 +21.60, ta45 +35.47, mean
++25.17, far above the +2.0 discard line, worse on all four; best-of-five
++26.88.
+
+The interpolated point of the path between the parents is much worse than JOX.
+One reading, not shown: the interpolation is deterministic given the parents
+and keeps everything they share, so children land between them, chains end
+sooner and the search loses the variety JOX's random job mask gives it. With
+H-2, which returned the best point of the path, that is two forms of path
+relinking that do not help here.
+
+No records; the only match is the known ta30 1584, in the control cell. The
+operator is removed and the relinked solver reproduces the reference exactly.

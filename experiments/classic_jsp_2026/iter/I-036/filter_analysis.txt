@@ -1,0 +1,33 @@
+=== 0. MECHANISM CHECK ===
+inst   statistic                                     control         pr
+ta23   log:PR crossings                                 0.00   26713.07
+ta23   log:mean parent distance                         0.00     244.64
+ta23   log:mean child distance                          0.00     208.01
+ta23   Number of Generations                           80.73     110.20
+ta29   log:PR crossings                                 0.00   28245.00
+ta29   log:mean parent distance                         0.00     246.70
+ta29   log:mean child distance                          0.00     206.60
+ta29   Number of Generations                           95.60     116.50
+ta30   log:PR crossings                                 0.00   24258.77
+ta30   log:mean parent distance                         0.00     251.17
+ta30   log:mean child distance                          0.00     215.02
+ta30   Number of Generations                           78.30     100.07
+ta45   log:PR crossings                                 0.00   67999.87
+ta45   log:mean parent distance                         0.00     446.33
+ta45   log:mean child distance                          0.00     378.06
+ta45   Number of Generations                          186.80     280.40
+
+PR crossings per run: 36804 on average (the control makes none)
+
+=== I-036 filter: per-instance mean (primary), best-of-5 (reported) ===
+inst     mean ctrl     mean pr         d      bo5 ctrl      bo5 pr         d
+ta23        1582.9      1615.0    +32.10        1571.8      1608.2    +36.33
+ta29        1639.5      1651.0    +11.50        1635.2      1645.0     +9.83
+ta30        1614.9      1636.5    +21.60        1599.7      1629.3    +29.67
+ta45        2034.4      2069.8    +35.47        2022.8      2054.5    +31.67
+
+runs per cell and instance: 30
+
+filter rule, on the MEAN: mean(pr - control) = +25.17;
+discard if > +2.0 -> DISCARD
+best-of-5 moved +26.88, and decides nothing here.

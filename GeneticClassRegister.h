@@ -319,7 +319,6 @@ public:
 		
 		// -----  CROSSOVER OPERATORS  ----------------------------------------
 		CrossoverMap[toUpper("jsp.jox")] = &createCrossoverInstance<JSP::Crossover_JOX>;
-		CrossoverMap[toUpper("jsp.pr")] = &createCrossoverInstance<JSP::Crossover_PR>;
 		CrossoverMap[toUpper("jsp.gox")] = &createCrossoverInstance<JSP::Crossover_GOXBierwirth>;
 		CrossoverMap[toUpper("jsp.biertwirth")] = &createCrossoverInstance<JSP::Crossover_GOXBierwirth>;
 		CrossoverMap[toUpper("jsp.gpmx")] = &createCrossoverInstance<JSP::Crossover_GPMXBierwirth>;
