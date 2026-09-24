@@ -6,7 +6,6 @@
 */
 
 #include "ArtificialBeeColonyPSO.h"
-#include "LS_Tabu.h"
 #include <iostream>
 #include <set>
 
@@ -252,10 +251,6 @@ namespace FuzzyFW {
 		stats.push_back(std::pair<std::string, double>
 			("LS longest chain of calls on one child", (double)this->lsRepeatLongest));
 		stats.push_back(std::pair<std::string, double>
-			("LS doubled calls at chain end", (double)this->lsEscalations));
-		stats.push_back(std::pair<std::string, double>
-			("LS doubled calls that improved", (double)this->lsEscalationsWon));
-		stats.push_back(std::pair<std::string, double>
 			("Best solution", this->bestSoFar->getFitness()->toDouble()));
 		return stats;
 	}
@@ -394,10 +389,6 @@ namespace FuzzyFW {
 		this->lsPickRepeat = (value.compare("best-repeat") == 0);
 		this->lsPickBest = this->lsPickRepeat || (value.compare("best") == 0);
 
-		// I-037: a doubled-depth call before a chain ends.
-		this->lsEscalate =
-			(params->getStringLower(LS_ESCALATE).compare("double") == 0);
-
 		// Loads the common parameters
 		GeneticAlgorithm::prepareToRun(params);
 
@@ -467,8 +458,6 @@ namespace FuzzyFW {
 		this->lsSecondImproved = 0;
 		this->lsRepeatCalls = 0;
 		this->lsRepeatLongest = 0;
-		this->lsEscalations = 0;
-		this->lsEscalationsWon = 0;
 		evolutionStats.clear();
 
 		this->generation = 0;
@@ -780,37 +769,14 @@ namespace FuzzyFW {
 						->getFitness()->toDouble();
 					if (after < before) this->lsSecondImproved++;
 					unsigned long chain = 2;
-					while (true) {
-						while (this->lsPickRepeat && target == best
-							&& after < before) {
-							before = after;
-							this->applyLocalSearch(population, target);
-							after = population->getIndividual(target)
-								->getFitness()->toDouble();
-							this->lsRepeatCalls++;
-							chain++;
-						}
-						// I-037: before the chain ends, one call on the same
-						// child with twice the tabu depth; if it improves,
-						// the chain goes on at the normal depth.
-						if (!this->lsEscalate || !this->lsPickRepeat
-							|| target != best)
-							break;
-						LS_Tabu *tabu = dynamic_cast<LS_Tabu *>(this->localSearch);
-						if (tabu == NULL)
-							break;
-						const unsigned int depth = tabu->getMaxBadIterations();
-						tabu->setMaxBadIterations(2 * depth);
+					while (this->lsPickRepeat && target == best
+						&& after < before) {
 						before = after;
 						this->applyLocalSearch(population, target);
-						tabu->setMaxBadIterations(depth);
 						after = population->getIndividual(target)
 							->getFitness()->toDouble();
-						this->lsEscalations++;
+						this->lsRepeatCalls++;
 						chain++;
-						if (!(after < before))
-							break;
-						this->lsEscalationsWon++;
 					}
 					if (chain > this->lsRepeatLongest)
 						this->lsRepeatLongest = chain;

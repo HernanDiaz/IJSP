@@ -44,15 +44,6 @@ protected:
 	virtual bool stoppingCriteria();
 
 public:
-	// I-037: the ABC doubles the depth of one call at the end of a chain
-	unsigned int getMaxBadIterations() const {
-		return this->maxBadIterations;
-	}
-	void setMaxBadIterations(unsigned int value) {
-		this->maxBadIterations = value;
-	}
-
-public:
 	virtual FullSolution apply(const Solution *solution, const Fitness *fitness,
 		const SharedVars *svars);
 

@@ -1,0 +1,29 @@
+=== 0. MECHANISM CHECK ===
+inst   statistic                                     control        esc
+ta23   LS doubled calls at chain end                    0.00   13047.03
+ta23   LS doubled calls that improved                   0.00    1520.37
+ta23   Number of Generations                           75.03      46.67
+ta29   LS doubled calls at chain end                    0.00   14428.70
+ta29   LS doubled calls that improved                   0.00    1082.47
+ta29   Number of Generations                           85.67      54.03
+ta30   LS doubled calls at chain end                    0.00   12847.43
+ta30   LS doubled calls that improved                   0.00    1592.47
+ta30   Number of Generations                           73.00      45.57
+ta45   LS doubled calls at chain end                    0.00   34312.73
+ta45   LS doubled calls that improved                   0.00    5520.77
+ta45   Number of Generations                          178.57     116.57
+
+doubled calls per run: 18659 on average (the control makes none)
+
+=== I-037 filter: per-instance mean (primary), best-of-5 (reported) ===
+inst     mean ctrl    mean esc         d      bo5 ctrl     bo5 esc         d
+ta23        1583.3      1584.4     +1.10        1572.7      1575.3     +2.67
+ta29        1639.8      1639.0     -0.83        1635.2      1634.0     -1.17
+ta30        1615.4      1623.3     +7.93        1599.2      1615.8    +16.67
+ta45        2034.9      2036.1     +1.23        2024.2      2027.0     +2.83
+
+runs per cell and instance: 30
+
+filter rule, on the MEAN: mean(esc - control) = +2.36;
+discard if > +2.0 -> DISCARD
+best-of-5 moved +5.25, and decides nothing here.

@@ -2966,3 +2966,18 @@ relinking that do not help here.
 
 No records; the only match is the known ta30 1584, in the control cell. The
 operator is removed and the relinked solver reproduces the reference exactly.
+
+## I-037 is discarded by its filter and rolled back: deeper calls do not pay
+
+240 jobs, no infeasible schedule, seeds 1001 to 1030. About 18,700 doubled
+calls per run at the end of chains, 8 to 16 per cent of them improving, at the
+cost of a third of the generations. Esc minus control: ta23 +1.10, ta29 -0.83,
+ta30 +7.93, ta45 +1.23, mean +2.36, just above the +2.0 discard line;
+best-of-five +5.25.
+
+The doubled call does find improvements the 15-iteration call gave up on, but
+not enough to pay for the generations it costs. With I-020 and I-021 the map of
+depth on the better child reads: more normal calls, yes; deeper calls, no.
+
+No records and no matches. The code is rolled back and the rebuilt solver
+reproduces the reference exactly.

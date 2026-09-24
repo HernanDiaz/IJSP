@@ -338,7 +338,7 @@ bucle y están aquí para que no se repitan; sus cifras están en el JOURNAL.
 | I-003 | el explorador del ABC reinyecta un **elite pateado** en vez de una solución aleatoria | un arranque aleatorio a mitad de tirada no puede alcanzar a la población; uno dentro de una cuenca buena sí | kick−control = **+1.43** (ta23 −0.27, ta29 +0.70, ta30 −0.50, ta45 **+5.80**); regla > +2 descarta → **pasa, por poco y en contra** | 4 mirillas de 6: −1.02, −0.57, **−0.03**, +0.44; kick mejor en 9-10 de 21 siempre; p entre 0.55 y 0.88, la frontera nunca se acerca | **detenida en la 4ª** (2026-09-21) por cambio de dirección del PI, no por sus datos. Sin aceptación: es un cero |
 | H-4 | N8 contra N2 (y contra N1, N3, N_ext), fase B del paper de COR | un vecindario más rico gana | -- | 82 instancias x 30 runs, 2460 bloques pareados: N2 1846.50 contra N8 1847.94, dif −1.45, p_adj = 3.9e−4, r = 0.077 (**despreciable**); rangos de Friedman N2 2.1315 el mejor de cinco, N8 2.2400 | **descartada** (antes del bucle; `experiments/cor_tabu_2026/`) |
 | I-012 | **escapar del estado todo-tabú, solo eso** | la celda informativa de I-010 dio −1.11 y mejor en 15 de 21 (p = 0.033) sin frontera | esc−control = −1.82, pasa | 6 mirillas, 30 runs: +1.30, +1.09, +0.59, +0.27, +0.39, **+0.07**; mejor en 10 de 21, p = 0.835 | **descartada** (2026-09-22). La señal de I-010 **no se reprodujo** |
-| I-037 | **una llamada de profundidad doble antes de que acabe la cadena** (`abc.ls.escalate = double`) | la cadena de I-021 muere en la primera llamada de 15 iteraciones que no mejora; una más profunda sobre ese mismo hijo cruza la meseta | pendiente | pendiente | **lanzada** (2026-09-25) |
+| I-037 | **una llamada de profundidad doble antes de que acabe la cadena** (`abc.ls.escalate = double`) | la cadena de I-021 muere en la primera llamada de 15 iteraciones que no mejora; una más profunda sobre ese mismo hijo cruza la meseta | mecanismo: ~18700 llamadas dobles por tirada, 8-16 % mejoran, un tercio menos de generaciones (75 → 47 en ta23, 179 → 117 en ta45); esc−control = **+2.36** (ta30 +7.93, ta45 +1.23, ta23 +1.10, ta29 −0.83), **descarta** (si > +2.0); bo5 +5.25 | no se corren | **descartada por el filtro y revertida** (2026-09-25) |
 | I-036 | **path relinking como cruce**: los hijos son los puntos a 1/3 y 2/3 del camino entre los padres en el espacio de órdenes relativos (`crossover = jsp.pr`) | recombinar a distancia fijada de ambos padres, no el mejor punto del camino, y buscar en profundidad desde ahí, saca de la meseta | mecanismo: ~36800 cruces PR por tirada, hijo a ~208 de ~245 posiciones del padre, más generaciones (81 → 110 en ta23, 187 → 280 en ta45); pr−control = **+25.17** (ta45 +35.47, ta23 +32.10, ta30 +21.60, ta29 +11.50), **descarta** (si > +2.0); bo5 +26.88 | no se corren | **descartada por el filtro y revertida** (2026-09-24) |
 | I-035 | **dos cruces por fuente, búsqueda profunda sobre la mejor pareja** (`abc.pair.choice = best-of-two`) | lo que funciona es la profundidad sobre lo mejor; empezarla desde un hijo mejor debería rendir más | mecanismo: ~15000 segundas parejas elegidas por tirada, ~45 unidades mejores en bruto, más generaciones; pair−control = **+1.13** (ta30 +2.70, ta29 +1.57, ta45 +1.27, ta23 −1.03), pasa (descartaba si > +2.0); bo5 +3.29 | mirillas media: **+1.01** (w1, 11 de 21, p = 0.532), **+0.49** (w2, 12 de 21, p = 0.715), **+0.75** (w3, 9 de 21, p = 0.492), **+1.30** (w4, 7 de 21, p = 0.033), **+0.96** (w5, 7 de 21, p = 0.039), **+0.80** (w6, 7 de 21, p = 0.099) | **rechazada y revertida** (2026-09-24) |
 | I-034 | **exploradores pulidos**: cada explorador se busca en cadena antes de entrar (`abc.scout.polish = chain`) | un aleatorio en bruto es un reinicio desperdiciado; pulido entra como un óptimo local nuevo, una cuenca nueva | mecanismo: 10 a 231 exploradores pulidos por tirada; polish−control = **+0.03** (ta45 −3.23, ta23 +3.30, ta29 −0.10, ta30 +0.13), pasa (descartaba si > +2.0); bo5 −1.38 | mirillas media: **-0.14** (w1, 9 de 21, p = 0.862), **-0.11** (w2, 10 de 21, p = 0.949), **-0.10** (w3, 10 de 21, p = 0.945), **+0.21** (w4, 6 de 21, p = 0.175), **+0.30** (w5, 5 de 21, p = 0.076), **+0.31** (w6, 6 de 21, **p = 0.056**) | **descartada** (2026-09-24) por no cruzar en la sexta, del lado del control; **código revertido** y verificado |
@@ -4053,3 +4053,26 @@ el **12 y el 17 %**; a cambio, **un tercio menos de generaciones** (61 → 40,
 **Filtro**: descartar si `esc − control` supera +2.0, semillas 1001 a 1030.
 **Endpoint**: media por instancia, Pocock simétrica p <= 0.0142. **Mecanismo,
 primero**: llamadas dobles, cuántas mejoran, generaciones.
+
+### I-037, filtro: descartada y revertida
+
+240 trabajos, cero infactibles, semillas 1001 a 1030, control en `ref_I-021`.
+**Mecanismo, ejercido**: unas 18700 llamadas dobles por tirada (de 12847 a
+34313), de las que mejoran entre el **8 y el 16 %**, a cambio de **un tercio
+menos de generaciones** (75 → 47 en ta23, 86 → 54 en ta29, 73 → 46 en ta30,
+179 → 117 en ta45). Media por instancia `esc − control`: ta23 +1.10, ta29
+−0.83, ta30 +7.93, ta45 +1.23, **+2.36**; regla *descartar si > +2.0*:
+**descarta**, por poco y con ta30 cargando casi todo.
+
+**Lo que dice**: la llamada doble **sí** encuentra mejoras donde la de 15 se
+rendía, pero lo que cuesta en generaciones lo pierde con creces. Con I-020
+(quitar la segunda llamada empeora) e I-021 (repetir mientras mejore ayuda),
+el mapa de la profundidad sobre el mejor hijo queda así: **más llamadas
+normales, sí; llamadas más hondas, no**. La cadena de I-021 ya se para donde
+debe.
+
+**Sin récords ni igualadas.**
+
+**Código revertido**: `LS_Tabu.h` y `ArtificialBeeColonyPSO.{h,cpp}` vuelven a
+su versión anterior a I-037, y el solver recompilado reproduce exactamente la
+referencia a número fijo de generaciones.

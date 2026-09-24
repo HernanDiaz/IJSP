@@ -64,14 +64,6 @@ namespace FuzzyFW {
 //            improved it; the first call that does not ends the chain (I-021:
 //            a further -2.62, 16 of 21, p = 0.0021).
 #define  LS_PICK "abc.ls.pick"
-// I-037. What ends I-021's chain of calls on the better child.
-//   "none"   (default, unchanged): the first call that does not improve
-//   "double" : that call is followed by ONE call on the same child with twice
-//              the tabu depth (localsearch.bad-iterations); if it improves, the
-//              chain goes on at the normal depth, and the chain only ends when
-//              a doubled call fails. The 2 is fixed in advance. Only acts with
-//              abc.ls.pick = best-repeat.
-#define  LS_ESCALATE "abc.ls.escalate"
 #define	ELITE_SIZE	"elite.size" //Selection mechanism to select number of elements in elite 
 
 
@@ -154,11 +146,6 @@ namespace FuzzyFW {
 		unsigned long lsSecondImproved;   // ... that improved it
 		unsigned long lsRepeatCalls;      // calls beyond the second
 		unsigned long lsRepeatLongest;    // longest chain of calls on one child
-
-		// I-037: a doubled-depth call before a chain ends.
-		bool lsEscalate;
-		unsigned long lsEscalations;      // doubled calls made
-		unsigned long lsEscalationsWon;   // doubled calls that improved
 		unsigned int improvementsLS;
 		unsigned int enworstmentsLS;
 		unsigned int neutralLS;
