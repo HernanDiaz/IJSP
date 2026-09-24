@@ -338,6 +338,7 @@ bucle y están aquí para que no se repitan; sus cifras están en el JOURNAL.
 | I-003 | el explorador del ABC reinyecta un **elite pateado** en vez de una solución aleatoria | un arranque aleatorio a mitad de tirada no puede alcanzar a la población; uno dentro de una cuenca buena sí | kick−control = **+1.43** (ta23 −0.27, ta29 +0.70, ta30 −0.50, ta45 **+5.80**); regla > +2 descarta → **pasa, por poco y en contra** | 4 mirillas de 6: −1.02, −0.57, **−0.03**, +0.44; kick mejor en 9-10 de 21 siempre; p entre 0.55 y 0.88, la frontera nunca se acerca | **detenida en la 4ª** (2026-09-21) por cambio de dirección del PI, no por sus datos. Sin aceptación: es un cero |
 | H-4 | N8 contra N2 (y contra N1, N3, N_ext), fase B del paper de COR | un vecindario más rico gana | -- | 82 instancias x 30 runs, 2460 bloques pareados: N2 1846.50 contra N8 1847.94, dif −1.45, p_adj = 3.9e−4, r = 0.077 (**despreciable**); rangos de Friedman N2 2.1315 el mejor de cinco, N8 2.2400 | **descartada** (antes del bucle; `experiments/cor_tabu_2026/`) |
 | I-012 | **escapar del estado todo-tabú, solo eso** | la celda informativa de I-010 dio −1.11 y mejor en 15 de 21 (p = 0.033) sin frontera | esc−control = −1.82, pasa | 6 mirillas, 30 runs: +1.30, +1.09, +0.59, +0.27, +0.39, **+0.07**; mejor en 10 de 21, p = 0.835 | **descartada** (2026-09-22). La señal de I-010 **no se reprodujo** |
+| I-035 | **dos cruces por fuente, búsqueda profunda sobre la mejor pareja** (`abc.pair.choice = best-of-two`) | lo que funciona es la profundidad sobre lo mejor; empezarla desde un hijo mejor debería rendir más | pendiente | pendiente | **lanzada** (2026-09-24) |
 | I-034 | **exploradores pulidos**: cada explorador se busca en cadena antes de entrar (`abc.scout.polish = chain`) | un aleatorio en bruto es un reinicio desperdiciado; pulido entra como un óptimo local nuevo, una cuenca nueva | mecanismo: 10 a 231 exploradores pulidos por tirada; polish−control = **+0.03** (ta45 −3.23, ta23 +3.30, ta29 −0.10, ta30 +0.13), pasa (descartaba si > +2.0); bo5 −1.38 | mirillas media: **-0.14** (w1, 9 de 21, p = 0.862), **-0.11** (w2, 10 de 21, p = 0.949), **-0.10** (w3, 10 de 21, p = 0.945), **+0.21** (w4, 6 de 21, p = 0.175), **+0.30** (w5, 5 de 21, p = 0.076), **+0.31** (w6, 6 de 21, **p = 0.056**) | **descartada** (2026-09-24) por no cruzar en la sexta, del lado del control; **código revertido** y verificado |
 | I-033 | **caza en `ta18`** (20x15), la única instancia abierta que la línea no había tocado, 400 tiradas de 40 s, semillas 9001-9400 | 19 unidades de margen hasta la cota; pequeña, así que las tiradas cortas rinden; improbable, y barata | -- | 400 tiradas, cero infactibles: **sin récord ni igualada**; mejor **1414**, 18 por encima del BKS (1.3 %); cuantil 1 % 1417 | **cerrada** (2026-09-24): `ta18` queda lejos |
 | I-032 | **caza concentrada en `ta23`** con la configuración vigente, 800 tiradas de 40 s, semillas 8001-8800 | `ta29` y `ta30` parecen óptimas en su BKS; `ta23` tiene 39 de margen, nuestro mejor está a 7, y nunca se ha cazado con la configuración vigente | -- | 800 tiradas, cero infactibles: **sin récord ni igualada**; mejor **1561**, **mejor propio nuevo** de `ta23` (antes 1564), a 4 del BKS. Cuantil 1 % 1567, mediana 1583 | **cerrada** (2026-09-24), con un mejor propio |
@@ -3899,3 +3900,28 @@ es lo único que ha funcionado.
 **Código revertido**: `ArtificialBeeColonyPSO.{h,cpp}` vuelven a su versión
 anterior a I-034, sin rastro del interruptor, y el solver recompilado
 reproduce exactamente la referencia a número fijo de generaciones.
+
+### I-035 — dos cruces por fuente, y la búsqueda profunda sobre la mejor pareja
+
+**De dónde sale**: cinco maneras de empujar la búsqueda hacia **otras cuencas**
+desde dentro de la población han fallado (I-003, I-014, I-016, I-031, I-034);
+lo que ha funcionado es dar **profundidad a lo mejor que la población ya
+tiene** (I-018, I-021). Esta idea mantiene ese principio y, en vez de añadir
+más profundidad, **elige mejor desde dónde empieza**.
+
+**La idea**: `abc.pair.choice = best-of-two`. Cada fuente hace una **segunda
+pareja** —su propio compañero élite al azar y su propia copia mutada de la
+fuente— y solo la pareja cuyo mejor hijo es mejor va a la búsqueda local, **por
+exactamente el camino del mecanismo aceptado**. El 2 es la elección mínima no
+trivial, **fijada de antemano**; no se ajusta.
+
+**Comprobado antes de lanzar**: por defecto, idéntico a la referencia a número
+fijo de generaciones; la segunda pareja se queda **en torno a la mitad de las
+veces** (17497 en ta23, 44376 en ta45), con su mejor hijo **40-42 unidades
+mejor antes de ninguna búsqueda**; y las generaciones **suben** (134 → 147,
+298 → 364), porque la cadena desde un hijo mejor es más corta. Horarios
+factibles.
+
+**Filtro**: descartar si `pair − control` supera +2.0, semillas 1001 a 1030.
+**Endpoint**: media por instancia, Pocock simétrica p <= 0.0142. **Mecanismo,
+primero**: segundas parejas elegidas, su ganancia en bruto y generaciones.

@@ -251,6 +251,11 @@ namespace FuzzyFW {
 		stats.push_back(std::pair<std::string, double>
 			("LS longest chain of calls on one child", (double)this->lsRepeatLongest));
 		stats.push_back(std::pair<std::string, double>
+			("Second pair kept", (double)this->pairSecondWins));
+		stats.push_back(std::pair<std::string, double>
+			("Mean raw gain when the second pair is kept", this->pairSecondWins
+				? this->pairGainSum / this->pairSecondWins : 0.0));
+		stats.push_back(std::pair<std::string, double>
 			("Best solution", this->bestSoFar->getFitness()->toDouble()));
 		return stats;
 	}
@@ -389,6 +394,10 @@ namespace FuzzyFW {
 		this->lsPickRepeat = (value.compare("best-repeat") == 0);
 		this->lsPickBest = this->lsPickRepeat || (value.compare("best") == 0);
 
+		// I-035: best of two pairs before the local search.
+		this->pairBestOfTwo =
+			(params->getStringLower(PAIR_CHOICE).compare("best-of-two") == 0);
+
 		// Loads the common parameters
 		GeneticAlgorithm::prepareToRun(params);
 
@@ -458,6 +467,8 @@ namespace FuzzyFW {
 		this->lsSecondImproved = 0;
 		this->lsRepeatCalls = 0;
 		this->lsRepeatLongest = 0;
+		this->pairSecondWins = 0;
+		this->pairGainSum = 0.0;
 		evolutionStats.clear();
 
 		this->generation = 0;
@@ -580,6 +591,32 @@ namespace FuzzyFW {
 				}
 				this->crossover->apply(&currentFoodSources, this->crossoverProb, this->sharedVariables);
 				this->evaluator->evaluatePopulation(this->sharedVariables, &currentFoodSources, false);
+
+				// I-035: a second pair from its own elite partner and its own
+				// mutated copy of the source; keep whichever pair holds the
+				// better child, and send only that one to the local search.
+				if (this->pairBestOfTwo) {
+					unsigned int secondID = this->sharedVariables->rng->getInteger(0, elite_size);
+					Individual *partner2 = (secondID == 0) ? this->bestSoFar->clone()
+						: currentPopulation->getBest(this->sharedVariables, secondID - 1)->clone();
+					Individual *destiny2 = currentPopulation->getIndividual(i)->clone();
+					this->mutation->apply(destiny2, this->sharedVariables);
+					Population second;
+					second.addIndividual(partner2);
+					second.addIndividual(destiny2);
+					this->crossover->apply(&second, this->crossoverProb, this->sharedVariables);
+					this->evaluator->evaluatePopulation(this->sharedVariables, &second, false);
+					Fitness *first = currentFoodSources.getBest(this->sharedVariables)->getFitness();
+					Fitness *other = second.getBest(this->sharedVariables)->getFitness();
+					if (other->isBetterThan(first)) {
+						this->pairGainSum += first->toDouble() - other->toDouble();
+						this->pairSecondWins++;
+						currentFoodSources.clear(true);
+						for (unsigned int k = 0; k < second.size(); k++)
+							currentFoodSources.addIndividual(second.getIndividual(k));
+						second.clear(false);     // handed over, not deleted
+					}
+				}
 				// Conditions to apply the local search
 				this->crossoverTime += clock() - timePoint;
 				timePoint = clock();
