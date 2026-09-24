@@ -338,6 +338,7 @@ bucle y están aquí para que no se repitan; sus cifras están en el JOURNAL.
 | I-003 | el explorador del ABC reinyecta un **elite pateado** en vez de una solución aleatoria | un arranque aleatorio a mitad de tirada no puede alcanzar a la población; uno dentro de una cuenca buena sí | kick−control = **+1.43** (ta23 −0.27, ta29 +0.70, ta30 −0.50, ta45 **+5.80**); regla > +2 descarta → **pasa, por poco y en contra** | 4 mirillas de 6: −1.02, −0.57, **−0.03**, +0.44; kick mejor en 9-10 de 21 siempre; p entre 0.55 y 0.88, la frontera nunca se acerca | **detenida en la 4ª** (2026-09-21) por cambio de dirección del PI, no por sus datos. Sin aceptación: es un cero |
 | H-4 | N8 contra N2 (y contra N1, N3, N_ext), fase B del paper de COR | un vecindario más rico gana | -- | 82 instancias x 30 runs, 2460 bloques pareados: N2 1846.50 contra N8 1847.94, dif −1.45, p_adj = 3.9e−4, r = 0.077 (**despreciable**); rangos de Friedman N2 2.1315 el mejor de cinco, N8 2.2400 | **descartada** (antes del bucle; `experiments/cor_tabu_2026/`) |
 | I-012 | **escapar del estado todo-tabú, solo eso** | la celda informativa de I-010 dio −1.11 y mejor en 15 de 21 (p = 0.033) sin frontera | esc−control = −1.82, pasa | 6 mirillas, 30 runs: +1.30, +1.09, +0.59, +0.27, +0.39, **+0.07**; mejor en 10 de 21, p = 0.835 | **descartada** (2026-09-22). La señal de I-010 **no se reprodujo** |
+| I-038 | **dejar de registrar la diversidad de Hamming en cada generación** (quitar `statistics.3 = hamming` del setup; sin código) | la estadística, "registrada pero no probada", se come una quinta parte del tiempo; devuelto a la búsqueda son ~25 % más generaciones con el mismo presupuesto | pendiente | pendiente | **lanzada** (2026-09-25) |
 | I-037 | **una llamada de profundidad doble antes de que acabe la cadena** (`abc.ls.escalate = double`) | la cadena de I-021 muere en la primera llamada de 15 iteraciones que no mejora; una más profunda sobre ese mismo hijo cruza la meseta | mecanismo: ~18700 llamadas dobles por tirada, 8-16 % mejoran, un tercio menos de generaciones (75 → 47 en ta23, 179 → 117 en ta45); esc−control = **+2.36** (ta30 +7.93, ta45 +1.23, ta23 +1.10, ta29 −0.83), **descarta** (si > +2.0); bo5 +5.25 | no se corren | **descartada por el filtro y revertida** (2026-09-25) |
 | I-036 | **path relinking como cruce**: los hijos son los puntos a 1/3 y 2/3 del camino entre los padres en el espacio de órdenes relativos (`crossover = jsp.pr`) | recombinar a distancia fijada de ambos padres, no el mejor punto del camino, y buscar en profundidad desde ahí, saca de la meseta | mecanismo: ~36800 cruces PR por tirada, hijo a ~208 de ~245 posiciones del padre, más generaciones (81 → 110 en ta23, 187 → 280 en ta45); pr−control = **+25.17** (ta45 +35.47, ta23 +32.10, ta30 +21.60, ta29 +11.50), **descarta** (si > +2.0); bo5 +26.88 | no se corren | **descartada por el filtro y revertida** (2026-09-24) |
 | I-035 | **dos cruces por fuente, búsqueda profunda sobre la mejor pareja** (`abc.pair.choice = best-of-two`) | lo que funciona es la profundidad sobre lo mejor; empezarla desde un hijo mejor debería rendir más | mecanismo: ~15000 segundas parejas elegidas por tirada, ~45 unidades mejores en bruto, más generaciones; pair−control = **+1.13** (ta30 +2.70, ta29 +1.57, ta45 +1.27, ta23 −1.03), pasa (descartaba si > +2.0); bo5 +3.29 | mirillas media: **+1.01** (w1, 11 de 21, p = 0.532), **+0.49** (w2, 12 de 21, p = 0.715), **+0.75** (w3, 9 de 21, p = 0.492), **+1.30** (w4, 7 de 21, p = 0.033), **+0.96** (w5, 7 de 21, p = 0.039), **+0.80** (w6, 7 de 21, p = 0.099) | **rechazada y revertida** (2026-09-24) |
@@ -4076,3 +4077,38 @@ debe.
 **Código revertido**: `LS_Tabu.h` y `ArtificialBeeColonyPSO.{h,cpp}` vuelven a
 su versión anterior a I-037, y el solver recompilado reproduce exactamente la
 referencia a número fijo de generaciones.
+
+### I-038 — dejar de registrar la diversidad de Hamming en cada generación
+
+**De dónde sale**: I-035 e I-037 perdieron sobre todo por las **generaciones**
+que costaban (un tercio menos en I-037). Eso invita a mirar al revés: ¿se
+está gastando tiempo en algo que no es búsqueda? Un perfil con `gprof` de una
+tirada de ta23 con la configuración vigente lo encuentra enseguida:
+`StatisticsHamming::getValue`, llamada en cada generación desde
+`computeStatistics`, calcula la distancia de Hamming **entre todos los pares**
+de los 247 individuos (30381 pares de 400 a 600 genes). Es la línea
+`statistics.3.value = hamming` de `ref_I-021.txt` y de `prereg2_abc_300s.txt`,
+que su propio comentario describe como *"recorded but not tested"*: sirve para
+dibujar la curva de colapso, no interviene en la búsqueda.
+
+**Medido con el binario de producción** (`-O3`, no el de perfil), 40
+generaciones fijas: ta23 **32.8 → 26.2 s**, ta45 **55.8 → 45.4 s**; la
+estadística se lleva **un 20 %** del tiempo. Y las dos celdas dan **los
+mismos makespans y la misma traza del mejor generación a generación**: la
+estadística no consume ningún número aleatorio, así que quitarla no cambia la
+búsqueda, solo cuánta cabe en el presupuesto.
+
+**La idea**: la celda `nostat` quita esas dos líneas del setup y renumera
+`neri` (que es O(n) y se queda) de 4 a 3. **Sin cambio de código, sin tocar
+los presupuestos por clase**: el presupuesto es el mismo; lo que cambia es
+cuánto de él va a la búsqueda. La hipótesis: ~25 % más generaciones mejora la
+media, en el sentido que I-035 e I-037 sugieren al revés.
+
+**Filtro**: descartar si `nostat − control` supera +2.0, semillas 1001 a 1030.
+**Endpoint**: media por instancia, Pocock simétrica p <= 0.0142. **Mecanismo,
+primero**: generaciones y llamadas al tabú por tirada, que deben subir en
+torno a un cuarto.
+
+**Nota para la lectura de lo anterior**: todas las comparaciones desde el 20
+de septiembre llevaban el mismo lastre **en las dos celdas**, así que sus
+diferencias siguen valiendo; lo que no valía era su nivel absoluto.
