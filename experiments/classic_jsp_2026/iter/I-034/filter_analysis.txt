@@ -1,0 +1,29 @@
+=== 0. MECHANISM CHECK ===
+inst   statistic                                     control     polish
+ta23   Scouts polished                                  0.00      10.27
+ta23   Tabu calls on scouts                             0.00      38.60
+ta23   Number of Generations                           80.80      60.10
+ta29   Scouts polished                                  0.00     149.93
+ta29   Tabu calls on scouts                             0.00     550.90
+ta29   Number of Generations                           92.00      96.13
+ta30   Scouts polished                                  0.00      43.50
+ta30   Tabu calls on scouts                             0.00     161.43
+ta30   Number of Generations                           79.67      79.87
+ta45   Scouts polished                                  0.00     230.90
+ta45   Tabu calls on scouts                             0.00     926.83
+ta45   Number of Generations                          143.23     180.30
+
+scouts polished per run: 109 on average (the control polishes none)
+
+=== I-034 filter: per-instance mean (primary), best-of-5 (reported) ===
+inst     mean ctrl mean polish         d      bo5 ctrl  bo5 polish         d
+ta23        1582.9      1586.2     +3.30        1571.2      1572.0     +0.83
+ta29        1639.6      1639.5     -0.10        1635.3      1634.3     -1.00
+ta30        1614.6      1614.7     +0.13        1598.8      1598.8     +0.00
+ta45        2038.2      2034.9     -3.23        2029.2      2023.8     -5.33
+
+runs per cell and instance: 30
+
+filter rule, on the MEAN: mean(polish - control) = +0.03;
+discard if > +2.0 -> PASS, go to the waves
+best-of-5 moved -1.38, and decides nothing here.

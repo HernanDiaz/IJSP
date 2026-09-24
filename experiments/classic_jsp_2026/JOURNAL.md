@@ -2892,3 +2892,13 @@ no match. The best is 1414, 18 above the best known 1396 (1.3%); the 1%
 quantile is 1417. The current configuration does not come near ta18's best
 known, and the hunt does not justify more runs. It is the line's first data on
 a 20x15 instance.
+
+## I-034's filter passes with a zero
+
+240 jobs, no infeasible schedule, seeds 1001 to 1030, against ref_I-021. Between
+10 and 231 scouts polished per run, about four tabu calls each. Polish minus
+control: ta23 +3.30, ta29 -0.10, ta30 +0.13, ta45 -3.23, mean +0.03, so it passes
+a rule that discards above +2.0, which at a filter only means it is not
+discarded; best-of-five leans slightly in favour at -1.38, mostly on ta45. The
+ta30 match in the control is again seed 1009's schedule, reproduced a third
+time. The waves go.
