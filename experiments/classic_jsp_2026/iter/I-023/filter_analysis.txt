@@ -1,0 +1,29 @@
+=== 0. MECHANISM CHECK ===
+inst   statistic                                     control       kick
+ta23   LS kicks at the end of a chain                   0.00    8883.77
+ta23   LS kicked copies that ended better               0.00    3765.47
+ta23   Number of Generations                           74.43      35.97
+ta29   LS kicks at the end of a chain                   0.00    9978.80
+ta29   LS kicked copies that ended better               0.00    2863.03
+ta29   Number of Generations                           94.53      40.40
+ta30   LS kicks at the end of a chain                   0.00    8842.60
+ta30   LS kicked copies that ended better               0.00    3422.73
+ta30   Number of Generations                           76.43      35.80
+ta45   LS kicks at the end of a chain                   0.00   23193.30
+ta45   LS kicked copies that ended better               0.00    8481.27
+ta45   Number of Generations                          185.20      93.90
+
+kicks per run: 12725 on average (the control makes none)
+
+=== I-023 filter: per-instance mean (primary), best-of-5 (reported) ===
+inst     mean ctrl   mean kick         d      bo5 ctrl    bo5 kick         d
+ta23        1583.5      1590.7     +7.17        1571.8      1578.0     +6.17
+ta29        1639.6      1642.2     +2.57        1635.2      1637.3     +2.17
+ta30        1614.6      1624.9    +10.30        1599.5      1611.5    +12.00
+ta45        2034.6      2042.8     +8.20        2023.7      2036.0    +12.33
+
+runs per cell and instance: 30
+
+filter rule, on the MEAN: mean(kick - control) = +7.06;
+discard if > +2.0 -> DISCARD
+best-of-5 moved +8.17, and decides nothing here.

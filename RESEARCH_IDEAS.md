@@ -323,7 +323,7 @@ bucle y están aquí para que no se repitan; sus cifras están en el JOURNAL.
 | I-003 | el explorador del ABC reinyecta un **elite pateado** en vez de una solución aleatoria | un arranque aleatorio a mitad de tirada no puede alcanzar a la población; uno dentro de una cuenca buena sí | kick−control = **+1.43** (ta23 −0.27, ta29 +0.70, ta30 −0.50, ta45 **+5.80**); regla > +2 descarta → **pasa, por poco y en contra** | 4 mirillas de 6: −1.02, −0.57, **−0.03**, +0.44; kick mejor en 9-10 de 21 siempre; p entre 0.55 y 0.88, la frontera nunca se acerca | **detenida en la 4ª** (2026-09-21) por cambio de dirección del PI, no por sus datos. Sin aceptación: es un cero |
 | H-4 | N8 contra N2 (y contra N1, N3, N_ext), fase B del paper de COR | un vecindario más rico gana | -- | 82 instancias x 30 runs, 2460 bloques pareados: N2 1846.50 contra N8 1847.94, dif −1.45, p_adj = 3.9e−4, r = 0.077 (**despreciable**); rangos de Friedman N2 2.1315 el mejor de cinco, N8 2.2400 | **descartada** (antes del bucle; `experiments/cor_tabu_2026/`) |
 | I-012 | **escapar del estado todo-tabú, solo eso** | la celda informativa de I-010 dio −1.11 y mejor en 15 de 21 (p = 0.033) sin frontera | esc−control = −1.82, pasa | 6 mirillas, 30 runs: +1.30, +1.09, +0.59, +0.27, +0.39, **+0.07**; mejor en 10 de 21, p = 0.835 | **descartada** (2026-09-22). La señal de I-010 **no se reprodujo** |
-| I-023 | **patada con reoptimización al final de cada cadena** (B-11): copia del hijo atascado, 3 mutaciones, cadena de búsqueda sobre la copia, y se queda solo si acaba mejor | buscar otra vez desde el mismo punto ya no rinde (1 %); desde un punto movido rinde un 28-35 %, a costa de la mitad de las generaciones | pendiente | pendiente | **lanzada** (2026-09-24) |
+| I-023 | **patada con reoptimización al final de cada cadena** (B-11): copia del hijo atascado, 3 mutaciones, cadena de búsqueda sobre la copia, y se queda solo si acaba mejor | buscar otra vez desde el mismo punto ya no rinde (1 %); desde un punto movido rinde un 28-35 %, a costa de la mitad de las generaciones | mecanismo como se midió: 29-42 % de copias pateadas acaban mejor, generaciones **−50 a −57 %**; kick−control = **+7.06** (ta30 +10.30, ta45 +8.20, ta23 +7.17, ta29 +2.57); regla > +2 → **DESCARTA** | -- | **descartada** (2026-09-24) en el filtro: la patada acierta, pero la mitad de las generaciones pesa más |
 | I-022 | **intento de récord con la configuración de dos aceptaciones**, `ref_I-018` contra `ref_I-021`, lista corta, 75 tiradas por celda e instancia, semillas 3001-3075 | I-019 midió que I-018 llega a la cola; falta ver si I-021 también, y el récord vive ahí | -- | 600 tiradas: **sin récord; iguala el BKS de `ta29`, 1625**, con la configuración vigente a 40 s, verificado. Mejor de 75, previous → current: ta29 1630 → **1625**, ta30 1599 → 1595, ta23 1568 → 1567, ta22 1613 = 1613. Bloques de 5: current mejor en 32, peor en 25, p = 0.427 | **cerrada** (2026-09-24): igualada de `ta29`; la cola de I-021 **no se confirma** como la de I-018 |
 | I-021 | **repetir la búsqueda sobre el mejor hijo mientras mejore** (`abc.ls.pick = best-repeat`) | la profundidad es lo que vale (I-020), y la segunda llamada mejora al hijo dos de cada tres veces | mecanismo: ~25000 llamadas extra por tirada, cadenas de ~10, generaciones **−21 a −26 %**; repeat−control = **−2.58** (ta45 −4.97, ta30 −2.67, ta23 −2.60, ta29 −0.10), pasa (descartaba si > +2.0) | mirillas media: **-3.56** (w1, 14 de 21, p = 0.022), **-2.95** (w2, 15 de 21, p = 0.017), **-2.62** (w3, **16 de 21**, **p = 0.0021**) → cruza | **ACEPTADA** (2026-09-24) en la mirilla 3 de 6, **sobre** I-018. Segunda aceptación; configuración vigente `setup/ref_I-021.txt` |
 | I-020 | **¿profundidad o generaciones?** Suprimir la segunda llamada al tabú (`abc.ls.pick = none`), contra la configuración vigente | I-018 profundiza sobre el mejor hijo **y** corre más generaciones; `none` conserva y amplía lo segundo (+68-75 %) y quita lo primero | mecanismo exacto, sin segunda llamada, generaciones **+56 a +73 %**; none−control = **+5.96** (ta45 +7.77, ta30 +7.33, ta23 +5.97, ta29 +2.77); regla > +2 → **DESCARTA** | -- | **descartada** (2026-09-24) en el filtro: **la ganancia de I-018 es la profundidad**, no el rendimiento |
@@ -3282,3 +3282,46 @@ vale más que las generaciones; esto pregunta si vale tanto más.
 `kick − control` supera +2.0, semillas 1001 a 1030. **Endpoint**: media por
 instancia, Pocock simétrica p <= 0.0142. **Mecanismo, primero**: patadas y
 copias que acaban mejor por tirada, y generaciones.
+
+### I-023, descartada en el filtro: la patada acierta, y aun así pierde
+
+240 trabajos, cero infactibles, semillas 1001 a 1030, control en
+`ref_I-021`.
+
+**Mecanismo, exactamente el medido**: entre 8843 y 23193 patadas por tirada, de
+las que acaban mejor que el hijo atascado entre el 29 y el 42 %. **Y las
+generaciones caen a menos de la mitad**: 74.4 → 36.0, 94.5 → 40.4, 76.4 →
+35.8, 185.2 → 93.9.
+
+| instancia | media control | media kick | d | bo5 d |
+|---|---|---|---|---|
+| ta23 | 1583.5 | 1590.7 | +7.17 | +6.17 |
+| ta29 | 1639.6 | 1642.2 | +2.57 | +2.17 |
+| ta30 | 1614.6 | 1624.9 | **+10.30** | +12.00 |
+| ta45 | 2034.6 | 2042.8 | **+8.20** | +12.33 |
+
+Media **+7.06**, regla *descartar si > +2.0*: **descarta**, peor en las cuatro y
+con la cola peor (+8.17).
+
+**Lo que queda dicho sobre la palanca de la profundidad**, con sus seis medidas:
+
+| iteración | qué hace con el mejor hijo tras la primera llamada | generaciones | resultado |
+|---|---|---|---|
+| I-020 | nada | +56-73 % | +5.96 |
+| I-017 | nada (la segunda va al otro hijo) | −4-14 % | +4.87 |
+| I-018 | una llamada más | +5-49 % | **−3.38**, aceptada |
+| I-021 | llamadas mientras mejore | −21-26 % | **−2.62**, aceptada |
+| sondeo | una llamada más tras el primer fallo | -- | acierta el 1 %, no se lanza |
+| I-023 | patada y nueva cadena tras el fallo | **−50-57 %** | +7.06 |
+
+La profundidad tiene **un óptimo, y está en la cadena de I-021**: volver a
+buscar desde el mismo punto mientras rinde, y parar al primer fallo. Pasar de
+ahí cuesta más de lo que da con estos presupuestos, tanto repitiendo desde el
+mismo sitio (1 % de acierto) como moviéndolo (un tercio de acierto a mitad de
+generaciones). El tres de la patada estaba fijado de antemano; probar otro
+valor ahora sería ajustar sobre estos datos, y no se hace.
+
+**Qué se revierte**: nada de los registros. `abc.ls.kick` y `best-patient`
+quedan implementados y desactivados.
+
+**Sin récords ni igualadas** (`iter/I-023/records.txt`).

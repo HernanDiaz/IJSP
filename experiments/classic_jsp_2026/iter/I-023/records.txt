@@ -1,0 +1,9 @@
+inst     best    BKS     gap
+ta23     1570   1557  +0.83%
+ta29     1630   1625  +0.31%
+ta30     1584   1584  +0.00%
+ta45     2016   2000  +0.80%
+
+240 runs recomputed from their schedules
+at or below the best known: 1
+  ta30 1584 (match) results/I-023_filter_p09_control/ta30_20260924055603_Certificate.csv run 1

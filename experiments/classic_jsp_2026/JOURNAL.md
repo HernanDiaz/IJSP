@@ -2652,3 +2652,21 @@ instances; on these four 20x20 instances and in the tail, the step from
 ref_I-018 to ref_I-021 cannot be told from noise. The acceptance stands, being
 about the mean and bounded, but for the record hunt I-021's benefit is small
 at best.
+
+## I-023 is discarded: the kick succeeds, and still loses
+
+240 jobs, no infeasible schedule, seeds 1001 to 1030, against ref_I-021. The
+mechanism behaved as measured: 8,843 to 23,193 kicks per run, 29% to 42% of the
+kicked copies ending better than the stuck child. Generations fell to under
+half. Kick minus control: ta23 +7.17, ta29 +2.57, ta30 +10.30, ta45 +8.20, mean
++7.06, best-of-five +8.17. Discarded, worse on all four.
+
+Six measurements now map the depth lever on the better child: nothing after the
+first call, +5.96; the second call spent on the other child, +4.87; one more
+call, -3.38 and accepted; calls while each improves, -2.62 and accepted; one
+more call after the first failure, 1% success and not launched; a kick and a
+new chain after the failure, +7.06. Depth has an optimum, and it is I-021's
+chain: search again from the same point while it pays, stop at the first
+failure. Going past it costs more than it returns at these budgets, whether by
+repeating from the same place or by moving it. The kick's three was fixed
+beforehand; trying another value now would be tuning on these data.
