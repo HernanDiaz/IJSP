@@ -1,0 +1,5 @@
+=== ta18: BKS 1396, lower bound 1377, 400 runs ===
+1. RECORDS (strictly below the BKS): 0
+2. MATCHES (at the BKS): 0 runs, 0 distinct schedules
+3. best 1414; quantiles 1% 1417, 5% 1420, 10% 1420, 50% 1426; mean 1427.8
+

@@ -2884,3 +2884,11 @@ iter/I-032/evidence/. The 1% quantile is 1567, the median 1583. The current
 configuration brings ta23 closer too, but unlike ta29 and ta30 the best known
 has not been reached here, so the plateau diagnosis of I-027 to I-029 does not
 apply yet: on ta23 the gap is one of arriving, not of leaving.
+
+## I-033: ta18 stays far
+
+400 verified runs of 40 s on fresh seeds, no infeasible schedule, no record and
+no match. The best is 1414, 18 above the best known 1396 (1.3%); the 1%
+quantile is 1417. The current configuration does not come near ta18's best
+known, and the hunt does not justify more runs. It is the line's first data on
+a 20x15 instance.
