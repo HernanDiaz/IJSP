@@ -2930,3 +2930,20 @@ more generations. Pair minus control: ta23 -1.03, ta29 +1.57, ta30 +2.70, ta45
 +1.27, mean +1.13, which passes a rule that discards above +2.0 while pointing
 the wrong way; best-of-five is worse still at +3.29. A better raw starting child
 does not seem to become a better optimum. The waves go, as the rule says.
+
+## I-035 is rejected and rolled back: a better raw start does not help
+
+Filter and six waves, 1500 runs, no infeasible schedule, against ref_I-021.
+Pair minus control: +1.13 at the filter, then +1.01, +0.49, +0.75, +1.30,
++0.96, +0.80, final p = 0.099, better on only 7 of 21. No crossing, ending on
+the control's side, and close to the harm boundary at looks 4 and 5 (p = 0.033
+and 0.039). The mechanism was exercised throughout, about 18,400 second pairs
+kept per run.
+
+Starting the deep chain from a child some 45 units better before any search
+does not lead to a better optimum; the second crossing and its evaluation cost
+time and the starting points lose variety. Raw quality of the starting point
+does not predict the quality of the optimum the chain reaches.
+
+No records and no matches. The code is rolled back and the rebuilt solver
+reproduces the reference exactly at a fixed number of generations.

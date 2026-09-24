@@ -64,15 +64,6 @@ namespace FuzzyFW {
 //            improved it; the first call that does not ends the chain (I-021:
 //            a further -2.62, 16 of 21, p = 0.0021).
 #define  LS_PICK "abc.ls.pick"
-// I-035. How many crossings each food source makes before the local search.
-//   "one"         (default, unchanged): one pair of children
-//   "best-of-two" : two pairs, each from its own random elite partner and its
-//                   own mutated copy of the source; only the pair whose better
-//                   child is better goes on to the local search, by exactly
-//                   the path the accepted mechanism uses. The deep chain of
-//                   I-021 then starts from a better child. The 2 is the
-//                   smallest non-trivial choice, fixed in advance.
-#define  PAIR_CHOICE "abc.pair.choice"
 #define	ELITE_SIZE	"elite.size" //Selection mechanism to select number of elements in elite 
 
 
@@ -155,11 +146,6 @@ namespace FuzzyFW {
 		unsigned long lsSecondImproved;   // ... that improved it
 		unsigned long lsRepeatCalls;      // calls beyond the second
 		unsigned long lsRepeatLongest;    // longest chain of calls on one child
-
-		// I-035: best of two pairs, and what it changes.
-		bool pairBestOfTwo;
-		unsigned long pairSecondWins;     // times the second pair was kept
-		double pairGainSum;               // raw gain of the kept better child
 		unsigned int improvementsLS;
 		unsigned int enworstmentsLS;
 		unsigned int neutralLS;
