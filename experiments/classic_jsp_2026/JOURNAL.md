@@ -2602,3 +2602,27 @@ generations. Repeat minus control: ta23 -2.60, ta29 -0.10, ta30 -2.67, ta45
 -4.97, mean -2.58, passing a rule that discards above +2.0. It is better on all
 four or tied while running a quarter fewer generations, which is what I-020
 predicts if depth is what counts. The waves decide.
+
+## I-021 is accepted at look 3, on top of I-018
+
+Three waves, 630 confirmation runs, no infeasible schedule anywhere, the
+control being the configuration that already includes I-018. Repeat minus
+control on the per-instance mean: -2.58 at the filter on seeds 1001 to 1030,
+then -3.56 (14 of 21, p = 0.022), -2.95 (15 of 21, p = 0.017) and -2.62 (16 of
+21, W = 27.0, p = 0.0021), under the symmetric Pocock boundary of 0.0142 with
+the treatment on the lower rank. Accepted; the design stops.
+
+Largest gains on ta46 -13.40, ta32 -8.00, ta30 -5.40, ta26 -4.93; losses on
+ta33 +2.27, ta44 +1.60, ta48 +1.40, and two near-ties.
+
+The four iterations of this line together: a second tabu call on the better
+child wins (I-018, -3.38); dropping it loses even with 56% to 73% more
+generations (I-020, +5.96); repeating it while it improves wins again (I-021,
+-2.62) even with 21% to 26% fewer. The lever is search depth on the better
+solution of each pair, restarting from its local optimum with an empty tabu
+list, and its ceiling has not been seen yet: every step towards it has won and
+every step away has lost.
+
+No records or matches in the 870 runs. best-repeat enters the configuration as
+setup/ref_I-021.txt, the control from I-022 on. Acceptance 2 of 3; the third
+triggers the 300-second recomparison against the original reference.

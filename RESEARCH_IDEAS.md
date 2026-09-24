@@ -237,13 +237,15 @@ nada.
 
 ## Referencia actual
 
-- Configuración vigente **desde el 2026-09-24**: la de abajo **más
-  `abc.ls.pick = best`** (I-018, primera aceptación del bucle), en
-  `experiments/classic_jsp_2026/setup/ref_I-018.txt`. Desde I-019 la celda
-  `control` de toda tanda es esa. `prereg2_abc_300s.txt` queda intacto, porque
-  lo leen todas las iteraciones anteriores y tienen que seguir siendo
-  reproducibles. **Aceptaciones: 1 de 3** para la recomparación a 300 s contra
-  la referencia original.
+- Configuración vigente **desde el 2026-09-24, tras I-021**: la de partida
+  **más `abc.ls.pick = best-repeat`**, en
+  `experiments/classic_jsp_2026/setup/ref_I-021.txt`. Es la celda `control`
+  desde I-022. Historia: I-018 (primera aceptación) introdujo
+  `abc.ls.pick = best` en `setup/ref_I-018.txt`; I-021 (segunda), medida contra
+  esa, lo sustituye por `best-repeat`. `prereg2_abc_300s.txt` y
+  `ref_I-018.txt` quedan intactos, porque los leen las iteraciones anteriores.
+  **Aceptaciones: 2 de 3** para la recomparación a 300 s contra la referencia
+  original.
 - Configuración de partida: commit `6544637` + el porte de `jsp.seeded`
   (`CreationJSP_Seeded.*`), ABC configuración 136, `creation = jsp.random`.
 - Registro de la evaluación completa **a 300 s** (ancla de deriva):
@@ -318,7 +320,7 @@ bucle y están aquí para que no se repitan; sus cifras están en el JOURNAL.
 | I-003 | el explorador del ABC reinyecta un **elite pateado** en vez de una solución aleatoria | un arranque aleatorio a mitad de tirada no puede alcanzar a la población; uno dentro de una cuenca buena sí | kick−control = **+1.43** (ta23 −0.27, ta29 +0.70, ta30 −0.50, ta45 **+5.80**); regla > +2 descarta → **pasa, por poco y en contra** | 4 mirillas de 6: −1.02, −0.57, **−0.03**, +0.44; kick mejor en 9-10 de 21 siempre; p entre 0.55 y 0.88, la frontera nunca se acerca | **detenida en la 4ª** (2026-09-21) por cambio de dirección del PI, no por sus datos. Sin aceptación: es un cero |
 | H-4 | N8 contra N2 (y contra N1, N3, N_ext), fase B del paper de COR | un vecindario más rico gana | -- | 82 instancias x 30 runs, 2460 bloques pareados: N2 1846.50 contra N8 1847.94, dif −1.45, p_adj = 3.9e−4, r = 0.077 (**despreciable**); rangos de Friedman N2 2.1315 el mejor de cinco, N8 2.2400 | **descartada** (antes del bucle; `experiments/cor_tabu_2026/`) |
 | I-012 | **escapar del estado todo-tabú, solo eso** | la celda informativa de I-010 dio −1.11 y mejor en 15 de 21 (p = 0.033) sin frontera | esc−control = −1.82, pasa | 6 mirillas, 30 runs: +1.30, +1.09, +0.59, +0.27, +0.39, **+0.07**; mejor en 10 de 21, p = 0.835 | **descartada** (2026-09-22). La señal de I-010 **no se reprodujo** |
-| I-021 | **repetir la búsqueda sobre el mejor hijo mientras mejore** (`abc.ls.pick = best-repeat`) | la profundidad es lo que vale (I-020), y la segunda llamada mejora al hijo dos de cada tres veces | mecanismo: ~25000 llamadas extra por tirada, cadenas de ~10, generaciones **−21 a −26 %**; repeat−control = **−2.58** (ta45 −4.97, ta30 −2.67, ta23 −2.60, ta29 −0.10), pasa (descartaba si > +2.0) | mirillas media: **-3.56** (w1, 14 de 21, p = 0.022), **-2.95** (w2, 15 de 21, p = 0.017) | **en oleadas** (2026-09-24) |
+| I-021 | **repetir la búsqueda sobre el mejor hijo mientras mejore** (`abc.ls.pick = best-repeat`) | la profundidad es lo que vale (I-020), y la segunda llamada mejora al hijo dos de cada tres veces | mecanismo: ~25000 llamadas extra por tirada, cadenas de ~10, generaciones **−21 a −26 %**; repeat−control = **−2.58** (ta45 −4.97, ta30 −2.67, ta23 −2.60, ta29 −0.10), pasa (descartaba si > +2.0) | mirillas media: **-3.56** (w1, 14 de 21, p = 0.022), **-2.95** (w2, 15 de 21, p = 0.017), **-2.62** (w3, **16 de 21**, **p = 0.0021**) → cruza | **ACEPTADA** (2026-09-24) en la mirilla 3 de 6, **sobre** I-018. Segunda aceptación; configuración vigente `setup/ref_I-021.txt` |
 | I-020 | **¿profundidad o generaciones?** Suprimir la segunda llamada al tabú (`abc.ls.pick = none`), contra la configuración vigente | I-018 profundiza sobre el mejor hijo **y** corre más generaciones; `none` conserva y amplía lo segundo (+68-75 %) y quita lo primero | mecanismo exacto, sin segunda llamada, generaciones **+56 a +73 %**; none−control = **+5.96** (ta45 +7.77, ta30 +7.33, ta23 +5.97, ta29 +2.77); regla > +2 → **DESCARTA** | -- | **descartada** (2026-09-24) en el filtro: **la ganancia de I-018 es la profundidad**, no el rendimiento |
 | I-019 | **intento de récord con la configuración nueva** (I-018) sobre la lista corta, vieja contra nueva, 75 tiradas por celda e instancia, semillas 2001-2075 | la media bajó 3.38 y el mejor de cinco 4.19; el récord vive en la cola, que es donde hay que llevarla | -- | 600 tiradas: **sin récord ni casi**. Mejor de 75, vieja → nueva: ta30 1598 → **1589**, ta29 1631 → 1630, ta23 1566 → 1565, ta22 1614 → 1613. Bloques de 5: **nueva mejor en 40, peor en 16, p = 0.002** | **cerrada** (2026-09-24): sin récord; la ganancia de I-018 **llega a la cola**, con semillas nuevas |
 | I-018 | **el segundo tabú siempre al mejor hijo**: lo que el fallo de índice hace por accidente el 53 % de las veces, hecho siempre | I-017 midió que bajarlo al 0 % cuesta +4.87; subirlo al 100 % debería ganar si la relación es monótona, y además es más barato | mecanismo exacto, 100 % al mejor, generaciones **+5 a +49 %**; best−control = **−1.12** (ta30 −3.07, ta45 −2.40, ta29 −0.30, ta23 +1.30), pasa (descartaba si > +2.0) | mirillas media: **-1.84** (w1, 13 de 21, p = 0.164), **-2.60** (w2, 16 de 21, p = 0.046), **-3.38** (w3, **18 de 21**, **p = 0.0010**) → cruza | **ACEPTADA** (2026-09-24) en la mirilla 3 de 6. **Primer mecanismo aceptado del bucle**; pasa a la configuración vigente (`setup/ref_I-018.txt`) |
@@ -3082,3 +3084,42 @@ Media **−2.58**, regla *descartar si > +2.0*: **pasa**. A favor o empatada en
 las cuatro, y mejor que el control **aun corriendo una cuarta parte menos de
 generaciones**, que es exactamente lo que I-020 predecía si la profundidad es
 lo que vale. El filtro no es evidencia; deciden las oleadas.
+
+### I-021, ACEPTADA en la mirilla 3: más profundidad sobre el mejor hijo, sumada a I-018
+
+Tres oleadas, 630 tiradas de confirmación, 15 por celda e instancia, cero
+infactibles en el filtro y en las tres oleadas, **control en la configuración
+vigente** (con I-018 dentro). Media por instancia, `repeat − control`:
+
+| mirilla | tiradas/celda | media | mejor en | W | p | bo5 |
+|---|---|---|---|---|---|---|
+| filtro (4 inst., semillas 1001-1030) | 30 | −2.58 | -- | -- | -- | −1.75 |
+| 1 | 5 | −3.56 | 14 de 21 | 49.5 | 0.022 | −2.00 |
+| 2 | 10 | −2.95 | 15 de 21 | 47.0 | 0.017 | −0.69 |
+| 3 | 15 | **−2.62** | **16 de 21** | **27.0** | **0.0021** | −1.75 |
+
+Frontera de Pocock simétrica 0.0142: en la tercera mirilla **cruza con el
+tratamiento en el rango menor, y se acepta**. El diseño se detiene.
+
+**Por instancia**, tras 15 tiradas: mejora en 16 de 21 —ta46 **−13.40**, ta32
+−8.00, ta30 −5.40, ta26 −4.93, ta47 −4.53, ta49 −4.07, ta34 −3.47, ta41 −3.47,
+ta29 −3.20—; empeora en ta33 (+2.27), ta44 (+1.60), ta48 (+1.40), ta40 (+0.27) y
+ta27 (+0.07).
+
+**Lo que dice, con las cuatro iteraciones de esta línea juntas**: la segunda
+llamada al tabú **al mejor hijo** gana (I-018, −3.38); **suprimirla** pierde
+aunque se corran un 56-73 % más de generaciones (I-020, +5.96); **repetirla
+mientras mejore** vuelve a ganar (I-021, −2.62) aunque se corran un 21-26 %
+**menos**. La palanca es **la profundidad de búsqueda sobre la mejor
+solución de cada pareja**, reempezando desde su óptimo local con la lista
+tabú vacía, y todavía no se ha visto su techo: cada paso en esa dirección ha
+ganado, y cada paso en la contraria ha perdido.
+
+**Mecanismo**: ~36000 llamadas extra por tirada en las oleadas, cadenas de
+hasta 10-11.
+
+**Sin récords ni igualadas** en las 870 tiradas (`iter/I-021/records.txt`).
+
+**Consecuencias.** `abc.ls.pick = best-repeat` pasa a la configuración vigente
+en `setup/ref_I-021.txt`, que es el control desde I-022. **Aceptación 2 de 3**:
+a la tercera toca la recomparación a 300 s contra la referencia original.
