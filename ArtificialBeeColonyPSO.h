@@ -115,6 +115,12 @@ namespace FuzzyFW {
 //   "none"   : I-020, no second call at all. Cheaper still than "best", so
 //              even more generations, but without the extra depth on the
 //              better child: it separates the two things "best" does at once.
+//   "best-repeat" : I-021, like "best", and then again on the better child for
+//              as long as the last call improved it; the first call that does
+//              not improve ends the chain. No count to set: every improving
+//              call lowers an integer makespan by at least one, so the chain
+//              is finite. I-020 measured that the depth on the better child,
+//              not the throughput, is what "best" buys (+5.96 without it).
 // The loop draws a random individual without replacement, skips it if it is
 // the best, and then applies the tabu search to individual i instead of to the
 // one it drew, so the draw is computed and thrown away. The only call site the
@@ -367,6 +373,10 @@ namespace FuzzyFW {
 		bool lsPickChosen;
 		bool lsPickBest;       // I-018
 		bool lsPickNone;       // I-020
+		bool lsPickRepeat;     // I-021
+		unsigned long lsRepeatCalls;     // I-021: calls beyond the second
+		unsigned long lsSecondImproved;  // second calls that improved the child
+		unsigned long lsRepeatLongest;   // longest chain of calls on one child
 		unsigned long lsSecondSkipped;   // I-020: second calls not made
 		unsigned long lsPairCalls;        // group-of-two invocations
 		unsigned long lsOtherCalls;       // invocations on any other group size

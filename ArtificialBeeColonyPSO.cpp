@@ -277,6 +277,12 @@ namespace FuzzyFW {
 		stats.push_back(std::pair<std::string, double>
 			("LS second call skipped", (double)this->lsSecondSkipped));
 		stats.push_back(std::pair<std::string, double>
+			("LS second calls that improved the child", (double)this->lsSecondImproved));
+		stats.push_back(std::pair<std::string, double>
+			("LS repeat calls beyond the second", (double)this->lsRepeatCalls));
+		stats.push_back(std::pair<std::string, double>
+			("LS longest chain of calls on one child", (double)this->lsRepeatLongest));
+		stats.push_back(std::pair<std::string, double>
 			("Plateau moves admitted in crossover", (double)this->plateauAdmittedCross));
 		stats.push_back(std::pair<std::string, double>
 			("Plateau moves admitted in local search", (double)this->plateauAdmittedLS));
@@ -472,6 +478,10 @@ namespace FuzzyFW {
 		// I-020: no second call at all.
 		this->lsPickNone =
 			(params->getStringLower(LS_PICK).compare("none") == 0);
+		// I-021: again on the better child while the last call improved it.
+		this->lsPickRepeat =
+			(params->getStringLower(LS_PICK).compare("best-repeat") == 0);
+		if (this->lsPickRepeat) this->lsPickBest = true;
 		this->scoutKick = false;
 		this->scoutKicks = 0;
 		std::string scoutValue = params->getStringLower(SCOUT_MODE);
@@ -556,6 +566,9 @@ namespace FuzzyFW {
 		this->lsSecondOnBest = 0;
 		this->lsSecondOnOther = 0;
 		this->lsSecondSkipped = 0;
+		this->lsRepeatCalls = 0;
+		this->lsSecondImproved = 0;
+		this->lsRepeatLongest = 0;
 		this->deepLsDone = false;
 		this->deepLsCalls = 0;
 		this->deepLsTime = 0;
@@ -1003,7 +1016,26 @@ namespace FuzzyFW {
 							: (this->lsPickBest ? best : i);
 						if (target == best) this->lsSecondOnBest++;
 						else this->lsSecondOnOther++;
+						double before = population->getIndividual(target)
+							->getFitness()->toDouble();
 						this->applyLocalSearch(population, target);
+						double after = population->getIndividual(target)
+							->getFitness()->toDouble();
+						if (after < before) this->lsSecondImproved++;
+						// I-021: keep searching the better child from its new
+						// local optimum while the last call improved it.
+						unsigned long chain = 2;
+						while (this->lsPickRepeat && target == best
+							&& after < before) {
+							before = after;
+							this->applyLocalSearch(population, target);
+							after = population->getIndividual(target)
+								->getFitness()->toDouble();
+							this->lsRepeatCalls++;
+							chain++;
+						}
+						if (chain > this->lsRepeatLongest)
+							this->lsRepeatLongest = chain;
 					}
 				}
 			}
