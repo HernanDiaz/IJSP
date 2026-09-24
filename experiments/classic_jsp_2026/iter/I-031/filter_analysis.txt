@@ -1,0 +1,28 @@
+=== 0. MECHANISM CHECK ===
+inst   statistic                   control        far       near
+ta23   Mean parent distance          0.848      0.958      0.680
+ta23   Number of Generations        80.000     60.067     73.267
+ta29   Mean parent distance          0.819      0.952      0.659
+ta29   Number of Generations        86.867     62.467     76.000
+ta30   Mean parent distance          0.846      0.956      0.687
+ta30   Number of Generations        81.500     55.800     68.033
+ta45   Mean parent distance          0.899      0.965      0.701
+ta45   Number of Generations       192.467    141.467    186.300
+
+-- far - control --
+ta23       1583.1     1588.6     +5.53   bo5    +7.00
+ta29       1639.8     1640.4     +0.63   bo5    -2.00
+ta30       1614.2     1613.2     -1.03   bo5    +7.83
+ta45       2034.6     2038.8     +4.20   bo5    +6.00
+
+-- near - control --
+ta23       1583.1     1598.8    +15.73   bo5   +13.67
+ta29       1639.8     1644.9     +5.13   bo5    +4.50
+ta30       1614.2     1622.1     +7.87   bo5   +15.17
+ta45       2034.6     2053.0    +18.47   bo5   +14.33
+
+runs per cell and instance: 30
+
+filter rule, far: mean(far - control) = +2.33; discard if > +2.0 -> DISCARD
+filter rule, near: mean(near - control) = +11.80; discard if > +2.0 -> DISCARD
+cells for the waves: control

@@ -2853,3 +2853,23 @@ runs per cell making single instances noisy. One more match, ta29 = 1625 at
 300 s with the current configuration, a schedule distinct from all 4 earlier ta29 matches, verified and kept. What
 was accepted at short budgets is an improvement of the algorithm, not of the
 regime.
+
+## I-031 is discarded in both variants, and its code is rolled back
+
+360 jobs, no infeasible schedule, seeds 1001 to 1030, against ref_I-021. The
+mechanism was exercised: the mean parent distance went from 0.82-0.90 in the
+control to 0.95-0.97 with far and 0.66-0.70 with near. Far minus control:
+ta23 +5.53, ta29 +0.63, ta30 -1.03, ta45 +4.20, mean +2.33. Near minus
+control: +15.73, +5.13, +7.87, +18.47, mean +11.80. Both exceed the +2.0 rule
+and are discarded, far narrowly and near by a wide margin. A random elite
+partner beats choosing it by distance either way: the nearest partner starves
+recombination of variety, the farthest costs generations without paying them
+back.
+
+The ta30 match in the control is not new: it is identical to the one in
+I-023's filter control, same seed 1009 and same configuration.
+
+The idea's code is rolled back, the first time under the test, commit, roll
+back cycle: ArtificialBeeColonyPSO returns to its version before I-031 with no
+trace of the switch, and the rebuilt solver reproduces the reference exactly
+at a fixed number of generations on ta23 and ta45. The records stay.

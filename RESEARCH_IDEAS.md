@@ -336,7 +336,7 @@ bucle y están aquí para que no se repitan; sus cifras están en el JOURNAL.
 | I-003 | el explorador del ABC reinyecta un **elite pateado** en vez de una solución aleatoria | un arranque aleatorio a mitad de tirada no puede alcanzar a la población; uno dentro de una cuenca buena sí | kick−control = **+1.43** (ta23 −0.27, ta29 +0.70, ta30 −0.50, ta45 **+5.80**); regla > +2 descarta → **pasa, por poco y en contra** | 4 mirillas de 6: −1.02, −0.57, **−0.03**, +0.44; kick mejor en 9-10 de 21 siempre; p entre 0.55 y 0.88, la frontera nunca se acerca | **detenida en la 4ª** (2026-09-21) por cambio de dirección del PI, no por sus datos. Sin aceptación: es un cero |
 | H-4 | N8 contra N2 (y contra N1, N3, N_ext), fase B del paper de COR | un vecindario más rico gana | -- | 82 instancias x 30 runs, 2460 bloques pareados: N2 1846.50 contra N8 1847.94, dif −1.45, p_adj = 3.9e−4, r = 0.077 (**despreciable**); rangos de Friedman N2 2.1315 el mejor de cinco, N8 2.2400 | **descartada** (antes del bucle; `experiments/cor_tabu_2026/`) |
 | I-012 | **escapar del estado todo-tabú, solo eso** | la celda informativa de I-010 dio −1.11 y mejor en 15 de 21 (p = 0.033) sin frontera | esc−control = −1.82, pasa | 6 mirillas, 30 runs: +1.30, +1.09, +0.59, +0.27, +0.39, **+0.07**; mejor en 10 de 21, p = 0.835 | **descartada** (2026-09-22). La señal de I-010 **no se reprodujo** |
-| I-031 | **compañero de cruce por distancia**: entre los mismos candidatos élite, el más lejano (`far`) o el más cercano (`near`) en vez de uno al azar | el hueco en las grandes está en qué cuencas se exploran, y eso lo decide la recombinación | pendiente | pendiente | **lanzada** (2026-09-24), filtro de tres celdas |
+| I-031 | **compañero de cruce por distancia**: entre los mismos candidatos élite, el más lejano (`far`) o el más cercano (`near`) en vez de uno al azar | el hueco en las grandes está en qué cuencas se exploran, y eso lo decide la recombinación | mecanismo: distancia entre padres 0.82-0.90 → **0.95-0.97** (far) y **0.66-0.70** (near); far−control = **+2.33**, near−control = **+11.80**; regla > +2 → **DESCARTA las dos** | -- | **descartada** (2026-09-24) en el filtro; **código revertido** y verificado |
 | I-030 | **la configuración vigente contra la original, a 300 s**, intercaladas en la misma tanda, 21 instancias, 5 tiradas por celda, semillas 6001-6005 | las dos aceptaciones se midieron a los presupuestos cortos; ¿aguantan en el régimen ancla? | -- | 210 tiradas de 300 s, cero infactibles: vigente mejor en **18 de 21**, media **−5.82**, Wilcoxon **p = 0.0010**; iguala `ta29` = 1625 | **cerrada** (2026-09-24): **las dos aceptaciones aguantan a 300 s**, en la magnitud esperada |
 | I-029 | **B-12 por ventana**: reoptimización exacta de todas las operaciones de una franja de tiempo, en todas las máquinas a la vez, sobre horarios guardados | la forma literal de B-12 (Beck, Feng y Watson) | -- | **0 de 20** en el BKS mejoran con ventanas de 30 **ni de 60** operaciones; 10 de 800 finales (1.2 %) con 30 | **cerrada** (2026-09-24): **la familia B-12 se cierra**, sin salida de la meseta en ninguna de sus tres formas |
 | I-028 | **B-12 con dos máquinas**: reoptimización **exacta y conjunta** de dos máquinas, las demás fijas, sobre horarios guardados | lo que falta exige mover operaciones en dos máquinas a la vez | -- | **0 de 20** en el BKS mejoran con **todo** par que incluya una máquina crítica (2839 búsquedas exactas); **20 de 800** finales (2.5 %), igual que con una | **cerrada** (2026-09-24), sondeo sin máquina: tampoco está en dos máquinas |
@@ -3726,3 +3726,37 @@ cadenas son más largas y las generaciones bajan (160 → 129 en ta45).
 contra el control, semillas 1001 a 1030; las supervivientes a
 `wave_cells.txt`, frontera repartida (0.0071) si pasan las dos. **Mecanismo,
 primero**: distancia media entre padres y generaciones.
+
+### I-031, descartada en el filtro las dos variantes, y el código revertido
+
+360 trabajos, cero infactibles, semillas 1001 a 1030, control en `ref_I-021`.
+
+**Mecanismo, ejercido**: la distancia media entre padres pasa de 0.82-0.90 en
+el control a **0.95-0.97** con `far` y **0.66-0.70** con `near`. Con `far` las
+cadenas son más largas y las generaciones bajan un 25-30 %.
+
+| instancia | far − control | near − control |
+|---|---|---|
+| ta23 | +5.53 | **+15.73** |
+| ta29 | +0.63 | +5.13 |
+| ta30 | −1.03 | +7.87 |
+| ta45 | +4.20 | **+18.47** |
+| **media** | **+2.33** | **+11.80** |
+
+Regla *descartar si > +2.0*: **las dos se descartan**, `far` por poco y `near`
+con mucho margen. **El compañero al azar es mejor que elegirlo por distancia
+en cualquiera de los dos sentidos**: cruzar con el élite más cercano hunde el
+resultado —la población pierde la variedad que la recombinación necesita—, y
+cruzar con el más lejano cuesta generaciones sin compensarlas. La elección al
+azar entre los élite, que la configuración de irace ya traía, es un buen punto
+medio.
+
+**La igualada de `ta30` que aparece en el control no es nueva**: es
+**idéntica** a la del control del filtro de I-023, con la misma semilla (1009)
+y la misma configuración; el mismo recorrido llega al mismo horario.
+
+**Código revertido**, primera vez con el ciclo de "se prueba, lo que funciona
+se comitea y lo que no se revierte": `ArtificialBeeColonyPSO.{h,cpp}` vuelven a
+su versión anterior a I-031, sin rastro del interruptor, y el solver
+recompilado **reproduce exactamente la referencia** a número fijo de
+generaciones en `ta23` y `ta45`. Los registros y `iter/I-031/` se quedan.

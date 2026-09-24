@@ -64,16 +64,6 @@ namespace FuzzyFW {
 //            improved it; the first call that does not ends the chain (I-021:
 //            a further -2.62, 16 of 21, p = 0.0021).
 #define  LS_PICK "abc.ls.pick"
-// I-031. How each food source's crossover partner is chosen among the elite
-// candidates (the global best and the elite.size best of the population).
-//   "random" (default, unchanged): uniformly at random
-//   "far"    : the candidate at the largest Hamming distance from the source
-//   "near"   : the candidate at the smallest non-zero distance
-// Probes after I-029 found the tabu search's optima exactly optimal against
-// reordering any machine even 2-3 % from the best known on the large
-// instances: what is left lies in which basins get explored, which is
-// recombination's job. The candidate set is the existing elite; no parameter.
-#define  PARTNER_MODE "abc.partner"
 #define	ELITE_SIZE	"elite.size" //Selection mechanism to select number of elements in elite 
 
 
@@ -156,11 +146,6 @@ namespace FuzzyFW {
 		unsigned long lsSecondImproved;   // ... that improved it
 		unsigned long lsRepeatCalls;      // calls beyond the second
 		unsigned long lsRepeatLongest;    // longest chain of calls on one child
-
-		// I-031: partner choice, and the mean parent distance it produces.
-		int partnerMode;                  // 0 random, 1 far, 2 near
-		double partnerDistSum;
-		unsigned long partnerCount;
 		unsigned int improvementsLS;
 		unsigned int enworstmentsLS;
 		unsigned int neutralLS;
