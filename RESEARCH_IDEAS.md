@@ -3681,3 +3681,20 @@ empata en `ta22` y empeora en `ta27` y `ta44`; por ejemplo `ta33` 1849 →
 **Lo que deja**: el protocolo prevé esta recomparación cada tres aceptaciones
 para vigilar la deriva de la referencia; aquí se adelantó, y confirma que lo
 aceptado a presupuestos cortos es una mejora del algoritmo, no del régimen.
+
+### Sondeo: tampoco en las instancias grandes hay nada que reordenar por máquina
+
+I-027 midió el operador exacto de una máquina solo en `ta29` y `ta30`. Las
+mejoras aceptadas ganan más en las **grandes** (I-030: `ta41` −20, `ta43` −14),
+donde los finales están a un 2-3 % del BKS; si allí el operador mejorase muchos
+más horarios, volvería a interesar para la media. Medido sobre los finales de
+la configuración vigente a 300 s de I-030: **0 de 20** en 30x15 y **1 de 50** en
+30x20, por una unidad, con el 99-100 % de las búsquedas exactas.
+`iter/I-027/probe_I-030_*`.
+
+**Incluso a un 2-3 % del BKS, los óptimos del tabú son óptimos frente a
+reordenar exactamente cualquier máquina entera.** El hueco que queda en las
+grandes **no está en ordenar mejor localmente sino en qué cuencas se llegan a
+explorar**, y eso lo decide la recombinación: con quién se cruza cada fuente.
+Es de donde sale I-031. Y el operador de I-027 queda definitivamente fuera del
+solver.
