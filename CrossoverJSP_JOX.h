@@ -28,10 +28,22 @@ namespace JSP {
  * @author hdiaz
  *
  */
+// I-039. How many jobs JOX keeps in place from the first parent.
+//   "half"    (default, unchanged): each job with probability 1/2
+//   "uniform" : the probability is drawn from U(0,1) at every crossing, so
+//               children land at every distance between the parents, with
+//               the same mean. No constant to tune.
+#define JOX_MASK "crossover.jox.mask"
+
 class Crossover_JOX : public CrossoverJSP_Base {
+protected:
+	bool uniformMask;
+
 public:
 	Crossover_JOX(FuzzyFW::ParameterDB *parameters = NULL)
-		: CrossoverJSP_Base(parameters) {}
+		: CrossoverJSP_Base(parameters), uniformMask(false) {}
+
+	virtual void setup(FuzzyFW::ParameterDB *parameters);
 
 	virtual ~Crossover_JOX() {}
 
@@ -52,7 +64,9 @@ public:
 	}
 
 	virtual Crossover* clone() const {
-		return new Crossover_JOX();
+		Crossover_JOX *copy = new Crossover_JOX();
+		copy->uniformMask = this->uniformMask;
+		return copy;
 	}
 
 protected:
