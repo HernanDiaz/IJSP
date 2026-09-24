@@ -1,0 +1,29 @@
+=== 0. MECHANISM CHECK ===
+inst   statistic                                     control       pair
+ta23   Second pair kept                                 0.00   11225.40
+ta23   Mean raw gain when the second pair is kept       0.00      46.48
+ta23   Number of Generations                           77.27      93.33
+ta29   Second pair kept                                 0.00   12200.23
+ta29   Mean raw gain when the second pair is kept       0.00      45.45
+ta29   Number of Generations                           93.67     101.23
+ta30   Second pair kept                                 0.00   10556.10
+ta30   Mean raw gain when the second pair is kept       0.00      46.45
+ta30   Number of Generations                           81.00      87.13
+ta45   Second pair kept                                 0.00   26387.27
+ta45   Mean raw gain when the second pair is kept       0.00      43.50
+ta45   Number of Generations                          188.97     215.80
+
+second pairs kept per run: 15092 on average (the control makes none)
+
+=== I-035 filter: per-instance mean (primary), best-of-5 (reported) ===
+inst     mean ctrl   mean pair         d      bo5 ctrl    bo5 pair         d
+ta23        1583.0      1582.0     -1.03        1572.3      1572.2     -0.17
+ta29        1639.6      1641.2     +1.57        1635.2      1634.0     -1.17
+ta30        1614.5      1617.2     +2.70        1599.2      1610.5    +11.33
+ta45        2034.8      2036.1     +1.27        2023.7      2026.8     +3.17
+
+runs per cell and instance: 30
+
+filter rule, on the MEAN: mean(pair - control) = +1.13;
+discard if > +2.0 -> PASS, go to the waves
+best-of-5 moved +3.29, and decides nothing here.

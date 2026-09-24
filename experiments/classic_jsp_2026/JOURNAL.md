@@ -2921,3 +2921,12 @@ worked is added depth on the best the population already has, I-018 and I-021.
 No records; the only match is the known ta30 schedule of seed 1009. The code is
 rolled back and the rebuilt solver reproduces the reference exactly at a fixed
 number of generations.
+
+## I-035's filter passes, but against
+
+240 jobs, no infeasible schedule, seeds 1001 to 1030. About 15,000 second pairs
+kept per run, their better child 43 to 46 units better before any search, and
+more generations. Pair minus control: ta23 -1.03, ta29 +1.57, ta30 +2.70, ta45
++1.27, mean +1.13, which passes a rule that discards above +2.0 while pointing
+the wrong way; best-of-five is worse still at +3.29. A better raw starting child
+does not seem to become a better optimum. The waves go, as the rule says.
