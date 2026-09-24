@@ -327,6 +327,7 @@ bucle y están aquí para que no se repitan; sus cifras están en el JOURNAL.
 | I-003 | el explorador del ABC reinyecta un **elite pateado** en vez de una solución aleatoria | un arranque aleatorio a mitad de tirada no puede alcanzar a la población; uno dentro de una cuenca buena sí | kick−control = **+1.43** (ta23 −0.27, ta29 +0.70, ta30 −0.50, ta45 **+5.80**); regla > +2 descarta → **pasa, por poco y en contra** | 4 mirillas de 6: −1.02, −0.57, **−0.03**, +0.44; kick mejor en 9-10 de 21 siempre; p entre 0.55 y 0.88, la frontera nunca se acerca | **detenida en la 4ª** (2026-09-21) por cambio de dirección del PI, no por sus datos. Sin aceptación: es un cero |
 | H-4 | N8 contra N2 (y contra N1, N3, N_ext), fase B del paper de COR | un vecindario más rico gana | -- | 82 instancias x 30 runs, 2460 bloques pareados: N2 1846.50 contra N8 1847.94, dif −1.45, p_adj = 3.9e−4, r = 0.077 (**despreciable**); rangos de Friedman N2 2.1315 el mejor de cinco, N8 2.2400 | **descartada** (antes del bucle; `experiments/cor_tabu_2026/`) |
 | I-012 | **escapar del estado todo-tabú, solo eso** | la celda informativa de I-010 dio −1.11 y mejor en 15 de 21 (p = 0.033) sin frontera | esc−control = −1.82, pasa | 6 mirillas, 30 runs: +1.30, +1.09, +0.59, +0.27, +0.39, **+0.07**; mejor en 10 de 21, p = 0.835 | **descartada** (2026-09-22). La señal de I-010 **no se reprodujo** |
+| I-026 | **la cola extrema a 300 s contra 40 s**, con la configuración vigente: la caza de I-024 repetida a igual CPU con 53 tiradas de 300 s por instancia, semillas 5001-5053 | I-025 dejó abierto si la tirada larga da mejores mínimos; la primera igualada de `ta29` salió a 300 s | -- | pendiente | **lanzada** (2026-09-24) |
 | I-025 | **B-1: reinicio contra tirada larga a igual CPU**, sobre datos existentes (control de I-001 contra `prereg2_abc`), sin correr nada | el reinicio con presupuesto por clase domina a una tirada de 300 s | -- | mejor-de-k corto mejor en la mediana en **17 de 21**, media −3.50, p = 0.0004; el mínimo absoluto lo da a veces la tirada larga | **cerrada** (2026-09-24), **descriptiva**: dos tandas de días distintos |
 | I-024 | **caza concentrada en `ta29` y `ta30`** con la configuración vigente, 400 tiradas de 40 s por instancia, semillas 4001-4400 | la configuración vigente iguala el BKS en las dos (I-022, I-023), y ninguna está cerrada: quedan 52 y 65 unidades hasta la cota | -- | 800 tiradas, cero infactibles: **sin récord**. Igualadas: `ta29` 1 de 400, `ta30` 2 de 400, **tres horarios nuevos**, distintos entre sí y de todas las igualadas anteriores. Cuantil 1 %: 1628 y 1589 | **cerrada** (2026-09-24): el BKS se alcanza en el 0.25-0.5 % de las tiradas y nunca se baja |
 | I-023 | **patada con reoptimización al final de cada cadena** (B-11): copia del hijo atascado, 3 mutaciones, cadena de búsqueda sobre la copia, y se queda solo si acaba mejor | buscar otra vez desde el mismo punto ya no rinde (1 %); desde un punto movido rinde un 28-35 %, a costa de la mitad de las generaciones | mecanismo como se midió: 29-42 % de copias pateadas acaban mejor, generaciones **−50 a −57 %**; kick−control = **+7.06** (ta30 +10.30, ta45 +8.20, ta23 +7.17, ta29 +2.57); regla > +2 → **DESCARTA** | -- | **descartada** (2026-09-24) en el filtro: la patada acierta, pero la mitad de las generaciones pesa más |
@@ -3428,3 +3429,22 @@ corte **por la media**, y la igualada de `ta29` de entonces salió a 300 s.
 por clase domina a la tirada de 300 s en la mediana, que es lo que la revisión
 decía que las trazas sugerían y no probaban; para la **cola extrema** la
 pregunta sigue abierta. Con la configuración vigente no se ha medido.
+
+### I-026 — la cola extrema a 300 s contra 40 s, con la configuración vigente
+
+**Por qué ahora, y qué no condiciona.** El backlog se ha quedado sin ideas
+pequeñas y B-12, la única grande, espera la decisión del PI; tras dos horas en
+espera se corre esto, que no la condiciona en nada.
+
+**La pregunta**: I-025 encontró, con datos viejos y otra configuración, que el
+reinicio gana en la mediana pero que el **mínimo absoluto** lo da a veces una
+tirada de 300 s; y la primera igualada de `ta29` de esta línea salió a 300 s
+(I-007). Para la caza lo que importa es el mínimo.
+
+**Diseño**: la caza de I-024 repetida **al mismo coste de CPU por instancia**,
+16000 s, pero con **53 tiradas de 300 s** en lugar de 400 de 40 s, sobre
+`ta29` y `ta30`, configuración vigente, semillas nuevas 5001 a 5053, una tirada
+por trabajo. **Endpoints**: los de I-024 —récords, igualadas y horarios
+distintos en el BKS, mejor y cuantiles—, y la comparación con I-024 en
+igualadas y récords **por hora de CPU**. Dos tandas de horas distintas, así que
+la comparación de regímenes es descriptiva.
