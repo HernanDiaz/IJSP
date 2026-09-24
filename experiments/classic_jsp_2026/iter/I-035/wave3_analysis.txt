@@ -1,0 +1,98 @@
+=== 0. MECHANISM CHECK ===
+inst   statistic                                     control       pair
+ta22   Second pair kept                                 0.00   11110.33
+ta22   Mean raw gain when the second pair is kept       0.00      45.47
+ta22   Number of Generations                           85.73      92.00
+ta23   Second pair kept                                 0.00    8942.20
+ta23   Mean raw gain when the second pair is kept       0.00      49.07
+ta23   Number of Generations                           77.27      73.40
+ta25   Second pair kept                                 0.00    8704.73
+ta25   Mean raw gain when the second pair is kept       0.00      47.23
+ta25   Number of Generations                           66.00      71.27
+ta26   Second pair kept                                 0.00    9494.80
+ta26   Mean raw gain when the second pair is kept       0.00      46.59
+ta26   Number of Generations                           71.20      77.93
+ta27   Second pair kept                                 0.00    8904.80
+ta27   Mean raw gain when the second pair is kept       0.00      46.74
+ta27   Number of Generations                           68.47      73.73
+ta29   Second pair kept                                 0.00    9882.67
+ta29   Mean raw gain when the second pair is kept       0.00      44.97
+ta29   Number of Generations                           77.27      81.93
+ta30   Second pair kept                                 0.00    9144.93
+ta30   Mean raw gain when the second pair is kept       0.00      45.86
+ta30   Number of Generations                           63.40      75.00
+ta32   Second pair kept                                 0.00   21094.07
+ta32   Mean raw gain when the second pair is kept       0.00      40.69
+ta32   Number of Generations                          153.80     172.27
+ta33   Second pair kept                                 0.00   19973.53
+ta33   Mean raw gain when the second pair is kept       0.00      41.36
+ta33   Number of Generations                          152.00     163.47
+ta34   Second pair kept                                 0.00   21464.60
+ta34   Mean raw gain when the second pair is kept       0.00      41.19
+ta34   Number of Generations                          175.60     175.53
+ta40   Second pair kept                                 0.00   22445.73
+ta40   Mean raw gain when the second pair is kept       0.00      39.54
+ta40   Number of Generations                          167.87     182.87
+ta41   Second pair kept                                 0.00   24128.00
+ta41   Mean raw gain when the second pair is kept       0.00      44.22
+ta41   Number of Generations                          170.67     197.20
+ta42   Second pair kept                                 0.00   26399.47
+ta42   Mean raw gain when the second pair is kept       0.00      44.71
+ta42   Number of Generations                          198.07     216.00
+ta43   Second pair kept                                 0.00   22934.33
+ta43   Mean raw gain when the second pair is kept       0.00      46.12
+ta43   Number of Generations                          168.80     187.27
+ta44   Second pair kept                                 0.00   21524.00
+ta44   Mean raw gain when the second pair is kept       0.00      43.41
+ta44   Number of Generations                          165.87     175.87
+ta45   Second pair kept                                 0.00   21604.33
+ta45   Mean raw gain when the second pair is kept       0.00      43.49
+ta45   Number of Generations                          164.73     176.33
+ta46   Second pair kept                                 0.00   22710.07
+ta46   Mean raw gain when the second pair is kept       0.00      45.07
+ta46   Number of Generations                          157.80     185.07
+ta47   Second pair kept                                 0.00   25200.40
+ta47   Mean raw gain when the second pair is kept       0.00      43.73
+ta47   Number of Generations                          187.00     205.87
+ta48   Second pair kept                                 0.00   25510.87
+ta48   Mean raw gain when the second pair is kept       0.00      41.02
+ta48   Number of Generations                          187.87     209.20
+ta49   Second pair kept                                 0.00   23435.73
+ta49   Mean raw gain when the second pair is kept       0.00      42.87
+ta49   Number of Generations                          168.20     191.53
+ta50   Second pair kept                                 0.00   22318.07
+ta50   Mean raw gain when the second pair is kept       0.00      43.35
+ta50   Number of Generations                          153.60     182.13
+
+second pairs kept per run: 18425 on average (the control makes none)
+
+=== I-035 waves 1..3: per-instance mean (primary), best-of-5 (reported) ===
+inst     mean ctrl   mean pair         d      bo5 ctrl    bo5 pair         d
+ta22        1624.6      1625.4     +0.80        1620.3      1619.7     -0.67
+ta23        1581.3      1584.5     +3.27        1576.3      1571.7     -4.67
+ta25        1637.9      1636.2     -1.67        1632.3      1627.3     -5.00
+ta26        1685.5      1686.6     +1.13        1677.0      1679.3     +2.33
+ta27        1712.7      1709.9     -2.80        1702.0      1701.3     -0.67
+ta29        1639.5      1640.8     +1.33        1636.3      1637.0     +0.67
+ta30        1615.1      1619.4     +4.33        1600.0      1610.0    +10.00
+ta32        1833.8      1838.3     +4.47        1822.7      1826.3     +3.67
+ta33        1854.9      1851.9     -3.00        1842.3      1842.7     +0.33
+ta34        1883.7      1887.8     +4.07        1874.0      1874.3     +0.33
+ta40        1721.7      1719.8     -1.93        1715.3      1707.7     -7.67
+ta41        2086.3      2084.1     -2.27        2067.0      2070.7     +3.67
+ta42        1995.3      1995.2     -0.13        1988.3      1985.3     -3.00
+ta43        1921.2      1922.3     +1.13        1905.0      1904.7     -0.33
+ta44        2041.5      2038.6     -2.93        2031.3      2029.7     -1.67
+ta45        2036.7      2036.7     +0.00        2026.7      2022.3     -4.33
+ta46        2071.7      2079.7     +8.00        2061.7      2067.0     +5.33
+ta47        1962.9      1968.6     +5.73        1948.3      1951.7     +3.33
+ta48        2021.8      2018.3     -3.53        2006.0      2007.7     +1.67
+ta49        2009.6      2011.2     +1.60        2001.0      2002.7     +1.67
+ta50        2001.6      1999.7     -1.93        1993.7      1988.3     -5.33
+
+runs per cell and instance: 15
+
+look 3 of 6, symmetric boundary p <= 0.0142 (Pocock, six looks)
+PRIMARY, per-instance mean: +0.75, pair better on 9 of 21, W = 86.0, p = 0.4921
+reported, deciding nothing: best-of-5 moved -0.02
+-> continue: run wave 4
