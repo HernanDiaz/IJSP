@@ -3797,3 +3797,18 @@ un 1 % de tiradas por debajo de 1567 el BKS queda en la cola extrema. A
 diferencia de `ta29` y `ta30`, aquí **no se ha alcanzado el BKS**, así que el
 diagnóstico de meseta de I-027 a I-029 no aplica todavía: el hueco en `ta23`
 es de llegar, no de salir.
+
+### Sondeo: los mejores finales de `ta23` tampoco ceden a los operadores exactos
+
+En `ta23` no se ha alcanzado el BKS (mejor 1561, BKS 1557), así que ahí un
+paso exacto sí podría cerrar las últimas unidades. Se pasaron los tres
+operadores de B-12 —una máquina (I-027), todo par con una máquina crítica
+(I-028) y ventanas de 30 y 60 operaciones (I-029)— sobre **los 44 finales de
+I-032 en 1570 o por debajo**, el 1561 incluido: **ninguno mejora**, con 880,
+6619, 1100 y 528 búsquedas, todas exactas. `iter/I-032/exact_polish.sh`.
+
+**Incluso cuatro unidades por encima del BKS, los mejores horarios son óptimos
+de forma exacta frente a todos esos vecindarios.** Lo que falta en `ta23` está
+en otra cuenca, no en un paso exacto desde las que el algoritmo ya encuentra;
+y eso vuelve a señalar a la exploración —qué cuencas se alcanzan—, que I-031
+tocó por el lado del cruce sin éxito.
