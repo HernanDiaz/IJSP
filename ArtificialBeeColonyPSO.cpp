@@ -283,6 +283,10 @@ namespace FuzzyFW {
 		stats.push_back(std::pair<std::string, double>
 			("LS longest chain of calls on one child", (double)this->lsRepeatLongest));
 		stats.push_back(std::pair<std::string, double>
+			("LS calls right after a failed call", (double)this->lsAfterFailCalls));
+		stats.push_back(std::pair<std::string, double>
+			("LS calls after a failure that improved", (double)this->lsAfterFailImproved));
+		stats.push_back(std::pair<std::string, double>
 			("Plateau moves admitted in crossover", (double)this->plateauAdmittedCross));
 		stats.push_back(std::pair<std::string, double>
 			("Plateau moves admitted in local search", (double)this->plateauAdmittedLS));
@@ -482,6 +486,10 @@ namespace FuzzyFW {
 		this->lsPickRepeat =
 			(params->getStringLower(LS_PICK).compare("best-repeat") == 0);
 		if (this->lsPickRepeat) this->lsPickBest = true;
+		// Probe: tolerate one failed call before ending the chain.
+		this->lsPickPatient =
+			(params->getStringLower(LS_PICK).compare("best-patient") == 0);
+		if (this->lsPickPatient) { this->lsPickRepeat = true; this->lsPickBest = true; }
 		this->scoutKick = false;
 		this->scoutKicks = 0;
 		std::string scoutValue = params->getStringLower(SCOUT_MODE);
@@ -569,6 +577,8 @@ namespace FuzzyFW {
 		this->lsRepeatCalls = 0;
 		this->lsSecondImproved = 0;
 		this->lsRepeatLongest = 0;
+		this->lsAfterFailCalls = 0;
+		this->lsAfterFailImproved = 0;
 		this->deepLsDone = false;
 		this->deepLsCalls = 0;
 		this->deepLsTime = 0;
@@ -1025,14 +1035,26 @@ namespace FuzzyFW {
 						// I-021: keep searching the better child from its new
 						// local optimum while the last call improved it.
 						unsigned long chain = 2;
+						// Consecutive calls that did not improve the child.
+						// best-repeat stops at the first (the accepted
+						// behaviour, unchanged); best-patient at the second.
+						unsigned int failsInRow = (after < before) ? 0 : 1;
+						unsigned int allowedFails = this->lsPickPatient ? 2 : 1;
 						while (this->lsPickRepeat && target == best
-							&& after < before) {
+							&& failsInRow < allowedFails) {
+							bool previousFailed = (failsInRow > 0);
 							before = after;
 							this->applyLocalSearch(population, target);
 							after = population->getIndividual(target)
 								->getFitness()->toDouble();
 							this->lsRepeatCalls++;
 							chain++;
+							if (previousFailed) {
+								this->lsAfterFailCalls++;
+								if (after < before) this->lsAfterFailImproved++;
+							}
+							if (after < before) failsInRow = 0;
+							else failsInRow++;
 						}
 						if (chain > this->lsRepeatLongest)
 							this->lsRepeatLongest = chain;

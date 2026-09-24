@@ -3206,3 +3206,44 @@ beneficio de I-021 es, como mucho, pequeño.
 
 **Mejores propios**: `ta29` iguala su BKS por cuarta vez en la línea (primera
 con la configuración vigente); los demás no mejoran (`ta30` 1584, `ta23` 1564).
+
+### Sondeo: la cadena de I-021 corta en el sitio correcto, y la palanca de la profundidad toca techo
+
+**La pregunta** (2026-09-24): la cadena de I-021 termina en la **primera**
+llamada que no mejora al mejor hijo. Si después de un fallo la siguiente
+llamada todavía mejorase a menudo —la búsqueda tabú desempata al azar, así que
+dos llamadas desde el mismo punto no son idénticas—, la cadena cortaría
+demasiado pronto y habría más ganancia en seguir.
+
+**Cómo se midió**: un modo de sondeo, `abc.ls.pick = best-patient`, que corta
+en el **segundo** fallo seguido y cuenta cuántas llamadas hechas justo después
+de un fallo mejoran al hijo. Con `best-repeat` el comportamiento es el aceptado,
+sin cambio: el bucle se reescribió contando fallos seguidos, cortando en uno
+para `best-repeat` y en dos para `best-patient`. Una tirada por instancia,
+semilla 1001, sobre `ref_I-021`:
+
+| | 2.ª llamadas | de ellas mejoran | llamadas extra | **tras un fallo: hechas / mejoran** | generaciones |
+|---|---|---|---|---|---|
+| ta23, repeat | 32851 | 15227 (46 %) | 22510 | 0 / 0 | 133 |
+| ta23, patient | 27664 | 13830 (50 %) | 49158 | **27926 / 262 (0.9 %)** | 112 |
+| ta45, repeat | 72865 | 47271 (65 %) | 72831 | 0 / 0 | 295 |
+| ta45, patient | 63973 | 41618 (65 %) | 127809 | **64654 / 681 (1.1 %)** | 259 |
+
+**La respuesta es tajante**: una llamada hecha justo después de un fallo mejora
+al hijo **el 1 % de las veces**. La segunda llamada acierta en torno a dos de
+cada tres; pero cuando una llamada con la lista tabú vacía no mejora, el hijo
+está en un óptimo del que el tabú ya no sale. Tolerar un fallo **duplica** las
+llamadas extra a cambio de ese 1 %. **El corte de I-021 en el primer fallo es el
+correcto**, y no se lanza nada con esto.
+
+**Lo que significa para la línea**: la palanca de **volver a buscar desde el
+mismo punto** ha llegado a su techo. Para ir más allá hay que **mover el
+punto**: perturbar el hijo y volver a buscar, que es la patada con
+reoptimización de B-11 (búsqueda local iterada), ahora con un sitio preciso
+donde aplicarla —al final de cada cadena, sobre un hijo que se sabe atascado—.
+
+*Aparte*: las generaciones de la misma semilla y la misma configuración varían
+mucho entre sondeos hechos a distintas horas (133 aquí en ta23 frente a 73 en
+la comprobación previa de I-021). Es la deriva de la máquina que el protocolo ya
+conoce; dentro de una tanda afecta a las dos celdas por igual porque se
+intercalan, pero no permite comparar sondeos de horas distintas.
