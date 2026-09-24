@@ -1,0 +1,12 @@
+ta29  results/I-024_c12/ta29_20260924062616_Certificate.csv      run 3: 1640 -> 1638 in 1 moves, 0.2 s
+ta30  results/I-024_c12/ta30_20260924062616_Certificate.csv      run 1: 1614 -> 1611 in 1 moves, 0.2 s
+ta30  results/I-024_c15/ta30_20260924063027_Certificate.csv      run 3: 1616 -> 1615 in 1 moves, 0.1 s
+ta30  results/I-024_c21/ta30_20260924063050_Certificate.csv      run 2: 1601 -> 1600 in 1 moves, 0.2 s
+ta30  results/I-024_c24/ta30_20260924063505_Certificate.csv      run 5: 1619 -> 1615 in 1 moves, 0.1 s
+ta30  results/I-024_c25/ta30_20260924063511_Certificate.csv      run 5: 1610 -> 1608 in 2 moves, 0.2 s
+ta29  results/I-024_c58/ta29_20260924065714_Certificate.csv      run 3: 1636 -> 1635 in 1 moves, 0.1 s
+ta30  results/I-024_c65/ta30_20260924070143_Certificate.csv      run 5: 1626 -> 1623 in 1 moves, 0.2 s
+ta30  results/I-024_c68/ta30_20260924070203_Certificate.csv      run 3: 1626 -> 1623 in 1 moves, 0.1 s
+ta30  results/I-024_c74/ta30_20260924070624_Certificate.csv      run 4: 1613 -> 1611 in 1 moves, 0.1 s
+
+800 schedules; improved 10 (1.2 %), 22 units; 20113 window searches, 100.0 % completed within the node limit; 77 s

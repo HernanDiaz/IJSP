@@ -2812,3 +2812,29 @@ tabu optima two machines find nothing one does not. The exit beneath the
 plateau, if there is one, is not in reordering one or two whole machines. What
 is left of B-12 is its literal window form, freeing every operation in a slice
 of time across all machines at once, which is I-029.
+
+## I-029: B-12 by time window, and the whole family closes
+
+The literal form of B-12: a window is a run of consecutive operations in start
+order; on each machine they are consecutive in its sequence, so every machine
+splits into a fixed prefix, a free block and a fixed suffix, and the free
+operations on all machines are reordered at once, exactly, by branch and bound
+over their active schedules with a Jackson bound per machine, each improvement
+checked against the full graph. Windows of 30 operations sliding by 15, fixed
+before reading any result; then, declared before seeing it, one larger size of
+60 sliding by 30, on the schedules at the best known only.
+
+The stored schedules at the best known: 0 of 20 improve with windows of 30
+(500 exact searches) and 0 of 20 with windows of 60 (240 exact searches). The
+probe does work: on I-024's ordinary finals it improves 10 of 800 (1.2%) by
+22 units, the model agreeing with the graph every time.
+
+The B-12 family closes. The schedules at the best known of ta29 and ta30 are
+exactly optimal against reordering any whole machine (I-027), any pair of
+machines that could matter (I-028), and any slice of 30 or 60 consecutive
+operations across all machines at once (I-029), neighbourhoods far larger than
+N2, none with an exit. With the best known reached through thirteen distinct
+schedules on these two instances, the simplest reading is that those values
+are optimal or very nearly so, and that the gap to the lower bounds in
+taillard_bounds.csv reflects weak bounds rather than real room. Not a proof,
+but the strongest evidence the line has about where a record is not.

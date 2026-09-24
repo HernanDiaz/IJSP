@@ -336,6 +336,7 @@ bucle y están aquí para que no se repitan; sus cifras están en el JOURNAL.
 | I-003 | el explorador del ABC reinyecta un **elite pateado** en vez de una solución aleatoria | un arranque aleatorio a mitad de tirada no puede alcanzar a la población; uno dentro de una cuenca buena sí | kick−control = **+1.43** (ta23 −0.27, ta29 +0.70, ta30 −0.50, ta45 **+5.80**); regla > +2 descarta → **pasa, por poco y en contra** | 4 mirillas de 6: −1.02, −0.57, **−0.03**, +0.44; kick mejor en 9-10 de 21 siempre; p entre 0.55 y 0.88, la frontera nunca se acerca | **detenida en la 4ª** (2026-09-21) por cambio de dirección del PI, no por sus datos. Sin aceptación: es un cero |
 | H-4 | N8 contra N2 (y contra N1, N3, N_ext), fase B del paper de COR | un vecindario más rico gana | -- | 82 instancias x 30 runs, 2460 bloques pareados: N2 1846.50 contra N8 1847.94, dif −1.45, p_adj = 3.9e−4, r = 0.077 (**despreciable**); rangos de Friedman N2 2.1315 el mejor de cinco, N8 2.2400 | **descartada** (antes del bucle; `experiments/cor_tabu_2026/`) |
 | I-012 | **escapar del estado todo-tabú, solo eso** | la celda informativa de I-010 dio −1.11 y mejor en 15 de 21 (p = 0.033) sin frontera | esc−control = −1.82, pasa | 6 mirillas, 30 runs: +1.30, +1.09, +0.59, +0.27, +0.39, **+0.07**; mejor en 10 de 21, p = 0.835 | **descartada** (2026-09-22). La señal de I-010 **no se reprodujo** |
+| I-029 | **B-12 por ventana**: reoptimización exacta de todas las operaciones de una franja de tiempo, en todas las máquinas a la vez, sobre horarios guardados | la forma literal de B-12 (Beck, Feng y Watson) | -- | **0 de 20** en el BKS mejoran con ventanas de 30 **ni de 60** operaciones; 10 de 800 finales (1.2 %) con 30 | **cerrada** (2026-09-24): **la familia B-12 se cierra**, sin salida de la meseta en ninguna de sus tres formas |
 | I-028 | **B-12 con dos máquinas**: reoptimización **exacta y conjunta** de dos máquinas, las demás fijas, sobre horarios guardados | lo que falta exige mover operaciones en dos máquinas a la vez | -- | **0 de 20** en el BKS mejoran con **todo** par que incluya una máquina crítica (2839 búsquedas exactas); **20 de 800** finales (2.5 %), igual que con una | **cerrada** (2026-09-24), sondeo sin máquina: tampoco está en dos máquinas |
 | I-027 | **B-12 con una máquina**: reoptimización **exacta** de una máquina entera con las demás fijas, máquina a máquina hasta óptimo local, sobre horarios ya guardados | la salida de la meseta del BKS está en una resecuenciación que N2 no ve | -- | **0 de 20** horarios en el BKS mejoran; **19 de 800** finales de I-024 (2.4 %), de 1 a 4 unidades, ninguno llega al BKS | **cerrada** (2026-09-24), sondeo sin máquina: la salida no está en una sola máquina |
 | I-026 | **la cola extrema a 300 s contra 40 s**, con la configuración vigente: la caza de I-024 repetida a igual CPU con 53 tiradas de 300 s por instancia, semillas 5001-5053 | I-025 dejó abierto si la tirada larga da mejores mínimos; la primera igualada de `ta29` salió a 300 s | -- | 106 tiradas de 300 s, cero infactibles: **sin récord**. Igualadas: `ta29` **0** de 53 (mejor 1631), `ta30` 1 de 53. A igual CPU, I-024 (40 s) dio 1 y 2 | **cerrada** (2026-09-24): la tirada larga no da mejor cola extrema; para cazar, 40 s |
@@ -3586,3 +3587,43 @@ operaciones que caen en una franja de tiempo, en todas las máquinas a la vez, y
 resolverlas de forma exacta con el resto fijo. Es un vecindario de otra forma
 —estrecho en tiempo pero ancho en máquinas—, y es I-029. Sin cambios en el
 solver, nada que revertir.
+
+### I-029 — B-12 por ventana, y la familia entera se cierra
+
+**El modelo**, la forma literal de B-12: una ventana son `WINDOW` operaciones
+consecutivas en orden de comienzo; en cada máquina las de la ventana son
+consecutivas en su secuencia, así que cada máquina queda en prefijo fijo,
+bloque libre y sufijo fijo. El grafo conserva los arcos de trabajo, los de
+prefijos y sufijos, uno del último del prefijo a cada operación del bloque y de
+cada una al primero del sufijo, y quita los de dentro de los bloques: es
+acíclico y da cabezas, colas y precedencias con retardo. El mejor orden de los
+bloques se busca por ramificación y poda sobre los horarios activos de las
+operaciones libres en **todas** las máquinas a la vez, con la cota de Jackson
+por máquina, solo mejoras estrictas, cada una comprobada contra el grafo
+completo. Ventanas de **30 operaciones deslizando de 15**, fijadas antes de
+leer ningún resultado; después, declarado antes de verlo, un único tamaño más,
+**60 deslizando de 30**, solo sobre los horarios del BKS. `iter/I-029/`.
+
+| conjunto | ventana | horarios | búsquedas (exactas) | mejoran |
+|---|---|---|---|---|
+| guardados en el BKS | 30 | 20 | 500 (100 %) | **0** |
+| guardados en el BKS | 60 | 20 | 240 (100 %) | **0** |
+| finales de I-024 | 30 | 800 | 20113 (100 %) | 10 (1.2 %), 22 unidades |
+
+**El sondeo funciona**: sobre los finales corrientes encuentra mejoras y el
+modelo cuadra con el grafo en cada una; el cero del BKS no es un fallo del
+código.
+
+**La familia B-12 se cierra.** Los horarios que están en el BKS de `ta29` y
+`ta30` son óptimos, de forma **exacta**, frente a reordenar cualquier máquina
+entera (I-027), cualquier par de máquinas que pueda importar (I-028) y
+cualquier franja de 30 o de 60 operaciones consecutivas en todas las máquinas a
+la vez (I-029). Son vecindarios muchísimo mayores que N2 y ninguno tiene salida.
+Unido a que el BKS se alcanza con **trece horarios distintos** en estas dos
+instancias (I-022 a I-026), la lectura más sencilla es que **esos valores son
+el óptimo o están muy cerca**, y que la distancia a las cotas inferiores de
+`taillard_bounds.csv` (52 y 65 unidades) es debilidad de las cotas, no margen
+real. No es una prueba —ningún vecindario acotado lo es—, pero sí la evidencia
+más fuerte que tiene la línea sobre dónde **no** hay un récord.
+
+Sin cambios en el solver, nada que revertir.
