@@ -1,0 +1,99 @@
+=== 0. MECHANISM CHECK ===
+inst   statistic                                     control     repeat
+ta22   LS repeat calls beyond the second                0.00   15879.40
+ta22   LS longest chain of calls on one child           2.00       9.60
+ta22   Number of Generations                          114.00      94.00
+ta23   LS repeat calls beyond the second                0.00   18152.80
+ta23   LS longest chain of calls on one child           2.00      10.00
+ta23   Number of Generations                          106.80      85.40
+ta25   LS repeat calls beyond the second                0.00   14716.20
+ta25   LS longest chain of calls on one child           2.00       9.60
+ta25   Number of Generations                          102.60      84.20
+ta26   LS repeat calls beyond the second                0.00   15950.60
+ta26   LS longest chain of calls on one child           2.00       9.00
+ta26   Number of Generations                          103.20      88.60
+ta27   LS repeat calls beyond the second                0.00   15349.20
+ta27   LS longest chain of calls on one child           2.00       9.00
+ta27   Number of Generations                           97.20      83.40
+ta29   LS repeat calls beyond the second                0.00   14323.20
+ta29   LS longest chain of calls on one child           2.00      10.00
+ta29   Number of Generations                          105.00      86.80
+ta30   LS repeat calls beyond the second                0.00   16814.20
+ta30   LS longest chain of calls on one child           2.00      10.00
+ta30   Number of Generations                           98.00      72.80
+ta32   LS repeat calls beyond the second                0.00   37896.40
+ta32   LS longest chain of calls on one child           2.00      10.40
+ta32   Number of Generations                          233.20     171.40
+ta33   LS repeat calls beyond the second                0.00   43713.80
+ta33   LS longest chain of calls on one child           2.00      11.20
+ta33   Number of Generations                          246.00     188.80
+ta34   LS repeat calls beyond the second                0.00   45089.40
+ta34   LS longest chain of calls on one child           2.00      11.00
+ta34   Number of Generations                          243.00     209.20
+ta40   LS repeat calls beyond the second                0.00   40235.60
+ta40   LS longest chain of calls on one child           2.00      10.40
+ta40   Number of Generations                          252.20     191.40
+ta41   LS repeat calls beyond the second                0.00   46586.80
+ta41   LS longest chain of calls on one child           2.00      10.80
+ta41   Number of Generations                          259.20     194.80
+ta42   LS repeat calls beyond the second                0.00   50326.80
+ta42   LS longest chain of calls on one child           2.00      11.20
+ta42   Number of Generations                          277.00     209.20
+ta43   LS repeat calls beyond the second                0.00   47979.40
+ta43   LS longest chain of calls on one child           2.00      11.40
+ta43   Number of Generations                          248.60     177.60
+ta44   LS repeat calls beyond the second                0.00   44144.60
+ta44   LS longest chain of calls on one child           2.00      11.00
+ta44   Number of Generations                          263.40     184.40
+ta45   LS repeat calls beyond the second                0.00   53876.40
+ta45   LS longest chain of calls on one child           2.00      10.40
+ta45   Number of Generations                          256.00     195.60
+ta46   LS repeat calls beyond the second                0.00   49263.00
+ta46   LS longest chain of calls on one child           2.00      11.00
+ta46   Number of Generations                          255.60     171.20
+ta47   LS repeat calls beyond the second                0.00   49614.80
+ta47   LS longest chain of calls on one child           2.00      11.40
+ta47   Number of Generations                          251.00     203.00
+ta48   LS repeat calls beyond the second                0.00   54741.60
+ta48   LS longest chain of calls on one child           2.00      11.00
+ta48   Number of Generations                          275.60     210.40
+ta49   LS repeat calls beyond the second                0.00   46660.40
+ta49   LS longest chain of calls on one child           2.00      11.00
+ta49   Number of Generations                          251.60     189.40
+ta50   LS repeat calls beyond the second                0.00   48735.20
+ta50   LS longest chain of calls on one child           2.00      11.40
+ta50   Number of Generations                          231.00     194.60
+
+repeat calls beyond the second per run: 36669 on average
+(the control makes none)
+
+=== I-021 waves 1..1: per-instance mean (primary), best-of-5 (reported) ===
+inst     mean ctrl mean repeat         d      bo5 ctrl  bo5 repeat         d
+ta22        1622.2      1623.2     +1.00        1620.0      1621.0     +1.00
+ta23        1586.4      1583.6     -2.80        1578.0      1572.0     -6.00
+ta25        1637.6      1634.6     -3.00        1633.0      1629.0     -4.00
+ta26        1695.0      1683.8    -11.20        1688.0      1678.0    -10.00
+ta27        1714.4      1710.0     -4.40        1710.0      1706.0     -4.00
+ta29        1644.2      1637.2     -7.00        1641.0      1634.0     -7.00
+ta30        1618.4      1616.4     -2.00        1608.0      1603.0     -5.00
+ta32        1849.4      1833.8    -15.60        1824.0      1827.0     +3.00
+ta33        1851.0      1853.4     +2.40        1835.0      1837.0     +2.00
+ta34        1882.4      1883.4     +1.00        1856.0      1879.0    +23.00
+ta40        1725.0      1722.6     -2.40        1717.0      1715.0     -2.00
+ta41        2087.0      2084.0     -3.00        2069.0      2061.0     -8.00
+ta42        1989.4      1995.2     +5.80        1983.0      1985.0     +2.00
+ta43        1923.6      1919.0     -4.60        1909.0      1902.0     -7.00
+ta44        2032.4      2037.4     +5.00        2025.0      2028.0     +3.00
+ta45        2034.4      2038.0     +3.60        2030.0      2029.0     -1.00
+ta46        2084.2      2072.0    -12.20        2068.0      2062.0     -6.00
+ta47        1967.4      1955.0    -12.40        1951.0      1929.0    -22.00
+ta48        2019.2      2021.4     +2.20        2002.0      2011.0     +9.00
+ta49        2016.2      2009.8     -6.40        2004.0      2003.0     -1.00
+ta50        1997.4      1988.6     -8.80        1985.0      1983.0     -2.00
+
+runs per cell and instance: 5
+
+look 1 of 6, symmetric boundary p <= 0.0142 (Pocock, six looks)
+PRIMARY, per-instance mean: -3.56, repeat better on 14 of 21, W = 49.5, p = 0.0218
+reported, deciding nothing: best-of-5 moved -2.00
+-> continue: run wave 2
