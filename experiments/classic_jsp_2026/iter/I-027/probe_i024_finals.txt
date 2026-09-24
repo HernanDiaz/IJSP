@@ -1,0 +1,21 @@
+ta30  results/I-024_c01/ta30_20260924062145_Certificate.csv        run 5: 1624 -> 1620 in 1 moves, 0.3 s
+ta29  results/I-024_c02/ta29_20260924062145_Certificate.csv        run 4: 1647 -> 1646 in 1 moves, 0.2 s
+ta30  results/I-024_c12/ta30_20260924062616_Certificate.csv        run 1: 1614 -> 1611 in 1 moves, 0.2 s
+ta30  results/I-024_c18/ta30_20260924063041_Certificate.csv        run 3: 1624 -> 1623 in 1 moves, 0.3 s
+ta30  results/I-024_c21/ta30_20260924063050_Certificate.csv        run 2: 1601 -> 1599 in 2 moves, 0.3 s
+ta30  results/I-024_c22/ta30_20260924063459_Certificate.csv        run 4: 1624 -> 1620 in 1 moves, 0.2 s
+ta30  results/I-024_c24/ta30_20260924063505_Certificate.csv        run 5: 1619 -> 1615 in 1 moves, 0.2 s
+ta30  results/I-024_c25/ta30_20260924063511_Certificate.csv        run 2: 1628 -> 1627 in 1 moves, 0.2 s
+ta30  results/I-024_c35/ta30_20260924063952_Certificate.csv        run 1: 1629 -> 1628 in 1 moves, 0.2 s
+ta30  results/I-024_c36/ta30_20260924064350_Certificate.csv        run 3: 1616 -> 1615 in 1 moves, 0.2 s
+ta30  results/I-024_c37/ta30_20260924064357_Certificate.csv        run 5: 1623 -> 1620 in 2 moves, 0.4 s
+ta30  results/I-024_c45/ta30_20260924064826_Certificate.csv        run 4: 1615 -> 1614 in 1 moves, 0.2 s
+ta29  results/I-024_c49/ta29_20260924064848_Certificate.csv        run 1: 1631 -> 1629 in 1 moves, 0.2 s
+ta30  results/I-024_c49/ta30_20260924064850_Certificate.csv        run 3: 1618 -> 1616 in 1 moves, 0.2 s
+ta30  results/I-024_c50/ta30_20260924065241_Certificate.csv        run 1: 1619 -> 1618 in 1 moves, 0.2 s
+ta30  results/I-024_c63/ta30_20260924065744_Certificate.csv        run 5: 1601 -> 1599 in 1 moves, 0.3 s
+ta30  results/I-024_c65/ta30_20260924070143_Certificate.csv        run 5: 1626 -> 1623 in 1 moves, 0.3 s
+ta30  results/I-024_c70/ta30_20260924070214_Certificate.csv        run 1: 1617 -> 1614 in 1 moves, 0.1 s
+ta29  results/I-024_c80/ta29_20260924071039_Certificate.csv        run 5: 1646 -> 1644 in 2 moves, 0.3 s
+
+800 schedules; improved 19 (2.4 %), 41 units in total; 16420 machine searches, 100.0 % completed within the node limit

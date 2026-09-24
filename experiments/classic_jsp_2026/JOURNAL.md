@@ -2762,3 +2762,31 @@ One slip on the way, fixed before any push: git checkout of a commit's files
 stages them, so the next commit, I-026's closing, swept in a half-done rollback
 with the accepted mechanism missing. It was unpushed, so a soft reset undid it
 without losing anything and the work was redone as two commits.
+
+## I-027: B-12 on one machine; the tabu search's optima are already optimal per machine
+
+I-024 left the best known of ta29 and ta30 reached through many schedules and
+never undercut, so what is missing is an exit beneath the plateau that N2 tabu
+search cannot see. B-12, exact window repair, is the family with a credible
+mechanism for that. It starts with one machine, where the subproblem can be
+solved exactly and fast, and as a probe on stored schedules without touching
+the solver.
+
+The model is exact. With every machine sequence fixed but M's, the disjunctive
+graph without M's arcs is acyclic and gives each operation on M a head, a
+tail, and for each ordered pair the longest path between their starts through
+the rest, a delayed precedence. For a sequence of M the earliest starts follow
+from those, and the makespan is the longest path of the full graph. The best
+sequence is found by depth-first branch and bound with the Jackson preemptive
+bound, keeping only strict improvements, machine by machine to a local optimum.
+Every improvement found was checked against the full graph and the model always
+agreed.
+
+All 16,820 searches completed exactly. None of the 20 stored schedules at the
+best known improves. Of I-024's 800 final schedules, 19 improve (2.4%), by 1
+to 4 units, and none reaches the best known. The tabu search's local optima
+are almost always optimal against reordering any single machine in any way,
+and those at the best known all are. N2 swaps adjacent pairs at the ends of
+critical blocks; this allows any order of a whole machine, and there is still
+nothing. The exit is not on one machine. B-12 spoke of two machines for exactly
+this reason, which is I-028. No solver change, so nothing to roll back.

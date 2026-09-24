@@ -336,6 +336,7 @@ bucle y están aquí para que no se repitan; sus cifras están en el JOURNAL.
 | I-003 | el explorador del ABC reinyecta un **elite pateado** en vez de una solución aleatoria | un arranque aleatorio a mitad de tirada no puede alcanzar a la población; uno dentro de una cuenca buena sí | kick−control = **+1.43** (ta23 −0.27, ta29 +0.70, ta30 −0.50, ta45 **+5.80**); regla > +2 descarta → **pasa, por poco y en contra** | 4 mirillas de 6: −1.02, −0.57, **−0.03**, +0.44; kick mejor en 9-10 de 21 siempre; p entre 0.55 y 0.88, la frontera nunca se acerca | **detenida en la 4ª** (2026-09-21) por cambio de dirección del PI, no por sus datos. Sin aceptación: es un cero |
 | H-4 | N8 contra N2 (y contra N1, N3, N_ext), fase B del paper de COR | un vecindario más rico gana | -- | 82 instancias x 30 runs, 2460 bloques pareados: N2 1846.50 contra N8 1847.94, dif −1.45, p_adj = 3.9e−4, r = 0.077 (**despreciable**); rangos de Friedman N2 2.1315 el mejor de cinco, N8 2.2400 | **descartada** (antes del bucle; `experiments/cor_tabu_2026/`) |
 | I-012 | **escapar del estado todo-tabú, solo eso** | la celda informativa de I-010 dio −1.11 y mejor en 15 de 21 (p = 0.033) sin frontera | esc−control = −1.82, pasa | 6 mirillas, 30 runs: +1.30, +1.09, +0.59, +0.27, +0.39, **+0.07**; mejor en 10 de 21, p = 0.835 | **descartada** (2026-09-22). La señal de I-010 **no se reprodujo** |
+| I-027 | **B-12 con una máquina**: reoptimización **exacta** de una máquina entera con las demás fijas, máquina a máquina hasta óptimo local, sobre horarios ya guardados | la salida de la meseta del BKS está en una resecuenciación que N2 no ve | -- | **0 de 20** horarios en el BKS mejoran; **19 de 800** finales de I-024 (2.4 %), de 1 a 4 unidades, ninguno llega al BKS | **cerrada** (2026-09-24), sondeo sin máquina: la salida no está en una sola máquina |
 | I-026 | **la cola extrema a 300 s contra 40 s**, con la configuración vigente: la caza de I-024 repetida a igual CPU con 53 tiradas de 300 s por instancia, semillas 5001-5053 | I-025 dejó abierto si la tirada larga da mejores mínimos; la primera igualada de `ta29` salió a 300 s | -- | 106 tiradas de 300 s, cero infactibles: **sin récord**. Igualadas: `ta29` **0** de 53 (mejor 1631), `ta30` 1 de 53. A igual CPU, I-024 (40 s) dio 1 y 2 | **cerrada** (2026-09-24): la tirada larga no da mejor cola extrema; para cazar, 40 s |
 | I-025 | **B-1: reinicio contra tirada larga a igual CPU**, sobre datos existentes (control de I-001 contra `prereg2_abc`), sin correr nada | el reinicio con presupuesto por clase domina a una tirada de 300 s | -- | mejor-de-k corto mejor en la mediana en **17 de 21**, media −3.50, p = 0.0004; el mínimo absoluto lo da a veces la tirada larga | **cerrada** (2026-09-24), **descriptiva**: dos tandas de días distintos |
 | I-024 | **caza concentrada en `ta29` y `ta30`** con la configuración vigente, 400 tiradas de 40 s por instancia, semillas 4001-4400 | la configuración vigente iguala el BKS en las dos (I-022, I-023), y ninguna está cerrada: quedan 52 y 65 unidades hasta la cota | -- | 800 tiradas, cero infactibles: **sin récord**. Igualadas: `ta29` 1 de 400, `ta30` 2 de 400, **tres horarios nuevos**, distintos entre sí y de todas las igualadas anteriores. Cuantil 1 %: 1628 y 1589 | **cerrada** (2026-09-24): el BKS se alcanza en el 0.25-0.5 % de las tiradas y nunca se baja |
@@ -3514,3 +3515,41 @@ configuraciones en uso —`prereg2`, `ref_I-018` y `ref_I-021`—, en `ta23` y
 `ArtificialBeeColonyPSO` sin el mecanismo aceptado. Como no estaba empujado, se
 deshizo con `git reset --soft` —sin perder nada— y se rehízo en dos commits:
 el cierre de I-026 solo con registros, y esta reversión aparte y verificada.
+
+### I-027 — B-12 con una máquina: los óptimos del tabú ya son óptimos por máquina
+
+**Por qué y cómo.** I-024 dejó claro que el BKS de `ta29` y `ta30` se alcanza con
+muchos horarios y nunca se baja: falta la salida por debajo de la meseta, y N2
+con tabú no la ve. B-12 —reparación exacta por ventana— es la familia con un
+mecanismo creíble para eso. **Empieza por una máquina**, porque ahí el
+subproblema se resuelve de forma exacta y rápida, y se prueba primero como
+**sondeo sobre horarios ya guardados**, sin tocar el solver.
+
+**El modelo**, exacto: se fijan todas las secuencias salvo la de la máquina M.
+Sin los arcos de M el grafo disyuntivo es acíclico y da, para cada operación de
+M, su cabeza `r`, su cola `q` y, para cada par, el camino más largo `L(a, b)`
+entre sus comienzos a través del resto: una **precedencia con retardo**. Con
+una secuencia de M, `S_k = max(r_k, C_anterior, max S_a + L(a, k))` y el
+makespan es `max(C0, max S_k + p_k + q_k)`, que es el camino más largo del grafo
+completo. La mejor secuencia se busca por ramificación y poda en profundidad con
+la cota del programa de Jackson con interrupciones, y solo sobreviven mejoras
+**estrictas**. Máquina a máquina, hasta que ninguna mejore. Cada mejora
+encontrada se comprueba recalculando el makespan en el grafo completo, y el
+modelo cuadró siempre. `iter/I-027/one_machine_probe.py`.
+
+**Resultado**, con el 100 % de las 16820 búsquedas terminadas de forma exacta:
+
+| conjunto | horarios | mejoran | unidades | llegan al BKS o lo bajan |
+|---|---|---|---|---|
+| todos los guardados en el BKS (`ta29` 1625, `ta30` 1584) | 20 | **0** | 0 | -- |
+| finales de las 800 tiradas de I-024 | 800 | **19 (2.4 %)** | 41 (de 1 a 4) | **0** |
+
+**Los óptimos locales del tabú son casi siempre óptimos también frente a
+reordenar exactamente cualquier máquina entera**, y los que están en el BKS lo
+son todos. N2 solo intercambia pares adyacentes en los extremos de los bloques
+críticos; aquí se permite **cualquier** orden de la máquina, y aun así no hay
+nada. La salida de la meseta **no está en una sola máquina**.
+
+**Qué deja**: B-12 hablaba de **dos** máquinas, y la razón es justamente esta:
+el cambio que falta puede exigir mover operaciones en dos máquinas a la vez.
+Es I-028. Sin cambios en el solver, así que no hay nada que revertir.

@@ -1,0 +1,2 @@
+
+20 schedules; improved 0 (0.0 %), 0 units in total; 400 machine searches, 100.0 % completed within the node limit
