@@ -1,0 +1,8 @@
+inst     best    BKS     gap
+ta23     1567   1557  +0.64%
+ta29     1628   1625  +0.18%
+ta30     1597   1584  +0.82%
+ta45     2019   2000  +0.95%
+
+240 runs recomputed from their schedules
+at or below the best known: 0

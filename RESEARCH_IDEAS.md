@@ -318,7 +318,7 @@ bucle y están aquí para que no se repitan; sus cifras están en el JOURNAL.
 | I-003 | el explorador del ABC reinyecta un **elite pateado** en vez de una solución aleatoria | un arranque aleatorio a mitad de tirada no puede alcanzar a la población; uno dentro de una cuenca buena sí | kick−control = **+1.43** (ta23 −0.27, ta29 +0.70, ta30 −0.50, ta45 **+5.80**); regla > +2 descarta → **pasa, por poco y en contra** | 4 mirillas de 6: −1.02, −0.57, **−0.03**, +0.44; kick mejor en 9-10 de 21 siempre; p entre 0.55 y 0.88, la frontera nunca se acerca | **detenida en la 4ª** (2026-09-21) por cambio de dirección del PI, no por sus datos. Sin aceptación: es un cero |
 | H-4 | N8 contra N2 (y contra N1, N3, N_ext), fase B del paper de COR | un vecindario más rico gana | -- | 82 instancias x 30 runs, 2460 bloques pareados: N2 1846.50 contra N8 1847.94, dif −1.45, p_adj = 3.9e−4, r = 0.077 (**despreciable**); rangos de Friedman N2 2.1315 el mejor de cinco, N8 2.2400 | **descartada** (antes del bucle; `experiments/cor_tabu_2026/`) |
 | I-012 | **escapar del estado todo-tabú, solo eso** | la celda informativa de I-010 dio −1.11 y mejor en 15 de 21 (p = 0.033) sin frontera | esc−control = −1.82, pasa | 6 mirillas, 30 runs: +1.30, +1.09, +0.59, +0.27, +0.39, **+0.07**; mejor en 10 de 21, p = 0.835 | **descartada** (2026-09-22). La señal de I-010 **no se reprodujo** |
-| I-020 | **¿profundidad o generaciones?** Suprimir la segunda llamada al tabú (`abc.ls.pick = none`), contra la configuración vigente | I-018 profundiza sobre el mejor hijo **y** corre más generaciones; `none` conserva y amplía lo segundo (+68-75 %) y quita lo primero | pendiente | pendiente | **lanzada** (2026-09-24) |
+| I-020 | **¿profundidad o generaciones?** Suprimir la segunda llamada al tabú (`abc.ls.pick = none`), contra la configuración vigente | I-018 profundiza sobre el mejor hijo **y** corre más generaciones; `none` conserva y amplía lo segundo (+68-75 %) y quita lo primero | mecanismo exacto, sin segunda llamada, generaciones **+56 a +73 %**; none−control = **+5.96** (ta45 +7.77, ta30 +7.33, ta23 +5.97, ta29 +2.77); regla > +2 → **DESCARTA** | -- | **descartada** (2026-09-24) en el filtro: **la ganancia de I-018 es la profundidad**, no el rendimiento |
 | I-019 | **intento de récord con la configuración nueva** (I-018) sobre la lista corta, vieja contra nueva, 75 tiradas por celda e instancia, semillas 2001-2075 | la media bajó 3.38 y el mejor de cinco 4.19; el récord vive en la cola, que es donde hay que llevarla | -- | 600 tiradas: **sin récord ni casi**. Mejor de 75, vieja → nueva: ta30 1598 → **1589**, ta29 1631 → 1630, ta23 1566 → 1565, ta22 1614 → 1613. Bloques de 5: **nueva mejor en 40, peor en 16, p = 0.002** | **cerrada** (2026-09-24): sin récord; la ganancia de I-018 **llega a la cola**, con semillas nuevas |
 | I-018 | **el segundo tabú siempre al mejor hijo**: lo que el fallo de índice hace por accidente el 53 % de las veces, hecho siempre | I-017 midió que bajarlo al 0 % cuesta +4.87; subirlo al 100 % debería ganar si la relación es monótona, y además es más barato | mecanismo exacto, 100 % al mejor, generaciones **+5 a +49 %**; best−control = **−1.12** (ta30 −3.07, ta45 −2.40, ta29 −0.30, ta23 +1.30), pasa (descartaba si > +2.0) | mirillas media: **-1.84** (w1, 13 de 21, p = 0.164), **-2.60** (w2, 16 de 21, p = 0.046), **-3.38** (w3, **18 de 21**, **p = 0.0010**) → cruza | **ACEPTADA** (2026-09-24) en la mirilla 3 de 6. **Primer mecanismo aceptado del bucle**; pasa a la configuración vigente (`setup/ref_I-018.txt`) |
 | I-017 | **el segundo tabú va al hijo sorteado**: en MALS_SOME la segunda llamada se aplica al contador del bucle y no al individuo sorteado, y la mitad de las veces repasa el hijo ya pulido | cada hijo pulido una vez vale más que el 10-18 % de generaciones que cuesta | mecanismo exacto: 100 % de las segundas llamadas al otro hijo (control 47/53); chosen−control = **+4.87** (ta23 +8.40, ta45 +8.27, ta29 +1.93, ta30 +0.87); regla > +2 → **DESCARTA** | -- | **descartada** (2026-09-23) en el filtro: el fallo estaba ayudando, repasar el mejor hijo vale más que pulir el otro |
@@ -2975,3 +2975,56 @@ candidata a aceptarse.
 **Endpoint**: media por instancia, Pocock simétrica p <= 0.0142 en seis
 mirillas. **Mecanismo, primero**: segundas llamadas suprimidas y generaciones
 por tirada.
+
+### I-020, descartada en el filtro: lo que compró I-018 es la profundidad
+
+240 trabajos, cero infactibles, 30 tiradas por celda e instancia, semillas 1001
+a 1030, control en la configuración vigente.
+
+**Mecanismo, exacto**: la celda `none` no hace ninguna segunda llamada (entre
+39611 y 101583 suprimidas por tirada) y corre **entre un 56 y un 73 % más de
+generaciones** —97.9 → 164.8, 118.9 → 184.6, 95.1 → 160.4, 256.4 → 411.3—.
+
+| instancia | media control | media none | d | bo5 d |
+|---|---|---|---|---|
+| ta23 | 1586.0 | 1592.0 | +5.97 | +2.83 |
+| ta29 | 1639.8 | 1642.6 | +2.77 | +3.00 |
+| ta30 | 1618.0 | 1625.3 | **+7.33** | +12.00 |
+| ta45 | 2038.6 | 2046.4 | **+7.77** | +10.17 |
+
+Media **+5.96**, regla *descartar si > +2.0*: **descarta**, peor en las cuatro y
+con la cola todavía peor (+7.00).
+
+**La respuesta a la pregunta que dejó I-018 es limpia.** Con un 56-73 % más de
+generaciones y sin la segunda búsqueda sobre el mejor hijo, se pierden seis
+unidades. **La ganancia de I-018 es la profundidad**, no el rendimiento: las
+generaciones extra no compensan ni de lejos lo que se pierde al no volver a
+buscar desde el óptimo local del mejor hijo.
+
+**Las tres medidas juntas trazan la curva**, con la segunda llamada al tabú:
+
+| iteración | segunda llamada | contra | resultado |
+|---|---|---|---|
+| I-020 | ninguna | vigente (siempre al mejor) | **+5.96** |
+| I-017 | siempre al otro hijo | original (53 % al mejor) | **+4.87** |
+| I-018 | siempre al mejor | original (53 % al mejor) | **−3.38**, aceptada |
+
+Cuanto más de la segunda llamada va a **volver a buscar desde el óptimo local
+del mejor hijo**, mejor; gastarla en el otro hijo o no hacerla, peor.
+
+**Por qué puede funcionar, y enlaza con I-010.** La segunda llamada arranca con
+la **lista tabú vacía** y el contador de iteraciones estériles a cero. I-010
+midió que las llamadas profundas mueren en un estado **todo-tabú** a los 75-92
+movimientos, no por su parámetro: la segunda llamada es, en efecto, **una
+salida de ese callejón** vaciando la memoria y volviendo a empezar desde el
+mejor punto. `localsearch.deadend = escape` (I-012) salía tomando un movimiento
+tabú y dio cero; vaciar la lista y reempezar desde el óptimo sí da.
+
+**Lo que sugiere, y es I-021**: dar **más** de eso, repitiendo la búsqueda
+desde el óptimo local del mejor hijo **mientras siga mejorando**, sin número
+fijo de repeticiones y por tanto sin parámetro nuevo.
+
+**Qué se revierte**: nada de los registros. `abc.ls.pick = none` queda
+implementado y desactivado.
+
+**Sin récords ni igualadas** (`iter/I-020/records.txt`).

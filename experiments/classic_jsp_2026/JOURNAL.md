@@ -2563,3 +2563,32 @@ I-015 lacked.
 
 ta29 and ta30 sit at +5 after 75 runs of 40 seconds. Own bests are unchanged,
 so the new configuration brings the tail closer without crossing it.
+
+## I-020 is discarded at the filter: what I-018 bought is depth
+
+240 jobs, no infeasible schedule, seeds 1001 to 1030, the control being the
+current configuration. The none cell makes no second tabu call and runs 56% to
+73% more generations, 256.4 to 411.3 on ta45. None minus control: ta23 +5.97,
+ta29 +2.77, ta30 +7.33, ta45 +7.77, mean +5.96 against a rule that discards
+above +2.0. Discarded, worse on all four, best-of-five worse still at +7.00.
+
+The question I-018 left open has a clean answer. With far more generations and
+no second search on the better child, six units are lost: I-018's gain is
+depth, not throughput.
+
+Three measurements now trace the curve of the second tabu call. None at all,
+against the current configuration: +5.96. Always on the other child, against
+the original where 53% landed on the better one: +4.87. Always on the better
+child, against the same original: -3.38, accepted. The more of the second call
+goes to searching again from the better child's local optimum, the better.
+
+Why it may work, linking to I-010: the second call starts with an empty tabu
+list and a reset non-improving counter. I-010 measured that deep calls die in
+an all-tabu state after 75 to 92 moves, not from their parameter, and the
+second call is in effect a way out of that dead end, emptying the memory and
+starting again from the best point. The escape I-012 tested, taking a tabu move
+anyway, gave zero; emptying the list and restarting from the optimum does not.
+
+It suggests I-021: more of the same, searching again from the better child's
+local optimum for as long as it keeps improving, with no fixed number of
+repeats and so no new parameter.
