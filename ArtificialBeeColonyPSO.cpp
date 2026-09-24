@@ -251,6 +251,10 @@ namespace FuzzyFW {
 		stats.push_back(std::pair<std::string, double>
 			("LS longest chain of calls on one child", (double)this->lsRepeatLongest));
 		stats.push_back(std::pair<std::string, double>
+			("Scouts polished", (double)this->scoutsPolished));
+		stats.push_back(std::pair<std::string, double>
+			("Tabu calls on scouts", (double)this->scoutPolishCalls));
+		stats.push_back(std::pair<std::string, double>
 			("Best solution", this->bestSoFar->getFitness()->toDouble()));
 		return stats;
 	}
@@ -389,6 +393,10 @@ namespace FuzzyFW {
 		this->lsPickRepeat = (value.compare("best-repeat") == 0);
 		this->lsPickBest = this->lsPickRepeat || (value.compare("best") == 0);
 
+		// I-034: polish the scouts as a chain before they enter.
+		this->scoutPolish =
+			(params->getStringLower(SCOUT_POLISH).compare("chain") == 0);
+
 		// Loads the common parameters
 		GeneticAlgorithm::prepareToRun(params);
 
@@ -458,6 +466,8 @@ namespace FuzzyFW {
 		this->lsSecondImproved = 0;
 		this->lsRepeatCalls = 0;
 		this->lsRepeatLongest = 0;
+		this->scoutsPolished = 0;
+		this->scoutPolishCalls = 0;
 		evolutionStats.clear();
 
 		this->generation = 0;
@@ -620,6 +630,19 @@ namespace FuzzyFW {
 
 					if (this->lsFrequency == LS_Frequency::MALS_INITIAL) {
 						this->applyLocalSearch(newPopulation);
+					}
+					// I-034: search the scout as a chain before it enters.
+					if (this->scoutPolish) {
+						double before, after = newPopulation->getIndividual(0)
+							->getFitness()->toDouble();
+						do {
+							before = after;
+							this->applyLocalSearch(newPopulation, 0);
+							after = newPopulation->getIndividual(0)
+								->getFitness()->toDouble();
+							this->scoutPolishCalls++;
+						} while (after < before);
+						this->scoutsPolished++;
 					}
 					delete currentPopulation->replaceIndividual(i, newPopulation->getBest(this->sharedVariables, 0));
 					// A bug fix, not an idea: this counter was declared and
