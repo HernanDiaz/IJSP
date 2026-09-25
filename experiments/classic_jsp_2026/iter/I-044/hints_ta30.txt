@@ -1,0 +1,10 @@
+results/I-012_fc1_control/ta30_20260922161700_Certificate.csv 2 1584
+results/I-015_filter_p25_allow/ta30_20260923104442_Certificate.csv 1 1584
+results/I-023_filter_p09_control/ta30_20260924055603_Certificate.csv 1 1584
+results/I-024_c11/ta30_20260924062614_Certificate.csv 5 1584
+results/I-024_c70/ta30_20260924070214_Certificate.csv 2 1584
+results/I-026_c033/ta30_20260924092958_Certificate.csv 1 1584
+results/I-021_filter_p09_repeat/ta30_20260924022343_Certificate.csv 1 1587
+results/I-023_filter_p13_control/ta30_20260924055643_Certificate.csv 1 1587
+results/I-024_c10/ta30_20260924062608_Certificate.csv 5 1587
+results/I-024_c20/ta30_20260924063049_Certificate.csv 1 1587

@@ -3088,3 +3088,18 @@ Spreading CP-SAT's time over distinct regions pays where ten minutes on the
 single best did nothing; the ABC supplies exactly what CP-SAT needs, many
 distinct near-optimal starting points. Next: the same hybrid on ta29 and ta30,
 where a record is one unit away, and a continuation of hint 6.
+
+## I-044: 1584 and 1625 behave as floors
+
+ta23 from its 1557 schedule does not improve in 600 s. On ta29, none of the ten
+lowest distinct schedules (five at 1625, five at 1627) moves in 60 s. On ta30,
+all four 1587 schedules drop to 1584, the best known (four certificates
+verified), and none goes below. CP-SAT brings any nearby ta30 schedule of ours
+to 1584 within a minute and never past it. With B-12, 1584 and 1625 behave as
+floors: whatever lies below is not near any region the ABC visits. Not a proof
+of optimality (CP-SAT's bound stays at the published lower bound), but reason
+to move the hybrid to the open instances where it still has room.
+
+An incident: parts b and c did not run the first time because some old
+certificates have truncated rows; the hint selector now skips such runs and
+the two parts were rerun exactly as fixed.

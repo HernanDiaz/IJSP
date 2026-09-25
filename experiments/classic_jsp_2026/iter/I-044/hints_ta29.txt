@@ -1,0 +1,10 @@
+results/I-007_b300_c01/ta29_20260922064205_Certificate.csv 2 1625
+results/I-012_fc6_escape/ta29_20260922163320_Certificate.csv 3 1625
+results/I-022_c15_current/ta29_20260924052525_Certificate.csv 5 1625
+results/I-024_c41/ta29_20260924064411_Certificate.csv 5 1625
+results/I-030_w3_s6005_current/ta29_20260924114704_Certificate.csv 1 1625
+results/I-001_filter_mix/ta29_20260921031338_Certificate.csv 1 1627
+results/I-001_filter_mix/ta29_20260921031338_Certificate.csv 22 1627
+results/I-006_c11_control/ta29_20260922055420_Certificate.csv 5 1627
+results/I-011_filter_p04_portfolio/ta29_20260922224010_Certificate.csv 1 1627
+results/I-024_c35/ta29_20260924063948_Certificate.csv 4 1627
