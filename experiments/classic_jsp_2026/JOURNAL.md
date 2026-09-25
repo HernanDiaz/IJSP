@@ -3301,3 +3301,12 @@ Freeing the core pairs of two machines at a time, 45 s each: 93 of the 105
 pairs close OPTIMAL at 1405, 12 do not close (bounds 1400 to 1403), and none
 gives anything below 1405. The open ones revolve around machines 3, 4, 5, 7,
 8, 10 and 13, machine 13 in eight of them. I-071 reruns them at 120 s.
+
+## I-071: the first escape from the core, ta18 to 1404
+
+With 120 s the 12 open machine pairs of ta18 all close OPTIMAL: eleven at 1405
+and the pair (5, 8) at 1404, verified against OR-Library, a new own best (was
+1405) and the first schedule of the whole line outside the core. Of the 105
+pairs, 104 have optimum 1405 and only (5, 8) allows going lower. This opens a
+descent: break the core, find a better schedule outside it, recompute the core
+with that schedule, repeat. I-072 is the first round.
