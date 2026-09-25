@@ -3130,3 +3130,10 @@ CP-SAT on the best distinct schedules of those runs does not pass 1603 or 1685
 either. They are floors shared by both methods; the ABC <-> CP-SAT loop, as it
 stands, converges to them. Own verified bests stand at ta23 1557 (= best
 known), ta25 1603, ta26 1653, ta27 1685.
+
+## I-048: four new own bests on the open 30x15 instances
+
+6 hints each at 60 s, all verified: ta32 1815 to 1811 (best known 1784), ta33
+1820 to 1802 (1791), ta34 1843 to 1834 (1829), ta40 1695 to 1688 (1669). On
+ta34 five of six hints end exactly at 1834, another shared floor. Next: many
+hints on ta33 and ta34.
