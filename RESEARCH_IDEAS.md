@@ -338,7 +338,8 @@ bucle y están aquí para que no se repitan; sus cifras están en el JOURNAL.
 | I-003 | el explorador del ABC reinyecta un **elite pateado** en vez de una solución aleatoria | un arranque aleatorio a mitad de tirada no puede alcanzar a la población; uno dentro de una cuenca buena sí | kick−control = **+1.43** (ta23 −0.27, ta29 +0.70, ta30 −0.50, ta45 **+5.80**); regla > +2 descarta → **pasa, por poco y en contra** | 4 mirillas de 6: −1.02, −0.57, **−0.03**, +0.44; kick mejor en 9-10 de 21 siempre; p entre 0.55 y 0.88, la frontera nunca se acerca | **detenida en la 4ª** (2026-09-21) por cambio de dirección del PI, no por sus datos. Sin aceptación: es un cero |
 | H-4 | N8 contra N2 (y contra N1, N3, N_ext), fase B del paper de COR | un vecindario más rico gana | -- | 82 instancias x 30 runs, 2460 bloques pareados: N2 1846.50 contra N8 1847.94, dif −1.45, p_adj = 3.9e−4, r = 0.077 (**despreciable**); rangos de Friedman N2 2.1315 el mejor de cinco, N8 2.2400 | **descartada** (antes del bucle; `experiments/cor_tabu_2026/`) |
 | I-012 | **escapar del estado todo-tabú, solo eso** | la celda informativa de I-010 dio −1.11 y mejor en 15 de 21 (p = 0.033) sin frontera | esc−control = −1.82, pasa | 6 mirillas, 30 runs: +1.30, +1.09, +0.59, +0.27, +0.39, **+0.07**; mejor en 10 de 21, p = 0.835 | **descartada** (2026-09-22). La señal de I-010 **no se reprodujo** |
-| I-070 | **romper el núcleo de `ta18` por parejas de máquinas**, tanda 3 de 3 (parejas 71-105), 45 s | continuación de I-069 | pendiente | no aplica | **lanzada** (2026-09-25) |
+| I-071 | **las 12 parejas abiertas de `ta18`**, 120 s cada una | cerrar el mapa de parejas | pendiente | no aplica | **lanzada** (2026-09-25) |
+| I-070 | **romper el núcleo de `ta18` por parejas de máquinas**, tanda 3 de 3 (parejas 71-105), 45 s | continuación de I-069 | parejas 71-105: **31 OPTIMAL en 1405**; 4 sin cerrar ((7,8), (7,13), (8,13), (10,13); cotas 1400-1402); ninguna mejora | no aplica | **cerrada** (2026-09-25): 93 de 105 parejas demostradas; las 12 abiertas van a I-071 |
 | I-069 | **romper el núcleo de `ta18` por parejas de máquinas**, tanda 2 de 3 (parejas 36-70), 45 s | continuación de I-068 | parejas 36-70: **27 OPTIMAL en 1405**; **8 sin cerrar** en 45 s (cotas 1401-1403), todas entre las máquinas 3, 4, 5, 8 y 13; ninguna mejora | no aplica | **cerrada** (2026-09-25); sigue I-070, las 8 abiertas se repiten al final |
 | I-068 | **romper el núcleo de `ta18` por parejas de máquinas**, tanda 1 de 3 (parejas 1-35), 45 s | tras I-067, bajar de 1405 exige romper al menos dos máquinas | parejas 1-35: **las 35 OPTIMAL en 1405** (la más lenta 44 s) | no aplica | **cerrada** (2026-09-25); sigue I-069 |
 | I-067 | **romper el núcleo de `ta18` máquina a máquina**: consenso de 27 con los pares de una máquina liberados, las 15 máquinas, 60 s | `ta18` cierra su núcleo en 16 s: aquí romperlo por partes sí es abordable | las **15 máquinas: OPTIMAL 1405**, en 13-31 s cada una (775-807 pares libres) | no aplica | **cerrada** (2026-09-25): todo horario < 1405 rompe el núcleo en **al menos dos** máquinas |
@@ -5127,3 +5128,17 @@ cierran **todas OPTIMAL en 1405**, la más lenta en 44 s. Sigue la tanda 2
 (5,8), (5,13), con cotas de 1401 a 1403 y mejor 1405 en todas. Ninguna mejora.
 Las ocho combinan las máquinas **3, 4, 5, 8 y 13**, que es donde el núcleo es
 más difícil de cerrar; se repetirán con más tiempo cuando acabe la tanda 3.
+
+### I-070, cierre: 93 de 105 parejas demostradas en 1405
+
+`iter/I-068/run_batch3.log`. De las parejas 71 a 105, **31 cierran OPTIMAL en
+1405** y 4 no cierran en 45 s: (7,8), (7,13), (8,13), (10,13), cotas 1400 a
+1402. En total, **93 de las 105 parejas de máquinas están demostradas en
+1405**; las 12 abiertas giran todas alrededor de las máquinas **3, 4, 5, 7, 8,
+10 y 13**, con la 13 en ocho de ellas. Ninguna ha dado nada mejor que 1405.
+
+### I-071 — las 12 parejas abiertas, con 120 s
+
+**Fijado antes de correr** (`iter/I-071/run.sh`, `open_pairs.txt`): las 12
+parejas abiertas de I-069/I-070, **120 s** cada una, mismo consenso y mismo
+script, unos 24 minutos.

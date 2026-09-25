@@ -3294,3 +3294,10 @@ Freeing one machine's consensus pairs at a time, all 15 machines close OPTIMAL
 at 1405 in 13 to 31 s. Every ta18 schedule below 1405, the best known 1396
 included, breaks core decisions on two machines or more. I-068 to I-070 free
 pairs of machines, 105 pairs in three batches.
+
+## I-068 to I-070: 93 of 105 machine pairs of ta18 proven at 1405
+
+Freeing the core pairs of two machines at a time, 45 s each: 93 of the 105
+pairs close OPTIMAL at 1405, 12 do not close (bounds 1400 to 1403), and none
+gives anything below 1405. The open ones revolve around machines 3, 4, 5, 7,
+8, 10 and 13, machine 13 in eight of them. I-071 reruns them at 120 s.
