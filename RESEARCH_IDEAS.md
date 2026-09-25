@@ -338,6 +338,7 @@ bucle y están aquí para que no se repitan; sus cifras están en el JOURNAL.
 | I-003 | el explorador del ABC reinyecta un **elite pateado** en vez de una solución aleatoria | un arranque aleatorio a mitad de tirada no puede alcanzar a la población; uno dentro de una cuenca buena sí | kick−control = **+1.43** (ta23 −0.27, ta29 +0.70, ta30 −0.50, ta45 **+5.80**); regla > +2 descarta → **pasa, por poco y en contra** | 4 mirillas de 6: −1.02, −0.57, **−0.03**, +0.44; kick mejor en 9-10 de 21 siempre; p entre 0.55 y 0.88, la frontera nunca se acerca | **detenida en la 4ª** (2026-09-21) por cambio de dirección del PI, no por sus datos. Sin aceptación: es un cero |
 | H-4 | N8 contra N2 (y contra N1, N3, N_ext), fase B del paper de COR | un vecindario más rico gana | -- | 82 instancias x 30 runs, 2460 bloques pareados: N2 1846.50 contra N8 1847.94, dif −1.45, p_adj = 3.9e−4, r = 0.077 (**despreciable**); rangos de Friedman N2 2.1315 el mejor de cinco, N8 2.2400 | **descartada** (antes del bucle; `experiments/cor_tabu_2026/`) |
 | I-012 | **escapar del estado todo-tabú, solo eso** | la celda informativa de I-010 dio −1.11 y mejor en 15 de 21 (p = 0.033) sin frontera | esc−control = −1.82, pasa | 6 mirillas, 30 runs: +1.30, +1.09, +0.59, +0.27, +0.39, **+0.07**; mejor en 10 de 21, p = 0.835 | **descartada** (2026-09-22). La señal de I-010 **no se reprodujo** |
+| I-047 | **cerrar el ciclo**: el ABC sembrado con los horarios que dejó CP-SAT (`ta25`, `ta27`), 28 tiradas de 40 s, y CP-SAT sobre sus 20 mejores | cada pista baja a su fondo de CP-SAT; para bajar más hacen falta pistas nuevas, y el ABC las fabrica alrededor de lo mejor | pendiente | no aplica | **lanzada** (2026-09-25) |
 | I-046 | **el híbrido con muchas pistas y poco tiempo**: `ta25` y `ta27`, sus 40 mejores horarios distintos, 20 s cada uno | las mejoras llegan en los primeros segundos y la pista que más baja no es la mejor: repartir en muchas | `ta25`: 34 de 40 pistas mejoran, mejor **1603** (igual que I-045; BKS 1595); `ta27`: 31 de 40 mejoran, mejor **1685**, nuevo mejor propio (antes 1689; BKS 1680); todo verificado | no aplica | **cerrada** (2026-09-25): `ta27` a 1685; `ta25` se para en 1603 |
 | I-045 | **el híbrido en el resto de 20x20 abiertas**: `ta22`, `ta25`, `ta26`, `ta27`, sus 6 mejores horarios distintos, 75 s cada uno | donde nuestro mejor está a 13-21 unidades del BKS el híbrido tiene recorrido, como en `ta23` | mejores propios nuevos, verificados: `ta25` 1616 → **1603** (BKS 1595), `ta26` 1660 → **1653** (1643), `ta27` 1694 → **1689** (1680); `ta22` 1613 no se mueve (1600) | no aplica | **cerrada** (2026-09-25): tres mejores propios; las mejoras llegan en los primeros 10-40 s |
 | I-044 | **el híbrido donde el récord está a una unidad**: `ta23` 600 s desde el 1557; `ta29` y `ta30`, sus 10 mejores horarios distintos, 60 s cada uno | lo que igualó `ta23` desde una pista mediocre puede bajar de 1625 / 1584 desde alguna de las nuestras | `ta23` 1557 no baja en 600 s; `ta29`: ninguna de 10 pistas se mueve (5×1625, 5×1627); `ta30`: las **4 pistas de 1587 bajan a 1584** (BKS, verificado), ninguna por debajo | no aplica | **cerrada** (2026-09-25): sin récord; 1584 y 1625 se comportan como suelos |
@@ -4573,3 +4574,27 @@ cada pista a su fondo local de CP-SAT, y esos fondos tienen un mínimo propio
 por encima del BKS. Para bajar más haría falta **pistas de otras regiones**,
 no más CP-SAT sobre las mismas: la pregunta siguiente es si el ABC, sembrado
 con los horarios que CP-SAT deja, produce pistas nuevas mejores.
+
+### I-047 — cerrar el ciclo: ABC sembrado con CP-SAT, y CP-SAT otra vez
+
+**De dónde sale**: I-046 dice que cada pista baja hasta su fondo de CP-SAT y
+que el mínimo de esos fondos se estanca (1603 en `ta25`). Hacen falta pistas
+**nuevas**, cerca de lo mejor pero distintas; eso es lo que el ABC fabrica.
+La siembra ya existe en el árbol (`CreationJSP_Seeded`, de I-001).
+
+**Fijado antes de correr** (`iter/I-047/run.sh`):
+
+1. **Pool**: todos los horarios distintos que CP-SAT dejó en I-045 e I-046,
+   ordenados por makespan y escritos como secuencia de trabajos
+   (`make_pool.py`): **143** en `ta25` (1603 a 1626) y **99** en `ta27` (1685
+   a 1702). Comprobado: la generación 0 de una tirada sembrada arranca
+   exactamente en 1603 y 1685.
+2. **ABC**: `ref_I-021` con `creation = jsp.seeded`, 25 semillas de 247, la
+   tirada `p` toma líneas desde el desplazamiento `p`; **28 tiradas por
+   instancia**, semillas 7101 a 7128, 40 s cada una (el presupuesto de su
+   clase), por la cola de siempre.
+3. **CP-SAT**: los **20** horarios distintos más bajos de esas tiradas, 20 s
+   cada uno (modelo y ajustes de I-042).
+
+**Lectura**: el mejor del ABC sembrado frente a su punto de partida (1603,
+1685), y el mejor tras CP-SAT, frente al BKS (1595, 1680).
