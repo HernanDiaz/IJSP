@@ -3169,3 +3169,11 @@ verified against OR-Library, so the own bests reported stand.
 6 feasible hints each at 60 s, 52 new schedules verified: ta45 2015 to 2011
 (best known 2000), ta49 1987 to 1980 (1961), ta44 2011 to 2009 (1979), ta42
 1974 to 1971 (1937). Gains of 2 to 7 units against gaps of 11 to 34.
+
+## I-052: floors belong to the hint, not to the seed
+
+With CP-SAT seeds 2 to 13 at 45 s, each hint always falls into the same two or
+three floors: ta25 1603 ten times of twelve (and 1615, 1616), ta26 1653 three
+times and 1660 nine, ta27 1685 eight times and 1689 four. The floor is almost a
+property of the hint; the solver's randomness only picks among a few. The one
+lever left in the hybrid is more distinct hints.
