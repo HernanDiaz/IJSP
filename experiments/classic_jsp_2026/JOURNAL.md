@@ -3163,3 +3163,9 @@ The hint selector did not check feasibility; it now skips any run with
 unreadable rows, job-order violations or machine overlaps. The hints of I-043
 to I-050 did not come from that cell, and every schedule CP-SAT writes is
 verified against OR-Library, so the own bests reported stand.
+
+## I-051: four small new own bests on 30x20
+
+6 feasible hints each at 60 s, 52 new schedules verified: ta45 2015 to 2011
+(best known 2000), ta49 1987 to 1980 (1961), ta44 2011 to 2009 (1979), ta42
+1974 to 1971 (1937). Gains of 2 to 7 units against gaps of 11 to 34.

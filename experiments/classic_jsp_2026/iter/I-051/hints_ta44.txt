@@ -1,0 +1,6 @@
+results/I-001_full_control/ta44_20260921092356_Certificate.csv 26 2011
+results/I-004_w6_control/ta44_20260922040946_Certificate.csv 1 2015
+results/I-030_w1_s6002_original/ta44_20260924105611_Certificate.csv 1 2019
+results/I-041_w1_p01_side/ta44_20260925072125_Certificate.csv 1 2019
+results/I-011_w3_p02_portfolio/ta44_20260923015626_Certificate.csv 1 2020
+results/I-001_full_v2maxmin/ta44_20260921092528_Certificate.csv 27 2022

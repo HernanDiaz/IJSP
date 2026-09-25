@@ -1,0 +1,6 @@
+results/I-041_w4_p05_side/ta49_20260925091721_Certificate.csv 1 1987
+results/I-001_full_v2top/ta49_20260921121347_Certificate.csv 27 1991
+results/I-001_full_v2rand/ta49_20260921114424_Certificate.csv 20 1993
+results/I-016_w6_p03_uniform/ta49_20260923210154_Certificate.csv 1 1993
+results/I-003_w1_kick/ta49_20260921214028_Certificate.csv 3 1994
+results/I-040_w5_p04_cut/ta49_20260925053518_Certificate.csv 1 1994

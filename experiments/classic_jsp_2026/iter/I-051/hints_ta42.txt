@@ -1,0 +1,6 @@
+results/I-001_full_v2rand/ta42_20260921074907_Certificate.csv 23 1974
+results/I-010_w3_escape/ta42_20260922124005_Certificate.csv 3 1974
+results/I-041_w5_p02_side/ta42_20260925101304_Certificate.csv 1 1974
+results/I-010_w4_deepescape/ta42_20260922133706_Certificate.csv 1 1975
+results/I-010_w4_escape/ta42_20260922133704_Certificate.csv 1 1975
+results/I-010_w3_deepescape/ta42_20260922124007_Certificate.csv 3 1976
