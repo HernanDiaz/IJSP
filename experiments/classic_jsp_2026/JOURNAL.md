@@ -3205,3 +3205,10 @@ better. On ta27, 1685 is proven optimal in the consensus of all 37 floors (652
 free). Unlike the IJSP diagnosis of June, the classic JSP floors share a core,
 two thirds of the machine decisions across 107 distinct hints, and every
 schedule better than the attractor must break a decision the floors share.
+
+## I-056: 1603 is optimal in the consensus of all 107 ta25 floors
+
+With 600 s the two large consensus subspaces close: K = 64 OPTIMAL 1603 in 163
+s, K = 107 (1263 free machine pairs, a third of 3800) OPTIMAL 1603 in 565 s.
+Every ta25 schedule better than 1603 breaks at least one of the 2537 machine
+decisions all 107 floors share. I-057 frees them one machine at a time.
