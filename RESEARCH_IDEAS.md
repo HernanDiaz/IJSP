@@ -338,6 +338,7 @@ bucle y están aquí para que no se repitan; sus cifras están en el JOURNAL.
 | I-003 | el explorador del ABC reinyecta un **elite pateado** en vez de una solución aleatoria | un arranque aleatorio a mitad de tirada no puede alcanzar a la población; uno dentro de una cuenca buena sí | kick−control = **+1.43** (ta23 −0.27, ta29 +0.70, ta30 −0.50, ta45 **+5.80**); regla > +2 descarta → **pasa, por poco y en contra** | 4 mirillas de 6: −1.02, −0.57, **−0.03**, +0.44; kick mejor en 9-10 de 21 siempre; p entre 0.55 y 0.88, la frontera nunca se acerca | **detenida en la 4ª** (2026-09-21) por cambio de dirección del PI, no por sus datos. Sin aceptación: es un cero |
 | H-4 | N8 contra N2 (y contra N1, N3, N_ext), fase B del paper de COR | un vecindario más rico gana | -- | 82 instancias x 30 runs, 2460 bloques pareados: N2 1846.50 contra N8 1847.94, dif −1.45, p_adj = 3.9e−4, r = 0.077 (**despreciable**); rangos de Friedman N2 2.1315 el mejor de cinco, N8 2.2400 | **descartada** (antes del bucle; `experiments/cor_tabu_2026/`) |
 | I-012 | **escapar del estado todo-tabú, solo eso** | la celda informativa de I-010 dio −1.11 y mejor en 15 de 21 (p = 0.033) sin frontera | esc−control = −1.82, pasa | 6 mirillas, 30 runs: +1.30, +1.09, +0.59, +0.27, +0.39, **+0.07**; mejor en 10 de 21, p = 0.835 | **descartada** (2026-09-22). La señal de I-010 **no se reprodujo** |
+| I-042 | **CP-SAT desde nuestros mejores horarios** (OR-Tools, instalado con permiso del PI): modelo completo, el horario guardado como pista, 14 hilos, semilla 1, 600 s en `ta29`, `ta30` y `ta23` | la reoptimización exacta de B-12 llegó a ventanas de 60 operaciones; los vecindarios grandes de CP-SAT llegan mucho más lejos | pendiente | no aplica | **lanzada** (2026-09-25) |
 | I-041 | **movimientos laterales en la meseta**: un hijo que **iguala** a su fuente con otro genotipo ocupa su lugar (`abc.accept = sideways`) | al final de la tirada el 70-90 % de la población está en un solo makespan, uno por encima del incumbente, y la sustitución estricta la deja inmóvil hasta que el contador la mata | mecanismo: ~4000 movimientos laterales por tirada (2458-5576), exploradores y generaciones parecidos; side−control = **+1.80** (ta30 +3.97, ta23 +3.33, ta45 +0.40, ta29 −0.50), pasa por poco (descartaba si > +2.0); bo5 +3.25 | mirillas media: **+0.27** (w1, 9 de 21, p = 0.689), **−0.05** (w2, 12 de 21, p = 0.689), **+0.04** (w3, 8 de 21, p = 0.590), **+0.27** (w4, 9 de 21, p = 0.520) | **en oleadas** (2026-09-25) |
 | I-040 | **cortar las cadenas sin esperanza tras su primera llamada**: si el mejor hijo sigue más de un 2 % peor que la fuente, la cadena para (`abc.chain.cut = cut`) | el 84 % de las cadenas no mejora su fuente y las llamadas tras la primera son dos tercios del tabú; lo ahorrado en las perdidas va a cadenas nuevas | mecanismo: ~12500 cadenas cortadas por tirada (27-44 % de las comprobadas), llamadas al tabú iguales, generaciones +16 a +55 %; cut−control = **+0.05** (ta30 +3.20, ta45 +1.00, ta29 −1.97, ta23 −2.03), pasa (descartaba si > +2.0); bo5 +1.42 | mirillas media: **−0.18** (w1, 12 de 21, p = 0.651), **−1.78** (w2, 14 de 21, p = 0.037), **−1.28** (w3, 16 de 21, p = 0.042), **−0.65** (w4, 12 de 21, p = 0.297), **−0.37** (w5, 11 de 21, p = 0.648), **−0.20** (w6, 12 de 21, p = 0.651) | **rechazada y revertida** (2026-09-25) |
 | I-039 | **JOX con probabilidad de conservar uniforme**: en cada cruce se sortea en U(0,1) la probabilidad de conservar cada trabajo, en vez de 1/2 fija (`crossover.jox.mask = uniform`) | I-036 mostró que quitar variedad al cruce hunde el resultado; más variedad de distancia debería ayudar | mecanismo: ~37400 cruces con máscara sorteada por tirada, media 0.50 y desviación 0.25; generaciones 72 → 111 (ta23), 191 → 292 (ta45); umask−control = **+11.70** (ta45 +18.63, ta23 +13.20, ta30 +8.70, ta29 +6.27), **descarta** (si > +2.0); bo5 +8.54 | no se corren | **descartada por el filtro y revertida** (2026-09-25) |
@@ -4323,3 +4324,36 @@ ta29); exploradores y generaciones en el orden del control (81 → 82, 97 → 95
 −0.50, ta30 +3.97, ta45 +0.40, **+1.80**; regla *descartar si > +2.0*:
 **pasa por dos décimas**, apuntando en contra y con el mejor de cinco peor
 todavía (+3.25). Van las oleadas, que es lo que dice la regla.
+
+### I-042 — CP-SAT desde nuestros mejores horarios
+
+**De dónde sale**: el PI autorizó instalar OR-Tools (2026-09-25; `pip` y
+`ortools` 9.15 en la distro `ijsp`). La familia B-12 reoptimizó de forma
+exacta una máquina, dos máquinas y ventanas de 30 y 60 operaciones sobre los
+horarios que igualan el mejor conocido, y en todas ellas eran óptimos locales
+(I-027 a I-029). Lo que no se probó son **vecindarios mucho más grandes**, que
+es donde CP-SAT es fuerte: sus trabajadores de búsqueda en vecindario grande
+(LNS) relajan en cada paso una parte grande del horario y la resuelven de
+forma exacta, alrededor de la mejor solución que tienen.
+
+**El sondeo**: modelo completo del JSP (un intervalo por operación,
+precedencias de trabajo, sin solape por máquina, minimizar el makespan)
+**construido desde el propio certificado**, con el horario guardado como
+pista completa. Instancias y puntos de partida:
+
+| instancia | pista | makespan | BKS | LB |
+|---|---|---|---|---|
+| ta29 | `I-022_c15_current`, tirada 5 | 1625 | 1625 | 1573 |
+| ta30 | `I-023_filter_p09_control`, tirada 1 | 1584 | 1584 | 1519 |
+| ta23 | `I-032_c054`, tirada 5 | 1561 | 1557 | 1518 |
+
+**Fijado antes de correr**: 14 hilos, semilla 1, **600 s por instancia**, una
+sola pasada, en secuencia y con la máquina vacía (entre la oleada 4 y la 5 de
+I-041). Todo horario mejor que la pista se escribe como certificado y se
+comprueba con `verify_certificate.py` contra los datos originales de la
+OR-Library. **Un récord se demuestra con el horario, nada más.**
+
+**Lectura**: si CP-SAT no mejora ninguna de las tres pistas en 600 s, la
+conclusión de B-12 se extiende a vecindarios grandes; si mejora `ta23` sin
+llegar al mejor conocido, dice que nuestro 1561 no era un óptimo local
+profundo; si baja de 1625 en `ta29` o de 1584 en `ta30`, es un récord.
