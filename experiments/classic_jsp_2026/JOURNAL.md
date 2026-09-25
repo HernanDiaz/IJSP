@@ -3143,3 +3143,12 @@ hints on ta33 and ta34.
 40 hints each at 20 s: ta33 best 1802 (the same as I-048), ta34 best 1835 (worse
 than the 1834 of I-048's 60 s). Unlike 20x20, CP-SAT keeps improving past 20 s
 on 30x15. Next: long continuations from the best schedules.
+
+## I-050: long continuations pay little
+
+From I-048's best schedules: ta33 (1802) and ta34 (1834) do not move in 600 s;
+ta32 goes from 1811 to 1809 and ta40 from 1688 to 1686, all verified. As on
+20x20, insisting on one schedule pays little; the hybrid's reach is in spreading
+CP-SAT over distinct hints with just enough time each. Own verified bests now:
+ta23 1557 (= best known), ta25 1603, ta26 1653, ta27 1685, ta32 1809, ta33
+1802, ta34 1834, ta40 1686, and the matched ta29 1625 and ta30 1584.

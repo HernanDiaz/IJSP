@@ -338,7 +338,7 @@ bucle y están aquí para que no se repitan; sus cifras están en el JOURNAL.
 | I-003 | el explorador del ABC reinyecta un **elite pateado** en vez de una solución aleatoria | un arranque aleatorio a mitad de tirada no puede alcanzar a la población; uno dentro de una cuenca buena sí | kick−control = **+1.43** (ta23 −0.27, ta29 +0.70, ta30 −0.50, ta45 **+5.80**); regla > +2 descarta → **pasa, por poco y en contra** | 4 mirillas de 6: −1.02, −0.57, **−0.03**, +0.44; kick mejor en 9-10 de 21 siempre; p entre 0.55 y 0.88, la frontera nunca se acerca | **detenida en la 4ª** (2026-09-21) por cambio de dirección del PI, no por sus datos. Sin aceptación: es un cero |
 | H-4 | N8 contra N2 (y contra N1, N3, N_ext), fase B del paper de COR | un vecindario más rico gana | -- | 82 instancias x 30 runs, 2460 bloques pareados: N2 1846.50 contra N8 1847.94, dif −1.45, p_adj = 3.9e−4, r = 0.077 (**despreciable**); rangos de Friedman N2 2.1315 el mejor de cinco, N8 2.2400 | **descartada** (antes del bucle; `experiments/cor_tabu_2026/`) |
 | I-012 | **escapar del estado todo-tabú, solo eso** | la celda informativa de I-010 dio −1.11 y mejor en 15 de 21 (p = 0.033) sin frontera | esc−control = −1.82, pasa | 6 mirillas, 30 runs: +1.30, +1.09, +0.59, +0.27, +0.39, **+0.07**; mejor en 10 de 21, p = 0.835 | **descartada** (2026-09-22). La señal de I-010 **no se reprodujo** |
-| I-050 | **continuaciones largas en 30x15**: CP-SAT desde el mejor de I-048, 600 s en `ta33` (1802) y `ta34` (1834), 300 s en `ta32` (1811) y `ta40` (1688) | en 30x15 CP-SAT sigue bajando más allá de los 20 s | pendiente | no aplica | **lanzada** (2026-09-25) |
+| I-050 | **continuaciones largas en 30x15**: CP-SAT desde el mejor de I-048, 600 s en `ta33` (1802) y `ta34` (1834), 300 s en `ta32` (1811) y `ta40` (1688) | en 30x15 CP-SAT sigue bajando más allá de los 20 s | `ta33` 1802 y `ta34` 1834 no se mueven en 600 s; `ta32` 1811 → **1809** (a los 157 s), `ta40` 1688 → **1686** (a los 61 s); verificado | no aplica | **cerrada** (2026-09-25): dos mejores propios pequeños; las continuaciones largas rinden poco |
 | I-049 | **muchas pistas en `ta33` y `ta34`**: sus 40 mejores horarios distintos, 20 s cada uno | la variante de I-046 donde estamos a 5 y 11 unidades del BKS | `ta33`: 33 de 40 mejoran, mejor 1802 (el mismo de I-048); `ta34`: 33 de 40, mejor 1835 (> 1834) | no aplica | **cerrada** (2026-09-25): sin mejores nuevos; en 30x15, 20 s es poco |
 | I-048 | **el híbrido en las 30x15 abiertas**: `ta32`, `ta33`, `ta34`, `ta40`, sus 6 mejores horarios distintos, 60 s cada uno | nuestros mejores quedan 14-31 unidades por encima del BKS; en `ta33` y `ta34` la LB está pegada al BKS | mejores propios nuevos, verificados: `ta32` 1815 → **1811** (BKS 1784), `ta33` 1820 → **1802** (1791), `ta34` 1843 → **1834** (1829), `ta40` 1695 → **1688** (1669) | no aplica | **cerrada** (2026-09-25): cuatro mejores propios, ninguno en el BKS |
 | I-047 | **cerrar el ciclo**: el ABC sembrado con los horarios que dejó CP-SAT (`ta25`, `ta27`), 28 tiradas de 40 s, y CP-SAT sobre sus 20 mejores | cada pista baja a su fondo de CP-SAT; para bajar más hacen falta pistas nuevas, y el ABC las fabrica alrededor de lo mejor | 56 tiradas sembradas, cero infactibles: el ABC **no baja de su mejor semilla** (1603, 1685); CP-SAT sobre sus 20 mejores tampoco (1603, 1685) | no aplica | **cerrada** (2026-09-25): el ciclo no encuentra nada nuevo alrededor de esos fondos |
@@ -4669,3 +4669,17 @@ horario más bajo que dejó I-048 en cada instancia, **600 s** en `ta33` (1802)
 y `ta34` (1834), **300 s** en `ta32` (1811) y `ta40` (1688); modelo y ajustes
 de I-042. En 20x20 una continuación así no dio nada (I-044, `ta23`); I-049
 sugiere que en 30x15 puede ser distinto.
+
+### I-050, cierre: las continuaciones largas rinden poco
+
+`iter/I-050/probe_run.log`, todo verificado. `ta33` (1802) y `ta34` (1834) no
+se mueven en 600 s cada una; `ta32` baja de 1811 a **1809** a los 157 s y
+`ta40` de 1688 a **1686** a los 61 s. Como en 20x20 (I-044), una continuación
+larga desde el mejor horario apenas rinde: el recorrido del híbrido está en
+repartir CP-SAT entre pistas distintas con el tiempo justo (60 s en 30x15,
+20-40 s en 20x20), no en insistir sobre una.
+
+**Mejores propios verificados de la línea, a esta fecha**: `ta23` **1557 (=
+BKS)**, `ta25` 1603 (BKS 1595), `ta26` 1653 (1643), `ta27` 1685 (1680), `ta32`
+1809 (1784), `ta33` 1802 (1791), `ta34` 1834 (1829), `ta40` 1686 (1669); en
+`ta29` y `ta30`, el BKS igualado (1625, 1584), que se comporta como suelo.
