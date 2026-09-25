@@ -338,7 +338,8 @@ bucle y están aquí para que no se repitan; sus cifras están en el JOURNAL.
 | I-003 | el explorador del ABC reinyecta un **elite pateado** en vez de una solución aleatoria | un arranque aleatorio a mitad de tirada no puede alcanzar a la población; uno dentro de una cuenca buena sí | kick−control = **+1.43** (ta23 −0.27, ta29 +0.70, ta30 −0.50, ta45 **+5.80**); regla > +2 descarta → **pasa, por poco y en contra** | 4 mirillas de 6: −1.02, −0.57, **−0.03**, +0.44; kick mejor en 9-10 de 21 siempre; p entre 0.55 y 0.88, la frontera nunca se acerca | **detenida en la 4ª** (2026-09-21) por cambio de dirección del PI, no por sus datos. Sin aceptación: es un cero |
 | H-4 | N8 contra N2 (y contra N1, N3, N_ext), fase B del paper de COR | un vecindario más rico gana | -- | 82 instancias x 30 runs, 2460 bloques pareados: N2 1846.50 contra N8 1847.94, dif −1.45, p_adj = 3.9e−4, r = 0.077 (**despreciable**); rangos de Friedman N2 2.1315 el mejor de cinco, N8 2.2400 | **descartada** (antes del bucle; `experiments/cor_tabu_2026/`) |
 | I-012 | **escapar del estado todo-tabú, solo eso** | la celda informativa de I-010 dio −1.11 y mejor en 15 de 21 (p = 0.033) sin frontera | esc−control = −1.82, pasa | 6 mirillas, 30 runs: +1.30, +1.09, +0.59, +0.27, +0.39, **+0.07**; mejor en 10 de 21, p = 0.835 | **descartada** (2026-09-22). La señal de I-010 **no se reprodujo** |
-| I-065 | **muchas pistas en `ta18`**: pistas 21.ª a 80.ª, 20 s | la más pequeña de las abiertas, a 9 del BKS tras I-064 | pendiente | no aplica | **lanzada** (2026-09-25) |
+| I-066 | **el núcleo de `ta18` y `ta26`**: consenso de todos los fondos de CP-SAT, 600 s | extender la demostración de que el BKS está fuera del núcleo | pendiente | no aplica | **lanzada** (2026-09-25) |
+| I-065 | **muchas pistas en `ta18`**: pistas 21.ª a 80.ª, 20 s | la más pequeña de las abiertas, a 9 del BKS tras I-064 | 60 pistas (todas 1420): 16 mejoran, mejor **1409**; el mejor propio sigue en 1405 | no aplica | **cerrada** (2026-09-25): sin mejor nuevo |
 | I-064 | **el híbrido en `ta18` y `ta50`**: `ta18` (20x15), 20 pistas de 30 s; `ta50`, 6 de 60 s | `ta18` es la única 20x15 abierta y nunca se ha pulido; con 300 operaciones CP-SAT debería rendir más | `ta18`: 10 de 20 mejoran, 1414 → **1405** (BKS 1396), dos pistas; `ta50`: 5 de 6, 1966 → **1950** (1923); verificado | no aplica | **cerrada** (2026-09-25): dos mejores propios |
 | I-063 | **el híbrido en las 30x20 sin pulir**: `ta41`, `ta43`, `ta46`, `ta47`, `ta48`, 6 pistas factibles, 60 s | mejores propios verificados donde el híbrido aún no ha pasado | mejores propios nuevos, verificados: `ta41` 2059 → **2031** (BKS 2005), `ta43` 1890 → **1883** (1846), `ta46` 2043 → **2032** (2004), `ta47` 1926 → **1922** (1889), `ta48` 1996 → **1990** (1937) | no aplica | **cerrada** (2026-09-25): cinco mejores propios |
 | I-062 | **buscar contra el núcleo** (`ta22`): un horario de makespan ≤ 1612 que invierta al menos D decisiones del núcleo, D = 10, 50, 150, 480 s | el BKS está fuera del núcleo (I-061); si nuestro 1613 se puede batir, es ahí | D = 10, 50, 150: **nada encontrado** en 480 s y **nada demostrado** (UNKNOWN en los tres) | no aplica | **cerrada, no concluyente** (2026-09-25) |
@@ -5047,3 +5048,18 @@ dos pistas distintas; `ta50`: 5 de 6, de 1966 a **1950** (1923).
 80.ª** de `ta18` (distintas y factibles, por makespan), **20 s** de CP-SAT
 cada una, unos 21 minutos. `ta18` es la más pequeña de las abiertas (300
 operaciones) y la que tiene el hueco más corto tras I-064 (9 unidades).
+
+### I-065, cierre: sin mejor nuevo en `ta18`
+
+`iter/I-065/probe_run.log`, cero infactibles. Las pistas 21.ª a 80.ª de `ta18`
+son todas de 1420; 16 de 60 mejoran, el mejor llega a 1409. El mejor propio
+sigue en 1405 (I-064).
+
+### I-066 — el núcleo de `ta18` y de `ta26`
+
+**Fijado antes de correr** (`iter/I-066/run.sh`, `floors.py`): el fondo por
+pista de CP-SAT (el certificado más bajo de cada pista) de I-064/I-065 en
+`ta18` y de I-045/I-058 en `ta26`, más el mejor horario factible guardado de
+cada una; consenso de **todos** ellos, **600 s** de CP-SAT por instancia. Si
+el estado es OPTIMAL (o la cota supera el BKS: 1396 y 1643), el BKS queda
+también fuera del núcleo en estas dos instancias.

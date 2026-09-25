@@ -3274,3 +3274,8 @@ core decisions they break; downloading them needs the PI's permission.
 ta18, never polished before: 10 of 20 hints improve, 1414 to 1405 (best known
 1396), reached from two distinct hints. ta50: 5 of 6, 1966 to 1950 (1923). All
 verified. I-065 takes ta18's hints 21 to 80 at 20 s.
+
+## I-065: no new best on ta18; I-066 extends the core test
+
+ta18 hints 21 to 80 (all 1420): 16 of 60 improve, best 1409; the own best stays
+at 1405. I-066 takes the consensus core of ta18 and ta26 with 600 s each.
