@@ -3344,3 +3344,11 @@ Of 30 random machine triples of ta18, 25 close OPTIMAL at 1401 and 5 do not
 close in 50 s, none improves. The ta18 descent rests at 1405, 1404, 1401. The
 method moves to ta27, the instance with the shortest gap (1685 against 1680),
 starting with its 20 single machines.
+
+## I-079 and I-080: ta27 holds at 1685 on every machine; its pairs are hard
+
+All 20 single-machine relaxations of ta27 close OPTIMAL at 1685 (machines 0 and
+15 needed 180 s). The 37 pairs containing machine 0 or 15 do not close in 40 s
+(bounds 1673 to 1682) and none improves; ta27 is much harder than ta18. The
+lowest bounds, (15,17) 1673 and (0,15), (0,17) 1676, sit below the best known
+1680. I-081 gives those three pairs 400 s each.
