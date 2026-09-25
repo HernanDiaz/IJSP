@@ -3252,3 +3252,13 @@ generators. The best known 1600 lies outside that core. With I-055 and I-056
 in the 37-floor core, best known 1680), on three instances the best known
 schedule breaks decisions all our good schedules share. Everything we do works
 inside the core; the next step searches against it.
+
+## I-062: searching against the core is inconclusive
+
+Asking CP-SAT for a ta22 schedule of makespan at most 1612 that flips at least
+10, 50 or 150 core decisions: nothing found and nothing proven in 480 s each.
+Without a hint that meets the target, this is as hard as solving the instance
+near-optimally from scratch. Searching against the core needs a starting point
+outside it, and none of our generators provides one. The most informative
+would be the published best-known schedules themselves, which would show which
+core decisions they break; downloading them needs the PI's permission.
