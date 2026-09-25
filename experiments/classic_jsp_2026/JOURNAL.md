@@ -3330,3 +3330,10 @@ the best known 1396. The descent so far: 1405, 1404, 1401. Round 3 starts from
 With 1401 in the group, all 15 single machines and 98 of the 105 machine pairs
 close OPTIMAL at 1401; seven stay open (bounds 1396 to 1399), machine 13 in five
 of them. No improvement yet. I-077 reruns the seven at 180 s.
+
+## I-077: 1401 holds against every single machine and every pair
+
+The seven open pairs close OPTIMAL at 1401 with 180 s. With the 29-schedule
+core, 1401 is optimal when any one machine or any of the 105 machine pairs is
+freed; going lower needs three machines or more. I-078 samples 30 random
+triples of the 455 at 50 s.
