@@ -339,7 +339,7 @@ bucle y están aquí para que no se repitan; sus cifras están en el JOURNAL.
 | H-4 | N8 contra N2 (y contra N1, N3, N_ext), fase B del paper de COR | un vecindario más rico gana | -- | 82 instancias x 30 runs, 2460 bloques pareados: N2 1846.50 contra N8 1847.94, dif −1.45, p_adj = 3.9e−4, r = 0.077 (**despreciable**); rangos de Friedman N2 2.1315 el mejor de cinco, N8 2.2400 | **descartada** (antes del bucle; `experiments/cor_tabu_2026/`) |
 | I-012 | **escapar del estado todo-tabú, solo eso** | la celda informativa de I-010 dio −1.11 y mejor en 15 de 21 (p = 0.033) sin frontera | esc−control = −1.82, pasa | 6 mirillas, 30 runs: +1.30, +1.09, +0.59, +0.27, +0.39, **+0.07**; mejor en 10 de 21, p = 0.835 | **descartada** (2026-09-22). La señal de I-010 **no se reprodujo** |
 | I-042 | **CP-SAT desde nuestros mejores horarios** (OR-Tools, instalado con permiso del PI): modelo completo, el horario guardado como pista, 14 hilos, semilla 1, 600 s en `ta29`, `ta30` y `ta23` | la reoptimización exacta de B-12 llegó a ventanas de 60 operaciones; los vecindarios grandes de CP-SAT llegan mucho más lejos | ninguna mejora en 600 s: `ta29` 1625, `ta30` 1584, `ta23` 1561 (la pista en las tres); cota demostrada igual a la LB publicada en las tres | no aplica | **cerrada** (2026-09-25): los vecindarios grandes de CP-SAT tampoco mueven nuestros mejores horarios |
-| I-041 | **movimientos laterales en la meseta**: un hijo que **iguala** a su fuente con otro genotipo ocupa su lugar (`abc.accept = sideways`) | al final de la tirada el 70-90 % de la población está en un solo makespan, uno por encima del incumbente, y la sustitución estricta la deja inmóvil hasta que el contador la mata | mecanismo: ~4000 movimientos laterales por tirada (2458-5576), exploradores y generaciones parecidos; side−control = **+1.80** (ta30 +3.97, ta23 +3.33, ta45 +0.40, ta29 −0.50), pasa por poco (descartaba si > +2.0); bo5 +3.25 | mirillas media: **+0.27** (w1, 9 de 21, p = 0.689), **−0.05** (w2, 12 de 21, p = 0.689), **+0.04** (w3, 8 de 21, p = 0.590), **+0.27** (w4, 9 de 21, p = 0.520), **+0.38** (w5, 10 de 21, p = 0.414) | **en oleadas** (2026-09-25) |
+| I-041 | **movimientos laterales en la meseta**: un hijo que **iguala** a su fuente con otro genotipo ocupa su lugar (`abc.accept = sideways`) | al final de la tirada el 70-90 % de la población está en un solo makespan, uno por encima del incumbente, y la sustitución estricta la deja inmóvil hasta que el contador la mata | mecanismo: ~4000 movimientos laterales por tirada (2458-5576), exploradores y generaciones parecidos; side−control = **+1.80** (ta30 +3.97, ta23 +3.33, ta45 +0.40, ta29 −0.50), pasa por poco (descartaba si > +2.0); bo5 +3.25 | mirillas media: **+0.27** (w1, 9 de 21, p = 0.689), **−0.05** (w2, 12 de 21, p = 0.689), **+0.04** (w3, 8 de 21, p = 0.590), **+0.27** (w4, 9 de 21, p = 0.520), **+0.38** (w5, 10 de 21, p = 0.414), **+0.22** (w6, 13 de 21, p = 0.768) | **rechazada y revertida** (2026-09-25) |
 | I-040 | **cortar las cadenas sin esperanza tras su primera llamada**: si el mejor hijo sigue más de un 2 % peor que la fuente, la cadena para (`abc.chain.cut = cut`) | el 84 % de las cadenas no mejora su fuente y las llamadas tras la primera son dos tercios del tabú; lo ahorrado en las perdidas va a cadenas nuevas | mecanismo: ~12500 cadenas cortadas por tirada (27-44 % de las comprobadas), llamadas al tabú iguales, generaciones +16 a +55 %; cut−control = **+0.05** (ta30 +3.20, ta45 +1.00, ta29 −1.97, ta23 −2.03), pasa (descartaba si > +2.0); bo5 +1.42 | mirillas media: **−0.18** (w1, 12 de 21, p = 0.651), **−1.78** (w2, 14 de 21, p = 0.037), **−1.28** (w3, 16 de 21, p = 0.042), **−0.65** (w4, 12 de 21, p = 0.297), **−0.37** (w5, 11 de 21, p = 0.648), **−0.20** (w6, 12 de 21, p = 0.651) | **rechazada y revertida** (2026-09-25) |
 | I-039 | **JOX con probabilidad de conservar uniforme**: en cada cruce se sortea en U(0,1) la probabilidad de conservar cada trabajo, en vez de 1/2 fija (`crossover.jox.mask = uniform`) | I-036 mostró que quitar variedad al cruce hunde el resultado; más variedad de distancia debería ayudar | mecanismo: ~37400 cruces con máscara sorteada por tirada, media 0.50 y desviación 0.25; generaciones 72 → 111 (ta23), 191 → 292 (ta45); umask−control = **+11.70** (ta45 +18.63, ta23 +13.20, ta30 +8.70, ta29 +6.27), **descarta** (si > +2.0); bo5 +8.54 | no se corren | **descartada por el filtro y revertida** (2026-09-25) |
 | I-038 | **dejar de registrar la diversidad de Hamming en cada generación** (quitar `statistics.3 = hamming` del setup; sin código) | la estadística, "registrada pero no probada", se come una quinta parte del tiempo; devuelto a la búsqueda son ~25 % más generaciones con el mismo presupuesto | nostat−control = **−0.15** (ta30 −0.23, ta45 −0.20, ta29 −0.10, ta23 −0.07), pasa; pero **el mecanismo no aparece**: generaciones 79 → 78 (ta23), 95 → 95 (ta29), 80 → 78 (ta30), 177 → 190 (ta45) | no se corren | **retirada** (2026-09-25): con 14 procesos a la vez la estadística no cuesta nada medible; las oleadas solo medirían ruido de temporización |
@@ -4380,3 +4380,25 @@ pista** o desde varias pistas distintas (otros horarios que igualan el mejor
 conocido) no es lo mismo que lo probado aquí, pero la lectura de B-12 y de
 esta pasada es que el cuello no es el resolvedor local, sino llegar a otra
 región.
+
+### I-041, cierre: moverse por la meseta es neutro, rechazada y revertida
+
+Filtro y seis oleadas, 1500 tiradas, cero infactibles, control en `ref_I-021`
+(la oleada 5 corrió después del sondeo I-042, nunca a la vez). Media por
+instancia `side − control`: filtro +1.80, mirillas +0.27, −0.05, +0.04,
++0.27, +0.38, **+0.22**, con p final **0.768**. **No cruza**, y en ningún
+momento se separa de cero.
+
+**Lo que dice**: el colapso de la población sobre un solo makespan es real
+(medido), pero **dejar que las fuentes se desplacen por la meseta no ayuda
+ni perjudica**. Con I-015 (dejar entrar el makespan del incumbente) son dos
+maneras de actuar sobre la meseta y las dos neutras: la meseta es un síntoma
+del estancamiento, no su causa. Lo que la población tiene al final de la
+tirada ya no se puede convertir en un horario mejor desde dentro.
+
+**Sin récords ni igualadas.**
+
+**Código revertido**: `ArtificialBeeColonyPSO.{h,cpp}` vuelven a su versión
+anterior a I-041 y el solver recompilado reproduce exactamente la referencia
+a número fijo de generaciones. El diagnóstico de la meseta queda en
+`iter/I-041/diagnostic/`.

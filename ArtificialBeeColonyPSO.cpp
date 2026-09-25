@@ -251,8 +251,6 @@ namespace FuzzyFW {
 		stats.push_back(std::pair<std::string, double>
 			("LS longest chain of calls on one child", (double)this->lsRepeatLongest));
 		stats.push_back(std::pair<std::string, double>
-			("Sideways moves on the plateau", (double)this->sidewaysMoves));
-		stats.push_back(std::pair<std::string, double>
 			("Best solution", this->bestSoFar->getFitness()->toDouble()));
 		return stats;
 	}
@@ -391,10 +389,6 @@ namespace FuzzyFW {
 		this->lsPickRepeat = (value.compare("best-repeat") == 0);
 		this->lsPickBest = this->lsPickRepeat || (value.compare("best") == 0);
 
-		// I-041: sideways moves on the plateau.
-		this->acceptSideways =
-			(params->getStringLower(ACCEPT_RULE).compare("sideways") == 0);
-
 		// Loads the common parameters
 		GeneticAlgorithm::prepareToRun(params);
 
@@ -464,7 +458,6 @@ namespace FuzzyFW {
 		this->lsSecondImproved = 0;
 		this->lsRepeatCalls = 0;
 		this->lsRepeatLongest = 0;
-		this->sidewaysMoves = 0;
 		evolutionStats.clear();
 
 		this->generation = 0;
@@ -617,20 +610,6 @@ namespace FuzzyFW {
 					bestlocalClone->setNumTrials(0);
 					currentFoodSource = bestlocalClone; // Fix: avoid dangling pointer after replace
 					}
-				// I-041: a child that only ties its source, with another
-				// genotype, takes its place; the trial count still goes up.
-				else if (this->acceptSideways
-					&& bestLocal->getFitness()->isEqualTo(currentFoodSource->getFitness())
-					&& !bestLocal->getFitness()->isEqualTo(this->bestSoFar->getFitness())
-					&& dynamic_cast<IndividualArrayInt *>(bestLocal)
-						->hammingDistance(currentFoodSource) > 0.0) {
-					unsigned int trials = currentFoodSource->getNumTrials() + 1;
-					Individual* bestlocalClone = bestLocal->clone();
-					delete currentPopulation->replaceIndividual(i, bestlocalClone);
-					bestlocalClone->setNumTrials(trials);
-					currentFoodSource = bestlocalClone;
-					this->sidewaysMoves++;
-				}
 				else {
 					currentFoodSource->setNumTrials(currentFoodSource->getNumTrials() + 1);
 				}

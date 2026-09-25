@@ -3060,3 +3060,15 @@ known, where ten minutes of large-neighbourhood search around our schedule
 find nothing better. Our best schedules are deep local optima for CP-SAT's
 large relaxations too, beyond what B-12 showed for one or two machines and
 windows of 60 operations.
+
+## I-041 is rejected and rolled back: moving across the plateau is neutral
+
+Filter and six waves, 1500 runs, no infeasible schedule (wave 5 ran after the
+I-042 probe, never at the same time). Side minus control: +1.80 at the filter,
+then +0.27, -0.05, +0.04, +0.27, +0.38, +0.22, final p = 0.768. The collapse
+of the population onto one makespan is real, but letting sources drift across
+it neither helps nor hurts; with I-015, two ways of acting on the plateau and
+both neutral. The plateau is a symptom of stagnation, not its cause.
+
+No records and no matches. The code is rolled back and the rebuilt solver
+reproduces the reference exactly.
