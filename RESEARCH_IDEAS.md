@@ -5304,3 +5304,6 @@ parejas que quedan (las 190 menos las tres de I-081), **90 s** cada una, el
 grupo de I-079, en **tandas de 20** (una por iteración, unos 30 minutos), en el
 orden de `pairs.txt`. Todo horario por debajo de 1685 se verifica y abre una
 vuelta nueva del descenso, como en `ta18`.
+
+- I-082, parejas 1-20: 20 cerradas OPTIMAL en 1685; ninguna mejora.
+
