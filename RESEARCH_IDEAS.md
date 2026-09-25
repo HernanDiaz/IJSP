@@ -338,6 +338,7 @@ bucle y están aquí para que no se repitan; sus cifras están en el JOURNAL.
 | I-003 | el explorador del ABC reinyecta un **elite pateado** en vez de una solución aleatoria | un arranque aleatorio a mitad de tirada no puede alcanzar a la población; uno dentro de una cuenca buena sí | kick−control = **+1.43** (ta23 −0.27, ta29 +0.70, ta30 −0.50, ta45 **+5.80**); regla > +2 descarta → **pasa, por poco y en contra** | 4 mirillas de 6: −1.02, −0.57, **−0.03**, +0.44; kick mejor en 9-10 de 21 siempre; p entre 0.55 y 0.88, la frontera nunca se acerca | **detenida en la 4ª** (2026-09-21) por cambio de dirección del PI, no por sus datos. Sin aceptación: es un cero |
 | H-4 | N8 contra N2 (y contra N1, N3, N_ext), fase B del paper de COR | un vecindario más rico gana | -- | 82 instancias x 30 runs, 2460 bloques pareados: N2 1846.50 contra N8 1847.94, dif −1.45, p_adj = 3.9e−4, r = 0.077 (**despreciable**); rangos de Friedman N2 2.1315 el mejor de cinco, N8 2.2400 | **descartada** (antes del bucle; `experiments/cor_tabu_2026/`) |
 | I-012 | **escapar del estado todo-tabú, solo eso** | la celda informativa de I-010 dio −1.11 y mejor en 15 de 21 (p = 0.033) sin frontera | esc−control = −1.82, pasa | 6 mirillas, 30 runs: +1.30, +1.09, +0.59, +0.27, +0.39, **+0.07**; mejor en 10 de 21, p = 0.835 | **descartada** (2026-09-22). La señal de I-010 **no se reprodujo** |
+| I-054 | **recombinación exacta entre atractores**: el mejor fondo de CP-SAT con cada uno de los 15 siguientes, precedencias comunes fijas y el resto libre, 45 s (`ta25`, `ta27`) | para salir de un atractor hay que atravesar hacia otro; el cruce óptimo de dos fondos lo hace de forma exacta | pendiente | no aplica | **lanzada** (2026-09-25) |
 | I-053 | **más abajo en la lista de pistas**: `ta25`, pistas 41.ª a 120.ª, 20 s cada una | los fondos son de la pista y el mejor de `ta27` salió de la 31.ª: pistas nuevas pueden tener fondos más bajos | 80 pistas (1623-1631): **70 mejoran**, la mejor llega otra vez a **1603** desde otro horario; ninguna por debajo | no aplica | **cerrada** (2026-09-25): 1603 es un atractor en `ta25` |
 | I-052 | **la aleatoriedad de CP-SAT**: las pistas que dieron 1603 (`ta25`), 1653 (`ta26`) y 1685 (`ta27`), con las semillas 2 a 13, 45 s cada una | la misma pista con otra semilla puede caer en otro fondo | cada pista cae en los mismos 2-3 fondos: `ta25` 1603 (10 de 12), 1615, 1616; `ta26` 1653 (3), 1660 (9); `ta27` 1685 (8), 1689 (4) | no aplica | **cerrada** (2026-09-25): los fondos son de la pista, no de la semilla |
 | I-051 | **el híbrido en las 30x20 más cercanas**: `ta45`, `ta49`, `ta44`, `ta42`, sus 6 mejores horarios distintos y factibles, 60 s cada uno | 60 s por pista rindió en 30x15; aquí la distancia al BKS es de 15 a 37 | mejores propios nuevos, verificados: `ta45` 2015 → **2011** (BKS 2000), `ta49` 1987 → **1980** (1961), `ta44` 2011 → **2009** (1979), `ta42` 1974 → **1971** (1937) | no aplica | **cerrada** (2026-09-25): cuatro mejores propios pequeños |
@@ -4767,3 +4768,26 @@ CP-SAT, al mismo nivel que 1584 y 1625, y el híbrido, tal como está, los ha
 encontrado ya. Bajar de ahí pide algo que ni el ABC ni CP-SAT con pista hacen:
 una búsqueda que atraviese las regiones entre atractores, no que pula dentro
 de ellos.
+
+### I-054 — recombinación exacta entre atractores
+
+**De dónde sale**: I-053 cierra que el híbrido ya ha encontrado los
+atractores del par ABC + CP-SAT; para bajar hay que **atravesar** entre
+ellos. La herramienta exacta para eso es el **cruce óptimo**: de dos horarios
+`A` y `B`, todo par de operaciones de una máquina que los dos ordenan igual se
+fija como precedencia, los pares en que discrepan quedan libres, y CP-SAT
+minimiza el makespan en ese subespacio, que contiene a los dos padres y a todas
+sus mezclas (`iter/I-054/recombine.py`). Si el estado es OPTIMAL, el
+subespacio **no tiene nada mejor**: es una prueba sobre esa región.
+
+**Prueba de humo, que ya dice algo**: dos horarios **distintos** de 1603 de
+`ta25` coinciden en el **99.0 %** de los pares de máquina (difieren en 37 de
+3800) y el subespacio se resuelve a OPTIMAL en 1603 en un segundo. Los 1603
+"distintos" son variantes del mismo horario. De ahí el diseño: recombinar con
+**fondos de pistas distintas**, no con variantes del mismo.
+
+**Fijado antes de correr** (`iter/I-054/run.sh`): para `ta25` y `ta27`, el
+fondo que alcanzó cada pista de I-045, I-046 e I-053 (`floors.py`: 107 en
+`ta25`); el más bajo se recombina con **cada uno de los 15 siguientes**,
+**45 s** de CP-SAT por pareja. Se anotan el acuerdo entre padres, el mejor y
+el estado.
