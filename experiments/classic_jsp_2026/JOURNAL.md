@@ -3241,3 +3241,14 @@ fixes 77.7 per cent of machine pairs, leaving 847 free. In 600 s CP-SAT finds
 nothing better than 1613 and does not close: the bound stays at 1598, below
 the best known 1600, so the subspace could hold schedules of 1600 to 1612.
 I-061 gives it 1500 s.
+
+## I-061: ta22's best known schedule lies outside the core, proven
+
+With 1500 s the joint-consensus subspace of I-060 still does not close (best
+1613), but the bound rises to 1607: no ta22 schedule with makespan at most 1606
+respects the 2953 machine decisions shared by the 30 schedules of both
+generators. The best known 1600 lies outside that core. With I-055 and I-056
+(ta25: 1603 optimal in the 107-floor core, best known 1595; ta27: 1685 optimal
+in the 37-floor core, best known 1680), on three instances the best known
+schedule breaks decisions all our good schedules share. Everything we do works
+inside the core; the next step searches against it.
