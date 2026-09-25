@@ -3287,3 +3287,10 @@ ta18: the consensus of 27 schedules is solved to optimality at 1405 in 16 s
 With ta22 (bound 1607 against 1600), ta25 (1603 against 1595) and ta27 (1685
 against 1680), on five open instances every schedule that matches or beats
 the best known breaks a machine decision all our good schedules share.
+
+## I-067: going below 1405 on ta18 needs at least two machines of the core broken
+
+Freeing one machine's consensus pairs at a time, all 15 machines close OPTIMAL
+at 1405 in 13 to 31 s. Every ta18 schedule below 1405, the best known 1396
+included, breaks core decisions on two machines or more. I-068 to I-070 free
+pairs of machines, 105 pairs in three batches.
