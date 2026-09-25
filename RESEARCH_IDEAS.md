@@ -338,6 +338,7 @@ bucle y están aquí para que no se repitan; sus cifras están en el JOURNAL.
 | I-003 | el explorador del ABC reinyecta un **elite pateado** en vez de una solución aleatoria | un arranque aleatorio a mitad de tirada no puede alcanzar a la población; uno dentro de una cuenca buena sí | kick−control = **+1.43** (ta23 −0.27, ta29 +0.70, ta30 −0.50, ta45 **+5.80**); regla > +2 descarta → **pasa, por poco y en contra** | 4 mirillas de 6: −1.02, −0.57, **−0.03**, +0.44; kick mejor en 9-10 de 21 siempre; p entre 0.55 y 0.88, la frontera nunca se acerca | **detenida en la 4ª** (2026-09-21) por cambio de dirección del PI, no por sus datos. Sin aceptación: es un cero |
 | H-4 | N8 contra N2 (y contra N1, N3, N_ext), fase B del paper de COR | un vecindario más rico gana | -- | 82 instancias x 30 runs, 2460 bloques pareados: N2 1846.50 contra N8 1847.94, dif −1.45, p_adj = 3.9e−4, r = 0.077 (**despreciable**); rangos de Friedman N2 2.1315 el mejor de cinco, N8 2.2400 | **descartada** (antes del bucle; `experiments/cor_tabu_2026/`) |
 | I-012 | **escapar del estado todo-tabú, solo eso** | la celda informativa de I-010 dio −1.11 y mejor en 15 de 21 (p = 0.033) sin frontera | esc−control = −1.82, pasa | 6 mirillas, 30 runs: +1.30, +1.09, +0.59, +0.27, +0.39, **+0.07**; mejor en 10 de 21, p = 0.835 | **descartada** (2026-09-22). La señal de I-010 **no se reprodujo** |
+| I-067 | **romper el núcleo de `ta18` máquina a máquina**: consenso de 27 con los pares de una máquina liberados, las 15 máquinas, 60 s | `ta18` cierra su núcleo en 16 s: aquí romperlo por partes sí es abordable | pendiente | no aplica | **lanzada** (2026-09-25) |
 | I-066 | **el núcleo de `ta18` y `ta26`**: consenso de todos los fondos de CP-SAT, 600 s | extender la demostración de que el BKS está fuera del núcleo | `ta18`: 27 horarios, 642 pares libres, **1405 OPTIMAL** en 16 s (BKS 1396); `ta26`: 26 horarios, 674 libres, **1653 OPTIMAL** en 332 s (BKS 1643) | no aplica | **cerrada** (2026-09-25): el BKS también está fuera del núcleo en `ta18` y `ta26` |
 | I-065 | **muchas pistas en `ta18`**: pistas 21.ª a 80.ª, 20 s | la más pequeña de las abiertas, a 9 del BKS tras I-064 | 60 pistas (todas 1420): 16 mejoran, mejor **1409**; el mejor propio sigue en 1405 | no aplica | **cerrada** (2026-09-25): sin mejor nuevo |
 | I-064 | **el híbrido en `ta18` y `ta50`**: `ta18` (20x15), 20 pistas de 30 s; `ta50`, 6 de 60 s | `ta18` es la única 20x15 abierta y nunca se ha pulido; con 300 operaciones CP-SAT debería rendir más | `ta18`: 10 de 20 mejoran, 1414 → **1405** (BKS 1396), dos pistas; `ta50`: 5 de 6, 1966 → **1950** (1923); verificado | no aplica | **cerrada** (2026-09-25): dos mejores propios |
@@ -5081,3 +5082,15 @@ de I-061 queda así:
 
 En las **cinco**, todo horario que iguale o mejore el BKS rompe alguna
 decisión de máquina que comparten todos nuestros buenos horarios.
+
+### I-067 — romper el núcleo de `ta18` máquina a máquina
+
+**De dónde sale**: en `ta25` romper el núcleo máquina a máquina no cerró en
+60 s (I-057). `ta18` es mucho más pequeña (300 operaciones, 2850 pares) y su
+núcleo de 27 horarios cierra en **16 s** (I-066), así que ahí sí cabe.
+
+**Fijado antes de correr** (`iter/I-067/run.sh`, reutiliza
+`iter/I-057/break_machine.py`): el consenso de I-066 con los pares de consenso
+de **una** máquina liberados, las **15** máquinas, **60 s** cada una. Si
+alguna da menos de 1405, se verifica; si todas cierran en 1405, queda
+demostrado que el BKS rompe decisiones de **al menos dos** máquinas.
