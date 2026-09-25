@@ -338,7 +338,8 @@ bucle y están aquí para que no se repitan; sus cifras están en el JOURNAL.
 | I-003 | el explorador del ABC reinyecta un **elite pateado** en vez de una solución aleatoria | un arranque aleatorio a mitad de tirada no puede alcanzar a la población; uno dentro de una cuenca buena sí | kick−control = **+1.43** (ta23 −0.27, ta29 +0.70, ta30 −0.50, ta45 **+5.80**); regla > +2 descarta → **pasa, por poco y en contra** | 4 mirillas de 6: −1.02, −0.57, **−0.03**, +0.44; kick mejor en 9-10 de 21 siempre; p entre 0.55 y 0.88, la frontera nunca se acerca | **detenida en la 4ª** (2026-09-21) por cambio de dirección del PI, no por sus datos. Sin aceptación: es un cero |
 | H-4 | N8 contra N2 (y contra N1, N3, N_ext), fase B del paper de COR | un vecindario más rico gana | -- | 82 instancias x 30 runs, 2460 bloques pareados: N2 1846.50 contra N8 1847.94, dif −1.45, p_adj = 3.9e−4, r = 0.077 (**despreciable**); rangos de Friedman N2 2.1315 el mejor de cinco, N8 2.2400 | **descartada** (antes del bucle; `experiments/cor_tabu_2026/`) |
 | I-012 | **escapar del estado todo-tabú, solo eso** | la celda informativa de I-010 dio −1.11 y mejor en 15 de 21 (p = 0.033) sin frontera | esc−control = −1.82, pasa | 6 mirillas, 30 runs: +1.30, +1.09, +0.59, +0.27, +0.39, **+0.07**; mejor en 10 de 21, p = 0.835 | **descartada** (2026-09-22). La señal de I-010 **no se reprodujo** |
-| I-060 | **consenso conjunto de ABC y CP-SAT en frío** (`ta22`): fijar solo lo que ordenan igual los fondos del ABC y los diez horarios en frío, 600 s | los dos generadores caen en el mismo núcleo; su consenso conjunto deja libre más que cualquiera de ellos | pendiente | no aplica | **lanzada** (2026-09-25) |
+| I-061 | **el consenso conjunto de `ta22` con 1500 s** | en 600 s la cota quedó en 1598, bajo el BKS: o se demuestra 1613 o aparece algo mejor | pendiente | no aplica | **lanzada** (2026-09-25) |
+| I-060 | **consenso conjunto de ABC y CP-SAT en frío** (`ta22`): fijar solo lo que ordenan igual los fondos del ABC y los diez horarios en frío, 600 s | los dos generadores caen en el mismo núcleo; su consenso conjunto deja libre más que cualquiera de ellos | grupo de 30 (20 de 1613, 10 en frío): el consenso fija el 77.7 % y deja **847** pares libres; en 600 s mejor 1613, **sin cerrar**, cota **1598** (< BKS 1600) | no aplica | **cerrada, no concluyente** (2026-09-25) |
 | I-059 | **CP-SAT en frío, sin pista** (`ta22`, semillas 1 a 10, 120 s): cuánto coinciden sus horarios con el atractor 1613 del ABC | todas nuestras pistas vienen del ABC y caen en su núcleo; otro generador puede caer en otras regiones | CP-SAT en frío: 1629-1648 en 120 s (peor que el ABC), y **coincide un 90.0-93.5 %** con el atractor 1613 del ABC: el mismo núcleo | no aplica | **cerrada** (2026-09-25): el núcleo no es un sesgo del ABC |
 | I-058 | **muchas pistas en `ta22` y `ta26`**: sus 40 mejores horarios distintos y factibles, 20 s cada uno | las dos 20x20 abiertas que aún no han tenido la variante de I-046 | `ta22`: **38 de 40 pistas acaban en 1613** exacto (dos en 1614); `ta26`: mejor 1656 (el propio sigue en 1653) | no aplica | **cerrada** (2026-09-25): sin mejores nuevos; 1613 es el atractor más marcado |
 | I-057 | **romper el núcleo máquina a máquina** (`ta25`): consenso de los 107 fondos con los pares de una máquina liberados, las 20 máquinas, 60 s | todo horario mejor que 1603 rompe alguna decisión común | las 20 máquinas: **ninguna mejora** sobre 1603, **ninguna cerrada** en 60 s (1361-1406 pares libres, cotas 1584-1588) | no aplica | **cerrada, no concluyente** (2026-09-25): sin mejora y sin demostración |
@@ -4928,3 +4929,18 @@ CP-SAT en I-045 e I-058 y los diez horarios en frío de I-059; se fijan solo
 los pares de máquina que **todos** ordenan igual, y CP-SAT minimiza **600 s**
 con el mejor del grupo como pista. OPTIMAL en 1613 sería una demostración
 sobre la región que exploran los dos generadores; algo mejor, se verifica.
+
+### I-060, cierre: no concluyente, con la cota por debajo del BKS
+
+`iter/I-060/run.log`. El grupo son 30 horarios: 20 de 1613 (el mejor guardado
+y los fondos de CP-SAT) y los 10 en frío (1629-1648). El consenso conjunto fija
+2953 de 3800 pares (77.7 %) y deja **847 libres**. En 600 s CP-SAT **no
+encuentra nada mejor que 1613** y **no cierra**: la cota se queda en **1598**,
+por debajo incluso del BKS (1600), así que el subespacio **podría** contener
+horarios de 1600 a 1612. `ta22` resulta más dura que `ta25`, donde 1263 pares
+libres cerraron en 565 s.
+
+### I-061 — el mismo subespacio de `ta22`, con 1500 s
+
+**Fijado antes de correr** (`iter/I-061/run.sh`): el grupo y el consenso de
+I-060 tal cual, **1500 s** de CP-SAT, lo más que cabe en una iteración.

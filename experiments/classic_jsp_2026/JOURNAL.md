@@ -3233,3 +3233,11 @@ attractor on machine pairs, the same order as the ABC's own floors. Two
 generators with nothing in common land in the same core: a structure of the
 instance, not of our algorithm. The best known 1600 must break decisions both
 make. I-060 tests their joint consensus.
+
+## I-060: inconclusive, with the bound below the best known
+
+The joint consensus of 20 ABC-side 1613 schedules and 10 cold CP-SAT schedules
+fixes 77.7 per cent of machine pairs, leaving 847 free. In 600 s CP-SAT finds
+nothing better than 1613 and does not close: the bound stays at 1598, below
+the best known 1600, so the subspace could hold schedules of 1600 to 1612.
+I-061 gives it 1500 s.
