@@ -3103,3 +3103,12 @@ to move the hybrid to the open instances where it still has room.
 An incident: parts b and c did not run the first time because some old
 certificates have truncated rows; the hint selector now skips such runs and
 the two parts were rerun exactly as fixed.
+
+## I-045: three new own bests, and the improvements come early
+
+The hybrid on the other open 20x20 instances, 6 hints each, 75 s: ta25 1616 to
+1603 (best known 1595), ta26 1660 to 1653 (1643), ta27 1694 to 1689 (1680), all
+verified; ta22 stays at 1613 (1600), its six hints all 1613. Again the best
+hint is not the one that drops most (on ta25 a 1617 hint reaches 1603 while the
+1616 one stops at 1613), and almost every improvement comes in the first 10 to
+40 s. More hints, less time each.

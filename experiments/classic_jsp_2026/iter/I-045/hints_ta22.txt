@@ -1,0 +1,6 @@
+results/I-001_full_mix/ta22_20260921052207_Certificate.csv 16 1613
+results/I-004_w2_fulltails/ta22_20260922012807_Certificate.csv 3 1613
+results/I-006_c05_freqtie/ta22_20260922054108_Certificate.csv 2 1613
+results/I-006_c13_control/ta22_20260922060233_Certificate.csv 5 1613
+results/I-012_w3_escape/ta22_20260922181058_Certificate.csv 2 1613
+results/I-012_w4_control/ta22_20260922184857_Certificate.csv 2 1613

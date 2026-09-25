@@ -1,0 +1,6 @@
+results/I-016_w4_p03_uniform/ta27_20260923182951_Certificate.csv 1 1694
+results/I-021_w2_p05_repeat/ta27_20260924032639_Certificate.csv 1 1694
+results/I-011_w6_p02_portfolio/ta27_20260923032725_Certificate.csv 1 1696
+results/I-018_w2_p05_best/ta27_20260923231243_Certificate.csv 1 1696
+results/I-034_w5_p04_control/ta27_20260924173805_Certificate.csv 1 1696
+results/I-034_w5_p04_polish/ta27_20260924173806_Certificate.csv 1 1696

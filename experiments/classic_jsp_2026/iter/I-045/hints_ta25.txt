@@ -1,0 +1,6 @@
+results/I-001_full_mix/ta25_20260921054812_Certificate.csv 4 1616
+results/I-016_w6_p02_circle/ta25_20260923201648_Certificate.csv 1 1617
+results/I-034_w5_p05_control/ta25_20260924173625_Certificate.csv 1 1617
+results/I-034_w5_p05_polish/ta25_20260924173712_Certificate.csv 1 1617
+results/I-041_w3_p03_side/ta25_20260925081410_Certificate.csv 1 1617
+results/I-001_full_control/ta25_20260921052207_Certificate.csv 13 1620
