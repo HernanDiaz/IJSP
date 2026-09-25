@@ -3177,3 +3177,12 @@ three floors: ta25 1603 ten times of twelve (and 1615, 1616), ta26 1653 three
 times and 1660 nine, ta27 1685 eight times and 1689 four. The floor is almost a
 property of the hint; the solver's randomness only picks among a few. The one
 lever left in the hybrid is more distinct hints.
+
+## I-053: 1603 is an attractor on ta25
+
+Hints ranked 41 to 120 (1623 to 1631), 20 s each: 70 of 80 improve, and the best
+again ends exactly at 1603, from a different schedule. With 160 distinct hints,
+twelve seeds and continuations of up to 600 s, ta25 does not pass 1603, ta27
+1685, ta26 1653, and ta29/ta30 their best known values. Distinct starting
+points end at the same value: attractors of the ABC + CP-SAT pair, which the
+hybrid has already found.
