@@ -1,0 +1,98 @@
+=== 0. MECHANISM CHECK ===
+inst   statistic                                     control       side
+ta22   Sideways moves on the plateau                    0.00    4909.27
+ta22   Total replacements in ABC                       68.47     128.13
+ta22   Number of Generations                           88.07     100.00
+ta23   Sideways moves on the plateau                    0.00    2675.33
+ta23   Total replacements in ABC                       78.40      33.00
+ta23   Number of Generations                           88.80      83.67
+ta25   Sideways moves on the plateau                    0.00    2910.87
+ta25   Total replacements in ABC                       55.47      47.87
+ta25   Number of Generations                           77.33      81.73
+ta26   Sideways moves on the plateau                    0.00    3274.80
+ta26   Total replacements in ABC                       53.20      48.53
+ta26   Number of Generations                           91.67      83.93
+ta27   Sideways moves on the plateau                    0.00    2828.67
+ta27   Total replacements in ABC                       67.07      24.13
+ta27   Number of Generations                           85.53      82.40
+ta29   Sideways moves on the plateau                    0.00    5999.40
+ta29   Total replacements in ABC                       65.93     139.93
+ta29   Number of Generations                           82.73      91.13
+ta30   Sideways moves on the plateau                    0.00    2422.60
+ta30   Total replacements in ABC                       46.27      38.27
+ta30   Number of Generations                           77.73      80.60
+ta32   Sideways moves on the plateau                    0.00    4029.60
+ta32   Total replacements in ABC                      275.00     236.47
+ta32   Number of Generations                          185.60     183.27
+ta33   Sideways moves on the plateau                    0.00    3878.93
+ta33   Total replacements in ABC                      312.47     235.53
+ta33   Number of Generations                          184.40     188.60
+ta34   Sideways moves on the plateau                    0.00    7117.60
+ta34   Total replacements in ABC                      412.20     428.93
+ta34   Number of Generations                          206.93     211.53
+ta40   Sideways moves on the plateau                    0.00    5373.13
+ta40   Total replacements in ABC                      314.33     301.93
+ta40   Number of Generations                          200.67     195.07
+ta41   Sideways moves on the plateau                    0.00    5529.20
+ta41   Total replacements in ABC                      233.87     228.27
+ta41   Number of Generations                          189.13     189.00
+ta42   Sideways moves on the plateau                    0.00    5908.80
+ta42   Total replacements in ABC                      308.53     347.73
+ta42   Number of Generations                          207.73     218.93
+ta43   Sideways moves on the plateau                    0.00    1865.73
+ta43   Total replacements in ABC                      161.20     167.73
+ta43   Number of Generations                          171.93     174.87
+ta44   Sideways moves on the plateau                    0.00    5043.27
+ta44   Total replacements in ABC                      320.40     298.20
+ta44   Number of Generations                          194.87     197.93
+ta45   Sideways moves on the plateau                    0.00    3862.47
+ta45   Total replacements in ABC                      290.60     209.93
+ta45   Number of Generations                          188.00     197.33
+ta46   Sideways moves on the plateau                    0.00    3075.73
+ta46   Total replacements in ABC                      160.60     211.60
+ta46   Number of Generations                          178.67     182.53
+ta47   Sideways moves on the plateau                    0.00    5488.40
+ta47   Total replacements in ABC                      262.20     301.00
+ta47   Number of Generations                          203.27     209.47
+ta48   Sideways moves on the plateau                    0.00    7591.40
+ta48   Total replacements in ABC                      375.33     518.67
+ta48   Number of Generations                          209.13     225.13
+ta49   Sideways moves on the plateau                    0.00    7898.33
+ta49   Total replacements in ABC                      289.87     352.13
+ta49   Number of Generations                          195.40     210.20
+ta50   Sideways moves on the plateau                    0.00    4316.73
+ta50   Total replacements in ABC                      197.53     219.40
+ta50   Number of Generations                          172.73     182.00
+
+sideways moves per run: 4571 on average (the control makes none)
+
+=== I-041 waves 1..3: per-instance mean (primary), best-of-5 (reported) ===
+inst     mean ctrl   mean side         d      bo5 ctrl    bo5 side         d
+ta22        1624.1      1624.5     +0.47        1619.0      1618.3     -0.67
+ta23        1579.7      1580.3     +0.60        1572.3      1572.0     -0.33
+ta25        1636.0      1635.1     -0.87        1631.0      1626.3     -4.67
+ta26        1682.6      1685.7     +3.13        1674.3      1679.0     +4.67
+ta27        1710.9      1709.5     -1.47        1700.7      1700.3     -0.33
+ta29        1639.4      1642.3     +2.93        1636.0      1638.0     +2.00
+ta30        1613.0      1615.1     +2.13        1600.0      1604.3     +4.33
+ta32        1832.7      1833.9     +1.20        1822.3      1824.7     +2.33
+ta33        1853.3      1849.6     -3.67        1839.3      1841.0     +1.67
+ta34        1882.9      1883.8     +0.87        1874.0      1874.3     +0.33
+ta40        1720.5      1720.2     -0.27        1713.3      1709.0     -4.33
+ta41        2084.3      2082.2     -2.07        2065.3      2067.7     +2.33
+ta42        1994.9      1995.7     +0.87        1988.0      1982.7     -5.33
+ta43        1920.3      1918.7     -1.53        1904.0      1906.3     +2.33
+ta44        2040.6      2036.8     -3.80        2029.7      2028.3     -1.33
+ta45        2035.3      2028.1     -7.20        2024.7      2021.0     -3.67
+ta46        2069.6      2074.1     +4.47        2056.3      2051.7     -4.67
+ta47        1962.3      1963.2     +0.87        1945.3      1949.3     +4.00
+ta48        2020.5      2022.9     +2.33        2003.7      2009.3     +5.67
+ta49        2008.9      2010.4     +1.47        2000.3      2001.0     +0.67
+ta50        1997.9      1998.3     +0.33        1989.7      1986.7     -3.00
+
+runs per cell and instance: 15
+
+look 3 of 6, symmetric boundary p <= 0.0142 (Pocock, six looks)
+PRIMARY, per-instance mean: +0.04, side better on 8 of 21, W = 100.0, p = 0.5901
+reported, deciding nothing: best-of-5 moved +0.10
+-> continue: run wave 4
