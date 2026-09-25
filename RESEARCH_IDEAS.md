@@ -338,7 +338,7 @@ bucle y están aquí para que no se repitan; sus cifras están en el JOURNAL.
 | I-003 | el explorador del ABC reinyecta un **elite pateado** en vez de una solución aleatoria | un arranque aleatorio a mitad de tirada no puede alcanzar a la población; uno dentro de una cuenca buena sí | kick−control = **+1.43** (ta23 −0.27, ta29 +0.70, ta30 −0.50, ta45 **+5.80**); regla > +2 descarta → **pasa, por poco y en contra** | 4 mirillas de 6: −1.02, −0.57, **−0.03**, +0.44; kick mejor en 9-10 de 21 siempre; p entre 0.55 y 0.88, la frontera nunca se acerca | **detenida en la 4ª** (2026-09-21) por cambio de dirección del PI, no por sus datos. Sin aceptación: es un cero |
 | H-4 | N8 contra N2 (y contra N1, N3, N_ext), fase B del paper de COR | un vecindario más rico gana | -- | 82 instancias x 30 runs, 2460 bloques pareados: N2 1846.50 contra N8 1847.94, dif −1.45, p_adj = 3.9e−4, r = 0.077 (**despreciable**); rangos de Friedman N2 2.1315 el mejor de cinco, N8 2.2400 | **descartada** (antes del bucle; `experiments/cor_tabu_2026/`) |
 | I-012 | **escapar del estado todo-tabú, solo eso** | la celda informativa de I-010 dio −1.11 y mejor en 15 de 21 (p = 0.033) sin frontera | esc−control = −1.82, pasa | 6 mirillas, 30 runs: +1.30, +1.09, +0.59, +0.27, +0.39, **+0.07**; mejor en 10 de 21, p = 0.835 | **descartada** (2026-09-22). La señal de I-010 **no se reprodujo** |
-| I-043 | **híbrido ABC → CP-SAT**: pulir con CP-SAT los 20 mejores horarios **distintos** de `ta23` de la caza de I-032, 60 s cada uno | el mejor horario es un óptimo profundo, pero el ABC deja muchos óptimos distintos cerca; alguno puede estar en una región que CP-SAT sí mejore | pendiente | no aplica | **lanzada** (2026-09-25) |
+| I-043 | **híbrido ABC → CP-SAT**: pulir con CP-SAT los 20 mejores horarios **distintos** de `ta23` de la caza de I-032, 60 s cada uno | el mejor horario es un óptimo profundo, pero el ABC deja muchos óptimos distintos cerca; alguno puede estar en una región que CP-SAT sí mejore | **9 de 20 pistas mejoran**; la pista 6 (1566) llega a **1557 = BKS** en 39.6 s, verificado contra la OR-Library; las mejores pistas (1561, 1563, 1564, 1565) no se mueven | no aplica | **cerrada** (2026-09-25): **primera igualada de `ta23`**, y el mejor horario no es la mejor pista |
 | I-042 | **CP-SAT desde nuestros mejores horarios** (OR-Tools, instalado con permiso del PI): modelo completo, el horario guardado como pista, 14 hilos, semilla 1, 600 s en `ta29`, `ta30` y `ta23` | la reoptimización exacta de B-12 llegó a ventanas de 60 operaciones; los vecindarios grandes de CP-SAT llegan mucho más lejos | ninguna mejora en 600 s: `ta29` 1625, `ta30` 1584, `ta23` 1561 (la pista en las tres); cota demostrada igual a la LB publicada en las tres | no aplica | **cerrada** (2026-09-25): los vecindarios grandes de CP-SAT tampoco mueven nuestros mejores horarios |
 | I-041 | **movimientos laterales en la meseta**: un hijo que **iguala** a su fuente con otro genotipo ocupa su lugar (`abc.accept = sideways`) | al final de la tirada el 70-90 % de la población está en un solo makespan, uno por encima del incumbente, y la sustitución estricta la deja inmóvil hasta que el contador la mata | mecanismo: ~4000 movimientos laterales por tirada (2458-5576), exploradores y generaciones parecidos; side−control = **+1.80** (ta30 +3.97, ta23 +3.33, ta45 +0.40, ta29 −0.50), pasa por poco (descartaba si > +2.0); bo5 +3.25 | mirillas media: **+0.27** (w1, 9 de 21, p = 0.689), **−0.05** (w2, 12 de 21, p = 0.689), **+0.04** (w3, 8 de 21, p = 0.590), **+0.27** (w4, 9 de 21, p = 0.520), **+0.38** (w5, 10 de 21, p = 0.414), **+0.22** (w6, 13 de 21, p = 0.768) | **rechazada y revertida** (2026-09-25) |
 | I-040 | **cortar las cadenas sin esperanza tras su primera llamada**: si el mejor hijo sigue más de un 2 % peor que la fuente, la cadena para (`abc.chain.cut = cut`) | el 84 % de las cadenas no mejora su fuente y las llamadas tras la primera son dos tercios del tabú; lo ahorrado en las perdidas va a cadenas nuevas | mecanismo: ~12500 cadenas cortadas por tirada (27-44 % de las comprobadas), llamadas al tabú iguales, generaciones +16 a +55 %; cut−control = **+0.05** (ta30 +3.20, ta45 +1.00, ta29 −1.97, ta23 −2.03), pasa (descartaba si > +2.0); bo5 +1.42 | mirillas media: **−0.18** (w1, 12 de 21, p = 0.651), **−1.78** (w2, 14 de 21, p = 0.037), **−1.28** (w3, 16 de 21, p = 0.042), **−0.65** (w4, 12 de 21, p = 0.297), **−0.37** (w5, 11 de 21, p = 0.648), **−0.20** (w6, 12 de 21, p = 0.651) | **rechazada y revertida** (2026-09-25) |
@@ -4422,3 +4422,46 @@ certificado y se comprueba con `verify_certificate.py`.
 
 **Lectura**: cuántas pistas mejora, cuánto y el mejor makespan alcanzado,
 contra 1561 (nuestro mejor) y 1557 (el mejor conocido).
+
+### I-043, cierre: el híbrido iguala `ta23`, desde una pista de 1566
+
+20 pistas, 60 s cada una, 14 hilos, semilla 1, máquina vacía
+(`iter/I-043/probe_run.log`, certificados en `iter/I-043/found_*`).
+
+| pista | makespan | tras CP-SAT |
+|---|---|---|
+| 1 | 1561 | 1561 |
+| 2 | 1563 | 1563 |
+| 3 | 1564 | 1564 |
+| 4 | 1565 | 1565 |
+| 5 | 1566 | 1565 |
+| **6** | **1566** | **1557** (1564, 1563, 1562 en el primer segundo; 1559 a los 30 s, 1558 a los 37.5 s, **1557 a los 39.6 s**) |
+| 7 | 1566 | 1564 |
+| 8-12 | 1567 | 1567 |
+| 13, 14, 18 | 1567 | 1565 |
+| 17 | 1567 | 1564 |
+| 15, 16 | 1567 | 1567 |
+| 19 | 1568 | 1565 |
+| 20 | 1568 | 1568 |
+
+**Igualada de `ta23`, 1557**, la primera de la línea: `verify_certificate.py`
+contra los datos originales de la OR-Library dice *"best verified makespan
+1557 -- matches the best known solution 1557"*
+(`iter/I-043/found_hint6_found_ta23_1557_Certificate.csv`). Hasta ahora
+nuestro mejor en `ta23` era 1561, tras 800 tiradas de caza (I-032).
+
+**Lo que dice, y es lo más importante de la línea desde I-021**:
+
+1. **El mejor horario del ABC no es la mejor pista.** Las cuatro pistas más
+   bajas (1561 a 1565) no se mueven, como en I-042; una de 1566 baja nueve
+   unidades. La calidad de la pista no predice cuánto la mejora CP-SAT, igual
+   que la calidad en bruto de un hijo no predecía su óptimo (I-035).
+2. **El reparto entre regiones rinde**: 9 de 20 pistas mejoran con 60 s cada
+   una, mientras 600 s sobre la mejor no hicieron nada. El cuello era la
+   región, y el ABC la aporta: produce muchos óptimos distintos cerca del
+   mejor, que es exactamente lo que CP-SAT necesita como punto de partida.
+3. **La pista 6 seguía bajando** cuando se acabaron los 60 s (1559, 1558,
+   1557 en diez segundos). No se sabe dónde se habría parado.
+
+**Siguiente paso, fijado ahora**: I-044, el mismo híbrido donde un récord
+está a una unidad (`ta29`, `ta30`), y la continuación de la pista 6.

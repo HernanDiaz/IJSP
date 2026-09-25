@@ -3072,3 +3072,19 @@ both neutral. The plateau is a symptom of stagnation, not its cause.
 
 No records and no matches. The code is rolled back and the rebuilt solver
 reproduces the reference exactly.
+
+## I-043: the ABC -> CP-SAT hybrid matches ta23 at 1557
+
+The 20 lowest distinct ta23 schedules of the I-032 hunt (1561 to 1568), each
+given 60 s of CP-SAT with the I-042 model (14 workers, seed 1). Nine of the 20
+improve. Hint 6, a 1566 schedule, goes to 1564, 1563, 1562 in its first second,
+then 1559 at 30 s, 1558 at 37.5 s and 1557 at 39.6 s: the best known value,
+verified by verify_certificate.py against the original OR-Library data. Our
+best on ta23 had been 1561 after 800 hunting runs.
+
+The best ABC schedule is not the best starting point: the four lowest hints
+(1561 to 1565) do not move, as in I-042, while a 1566 one drops nine units.
+Spreading CP-SAT's time over distinct regions pays where ten minutes on the
+single best did nothing; the ABC supplies exactly what CP-SAT needs, many
+distinct near-optimal starting points. Next: the same hybrid on ta29 and ta30,
+where a record is one unit away, and a continuation of hint 6.
