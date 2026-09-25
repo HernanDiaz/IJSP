@@ -3186,3 +3186,11 @@ twelve seeds and continuations of up to 600 s, ta25 does not pass 1603, ta27
 1685, ta26 1653, and ta29/ta30 their best known values. Distinct starting
 points end at the same value: attractors of the ABC + CP-SAT pair, which the
 hybrid has already found.
+
+## I-054: no mix of two floors beats the attractor, and it is proven
+
+30 exact recombinations (15 on ta25, 15 on ta27), agreeing machine pairs fixed:
+all 30 end OPTIMAL in 0 to 2 s at the better parent, 1603 and 1685. The
+parents, floors of distinct hints, agree on 86.6 to 96.8 per cent of the 3800
+machine pairs on ta25 and 93.3 to 95.8 on ta27. Next: fix only what every
+parent of a group shares, with ever larger groups.
