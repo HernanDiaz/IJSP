@@ -338,7 +338,8 @@ bucle y están aquí para que no se repitan; sus cifras están en el JOURNAL.
 | I-003 | el explorador del ABC reinyecta un **elite pateado** en vez de una solución aleatoria | un arranque aleatorio a mitad de tirada no puede alcanzar a la población; uno dentro de una cuenca buena sí | kick−control = **+1.43** (ta23 −0.27, ta29 +0.70, ta30 −0.50, ta45 **+5.80**); regla > +2 descarta → **pasa, por poco y en contra** | 4 mirillas de 6: −1.02, −0.57, **−0.03**, +0.44; kick mejor en 9-10 de 21 siempre; p entre 0.55 y 0.88, la frontera nunca se acerca | **detenida en la 4ª** (2026-09-21) por cambio de dirección del PI, no por sus datos. Sin aceptación: es un cero |
 | H-4 | N8 contra N2 (y contra N1, N3, N_ext), fase B del paper de COR | un vecindario más rico gana | -- | 82 instancias x 30 runs, 2460 bloques pareados: N2 1846.50 contra N8 1847.94, dif −1.45, p_adj = 3.9e−4, r = 0.077 (**despreciable**); rangos de Friedman N2 2.1315 el mejor de cinco, N8 2.2400 | **descartada** (antes del bucle; `experiments/cor_tabu_2026/`) |
 | I-012 | **escapar del estado todo-tabú, solo eso** | la celda informativa de I-010 dio −1.11 y mejor en 15 de 21 (p = 0.033) sin frontera | esc−control = −1.82, pasa | 6 mirillas, 30 runs: +1.30, +1.09, +0.59, +0.27, +0.39, **+0.07**; mejor en 10 de 21, p = 0.835 | **descartada** (2026-09-22). La señal de I-010 **no se reprodujo** |
-| I-068 | **romper el núcleo de `ta18` por parejas de máquinas**, tanda 1 de 3 (parejas 1-35), 45 s | tras I-067, bajar de 1405 exige romper al menos dos máquinas | pendiente | no aplica | **lanzada** (2026-09-25) |
+| I-069 | **romper el núcleo de `ta18` por parejas de máquinas**, tanda 2 de 3 (parejas 36-70), 45 s | continuación de I-068 | pendiente | no aplica | **lanzada** (2026-09-25) |
+| I-068 | **romper el núcleo de `ta18` por parejas de máquinas**, tanda 1 de 3 (parejas 1-35), 45 s | tras I-067, bajar de 1405 exige romper al menos dos máquinas | parejas 1-35: **las 35 OPTIMAL en 1405** (la más lenta 44 s) | no aplica | **cerrada** (2026-09-25); sigue I-069 |
 | I-067 | **romper el núcleo de `ta18` máquina a máquina**: consenso de 27 con los pares de una máquina liberados, las 15 máquinas, 60 s | `ta18` cierra su núcleo en 16 s: aquí romperlo por partes sí es abordable | las **15 máquinas: OPTIMAL 1405**, en 13-31 s cada una (775-807 pares libres) | no aplica | **cerrada** (2026-09-25): todo horario < 1405 rompe el núcleo en **al menos dos** máquinas |
 | I-066 | **el núcleo de `ta18` y `ta26`**: consenso de todos los fondos de CP-SAT, 600 s | extender la demostración de que el BKS está fuera del núcleo | `ta18`: 27 horarios, 642 pares libres, **1405 OPTIMAL** en 16 s (BKS 1396); `ta26`: 26 horarios, 674 libres, **1653 OPTIMAL** en 332 s (BKS 1643) | no aplica | **cerrada** (2026-09-25): el BKS también está fuera del núcleo en `ta18` y `ta26` |
 | I-065 | **muchas pistas en `ta18`**: pistas 21.ª a 80.ª, 20 s | la más pequeña de las abiertas, a 9 del BKS tras I-064 | 60 pistas (todas 1420): 16 mejoran, mejor **1409**; el mejor propio sigue en 1405 | no aplica | **cerrada** (2026-09-25): sin mejor nuevo |
@@ -5111,3 +5112,9 @@ orden lexicográfico, en tres tandas de 35 (I-068: 1-35, I-069: 36-70, I-070:
 71-105), **45 s** cada una, unos 26 minutos por tanda. Una pareja que dé menos
 de 1405 se verifica; si las 105 cierran en 1405, bajar exige romper al menos
 tres máquinas.
+
+### I-068, cierre: las primeras 35 parejas cierran en 1405
+
+`iter/I-068/run_batch1.log`. Las parejas de máquinas 1 a 35 (de (0,1) a (2,14))
+cierran **todas OPTIMAL en 1405**, la más lenta en 44 s. Sigue la tanda 2
+(I-069) con el mismo script.
