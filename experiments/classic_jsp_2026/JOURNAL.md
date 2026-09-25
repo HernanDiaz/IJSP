@@ -3310,3 +3310,9 @@ and the pair (5, 8) at 1404, verified against OR-Library, a new own best (was
 pairs, 104 have optimum 1405 and only (5, 8) allows going lower. This opens a
 descent: break the core, find a better schedule outside it, recompute the core
 with that schedule, repeat. I-072 is the first round.
+
+## I-072: round 1 of the descent, 1404 holds on 14 machines
+
+With the 1404 schedule in the group, 14 of the 15 single-machine relaxations
+close OPTIMAL at 1404; machine 13 does not close in 60 s (bound 1400). I-073
+runs machine 13 at 180 s and the 105 pairs in three batches.
