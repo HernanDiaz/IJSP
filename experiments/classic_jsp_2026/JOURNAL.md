@@ -3024,3 +3024,20 @@ generations rise (74 to 114, 90 to 107, 74 to 101, 188 to 266), so the time
 saved on lost chains is spent on new ones, as intended. Cut minus control: ta23
 -2.03, ta29 -1.97, ta30 +3.20, ta45 +1.00, mean +0.05, passing the +2.0 rule.
 Split: better on ta23 and ta29, worse on ta30. The waves go.
+
+## I-040 is rejected and rolled back: cutting lost chains is neutral
+
+Filter and six waves, 1500 runs, no infeasible schedule. Cut minus control:
++0.05 at the filter, then -0.18, -1.78 (p = 0.037), -1.28 (p = 0.042), -0.65,
+-0.37, -0.20, final p = 0.651, better on 12 of 21. No crossing; the signal of
+looks 2 and 3 was noise returning to the mean, which is what the Pocock
+boundary is for.
+
+The mechanism worked as designed (about a third of chains cut, tabu calls
+unchanged, generations up 16 to 55 per cent) and the result does not move:
+reassigning the time of lost chains to new ones neither wins nor loses. With
+I-020 and I-037, the employed-phase tabu budget is at its point: not deeper,
+not shorter, not reassigned.
+
+No records; the only match is the known ta30 1584, in the control cell. The
+code is rolled back and the rebuilt solver reproduces the reference exactly.

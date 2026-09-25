@@ -64,16 +64,6 @@ namespace FuzzyFW {
 //            improved it; the first call that does not ends the chain (I-021:
 //            a further -2.62, 16 of 21, p = 0.0021).
 #define  LS_PICK "abc.ls.pick"
-// I-040. Cutting hopeless chains in the employed phase.
-//   "none" (default, unchanged): every chain runs as I-021 says
-//   "cut"  : after the first tabu call, if the better child is still more
-//            than 2 % worse than the food source it is meant to replace, the
-//            chain stops there (no second call, no repeats). The 2 % is the
-//            90th percentile of that gap among the chains that do end better
-//            than their source, measured before launch on ta23 and ta45
-//            (32 and 38 units, 2.0 and 1.9 %), fixed in advance.
-#define  CHAIN_CUT "abc.chain.cut"
-#define  CHAIN_CUT_FRACTION 0.02
 #define	ELITE_SIZE	"elite.size" //Selection mechanism to select number of elements in elite 
 
 
@@ -156,12 +146,6 @@ namespace FuzzyFW {
 		unsigned long lsSecondImproved;   // ... that improved it
 		unsigned long lsRepeatCalls;      // calls beyond the second
 		unsigned long lsRepeatLongest;    // longest chain of calls on one child
-
-		// I-040: cutting hopeless chains.
-		bool chainCut;
-		double chainReference;            // source makespan, < 0 outside the employed phase
-		unsigned long chainsCut;          // chains stopped after the first call
-		unsigned long chainsChecked;      // chains the rule looked at
 		unsigned int improvementsLS;
 		unsigned int enworstmentsLS;
 		unsigned int neutralLS;

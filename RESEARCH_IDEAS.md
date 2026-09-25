@@ -338,7 +338,7 @@ bucle y están aquí para que no se repitan; sus cifras están en el JOURNAL.
 | I-003 | el explorador del ABC reinyecta un **elite pateado** en vez de una solución aleatoria | un arranque aleatorio a mitad de tirada no puede alcanzar a la población; uno dentro de una cuenca buena sí | kick−control = **+1.43** (ta23 −0.27, ta29 +0.70, ta30 −0.50, ta45 **+5.80**); regla > +2 descarta → **pasa, por poco y en contra** | 4 mirillas de 6: −1.02, −0.57, **−0.03**, +0.44; kick mejor en 9-10 de 21 siempre; p entre 0.55 y 0.88, la frontera nunca se acerca | **detenida en la 4ª** (2026-09-21) por cambio de dirección del PI, no por sus datos. Sin aceptación: es un cero |
 | H-4 | N8 contra N2 (y contra N1, N3, N_ext), fase B del paper de COR | un vecindario más rico gana | -- | 82 instancias x 30 runs, 2460 bloques pareados: N2 1846.50 contra N8 1847.94, dif −1.45, p_adj = 3.9e−4, r = 0.077 (**despreciable**); rangos de Friedman N2 2.1315 el mejor de cinco, N8 2.2400 | **descartada** (antes del bucle; `experiments/cor_tabu_2026/`) |
 | I-012 | **escapar del estado todo-tabú, solo eso** | la celda informativa de I-010 dio −1.11 y mejor en 15 de 21 (p = 0.033) sin frontera | esc−control = −1.82, pasa | 6 mirillas, 30 runs: +1.30, +1.09, +0.59, +0.27, +0.39, **+0.07**; mejor en 10 de 21, p = 0.835 | **descartada** (2026-09-22). La señal de I-010 **no se reprodujo** |
-| I-040 | **cortar las cadenas sin esperanza tras su primera llamada**: si el mejor hijo sigue más de un 2 % peor que la fuente, la cadena para (`abc.chain.cut = cut`) | el 84 % de las cadenas no mejora su fuente y las llamadas tras la primera son dos tercios del tabú; lo ahorrado en las perdidas va a cadenas nuevas | mecanismo: ~12500 cadenas cortadas por tirada (27-44 % de las comprobadas), llamadas al tabú iguales, generaciones +16 a +55 %; cut−control = **+0.05** (ta30 +3.20, ta45 +1.00, ta29 −1.97, ta23 −2.03), pasa (descartaba si > +2.0); bo5 +1.42 | mirillas media: **−0.18** (w1, 12 de 21, p = 0.651), **−1.78** (w2, 14 de 21, p = 0.037), **−1.28** (w3, 16 de 21, p = 0.042), **−0.65** (w4, 12 de 21, p = 0.297), **−0.37** (w5, 11 de 21, p = 0.648) | **en oleadas** (2026-09-25) |
+| I-040 | **cortar las cadenas sin esperanza tras su primera llamada**: si el mejor hijo sigue más de un 2 % peor que la fuente, la cadena para (`abc.chain.cut = cut`) | el 84 % de las cadenas no mejora su fuente y las llamadas tras la primera son dos tercios del tabú; lo ahorrado en las perdidas va a cadenas nuevas | mecanismo: ~12500 cadenas cortadas por tirada (27-44 % de las comprobadas), llamadas al tabú iguales, generaciones +16 a +55 %; cut−control = **+0.05** (ta30 +3.20, ta45 +1.00, ta29 −1.97, ta23 −2.03), pasa (descartaba si > +2.0); bo5 +1.42 | mirillas media: **−0.18** (w1, 12 de 21, p = 0.651), **−1.78** (w2, 14 de 21, p = 0.037), **−1.28** (w3, 16 de 21, p = 0.042), **−0.65** (w4, 12 de 21, p = 0.297), **−0.37** (w5, 11 de 21, p = 0.648), **−0.20** (w6, 12 de 21, p = 0.651) | **rechazada y revertida** (2026-09-25) |
 | I-039 | **JOX con probabilidad de conservar uniforme**: en cada cruce se sortea en U(0,1) la probabilidad de conservar cada trabajo, en vez de 1/2 fija (`crossover.jox.mask = uniform`) | I-036 mostró que quitar variedad al cruce hunde el resultado; más variedad de distancia debería ayudar | mecanismo: ~37400 cruces con máscara sorteada por tirada, media 0.50 y desviación 0.25; generaciones 72 → 111 (ta23), 191 → 292 (ta45); umask−control = **+11.70** (ta45 +18.63, ta23 +13.20, ta30 +8.70, ta29 +6.27), **descarta** (si > +2.0); bo5 +8.54 | no se corren | **descartada por el filtro y revertida** (2026-09-25) |
 | I-038 | **dejar de registrar la diversidad de Hamming en cada generación** (quitar `statistics.3 = hamming` del setup; sin código) | la estadística, "registrada pero no probada", se come una quinta parte del tiempo; devuelto a la búsqueda son ~25 % más generaciones con el mismo presupuesto | nostat−control = **−0.15** (ta30 −0.23, ta45 −0.20, ta29 −0.10, ta23 −0.07), pasa; pero **el mecanismo no aparece**: generaciones 79 → 78 (ta23), 95 → 95 (ta29), 80 → 78 (ta30), 177 → 190 (ta45) | no se corren | **retirada** (2026-09-25): con 14 procesos a la vez la estadística no cuesta nada medible; las oleadas solo medirían ruido de temporización |
 | I-037 | **una llamada de profundidad doble antes de que acabe la cadena** (`abc.ls.escalate = double`) | la cadena de I-021 muere en la primera llamada de 15 iteraciones que no mejora; una más profunda sobre ese mismo hijo cruza la meseta | mecanismo: ~18700 llamadas dobles por tirada, 8-16 % mejoran, un tercio menos de generaciones (75 → 47 en ta23, 179 → 117 en ta45); esc−control = **+2.36** (ta30 +7.93, ta45 +1.23, ta23 +1.10, ta29 −0.83), **descarta** (si > +2.0); bo5 +5.25 | no se corren | **descartada por el filtro y revertida** (2026-09-25) |
@@ -4250,3 +4250,30 @@ nuevas, que es exactamente lo que la idea quería. Media por instancia
 `cut − control`: ta23 −2.03, ta29 −1.97, ta30 +3.20, ta45 +1.00, **+0.05**;
 regla *descartar si > +2.0*: **pasa**. Dividida: mejor en las dos de 20x20
 más difíciles de mover, peor en ta30. Van las oleadas.
+
+### I-040, cierre: cortar las cadenas perdidas es neutro, rechazada y revertida
+
+Filtro y seis oleadas, 1500 tiradas, cero infactibles, control en `ref_I-021`.
+Media por instancia `cut − control`: filtro +0.05, mirillas −0.18, **−1.78
+(p = 0.037)**, −1.28 (p = 0.042), −0.65, −0.37, **−0.20**, con p final
+**0.651** y mejor en 12 de 21. **No cruza.** La señal de las mirillas 2 y 3
+era ruido que volvió a la media: es exactamente el caso para el que existe la
+frontera de Pocock, y conviene decirlo porque a la mitad parecía la mejor
+idea desde I-021.
+
+**Lo que dice**: el mecanismo funcionó como se diseñó (en torno a un tercio de
+las cadenas cortadas, las llamadas al tabú iguales, las generaciones arriba
+un 16-55 %), y aun así el resultado no se mueve. Reasignar el tiempo de las
+cadenas perdidas a cadenas nuevas **no gana ni pierde**: lo que se deja de
+encontrar en el 10 % de mejoras cortadas lo compensan, sin más, las cadenas
+nuevas. Con I-020 (quitar la segunda llamada a todas pierde) e I-037 (más
+profundidad pierde), el reparto actual del tabú en la fase de empleadas está
+**en su punto**: ni más hondo, ni más corto, ni reasignado.
+
+**Sin récords**; la única igualada es la conocida de `ta30` (1584), en la
+celda **de control**.
+
+**Código revertido**: `ArtificialBeeColonyPSO.{h,cpp}` vuelven a su versión
+anterior a I-040 y el solver recompilado reproduce exactamente la referencia
+a número fijo de generaciones. Los scripts del diagnóstico de cadenas quedan
+en `iter/I-040/diagnostic/`, que es registro, no código del solver.
