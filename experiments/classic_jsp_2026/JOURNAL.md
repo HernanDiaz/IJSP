@@ -3152,3 +3152,14 @@ ta32 goes from 1811 to 1809 and ta40 from 1688 to 1686, all verified. As on
 CP-SAT over distinct hints with just enough time each. Own verified bests now:
 ta23 1557 (= best known), ta25 1603, ta26 1653, ta27 1685, ta32 1809, ta33
 1802, ta34 1834, ta40 1686, and the matched ta29 1625 and ta30 1584.
+
+## An apparent ta45 record that was not one
+
+Listing the 30x20 bests showed a 1998 on ta45, below the best known 2000. Run
+through verify_certificate.py before anything was said: it comes from
+I-002_voidfilter_n8, the cell of the old N8 bug, whose schedules overlap on a
+machine; the best verified schedule in that certificate is 2027. No record.
+The hint selector did not check feasibility; it now skips any run with
+unreadable rows, job-order violations or machine overlaps. The hints of I-043
+to I-050 did not come from that cell, and every schedule CP-SAT writes is
+verified against OR-Library, so the own bests reported stand.
