@@ -3279,3 +3279,11 @@ verified. I-065 takes ta18's hints 21 to 80 at 20 s.
 
 ta18 hints 21 to 80 (all 1420): 16 of 60 improve, best 1409; the own best stays
 at 1405. I-066 takes the consensus core of ta18 and ta26 with 600 s each.
+
+## I-066: five instances with the best known schedule outside the core
+
+ta18: the consensus of 27 schedules is solved to optimality at 1405 in 16 s
+(best known 1396); ta26: 26 schedules, optimal 1653 in 332 s (best known 1643).
+With ta22 (bound 1607 against 1600), ta25 (1603 against 1595) and ta27 (1685
+against 1680), on five open instances every schedule that matches or beats
+the best known breaks a machine decision all our good schedules share.

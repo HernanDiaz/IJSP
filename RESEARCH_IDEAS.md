@@ -338,7 +338,7 @@ bucle y están aquí para que no se repitan; sus cifras están en el JOURNAL.
 | I-003 | el explorador del ABC reinyecta un **elite pateado** en vez de una solución aleatoria | un arranque aleatorio a mitad de tirada no puede alcanzar a la población; uno dentro de una cuenca buena sí | kick−control = **+1.43** (ta23 −0.27, ta29 +0.70, ta30 −0.50, ta45 **+5.80**); regla > +2 descarta → **pasa, por poco y en contra** | 4 mirillas de 6: −1.02, −0.57, **−0.03**, +0.44; kick mejor en 9-10 de 21 siempre; p entre 0.55 y 0.88, la frontera nunca se acerca | **detenida en la 4ª** (2026-09-21) por cambio de dirección del PI, no por sus datos. Sin aceptación: es un cero |
 | H-4 | N8 contra N2 (y contra N1, N3, N_ext), fase B del paper de COR | un vecindario más rico gana | -- | 82 instancias x 30 runs, 2460 bloques pareados: N2 1846.50 contra N8 1847.94, dif −1.45, p_adj = 3.9e−4, r = 0.077 (**despreciable**); rangos de Friedman N2 2.1315 el mejor de cinco, N8 2.2400 | **descartada** (antes del bucle; `experiments/cor_tabu_2026/`) |
 | I-012 | **escapar del estado todo-tabú, solo eso** | la celda informativa de I-010 dio −1.11 y mejor en 15 de 21 (p = 0.033) sin frontera | esc−control = −1.82, pasa | 6 mirillas, 30 runs: +1.30, +1.09, +0.59, +0.27, +0.39, **+0.07**; mejor en 10 de 21, p = 0.835 | **descartada** (2026-09-22). La señal de I-010 **no se reprodujo** |
-| I-066 | **el núcleo de `ta18` y `ta26`**: consenso de todos los fondos de CP-SAT, 600 s | extender la demostración de que el BKS está fuera del núcleo | pendiente | no aplica | **lanzada** (2026-09-25) |
+| I-066 | **el núcleo de `ta18` y `ta26`**: consenso de todos los fondos de CP-SAT, 600 s | extender la demostración de que el BKS está fuera del núcleo | `ta18`: 27 horarios, 642 pares libres, **1405 OPTIMAL** en 16 s (BKS 1396); `ta26`: 26 horarios, 674 libres, **1653 OPTIMAL** en 332 s (BKS 1643) | no aplica | **cerrada** (2026-09-25): el BKS también está fuera del núcleo en `ta18` y `ta26` |
 | I-065 | **muchas pistas en `ta18`**: pistas 21.ª a 80.ª, 20 s | la más pequeña de las abiertas, a 9 del BKS tras I-064 | 60 pistas (todas 1420): 16 mejoran, mejor **1409**; el mejor propio sigue en 1405 | no aplica | **cerrada** (2026-09-25): sin mejor nuevo |
 | I-064 | **el híbrido en `ta18` y `ta50`**: `ta18` (20x15), 20 pistas de 30 s; `ta50`, 6 de 60 s | `ta18` es la única 20x15 abierta y nunca se ha pulido; con 300 operaciones CP-SAT debería rendir más | `ta18`: 10 de 20 mejoran, 1414 → **1405** (BKS 1396), dos pistas; `ta50`: 5 de 6, 1966 → **1950** (1923); verificado | no aplica | **cerrada** (2026-09-25): dos mejores propios |
 | I-063 | **el híbrido en las 30x20 sin pulir**: `ta41`, `ta43`, `ta46`, `ta47`, `ta48`, 6 pistas factibles, 60 s | mejores propios verificados donde el híbrido aún no ha pasado | mejores propios nuevos, verificados: `ta41` 2059 → **2031** (BKS 2005), `ta43` 1890 → **1883** (1846), `ta46` 2043 → **2032** (2004), `ta47` 1926 → **1922** (1889), `ta48` 1996 → **1990** (1937) | no aplica | **cerrada** (2026-09-25): cinco mejores propios |
@@ -5063,3 +5063,21 @@ pista de CP-SAT (el certificado más bajo de cada pista) de I-064/I-065 en
 cada una; consenso de **todos** ellos, **600 s** de CP-SAT por instancia. Si
 el estado es OPTIMAL (o la cota supera el BKS: 1396 y 1643), el BKS queda
 también fuera del núcleo en estas dos instancias.
+
+### I-066, cierre: cinco instancias con el BKS fuera del núcleo
+
+`iter/I-066/run.log`. `ta18`: 27 horarios (1405 a 1419), el consenso fija 2208
+de 2850 pares (77.5 %) y **1405 es óptimo** en 16 s; `ta26`: 26 horarios (1653
+a 1669), fija 3126 de 3800 (82.3 %) y **1653 es óptimo** en 332 s. La síntesis
+de I-061 queda así:
+
+| instancia | óptimo o cota dentro del núcleo | BKS |
+|---|---|---|
+| ta18 | **1405** óptimo (I-066) | 1396 |
+| ta22 | cota 1607, mejor 1613 (I-061) | 1600 |
+| ta25 | **1603** óptimo (I-056) | 1595 |
+| ta26 | **1653** óptimo (I-066) | 1643 |
+| ta27 | **1685** óptimo (I-055) | 1680 |
+
+En las **cinco**, todo horario que iguale o mejore el BKS rompe alguna
+decisión de máquina que comparten todos nuestros buenos horarios.
