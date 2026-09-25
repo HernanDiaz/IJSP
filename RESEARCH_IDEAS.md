@@ -338,7 +338,8 @@ bucle y están aquí para que no se repitan; sus cifras están en el JOURNAL.
 | I-003 | el explorador del ABC reinyecta un **elite pateado** en vez de una solución aleatoria | un arranque aleatorio a mitad de tirada no puede alcanzar a la población; uno dentro de una cuenca buena sí | kick−control = **+1.43** (ta23 −0.27, ta29 +0.70, ta30 −0.50, ta45 **+5.80**); regla > +2 descarta → **pasa, por poco y en contra** | 4 mirillas de 6: −1.02, −0.57, **−0.03**, +0.44; kick mejor en 9-10 de 21 siempre; p entre 0.55 y 0.88, la frontera nunca se acerca | **detenida en la 4ª** (2026-09-21) por cambio de dirección del PI, no por sus datos. Sin aceptación: es un cero |
 | H-4 | N8 contra N2 (y contra N1, N3, N_ext), fase B del paper de COR | un vecindario más rico gana | -- | 82 instancias x 30 runs, 2460 bloques pareados: N2 1846.50 contra N8 1847.94, dif −1.45, p_adj = 3.9e−4, r = 0.077 (**despreciable**); rangos de Friedman N2 2.1315 el mejor de cinco, N8 2.2400 | **descartada** (antes del bucle; `experiments/cor_tabu_2026/`) |
 | I-012 | **escapar del estado todo-tabú, solo eso** | la celda informativa de I-010 dio −1.11 y mejor en 15 de 21 (p = 0.033) sin frontera | esc−control = −1.82, pasa | 6 mirillas, 30 runs: +1.30, +1.09, +0.59, +0.27, +0.39, **+0.07**; mejor en 10 de 21, p = 0.835 | **descartada** (2026-09-22). La señal de I-010 **no se reprodujo** |
-| I-078 | **descenso en `ta18`, vuelta 4: tríos de máquinas**, 30 al azar (semilla 1), 50 s | 1401 aguanta todas las máquinas y parejas; el siguiente escalón son tríos | pendiente | no aplica | **lanzada** (2026-09-26) |
+| I-079 | **ruptura del núcleo en `ta27`**: las 20 máquinas sueltas, 60 s | `ta27` es la de hueco más corto (1685 frente a 1680) y su núcleo cierra en 42 s | pendiente | no aplica | **lanzada** (2026-09-26) |
+| I-078 | **descenso en `ta18`, vuelta 4: tríos de máquinas**, 30 al azar (semilla 1), 50 s | 1401 aguanta todas las máquinas y parejas; el siguiente escalón son tríos | **25 de 30 tríos OPTIMAL en 1401**, 5 abiertos (cotas 1395-1397); ninguna mejora | no aplica | **cerrada** (2026-09-26): la muestra de tríos no da señal; el descenso en `ta18` se para en 1401 |
 | I-077 | **las 7 parejas abiertas de la vuelta 3**, 180 s | cerrar el mapa de parejas desde 1401 | las 7 **OPTIMAL en 1401** (34-59 s) | no aplica | **cerrada** (2026-09-25): 1401 óptimo con cualquier máquina o pareja de máquinas del núcleo liberada |
 | I-076 | **descenso en `ta18`, vuelta 3, parejas 71-105**, 45 s | continuación de I-075 | parejas 71-105: **30 OPTIMAL en 1401**, 5 abiertas (cotas 1396-1399); ninguna mejora | no aplica | **cerrada** (2026-09-25): vuelta 3 con 98 de 105 parejas en 1401; las 7 abiertas van a I-077 |
 | I-075 | **descenso en `ta18`, vuelta 3, parejas 36-70**, 45 s | continuación de I-074 | parejas 36-70: **34 OPTIMAL en 1401**, 1 abierta ((3,13), cota 1398); ninguna mejora | no aplica | **cerrada** (2026-09-25); sigue I-076 (parejas 71-105) |
@@ -5244,3 +5245,18 @@ más**.
 tríos de máquinas, **30 al azar** (`random.Random(1)`), **50 s** cada uno, unos
 25 minutos. Recorrer los 455 costaría unas seis horas; la muestra dice si esta
 vía rinde antes de pagar el mapa completo.
+
+### I-078, cierre: la muestra de tríos no da señal
+
+`iter/I-078/run.log`. De 30 tríos de máquinas al azar, **25 cierran OPTIMAL
+en 1401** y 5 no cierran en 50 s (cotas 1395 a 1397), sin mejora. El descenso
+en `ta18` queda en **1405 → 1404 → 1401**, con 1401 óptimo frente a cualquier
+máquina o pareja; recorrer los 455 tríos costaría unas seis horas sin indicio
+de que rinda.
+
+### I-079 — el método en `ta27`
+
+**Fijado antes de correr** (`iter/I-079/run.sh`): `ta27` es la instancia de
+hueco más corto (mejor propio 1685, BKS **1680**) y su núcleo de 37 fondos
+cerró en 42 s (I-055). Las **20 máquinas** sueltas, **60 s** cada una; si
+todas cierran, siguen las parejas (190) por tandas.

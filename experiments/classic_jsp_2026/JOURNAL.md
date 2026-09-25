@@ -3337,3 +3337,10 @@ The seven open pairs close OPTIMAL at 1401 with 180 s. With the 29-schedule
 core, 1401 is optimal when any one machine or any of the 105 machine pairs is
 freed; going lower needs three machines or more. I-078 samples 30 random
 triples of the 455 at 50 s.
+
+## I-078: machine triples give no signal; the method moves to ta27
+
+Of 30 random machine triples of ta18, 25 close OPTIMAL at 1401 and 5 do not
+close in 50 s, none improves. The ta18 descent rests at 1405, 1404, 1401. The
+method moves to ta27, the instance with the shortest gap (1685 against 1680),
+starting with its 20 single machines.
