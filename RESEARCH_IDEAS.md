@@ -338,6 +338,7 @@ bucle y están aquí para que no se repitan; sus cifras están en el JOURNAL.
 | I-003 | el explorador del ABC reinyecta un **elite pateado** en vez de una solución aleatoria | un arranque aleatorio a mitad de tirada no puede alcanzar a la población; uno dentro de una cuenca buena sí | kick−control = **+1.43** (ta23 −0.27, ta29 +0.70, ta30 −0.50, ta45 **+5.80**); regla > +2 descarta → **pasa, por poco y en contra** | 4 mirillas de 6: −1.02, −0.57, **−0.03**, +0.44; kick mejor en 9-10 de 21 siempre; p entre 0.55 y 0.88, la frontera nunca se acerca | **detenida en la 4ª** (2026-09-21) por cambio de dirección del PI, no por sus datos. Sin aceptación: es un cero |
 | H-4 | N8 contra N2 (y contra N1, N3, N_ext), fase B del paper de COR | un vecindario más rico gana | -- | 82 instancias x 30 runs, 2460 bloques pareados: N2 1846.50 contra N8 1847.94, dif −1.45, p_adj = 3.9e−4, r = 0.077 (**despreciable**); rangos de Friedman N2 2.1315 el mejor de cinco, N8 2.2400 | **descartada** (antes del bucle; `experiments/cor_tabu_2026/`) |
 | I-012 | **escapar del estado todo-tabú, solo eso** | la celda informativa de I-010 dio −1.11 y mejor en 15 de 21 (p = 0.033) sin frontera | esc−control = −1.82, pasa | 6 mirillas, 30 runs: +1.30, +1.09, +0.59, +0.27, +0.39, **+0.07**; mejor en 10 de 21, p = 0.835 | **descartada** (2026-09-22). La señal de I-010 **no se reprodujo** |
+| I-059 | **CP-SAT en frío, sin pista** (`ta22`, semillas 1 a 10, 120 s): cuánto coinciden sus horarios con el atractor 1613 del ABC | todas nuestras pistas vienen del ABC y caen en su núcleo; otro generador puede caer en otras regiones | pendiente | no aplica | **lanzada** (2026-09-25) |
 | I-058 | **muchas pistas en `ta22` y `ta26`**: sus 40 mejores horarios distintos y factibles, 20 s cada uno | las dos 20x20 abiertas que aún no han tenido la variante de I-046 | `ta22`: **38 de 40 pistas acaban en 1613** exacto (dos en 1614); `ta26`: mejor 1656 (el propio sigue en 1653) | no aplica | **cerrada** (2026-09-25): sin mejores nuevos; 1613 es el atractor más marcado |
 | I-057 | **romper el núcleo máquina a máquina** (`ta25`): consenso de los 107 fondos con los pares de una máquina liberados, las 20 máquinas, 60 s | todo horario mejor que 1603 rompe alguna decisión común | las 20 máquinas: **ninguna mejora** sobre 1603, **ninguna cerrada** en 60 s (1361-1406 pares libres, cotas 1584-1588) | no aplica | **cerrada, no concluyente** (2026-09-25): sin mejora y sin demostración |
 | I-056 | **cerrar los consensos grandes de `ta25`**: K = 64 y 107, 600 s cada uno | en 120 s quedaron con cotas 1598 y 1591; más tiempo demuestra 1603 o encuentra algo mejor | K = 64: **OPTIMAL 1603** en 163 s; K = 107: **OPTIMAL 1603** en 565 s (1263 pares libres) | no aplica | **cerrada** (2026-09-25): 1603 óptimo en el consenso de los 107 fondos |
@@ -4891,3 +4892,16 @@ CP-SAT cada uno, semilla 1, unos 28 minutos.
 pistas acaban exactamente en 1613** y las otras dos en 1614: casi todo lo que
 el ABC produce cerca del mejor cae en el mismo valor. En `ta26` el mejor es
 1656 y el mejor propio sigue en 1653 (I-045). Sin mejores nuevos.
+
+### I-059 — CP-SAT en frío, sin pista, en `ta22`
+
+**De dónde sale**: I-055 a I-058 dicen que los fondos del híbrido comparten
+un núcleo y que el atractor es óptimo dentro de él; todas las pistas vienen
+del ABC. Para salir del núcleo hacen falta puntos de partida **de otro
+generador**. El más a mano es CP-SAT **sin pista**.
+
+**Fijado antes de correr** (`iter/I-059/run.sh`, `cold_probe.py`): `ta22`
+(atractor 1613, 38 de 40 pistas en I-058; BKS 1600), CP-SAT sin pista,
+**semillas 1 a 10, 120 s** cada una; de cada horario final, su makespan y su
+**acuerdo** con el 1613 del ABC en pares de máquina. Como escala: los fondos
+de pistas distintas coinciden un 86-97 % con el atractor (I-054).
