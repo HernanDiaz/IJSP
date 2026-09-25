@@ -3268,3 +3268,9 @@ core decisions they break; downloading them needs the PI's permission.
 6 feasible hints each at 60 s, all verified: ta41 2059 to 2031 (best known
 2005), ta43 1890 to 1883 (1846), ta46 2043 to 2032 (2004), ta47 1926 to 1922
 (1889), ta48 1996 to 1990 (1937).
+
+## I-064: ta18 to 1405, ta50 to 1950
+
+ta18, never polished before: 10 of 20 hints improve, 1414 to 1405 (best known
+1396), reached from two distinct hints. ta50: 5 of 6, 1966 to 1950 (1923). All
+verified. I-065 takes ta18's hints 21 to 80 at 20 s.

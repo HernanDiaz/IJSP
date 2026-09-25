@@ -1,0 +1,6 @@
+results/I-041_w6_p01_side/ta50_20260925110409_Certificate.csv 1 1966
+results/I-034_w4_p05_control/ta50_20260924173055_Certificate.csv 1 1968
+results/I-035_w4_p05_control/ta50_20260924214131_Certificate.csv 1 1969
+results/I-041_w4_p02_side/ta50_20260925091729_Certificate.csv 1 1972
+results/I-034_w4_p05_polish/ta50_20260924173156_Certificate.csv 1 1975
+results/I-035_w6_p05_pair/ta50_20260924225218_Certificate.csv 1 1977
