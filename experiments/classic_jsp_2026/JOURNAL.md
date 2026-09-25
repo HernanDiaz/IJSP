@@ -3112,3 +3112,12 @@ verified; ta22 stays at 1613 (1600), its six hints all 1613. Again the best
 hint is not the one that drops most (on ta25 a 1617 hint reaches 1603 while the
 1616 one stops at 1613), and almost every improvement comes in the first 10 to
 40 s. More hints, less time each.
+
+## I-046: with many hints nearly all improve, and ta27 drops to 1685
+
+40 hints each at 20 s. ta25: 34 of 40 improve, but the best is again 1603.
+ta27: 31 of 40 improve, best 1685, a new own best (was 1689; best known 1680).
+Short time suffices, but each instance's minimum stalls at a value more hints
+and more time do not move: the hybrid takes every hint to its CP-SAT floor,
+and those floors have a minimum of their own above the best known. Going lower
+needs hints from other regions.
