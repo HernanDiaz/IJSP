@@ -338,6 +338,7 @@ bucle y están aquí para que no se repitan; sus cifras están en el JOURNAL.
 | I-003 | el explorador del ABC reinyecta un **elite pateado** en vez de una solución aleatoria | un arranque aleatorio a mitad de tirada no puede alcanzar a la población; uno dentro de una cuenca buena sí | kick−control = **+1.43** (ta23 −0.27, ta29 +0.70, ta30 −0.50, ta45 **+5.80**); regla > +2 descarta → **pasa, por poco y en contra** | 4 mirillas de 6: −1.02, −0.57, **−0.03**, +0.44; kick mejor en 9-10 de 21 siempre; p entre 0.55 y 0.88, la frontera nunca se acerca | **detenida en la 4ª** (2026-09-21) por cambio de dirección del PI, no por sus datos. Sin aceptación: es un cero |
 | H-4 | N8 contra N2 (y contra N1, N3, N_ext), fase B del paper de COR | un vecindario más rico gana | -- | 82 instancias x 30 runs, 2460 bloques pareados: N2 1846.50 contra N8 1847.94, dif −1.45, p_adj = 3.9e−4, r = 0.077 (**despreciable**); rangos de Friedman N2 2.1315 el mejor de cinco, N8 2.2400 | **descartada** (antes del bucle; `experiments/cor_tabu_2026/`) |
 | I-012 | **escapar del estado todo-tabú, solo eso** | la celda informativa de I-010 dio −1.11 y mejor en 15 de 21 (p = 0.033) sin frontera | esc−control = −1.82, pasa | 6 mirillas, 30 runs: +1.30, +1.09, +0.59, +0.27, +0.39, **+0.07**; mejor en 10 de 21, p = 0.835 | **descartada** (2026-09-22). La señal de I-010 **no se reprodujo** |
+| I-043 | **híbrido ABC → CP-SAT**: pulir con CP-SAT los 20 mejores horarios **distintos** de `ta23` de la caza de I-032, 60 s cada uno | el mejor horario es un óptimo profundo, pero el ABC deja muchos óptimos distintos cerca; alguno puede estar en una región que CP-SAT sí mejore | pendiente | no aplica | **lanzada** (2026-09-25) |
 | I-042 | **CP-SAT desde nuestros mejores horarios** (OR-Tools, instalado con permiso del PI): modelo completo, el horario guardado como pista, 14 hilos, semilla 1, 600 s en `ta29`, `ta30` y `ta23` | la reoptimización exacta de B-12 llegó a ventanas de 60 operaciones; los vecindarios grandes de CP-SAT llegan mucho más lejos | ninguna mejora en 600 s: `ta29` 1625, `ta30` 1584, `ta23` 1561 (la pista en las tres); cota demostrada igual a la LB publicada en las tres | no aplica | **cerrada** (2026-09-25): los vecindarios grandes de CP-SAT tampoco mueven nuestros mejores horarios |
 | I-041 | **movimientos laterales en la meseta**: un hijo que **iguala** a su fuente con otro genotipo ocupa su lugar (`abc.accept = sideways`) | al final de la tirada el 70-90 % de la población está en un solo makespan, uno por encima del incumbente, y la sustitución estricta la deja inmóvil hasta que el contador la mata | mecanismo: ~4000 movimientos laterales por tirada (2458-5576), exploradores y generaciones parecidos; side−control = **+1.80** (ta30 +3.97, ta23 +3.33, ta45 +0.40, ta29 −0.50), pasa por poco (descartaba si > +2.0); bo5 +3.25 | mirillas media: **+0.27** (w1, 9 de 21, p = 0.689), **−0.05** (w2, 12 de 21, p = 0.689), **+0.04** (w3, 8 de 21, p = 0.590), **+0.27** (w4, 9 de 21, p = 0.520), **+0.38** (w5, 10 de 21, p = 0.414), **+0.22** (w6, 13 de 21, p = 0.768) | **rechazada y revertida** (2026-09-25) |
 | I-040 | **cortar las cadenas sin esperanza tras su primera llamada**: si el mejor hijo sigue más de un 2 % peor que la fuente, la cadena para (`abc.chain.cut = cut`) | el 84 % de las cadenas no mejora su fuente y las llamadas tras la primera son dos tercios del tabú; lo ahorrado en las perdidas va a cadenas nuevas | mecanismo: ~12500 cadenas cortadas por tirada (27-44 % de las comprobadas), llamadas al tabú iguales, generaciones +16 a +55 %; cut−control = **+0.05** (ta30 +3.20, ta45 +1.00, ta29 −1.97, ta23 −2.03), pasa (descartaba si > +2.0); bo5 +1.42 | mirillas media: **−0.18** (w1, 12 de 21, p = 0.651), **−1.78** (w2, 14 de 21, p = 0.037), **−1.28** (w3, 16 de 21, p = 0.042), **−0.65** (w4, 12 de 21, p = 0.297), **−0.37** (w5, 11 de 21, p = 0.648), **−0.20** (w6, 12 de 21, p = 0.651) | **rechazada y revertida** (2026-09-25) |
@@ -4402,3 +4403,22 @@ tirada ya no se puede convertir en un horario mejor desde dentro.
 anterior a I-041 y el solver recompilado reproduce exactamente la referencia
 a número fijo de generaciones. El diagnóstico de la meseta queda en
 `iter/I-041/diagnostic/`.
+
+### I-043 — híbrido ABC → CP-SAT sobre los 20 mejores horarios de `ta23`
+
+**De dónde sale**: I-042 mostró que CP-SAT no mejora **el** mejor horario de
+cada instancia en 600 s. Pero el ABC no deja uno, deja muchos óptimos locales
+**distintos** a pocas unidades del mejor; la caza de I-032 tiene 800 tiradas
+de `ta23`. La pregunta es si CP-SAT, como pulidor, mueve **alguno** de ellos:
+si el cuello es la región y no el resolvedor, repartir el tiempo entre
+regiones distintas debería rendir más que gastarlo entero en una.
+
+**El sondeo**: los **20** horarios distintos de makespan más bajo de
+`ta23` en los resultados de I-032 (`iter/I-043/top_schedules.py`), cada uno
+como pista completa de CP-SAT con el mismo modelo y ajustes de I-042 (14
+hilos, semilla 1), **60 s** por pista, 20 minutos en total. **Fijado antes de
+correr**: 20 pistas, 60 s. Todo horario mejor que su pista se escribe como
+certificado y se comprueba con `verify_certificate.py`.
+
+**Lectura**: cuántas pistas mejora, cuánto y el mejor makespan alcanzado,
+contra 1561 (nuestro mejor) y 1557 (el mejor conocido).
