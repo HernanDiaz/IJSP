@@ -338,6 +338,7 @@ bucle y están aquí para que no se repitan; sus cifras están en el JOURNAL.
 | I-003 | el explorador del ABC reinyecta un **elite pateado** en vez de una solución aleatoria | un arranque aleatorio a mitad de tirada no puede alcanzar a la población; uno dentro de una cuenca buena sí | kick−control = **+1.43** (ta23 −0.27, ta29 +0.70, ta30 −0.50, ta45 **+5.80**); regla > +2 descarta → **pasa, por poco y en contra** | 4 mirillas de 6: −1.02, −0.57, **−0.03**, +0.44; kick mejor en 9-10 de 21 siempre; p entre 0.55 y 0.88, la frontera nunca se acerca | **detenida en la 4ª** (2026-09-21) por cambio de dirección del PI, no por sus datos. Sin aceptación: es un cero |
 | H-4 | N8 contra N2 (y contra N1, N3, N_ext), fase B del paper de COR | un vecindario más rico gana | -- | 82 instancias x 30 runs, 2460 bloques pareados: N2 1846.50 contra N8 1847.94, dif −1.45, p_adj = 3.9e−4, r = 0.077 (**despreciable**); rangos de Friedman N2 2.1315 el mejor de cinco, N8 2.2400 | **descartada** (antes del bucle; `experiments/cor_tabu_2026/`) |
 | I-012 | **escapar del estado todo-tabú, solo eso** | la celda informativa de I-010 dio −1.11 y mejor en 15 de 21 (p = 0.033) sin frontera | esc−control = −1.82, pasa | 6 mirillas, 30 runs: +1.30, +1.09, +0.59, +0.27, +0.39, **+0.07**; mejor en 10 de 21, p = 0.835 | **descartada** (2026-09-22). La señal de I-010 **no se reprodujo** |
+| I-058 | **muchas pistas en `ta22` y `ta26`**: sus 40 mejores horarios distintos y factibles, 20 s cada uno | las dos 20x20 abiertas que aún no han tenido la variante de I-046 | pendiente | no aplica | **lanzada** (2026-09-25) |
 | I-057 | **romper el núcleo máquina a máquina** (`ta25`): consenso de los 107 fondos con los pares de una máquina liberados, las 20 máquinas, 60 s | todo horario mejor que 1603 rompe alguna decisión común | las 20 máquinas: **ninguna mejora** sobre 1603, **ninguna cerrada** en 60 s (1361-1406 pares libres, cotas 1584-1588) | no aplica | **cerrada, no concluyente** (2026-09-25): sin mejora y sin demostración |
 | I-056 | **cerrar los consensos grandes de `ta25`**: K = 64 y 107, 600 s cada uno | en 120 s quedaron con cotas 1598 y 1591; más tiempo demuestra 1603 o encuentra algo mejor | K = 64: **OPTIMAL 1603** en 163 s; K = 107: **OPTIMAL 1603** en 565 s (1263 pares libres) | no aplica | **cerrada** (2026-09-25): 1603 óptimo en el consenso de los 107 fondos |
 | I-055 | **recombinación por consenso de grupos**: fijar solo lo que ordenan igual **todos** los fondos de un grupo, K = 4 a 107 en `ta25` y 4 a 37 en `ta27`, 120 s | cuanto mayor el grupo, mayor el subespacio libre; se ve hasta dónde llega la demostración y si aparece algo mejor | `ta25`: 1603 **óptimo demostrado** en el consenso de 4, 8, 16 y **32** fondos (1051 pares libres); K = 64 y 107 sin cerrar en 120 s (cotas 1598, 1591), mejor 1603; `ta27`: 1685 óptimo demostrado con los **37** fondos (652 libres) | no aplica | **cerrada** (2026-09-25): hay núcleo común, y el atractor es óptimo en él |
@@ -4876,3 +4877,10 @@ libres, necesitó 565 s para cerrar (I-056); 60 s no bastan con 100-140 pares
 más. Se anota como lo que es: **sin mejora y sin demostración**. Cerrar cada
 máquina costaría del orden de diez minutos por máquina, más de tres horas en
 total, fuera del tamaño de una iteración.
+
+### I-058 — muchas pistas en `ta22` y `ta26`
+
+**Fijado antes de correr** (`iter/I-058/run_probe.sh`, copia de I-046 con las
+instancias cambiadas): los **40** horarios distintos y factibles más bajos de
+`ta22` (mejor propio 1613, BKS 1600) y `ta26` (1653, BKS 1643), **20 s** de
+CP-SAT cada uno, semilla 1, unos 28 minutos.
