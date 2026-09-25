@@ -3121,3 +3121,12 @@ Short time suffices, but each instance's minimum stalls at a value more hints
 and more time do not move: the hybrid takes every hint to its CP-SAT floor,
 and those floors have a minimum of their own above the best known. Going lower
 needs hints from other regions.
+
+## I-047: closing the loop finds nothing new around the floors
+
+56 seeded ABC runs of 40 s, no infeasible schedule. The seeded ABC never goes
+below its best seed: its best runs return exactly 1603 (ta25) and 1685 (ta27).
+CP-SAT on the best distinct schedules of those runs does not pass 1603 or 1685
+either. They are floors shared by both methods; the ABC <-> CP-SAT loop, as it
+stands, converges to them. Own verified bests stand at ta23 1557 (= best
+known), ta25 1603, ta26 1653, ta27 1685.

@@ -1,0 +1,13 @@
+results/I-047_p03_seeded/ta27_20260925131612_Certificate.csv 1 1685
+results/I-047_p04_seeded/ta27_20260925131612_Certificate.csv 1 1685
+results/I-047_p02_seeded/ta27_20260925131611_Certificate.csv 1 1689
+results/I-047_p16_seeded/ta27_20260925131704_Certificate.csv 1 1689
+results/I-047_p18_seeded/ta27_20260925131706_Certificate.csv 1 1689
+results/I-047_p26_seeded/ta27_20260925131710_Certificate.csv 1 1689
+results/I-047_p01_seeded/ta27_20260925131610_Certificate.csv 1 1690
+results/I-047_p06_seeded/ta27_20260925131612_Certificate.csv 1 1690
+results/I-047_p14_seeded/ta27_20260925131615_Certificate.csv 1 1690
+results/I-047_p10_seeded/ta27_20260925131614_Certificate.csv 1 1691
+results/I-047_p13_seeded/ta27_20260925131615_Certificate.csv 1 1691
+results/I-047_p17_seeded/ta27_20260925131704_Certificate.csv 1 1691
+results/I-047_p22_seeded/ta27_20260925131708_Certificate.csv 1 1691
