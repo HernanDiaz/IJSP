@@ -338,6 +338,7 @@ bucle y están aquí para que no se repitan; sus cifras están en el JOURNAL.
 | I-003 | el explorador del ABC reinyecta un **elite pateado** en vez de una solución aleatoria | un arranque aleatorio a mitad de tirada no puede alcanzar a la población; uno dentro de una cuenca buena sí | kick−control = **+1.43** (ta23 −0.27, ta29 +0.70, ta30 −0.50, ta45 **+5.80**); regla > +2 descarta → **pasa, por poco y en contra** | 4 mirillas de 6: −1.02, −0.57, **−0.03**, +0.44; kick mejor en 9-10 de 21 siempre; p entre 0.55 y 0.88, la frontera nunca se acerca | **detenida en la 4ª** (2026-09-21) por cambio de dirección del PI, no por sus datos. Sin aceptación: es un cero |
 | H-4 | N8 contra N2 (y contra N1, N3, N_ext), fase B del paper de COR | un vecindario más rico gana | -- | 82 instancias x 30 runs, 2460 bloques pareados: N2 1846.50 contra N8 1847.94, dif −1.45, p_adj = 3.9e−4, r = 0.077 (**despreciable**); rangos de Friedman N2 2.1315 el mejor de cinco, N8 2.2400 | **descartada** (antes del bucle; `experiments/cor_tabu_2026/`) |
 | I-012 | **escapar del estado todo-tabú, solo eso** | la celda informativa de I-010 dio −1.11 y mejor en 15 de 21 (p = 0.033) sin frontera | esc−control = −1.82, pasa | 6 mirillas, 30 runs: +1.30, +1.09, +0.59, +0.27, +0.39, **+0.07**; mejor en 10 de 21, p = 0.835 | **descartada** (2026-09-22). La señal de I-010 **no se reprodujo** |
+| I-063 | **el híbrido en las 30x20 sin pulir**: `ta41`, `ta43`, `ta46`, `ta47`, `ta48`, 6 pistas factibles, 60 s | mejores propios verificados donde el híbrido aún no ha pasado | pendiente | no aplica | **lanzada** (2026-09-25) |
 | I-062 | **buscar contra el núcleo** (`ta22`): un horario de makespan ≤ 1612 que invierta al menos D decisiones del núcleo, D = 10, 50, 150, 480 s | el BKS está fuera del núcleo (I-061); si nuestro 1613 se puede batir, es ahí | D = 10, 50, 150: **nada encontrado** en 480 s y **nada demostrado** (UNKNOWN en los tres) | no aplica | **cerrada, no concluyente** (2026-09-25) |
 | I-061 | **el consenso conjunto de `ta22` con 1500 s** | en 600 s la cota quedó en 1598, bajo el BKS: o se demuestra 1613 o aparece algo mejor | mejor 1613, sin cerrar, pero la cota sube a **1607 > BKS 1600**: el BKS está **fuera** del núcleo conjunto | no aplica | **cerrada** (2026-09-25): demostrado que ningún horario ≤ 1606 respeta el núcleo conjunto |
 | I-060 | **consenso conjunto de ABC y CP-SAT en frío** (`ta22`): fijar solo lo que ordenan igual los fondos del ABC y los diez horarios en frío, 600 s | los dos generadores caen en el mismo núcleo; su consenso conjunto deja libre más que cualquiera de ellos | grupo de 30 (20 de 1613, 10 en frío): el consenso fija el 77.7 % y deja **847** pares libres; en 600 s mejor 1613, **sin cerrar**, cota **1598** (< BKS 1600) | no aplica | **cerrada, no concluyente** (2026-09-25) |
@@ -5008,3 +5009,12 @@ fuera de él; ninguno de nuestros generadores lo da.
   núcleo. El más informativo serían los propios horarios BKS publicados, que
   dirían qué decisiones del núcleo rompen; descargarlos requiere el permiso
   del PI.
+
+### I-063 — el híbrido en las 30x20 sin pulir
+
+**Fijado antes de correr** (`iter/I-063/run_probe.sh`, copia de I-051): `ta41`
+(mejor propio 2059, BKS 2005), `ta43` (1890, 1846), `ta46` (2043, 2004), `ta47`
+(1926, 1889), `ta48` (1996, 1937); los 6 horarios distintos y factibles más
+bajos, 60 s de CP-SAT cada uno, unos 30 minutos. No es un intento de récord
+(los huecos son de 37 a 59); completa el mapa de mejores propios mientras el
+PI decide sobre los horarios BKS.
