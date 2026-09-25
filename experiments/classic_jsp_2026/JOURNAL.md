@@ -3048,3 +3048,15 @@ code is rolled back and the rebuilt solver reproduces the reference exactly.
 and generations close to the control's. Side minus control: ta23 +3.33, ta29
 -0.50, ta30 +3.97, ta45 +0.40, mean +1.80, two tenths inside the +2.0 line;
 best-of-five +3.25. The waves go, as the rule says.
+
+## I-042: CP-SAT does not move our best schedules either
+
+With OR-Tools installed (PI's authorisation), CP-SAT solved the full model of
+ta29, ta30 and ta23 with our best stored schedule as a complete hint: 14
+workers, seed 1, 600 s each, on an empty machine. No improvement: 1625, 1584
+and 1561 stay exactly as hinted, and the proven bound stays at the published
+lower bound on all three. The telling case is ta23, four units above the best
+known, where ten minutes of large-neighbourhood search around our schedule
+find nothing better. Our best schedules are deep local optima for CP-SAT's
+large relaxations too, beyond what B-12 showed for one or two machines and
+windows of 60 operations.
