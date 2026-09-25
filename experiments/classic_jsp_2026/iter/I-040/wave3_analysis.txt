@@ -1,0 +1,119 @@
+=== 0. MECHANISM CHECK ===
+inst   statistic                                     control        cut
+ta22   Chains cut after the first call                  0.00    8117.27
+ta22   Chains checked by the cut                        0.00   27351.13
+ta22   Number of Calls to LS                        58048.87   56088.87
+ta22   Number of Generations                           85.87     110.73
+ta23   Chains cut after the first call                  0.00   10985.27
+ta23   Chains checked by the cut                        0.00   26906.53
+ta23   Number of Calls to LS                        56378.87   51526.93
+ta23   Number of Generations                           80.33     108.93
+ta25   Chains cut after the first call                  0.00    9962.27
+ta25   Chains checked by the cut                        0.00   24321.27
+ta25   Number of Calls to LS                        49151.20   46625.53
+ta25   Number of Generations                           71.13      98.47
+ta26   Chains cut after the first call                  0.00    8770.73
+ta26   Chains checked by the cut                        0.00   23909.60
+ta26   Number of Calls to LS                        53888.27   47848.93
+ta26   Number of Generations                           79.07      96.80
+ta27   Chains cut after the first call                  0.00    7776.87
+ta27   Chains checked by the cut                        0.00   23662.60
+ta27   Number of Calls to LS                        50503.73   48038.73
+ta27   Number of Generations                           73.67      95.80
+ta29   Chains cut after the first call                  0.00    7454.33
+ta29   Chains checked by the cut                        0.00   24518.87
+ta29   Number of Calls to LS                        52332.47   50226.20
+ta29   Number of Generations                           78.73      99.27
+ta30   Chains cut after the first call                  0.00    9989.40
+ta30   Chains checked by the cut                        0.00   26050.27
+ta30   Number of Calls to LS                        49455.47   51058.13
+ta30   Number of Generations                           68.13     105.47
+ta32   Chains cut after the first call                  0.00   17723.60
+ta32   Chains checked by the cut                        0.00   54257.67
+ta32   Number of Calls to LS                       119101.53  115469.40
+ta32   Number of Generations                          165.67     219.67
+ta33   Chains cut after the first call                  0.00   17615.53
+ta33   Chains checked by the cut                        0.00   54043.60
+ta33   Number of Calls to LS                       127460.93  116701.80
+ta33   Number of Generations                          175.40     218.80
+ta34   Chains cut after the first call                  0.00   20525.20
+ta34   Chains checked by the cut                        0.00   56003.13
+ta34   Number of Calls to LS                       136572.40  117207.80
+ta34   Number of Generations                          191.67     226.73
+ta40   Chains cut after the first call                  0.00   17035.33
+ta40   Chains checked by the cut                        0.00   56299.53
+ta40   Number of Calls to LS                       125419.20  121241.53
+ta40   Number of Generations                          179.27     227.93
+ta41   Chains cut after the first call                  0.00   19361.93
+ta41   Chains checked by the cut                        0.00   56085.47
+ta41   Number of Calls to LS                       129267.67  120529.67
+ta41   Number of Generations                          172.67     227.07
+ta42   Chains cut after the first call                  0.00   22381.93
+ta42   Chains checked by the cut                        0.00   63100.27
+ta42   Number of Calls to LS                       139335.67  133999.20
+ta42   Number of Generations                          186.93     255.47
+ta43   Chains cut after the first call                  0.00   23407.40
+ta43   Chains checked by the cut                        0.00   56069.00
+ta43   Number of Calls to LS                       121349.13  115436.00
+ta43   Number of Generations                          155.87     227.00
+ta44   Chains cut after the first call                  0.00   20715.20
+ta44   Chains checked by the cut                        0.00   58308.47
+ta44   Number of Calls to LS                       132897.93  125469.40
+ta44   Number of Generations                          180.07     236.07
+ta45   Chains cut after the first call                  0.00   20127.20
+ta45   Chains checked by the cut                        0.00   60185.67
+ta45   Number of Calls to LS                       142425.67  133997.87
+ta45   Number of Generations                          186.33     243.67
+ta46   Chains cut after the first call                  0.00   24816.13
+ta46   Chains checked by the cut                        0.00   58983.60
+ta46   Number of Calls to LS                       132754.27  119948.47
+ta46   Number of Generations                          174.87     238.80
+ta47   Chains cut after the first call                  0.00   23076.33
+ta47   Chains checked by the cut                        0.00   59806.93
+ta47   Number of Calls to LS                       140579.73  125550.07
+ta47   Number of Generations                          190.93     242.13
+ta48   Chains cut after the first call                  0.00   21897.73
+ta48   Chains checked by the cut                        0.00   64269.40
+ta48   Number of Calls to LS                       149456.93  140569.27
+ta48   Number of Generations                          199.60     260.20
+ta49   Chains cut after the first call                  0.00   17094.13
+ta49   Chains checked by the cut                        0.00   57320.47
+ta49   Number of Calls to LS                       136246.13  127901.40
+ta49   Number of Generations                          183.27     232.07
+ta50   Chains cut after the first call                  0.00   17657.53
+ta50   Chains checked by the cut                        0.00   58851.87
+ta50   Number of Calls to LS                       122109.00  131524.60
+ta50   Number of Generations                          160.80     238.27
+
+chains cut per run: 16500 on average (the control cuts none)
+
+=== I-040 waves 1..3: per-instance mean (primary), best-of-5 (reported) ===
+inst     mean ctrl    mean cut         d      bo5 ctrl     bo5 cut         d
+ta22        1624.5      1622.9     -1.53        1618.7      1615.7     -3.00
+ta23        1579.9      1579.5     -0.33        1572.0      1570.7     -1.33
+ta25        1637.4      1633.7     -3.67        1631.7      1627.7     -4.00
+ta26        1684.1      1686.0     +1.87        1676.3      1679.0     +2.67
+ta27        1712.7      1709.3     -3.40        1700.7      1701.3     +0.67
+ta29        1639.5      1641.1     +1.67        1636.3      1634.3     -2.00
+ta30        1614.4      1612.3     -2.07        1599.7      1598.3     -1.33
+ta32        1833.9      1836.7     +2.80        1822.7      1821.3     -1.33
+ta33        1853.9      1851.2     -2.73        1840.3      1841.7     +1.33
+ta34        1883.7      1874.9     -8.80        1874.0      1853.0    -21.00
+ta40        1721.3      1718.7     -2.53        1716.0      1707.0     -9.00
+ta41        2085.6      2083.0     -2.60        2066.0      2066.3     +0.33
+ta42        1996.1      1995.1     -0.93        1988.3      1985.7     -2.67
+ta43        1922.1      1921.3     -0.80        1906.3      1906.7     +0.33
+ta44        2041.2      2038.6     -2.60        2029.7      2030.7     +1.00
+ta45        2035.1      2034.3     -0.87        2023.7      2021.3     -2.33
+ta46        2070.0      2074.3     +4.33        2057.0      2062.0     +5.00
+ta47        1964.7      1960.3     -4.40        1948.0      1942.3     -5.67
+ta48        2021.3      2020.7     -0.67        2005.0      2009.7     +4.67
+ta49        2009.3      2009.9     +0.53        1999.3      1998.0     -1.33
+ta50        1999.4      1999.3     -0.13        1991.7      1989.7     -2.00
+
+runs per cell and instance: 15
+
+look 3 of 6, symmetric boundary p <= 0.0142 (Pocock, six looks)
+PRIMARY, per-instance mean: -1.28, cut better on 16 of 21, W = 57.0, p = 0.0420
+reported, deciding nothing: best-of-5 moved -1.95
+-> continue: run wave 4
