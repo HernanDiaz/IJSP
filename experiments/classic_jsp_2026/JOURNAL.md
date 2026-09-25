@@ -3194,3 +3194,14 @@ all 30 end OPTIMAL in 0 to 2 s at the better parent, 1603 and 1685. The
 parents, floors of distinct hints, agree on 86.6 to 96.8 per cent of the 3800
 machine pairs on ta25 and 93.3 to 95.8 on ta27. Next: fix only what every
 parent of a group shares, with ever larger groups.
+
+## I-055: there is a common core, and the attractor is optimal inside it
+
+Consensus recombination over nested groups of CP-SAT floors, only pairs every
+member orders alike fixed, 120 s each. On ta25, 1603 is proven optimal in the
+consensus of 4, 8, 16 and 32 floors (1051 free machine pairs); with 64 and 107
+floors CP-SAT does not close in 120 s (bounds 1598, 1591) and finds nothing
+better. On ta27, 1685 is proven optimal in the consensus of all 37 floors (652
+free). Unlike the IJSP diagnosis of June, the classic JSP floors share a core,
+two thirds of the machine decisions across 107 distinct hints, and every
+schedule better than the attractor must break a decision the floors share.

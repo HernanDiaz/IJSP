@@ -338,7 +338,8 @@ bucle y están aquí para que no se repitan; sus cifras están en el JOURNAL.
 | I-003 | el explorador del ABC reinyecta un **elite pateado** en vez de una solución aleatoria | un arranque aleatorio a mitad de tirada no puede alcanzar a la población; uno dentro de una cuenca buena sí | kick−control = **+1.43** (ta23 −0.27, ta29 +0.70, ta30 −0.50, ta45 **+5.80**); regla > +2 descarta → **pasa, por poco y en contra** | 4 mirillas de 6: −1.02, −0.57, **−0.03**, +0.44; kick mejor en 9-10 de 21 siempre; p entre 0.55 y 0.88, la frontera nunca se acerca | **detenida en la 4ª** (2026-09-21) por cambio de dirección del PI, no por sus datos. Sin aceptación: es un cero |
 | H-4 | N8 contra N2 (y contra N1, N3, N_ext), fase B del paper de COR | un vecindario más rico gana | -- | 82 instancias x 30 runs, 2460 bloques pareados: N2 1846.50 contra N8 1847.94, dif −1.45, p_adj = 3.9e−4, r = 0.077 (**despreciable**); rangos de Friedman N2 2.1315 el mejor de cinco, N8 2.2400 | **descartada** (antes del bucle; `experiments/cor_tabu_2026/`) |
 | I-012 | **escapar del estado todo-tabú, solo eso** | la celda informativa de I-010 dio −1.11 y mejor en 15 de 21 (p = 0.033) sin frontera | esc−control = −1.82, pasa | 6 mirillas, 30 runs: +1.30, +1.09, +0.59, +0.27, +0.39, **+0.07**; mejor en 10 de 21, p = 0.835 | **descartada** (2026-09-22). La señal de I-010 **no se reprodujo** |
-| I-055 | **recombinación por consenso de grupos**: fijar solo lo que ordenan igual **todos** los fondos de un grupo, K = 4 a 107 en `ta25` y 4 a 37 en `ta27`, 120 s | cuanto mayor el grupo, mayor el subespacio libre; se ve hasta dónde llega la demostración y si aparece algo mejor | pendiente | no aplica | **lanzada** (2026-09-25) |
+| I-056 | **cerrar los consensos grandes de `ta25`**: K = 64 y 107, 600 s cada uno | en 120 s quedaron con cotas 1598 y 1591; más tiempo demuestra 1603 o encuentra algo mejor | pendiente | no aplica | **lanzada** (2026-09-25) |
+| I-055 | **recombinación por consenso de grupos**: fijar solo lo que ordenan igual **todos** los fondos de un grupo, K = 4 a 107 en `ta25` y 4 a 37 en `ta27`, 120 s | cuanto mayor el grupo, mayor el subespacio libre; se ve hasta dónde llega la demostración y si aparece algo mejor | `ta25`: 1603 **óptimo demostrado** en el consenso de 4, 8, 16 y **32** fondos (1051 pares libres); K = 64 y 107 sin cerrar en 120 s (cotas 1598, 1591), mejor 1603; `ta27`: 1685 óptimo demostrado con los **37** fondos (652 libres) | no aplica | **cerrada** (2026-09-25): hay núcleo común, y el atractor es óptimo en él |
 | I-054 | **recombinación exacta entre atractores**: el mejor fondo de CP-SAT con cada uno de los 15 siguientes, precedencias comunes fijas y el resto libre, 45 s (`ta25`, `ta27`) | para salir de un atractor hay que atravesar hacia otro; el cruce óptimo de dos fondos lo hace de forma exacta | 30 recombinaciones, **las 30 OPTIMAL** en 0-2 s, siempre en el mejor padre (1603, 1685); los padres coinciden en el 86-96 % de los pares de máquina | no aplica | **cerrada** (2026-09-25): ninguna mezcla de dos fondos mejora el atractor, demostrado |
 | I-053 | **más abajo en la lista de pistas**: `ta25`, pistas 41.ª a 120.ª, 20 s cada una | los fondos son de la pista y el mejor de `ta27` salió de la 31.ª: pistas nuevas pueden tener fondos más bajos | 80 pistas (1623-1631): **70 mejoran**, la mejor llega otra vez a **1603** desde otro horario; ninguna por debajo | no aplica | **cerrada** (2026-09-25): 1603 es un atractor en `ta25` |
 | I-052 | **la aleatoriedad de CP-SAT**: las pistas que dieron 1603 (`ta25`), 1653 (`ta26`) y 1685 (`ta27`), con las semillas 2 a 13, 45 s cada una | la misma pista con otra semilla puede caer en otro fondo | cada pista cae en los mismos 2-3 fondos: `ta25` 1603 (10 de 12), 1615, 1616; `ta26` 1653 (3), 1660 (9); `ta27` 1685 (8), 1689 (4) | no aplica | **cerrada** (2026-09-25): los fondos son de la pista, no de la semilla |
@@ -4819,3 +4820,31 @@ minimiza **120 s** con la mejor del grupo como pista. Se anota cuántos pares
 quedan libres, el mejor del subespacio y el estado. Si al crecer K llega un
 subespacio que CP-SAT ya no cierra, ese es el límite de la demostración; si
 aparece algo mejor que 1603 o 1685, se verifica.
+
+### I-055, cierre: hay un núcleo común, y el atractor es óptimo dentro de él
+
+`iter/I-055/run.log`.
+
+| instancia | K | pares fijados por consenso | libres | mejor | estado | cota |
+|---|---|---|---|---|---|---|
+| ta25 | 4 | 3319 (87.3 %) | 481 | 1603 | OPTIMAL | 1603 (3 s) |
+| ta25 | 8 | 3113 (81.9 %) | 687 | 1603 | OPTIMAL | 1603 (5 s) |
+| ta25 | 16 | 2892 (76.1 %) | 908 | 1603 | OPTIMAL | 1603 (26 s) |
+| ta25 | 32 | 2749 (72.3 %) | 1051 | 1603 | **OPTIMAL** | 1603 (99 s) |
+| ta25 | 64 | 2667 (70.2 %) | 1133 | 1603 | FEASIBLE | 1598 |
+| ta25 | 107 | 2537 (66.8 %) | 1263 | 1603 | FEASIBLE | 1591 |
+| ta27 | 4 | 3459 (91.0 %) | 341 | 1685 | OPTIMAL | 1685 |
+| ta27 | 8 | 3344 (88.0 %) | 456 | 1685 | OPTIMAL | 1685 |
+| ta27 | 16 | 3314 (87.2 %) | 486 | 1685 | OPTIMAL | 1685 |
+| ta27 | 37 | 3148 (82.8 %) | 652 | 1685 | **OPTIMAL** | 1685 (42 s) |
+
+**Lo que dice**: (1) en el JSP clásico **sí hay núcleo común**: los 107
+fondos de `ta25`, de 107 pistas distintas, coinciden en dos tercios de las
+decisiones de máquina, al revés que el diagnóstico de junio en IJSP (meseta
+sin núcleo). (2) Dentro del consenso de 32 fondos de `ta25` y de los 37 de
+`ta27`, **1603 y 1685 son óptimos demostrados**: todo horario mejor tiene que
+**romper alguna decisión que comparten** esos fondos. Eso cambia el problema
+de "buscar más" a "saber qué decisión común romper".
+
+**Siguiente paso, fijado ahora**: dar 600 s a los consensos de 64 y 107 de
+`ta25`, que en 120 s no cerraron, para demostrar o encontrar algo mejor.
