@@ -3224,3 +3224,12 @@ proof. Closing each would take on the order of ten minutes per machine.
 
 40 hints each at 20 s: on ta22, 38 of 40 end exactly at 1613 and two at 1614;
 on ta26 the best is 1656, the own best stays at 1653. No new bests.
+
+## I-059: the core is not a bias of the ABC
+
+Cold CP-SAT on ta22, no hint, seeds 1 to 10 at 120 s: makespans 1629 to 1648
+(worse than the ABC's 1613), and 90.0 to 93.5 per cent agreement with the ABC
+attractor on machine pairs, the same order as the ABC's own floors. Two
+generators with nothing in common land in the same core: a structure of the
+instance, not of our algorithm. The best known 1600 must break decisions both
+make. I-060 tests their joint consensus.

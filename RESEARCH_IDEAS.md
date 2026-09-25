@@ -338,7 +338,8 @@ bucle y están aquí para que no se repitan; sus cifras están en el JOURNAL.
 | I-003 | el explorador del ABC reinyecta un **elite pateado** en vez de una solución aleatoria | un arranque aleatorio a mitad de tirada no puede alcanzar a la población; uno dentro de una cuenca buena sí | kick−control = **+1.43** (ta23 −0.27, ta29 +0.70, ta30 −0.50, ta45 **+5.80**); regla > +2 descarta → **pasa, por poco y en contra** | 4 mirillas de 6: −1.02, −0.57, **−0.03**, +0.44; kick mejor en 9-10 de 21 siempre; p entre 0.55 y 0.88, la frontera nunca se acerca | **detenida en la 4ª** (2026-09-21) por cambio de dirección del PI, no por sus datos. Sin aceptación: es un cero |
 | H-4 | N8 contra N2 (y contra N1, N3, N_ext), fase B del paper de COR | un vecindario más rico gana | -- | 82 instancias x 30 runs, 2460 bloques pareados: N2 1846.50 contra N8 1847.94, dif −1.45, p_adj = 3.9e−4, r = 0.077 (**despreciable**); rangos de Friedman N2 2.1315 el mejor de cinco, N8 2.2400 | **descartada** (antes del bucle; `experiments/cor_tabu_2026/`) |
 | I-012 | **escapar del estado todo-tabú, solo eso** | la celda informativa de I-010 dio −1.11 y mejor en 15 de 21 (p = 0.033) sin frontera | esc−control = −1.82, pasa | 6 mirillas, 30 runs: +1.30, +1.09, +0.59, +0.27, +0.39, **+0.07**; mejor en 10 de 21, p = 0.835 | **descartada** (2026-09-22). La señal de I-010 **no se reprodujo** |
-| I-059 | **CP-SAT en frío, sin pista** (`ta22`, semillas 1 a 10, 120 s): cuánto coinciden sus horarios con el atractor 1613 del ABC | todas nuestras pistas vienen del ABC y caen en su núcleo; otro generador puede caer en otras regiones | pendiente | no aplica | **lanzada** (2026-09-25) |
+| I-060 | **consenso conjunto de ABC y CP-SAT en frío** (`ta22`): fijar solo lo que ordenan igual los fondos del ABC y los diez horarios en frío, 600 s | los dos generadores caen en el mismo núcleo; su consenso conjunto deja libre más que cualquiera de ellos | pendiente | no aplica | **lanzada** (2026-09-25) |
+| I-059 | **CP-SAT en frío, sin pista** (`ta22`, semillas 1 a 10, 120 s): cuánto coinciden sus horarios con el atractor 1613 del ABC | todas nuestras pistas vienen del ABC y caen en su núcleo; otro generador puede caer en otras regiones | CP-SAT en frío: 1629-1648 en 120 s (peor que el ABC), y **coincide un 90.0-93.5 %** con el atractor 1613 del ABC: el mismo núcleo | no aplica | **cerrada** (2026-09-25): el núcleo no es un sesgo del ABC |
 | I-058 | **muchas pistas en `ta22` y `ta26`**: sus 40 mejores horarios distintos y factibles, 20 s cada uno | las dos 20x20 abiertas que aún no han tenido la variante de I-046 | `ta22`: **38 de 40 pistas acaban en 1613** exacto (dos en 1614); `ta26`: mejor 1656 (el propio sigue en 1653) | no aplica | **cerrada** (2026-09-25): sin mejores nuevos; 1613 es el atractor más marcado |
 | I-057 | **romper el núcleo máquina a máquina** (`ta25`): consenso de los 107 fondos con los pares de una máquina liberados, las 20 máquinas, 60 s | todo horario mejor que 1603 rompe alguna decisión común | las 20 máquinas: **ninguna mejora** sobre 1603, **ninguna cerrada** en 60 s (1361-1406 pares libres, cotas 1584-1588) | no aplica | **cerrada, no concluyente** (2026-09-25): sin mejora y sin demostración |
 | I-056 | **cerrar los consensos grandes de `ta25`**: K = 64 y 107, 600 s cada uno | en 120 s quedaron con cotas 1598 y 1591; más tiempo demuestra 1603 o encuentra algo mejor | K = 64: **OPTIMAL 1603** en 163 s; K = 107: **OPTIMAL 1603** en 565 s (1263 pares libres) | no aplica | **cerrada** (2026-09-25): 1603 óptimo en el consenso de los 107 fondos |
@@ -4905,3 +4906,25 @@ generador**. El más a mano es CP-SAT **sin pista**.
 **semillas 1 a 10, 120 s** cada una; de cada horario final, su makespan y su
 **acuerdo** con el 1613 del ABC en pares de máquina. Como escala: los fondos
 de pistas distintas coinciden un 86-97 % con el atractor (I-054).
+
+### I-059, cierre: el núcleo no es un sesgo del ABC
+
+`iter/I-059/run.log`, diez horarios verificados. CP-SAT **sin pista**, 120 s,
+semillas 1 a 10: makespans **1629 a 1648** (peores que el 1613 del ABC; cota
+1561), y **acuerdo con el atractor del ABC del 90.0 al 93.5 %** de los pares
+de máquina, el mismo orden que los fondos del propio ABC (86-97 %, I-054).
+
+**Lo que dice**: dos generadores sin nada en común, una colonia de abejas con
+tabú y un resolvedor de restricciones partiendo de cero, **caen en el mismo
+núcleo**. No es un sesgo de nuestro algoritmo: es una estructura de la
+instancia, la región donde viven los horarios buenos de `ta22`. El BKS (1600)
+tiene que romper decisiones que **los dos** toman.
+
+### I-060 — el consenso conjunto de los dos generadores en `ta22`
+
+**Fijado antes de correr** (`iter/I-060/run.sh`, `group.py`): el grupo son el
+mejor horario factible guardado de `ta22` (1613), los fondos por pista de
+CP-SAT en I-045 e I-058 y los diez horarios en frío de I-059; se fijan solo
+los pares de máquina que **todos** ordenan igual, y CP-SAT minimiza **600 s**
+con el mejor del grupo como pista. OPTIMAL en 1613 sería una demostración
+sobre la región que exploran los dos generadores; algo mejor, se verifica.
