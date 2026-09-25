@@ -338,6 +338,7 @@ bucle y están aquí para que no se repitan; sus cifras están en el JOURNAL.
 | I-003 | el explorador del ABC reinyecta un **elite pateado** en vez de una solución aleatoria | un arranque aleatorio a mitad de tirada no puede alcanzar a la población; uno dentro de una cuenca buena sí | kick−control = **+1.43** (ta23 −0.27, ta29 +0.70, ta30 −0.50, ta45 **+5.80**); regla > +2 descarta → **pasa, por poco y en contra** | 4 mirillas de 6: −1.02, −0.57, **−0.03**, +0.44; kick mejor en 9-10 de 21 siempre; p entre 0.55 y 0.88, la frontera nunca se acerca | **detenida en la 4ª** (2026-09-21) por cambio de dirección del PI, no por sus datos. Sin aceptación: es un cero |
 | H-4 | N8 contra N2 (y contra N1, N3, N_ext), fase B del paper de COR | un vecindario más rico gana | -- | 82 instancias x 30 runs, 2460 bloques pareados: N2 1846.50 contra N8 1847.94, dif −1.45, p_adj = 3.9e−4, r = 0.077 (**despreciable**); rangos de Friedman N2 2.1315 el mejor de cinco, N8 2.2400 | **descartada** (antes del bucle; `experiments/cor_tabu_2026/`) |
 | I-012 | **escapar del estado todo-tabú, solo eso** | la celda informativa de I-010 dio −1.11 y mejor en 15 de 21 (p = 0.033) sin frontera | esc−control = −1.82, pasa | 6 mirillas, 30 runs: +1.30, +1.09, +0.59, +0.27, +0.39, **+0.07**; mejor en 10 de 21, p = 0.835 | **descartada** (2026-09-22). La señal de I-010 **no se reprodujo** |
+| I-048 | **el híbrido en las 30x15 abiertas**: `ta32`, `ta33`, `ta34`, `ta40`, sus 6 mejores horarios distintos, 60 s cada uno | nuestros mejores quedan 14-31 unidades por encima del BKS; en `ta33` y `ta34` la LB está pegada al BKS | pendiente | no aplica | **lanzada** (2026-09-25) |
 | I-047 | **cerrar el ciclo**: el ABC sembrado con los horarios que dejó CP-SAT (`ta25`, `ta27`), 28 tiradas de 40 s, y CP-SAT sobre sus 20 mejores | cada pista baja a su fondo de CP-SAT; para bajar más hacen falta pistas nuevas, y el ABC las fabrica alrededor de lo mejor | 56 tiradas sembradas, cero infactibles: el ABC **no baja de su mejor semilla** (1603, 1685); CP-SAT sobre sus 20 mejores tampoco (1603, 1685) | no aplica | **cerrada** (2026-09-25): el ciclo no encuentra nada nuevo alrededor de esos fondos |
 | I-046 | **el híbrido con muchas pistas y poco tiempo**: `ta25` y `ta27`, sus 40 mejores horarios distintos, 20 s cada uno | las mejoras llegan en los primeros segundos y la pista que más baja no es la mejor: repartir en muchas | `ta25`: 34 de 40 pistas mejoran, mejor **1603** (igual que I-045; BKS 1595); `ta27`: 31 de 40 mejoran, mejor **1685**, nuevo mejor propio (antes 1689; BKS 1680); todo verificado | no aplica | **cerrada** (2026-09-25): `ta27` a 1685; `ta25` se para en 1603 |
 | I-045 | **el híbrido en el resto de 20x20 abiertas**: `ta22`, `ta25`, `ta26`, `ta27`, sus 6 mejores horarios distintos, 75 s cada uno | donde nuestro mejor está a 13-21 unidades del BKS el híbrido tiene recorrido, como en `ta23` | mejores propios nuevos, verificados: `ta25` 1616 → **1603** (BKS 1595), `ta26` 1660 → **1653** (1643), `ta27` 1694 → **1689** (1680); `ta22` 1613 no se mueve (1600) | no aplica | **cerrada** (2026-09-25): tres mejores propios; las mejoras llegan en los primeros 10-40 s |
@@ -4614,3 +4615,16 @@ el ABC arrancando en ellos no sale, y CP-SAT sobre lo que el ABC produce
 alrededor vuelve a ellos. El ciclo ABC ↔ CP-SAT, tal como está, converge a
 esos puntos. Queda como mejores propios verificados: `ta23` **1557 (= BKS)**,
 `ta25` **1603**, `ta26` **1653**, `ta27` **1685**.
+
+### I-048 — el híbrido ABC → CP-SAT en las 30x15 abiertas
+
+**De dónde sale**: en las 20x20 el híbrido ha llegado a fondos compartidos
+(I-047). En las 30x15 abiertas nuestros mejores horarios quedan más lejos:
+`ta32` **1815** (LB 1774, BKS 1784), `ta33` **1820** (1788, 1791), `ta34`
+**1843** (1828, 1829), `ta40` **1695** (1651, 1669). En `ta33` y `ta34` la cota
+inferior está pegada al mejor conocido: un 1828 en `ta34` sería récord **y**
+óptimo demostrado.
+
+**Fijado antes de correr** (`iter/I-048/run_probe.sh`): los **6** horarios
+distintos más bajos de cada instancia, **60 s** de CP-SAT cada uno (modelo y
+ajustes de I-042), unos 24 minutos, verificación de todo horario nuevo.
