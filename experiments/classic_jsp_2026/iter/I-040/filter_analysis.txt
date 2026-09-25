@@ -1,0 +1,33 @@
+=== 0. MECHANISM CHECK ===
+inst   statistic                                     control        cut
+ta23   Chains cut after the first call                  0.00   11953.27
+ta23   Chains checked by the cut                        0.00   28265.03
+ta23   Number of Calls to LS                        53630.53   53253.60
+ta23   Number of Generations                           73.70     114.43
+ta29   Chains cut after the first call                  0.00    6985.47
+ta29   Chains checked by the cut                        0.00   26321.97
+ta29   Number of Calls to LS                        57942.40   54785.43
+ta29   Number of Generations                           89.87     106.57
+ta30   Chains cut after the first call                  0.00    9729.90
+ta30   Chains checked by the cut                        0.00   25054.03
+ta30   Number of Calls to LS                        52587.70   49388.00
+ta30   Number of Generations                           74.20     101.43
+ta45   Chains cut after the first call                  0.00   21259.90
+ta45   Chains checked by the cut                        0.00   65669.07
+ta45   Number of Calls to LS                       144553.30  146757.83
+ta45   Number of Generations                          188.20     265.87
+
+chains cut per run: 12482 on average (the control cuts none)
+
+=== I-040 filter: per-instance mean (primary), best-of-5 (reported) ===
+inst     mean ctrl    mean cut         d      bo5 ctrl     bo5 cut         d
+ta23        1583.5      1581.5     -2.03        1572.8      1572.2     -0.67
+ta29        1639.7      1637.7     -1.97        1635.8      1632.3     -3.50
+ta30        1615.3      1618.5     +3.20        1599.3      1608.0     +8.67
+ta45        2034.7      2035.7     +1.00        2023.5      2024.7     +1.17
+
+runs per cell and instance: 30
+
+filter rule, on the MEAN: mean(cut - control) = +0.05;
+discard if > +2.0 -> PASS, go to the waves
+best-of-5 moved +1.42, and decides nothing here.

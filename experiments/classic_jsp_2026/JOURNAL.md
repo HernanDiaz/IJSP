@@ -3015,3 +3015,12 @@ are not speed but a symptom of short chains.
 
 No records and no matches. The code is rolled back and the rebuilt solver
 reproduces the reference exactly.
+
+## I-040's filter passes: the time goes where it should
+
+240 jobs, no infeasible schedule, seeds 1001 to 1030. About 12,500 chains cut
+per run, 27 to 44 per cent of those checked; tabu calls stay the same and
+generations rise (74 to 114, 90 to 107, 74 to 101, 188 to 266), so the time
+saved on lost chains is spent on new ones, as intended. Cut minus control: ta23
+-2.03, ta29 -1.97, ta30 +3.20, ta45 +1.00, mean +0.05, passing the +2.0 rule.
+Split: better on ta23 and ta29, worse on ta30. The waves go.
