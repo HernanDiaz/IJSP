@@ -338,7 +338,7 @@ bucle y están aquí para que no se repitan; sus cifras están en el JOURNAL.
 | I-003 | el explorador del ABC reinyecta un **elite pateado** en vez de una solución aleatoria | un arranque aleatorio a mitad de tirada no puede alcanzar a la población; uno dentro de una cuenca buena sí | kick−control = **+1.43** (ta23 −0.27, ta29 +0.70, ta30 −0.50, ta45 **+5.80**); regla > +2 descarta → **pasa, por poco y en contra** | 4 mirillas de 6: −1.02, −0.57, **−0.03**, +0.44; kick mejor en 9-10 de 21 siempre; p entre 0.55 y 0.88, la frontera nunca se acerca | **detenida en la 4ª** (2026-09-21) por cambio de dirección del PI, no por sus datos. Sin aceptación: es un cero |
 | H-4 | N8 contra N2 (y contra N1, N3, N_ext), fase B del paper de COR | un vecindario más rico gana | -- | 82 instancias x 30 runs, 2460 bloques pareados: N2 1846.50 contra N8 1847.94, dif −1.45, p_adj = 3.9e−4, r = 0.077 (**despreciable**); rangos de Friedman N2 2.1315 el mejor de cinco, N8 2.2400 | **descartada** (antes del bucle; `experiments/cor_tabu_2026/`) |
 | I-012 | **escapar del estado todo-tabú, solo eso** | la celda informativa de I-010 dio −1.11 y mejor en 15 de 21 (p = 0.033) sin frontera | esc−control = −1.82, pasa | 6 mirillas, 30 runs: +1.30, +1.09, +0.59, +0.27, +0.39, **+0.07**; mejor en 10 de 21, p = 0.835 | **descartada** (2026-09-22). La señal de I-010 **no se reprodujo** |
-| I-049 | **muchas pistas en `ta33` y `ta34`**: sus 40 mejores horarios distintos, 20 s cada uno | la variante de I-046 donde estamos a 5 y 11 unidades del BKS | pendiente | no aplica | **lanzada** (2026-09-25) |
+| I-049 | **muchas pistas en `ta33` y `ta34`**: sus 40 mejores horarios distintos, 20 s cada uno | la variante de I-046 donde estamos a 5 y 11 unidades del BKS | `ta33`: 33 de 40 mejoran, mejor 1802 (el mismo de I-048); `ta34`: 33 de 40, mejor 1835 (> 1834) | no aplica | **cerrada** (2026-09-25): sin mejores nuevos; en 30x15, 20 s es poco |
 | I-048 | **el híbrido en las 30x15 abiertas**: `ta32`, `ta33`, `ta34`, `ta40`, sus 6 mejores horarios distintos, 60 s cada uno | nuestros mejores quedan 14-31 unidades por encima del BKS; en `ta33` y `ta34` la LB está pegada al BKS | mejores propios nuevos, verificados: `ta32` 1815 → **1811** (BKS 1784), `ta33` 1820 → **1802** (1791), `ta34` 1843 → **1834** (1829), `ta40` 1695 → **1688** (1669) | no aplica | **cerrada** (2026-09-25): cuatro mejores propios, ninguno en el BKS |
 | I-047 | **cerrar el ciclo**: el ABC sembrado con los horarios que dejó CP-SAT (`ta25`, `ta27`), 28 tiradas de 40 s, y CP-SAT sobre sus 20 mejores | cada pista baja a su fondo de CP-SAT; para bajar más hacen falta pistas nuevas, y el ABC las fabrica alrededor de lo mejor | 56 tiradas sembradas, cero infactibles: el ABC **no baja de su mejor semilla** (1603, 1685); CP-SAT sobre sus 20 mejores tampoco (1603, 1685) | no aplica | **cerrada** (2026-09-25): el ciclo no encuentra nada nuevo alrededor de esos fondos |
 | I-046 | **el híbrido con muchas pistas y poco tiempo**: `ta25` y `ta27`, sus 40 mejores horarios distintos, 20 s cada uno | las mejoras llegan en los primeros segundos y la pista que más baja no es la mejor: repartir en muchas | `ta25`: 34 de 40 pistas mejoran, mejor **1603** (igual que I-045; BKS 1595); `ta27`: 31 de 40 mejoran, mejor **1685**, nuevo mejor propio (antes 1689; BKS 1680); todo verificado | no aplica | **cerrada** (2026-09-25): `ta27` a 1685; `ta25` se para en 1603 |
@@ -4652,3 +4652,11 @@ muchas pistas (I-046) en `ta33` y `ta34`, las dos más cerca de su BKS.
 instancias cambiadas): los **40** horarios distintos más bajos de `ta33`
 (mejor propio 1802, BKS 1791, LB 1788) y `ta34` (1834, 1829, 1828) entre los
 resultados de la línea, **20 s** de CP-SAT cada uno, unos 28 minutos.
+
+### I-049, cierre: en las 30x15, 20 s es poco
+
+`iter/I-049/probe_run.log`, cero infactibles. `ta33`: 33 de 40 pistas
+mejoran, el mejor es **1802**, el mismo de I-048; `ta34`: 33 de 40 mejoran, el
+mejor es **1835**, peor que el 1834 que dieron 60 s en I-048. A diferencia de
+las 20x20 (I-045: casi todo en 10-40 s), en 30x15 CP-SAT sigue bajando más
+allá de los 20 s. Siguiente paso: continuaciones largas desde los mejores.

@@ -3137,3 +3137,9 @@ known), ta25 1603, ta26 1653, ta27 1685.
 1820 to 1802 (1791), ta34 1843 to 1834 (1829), ta40 1695 to 1688 (1669). On
 ta34 five of six hints end exactly at 1834, another shared floor. Next: many
 hints on ta33 and ta34.
+
+## I-049: on 30x15, 20 s is too short
+
+40 hints each at 20 s: ta33 best 1802 (the same as I-048), ta34 best 1835 (worse
+than the 1834 of I-048's 60 s). Unlike 20x20, CP-SAT keeps improving past 20 s
+on 30x15. Next: long continuations from the best schedules.
