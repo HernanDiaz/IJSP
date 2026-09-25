@@ -338,7 +338,8 @@ bucle y están aquí para que no se repitan; sus cifras están en el JOURNAL.
 | I-003 | el explorador del ABC reinyecta un **elite pateado** en vez de una solución aleatoria | un arranque aleatorio a mitad de tirada no puede alcanzar a la población; uno dentro de una cuenca buena sí | kick−control = **+1.43** (ta23 −0.27, ta29 +0.70, ta30 −0.50, ta45 **+5.80**); regla > +2 descarta → **pasa, por poco y en contra** | 4 mirillas de 6: −1.02, −0.57, **−0.03**, +0.44; kick mejor en 9-10 de 21 siempre; p entre 0.55 y 0.88, la frontera nunca se acerca | **detenida en la 4ª** (2026-09-21) por cambio de dirección del PI, no por sus datos. Sin aceptación: es un cero |
 | H-4 | N8 contra N2 (y contra N1, N3, N_ext), fase B del paper de COR | un vecindario más rico gana | -- | 82 instancias x 30 runs, 2460 bloques pareados: N2 1846.50 contra N8 1847.94, dif −1.45, p_adj = 3.9e−4, r = 0.077 (**despreciable**); rangos de Friedman N2 2.1315 el mejor de cinco, N8 2.2400 | **descartada** (antes del bucle; `experiments/cor_tabu_2026/`) |
 | I-012 | **escapar del estado todo-tabú, solo eso** | la celda informativa de I-010 dio −1.11 y mejor en 15 de 21 (p = 0.033) sin frontera | esc−control = −1.82, pasa | 6 mirillas, 30 runs: +1.30, +1.09, +0.59, +0.27, +0.39, **+0.07**; mejor en 10 de 21, p = 0.835 | **descartada** (2026-09-22). La señal de I-010 **no se reprodujo** |
-| I-073 | **descenso en `ta18`, vuelta 2**: máquina 13 con 180 s y las 105 parejas en tres tandas de 45 s | tras I-072, el 1404 es óptimo con 14 máquinas liberadas por separado | pendiente | no aplica | **lanzada** (2026-09-25) |
+| I-074 | **descenso en `ta18`, vuelta 3**: grupo + el 1401, máquinas sueltas (60 s) y parejas 1-35 (45 s) | el 1401 cambia el núcleo | pendiente | no aplica | **lanzada** (2026-09-25) |
+| I-073 | **descenso en `ta18`, vuelta 2**: máquina 13 con 180 s y las 105 parejas en tres tandas de 45 s | tras I-072, el 1404 es óptimo con 14 máquinas liberadas por separado | máquina 13 OPTIMAL 1404; parejas 1-70: 43 OPTIMAL en 1404, 26 abiertas, y **(4,14) OPTIMAL en 1401**, **nuevo mejor propio de `ta18`**, verificado (BKS 1396) | no aplica | **cerrada** (2026-09-25): el descenso baja 1404 → **1401**; la tanda 3 se sustituye por la vuelta 3 |
 | I-072 | **descenso por ruptura del núcleo en `ta18`, vuelta 1**: grupo + el 1404, las 15 máquinas por separado, 60 s | el 1404 está fuera del núcleo; con él el núcleo cambia y puede haber más que bajar | 14 de 15 máquinas **OPTIMAL en 1404**; la **13** sin cerrar en 60 s (cota 1400); ninguna mejora | no aplica | **cerrada** (2026-09-25); sigue I-073 (máquina 13 y parejas) |
 | I-071 | **las 12 parejas abiertas de `ta18`**, 120 s cada una | cerrar el mapa de parejas | las 12 cierran OPTIMAL: 11 en 1405 y **(5,8) en 1404**, **nuevo mejor propio de `ta18`**, verificado contra la OR-Library (BKS 1396) | no aplica | **cerrada** (2026-09-25): **primera salida del núcleo**; las 105 parejas quedan demostradas |
 | I-070 | **romper el núcleo de `ta18` por parejas de máquinas**, tanda 3 de 3 (parejas 71-105), 45 s | continuación de I-069 | parejas 71-105: **31 OPTIMAL en 1405**; 4 sin cerrar ((7,8), (7,13), (8,13), (10,13); cotas 1400-1402); ninguna mejora | no aplica | **cerrada** (2026-09-25): 93 de 105 parejas demostradas; las 12 abiertas van a I-071 |
@@ -5194,3 +5195,19 @@ parejas 1 a 35, **21 cierran en 1404** y **14 no cierran** en 45 s (cotas
 1397 a 1402), sin mejora. Con el 1404 en el grupo el núcleo cuesta más de
 cerrar que con el de 1405. Siguen las tandas 2 y 3 y, al final, las abiertas
 con más tiempo.
+
+### I-073, cierre: el descenso baja a 1401
+
+`iter/I-073/run_2.log`. En la tanda 2 de parejas cierran 22 de 35, y **la
+pareja (4, 14) cierra OPTIMAL en 1401** (`iter/I-073/found_m4-14_ta18_1401_Certificate.csv`),
+**verificado** contra la OR-Library: **nuevo mejor propio de `ta18`**, a 5 del
+BKS (1396). La secuencia del descenso por ruptura del núcleo es **1405 → 1404
+→ 1401**. Como el 1401 cambia el núcleo, la tanda 3 de esta vuelta no se
+corre: empieza la vuelta 3 con él en el grupo.
+
+### I-074 — vuelta 3 del descenso en `ta18`, desde 1401
+
+**Fijado antes de correr** (`iter/I-073/descent_round.sh`): el grupo de I-073
+más el horario de 1401 (29 horarios, el 1401 como mejor y pista); las 15
+**máquinas** sueltas, 60 s cada una, y la tanda 1 de **parejas**, 45 s cada
+una. Todo horario por debajo de 1401 se verifica y abre la vuelta siguiente.

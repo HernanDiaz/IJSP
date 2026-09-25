@@ -3316,3 +3316,11 @@ with that schedule, repeat. I-072 is the first round.
 With the 1404 schedule in the group, 14 of the 15 single-machine relaxations
 close OPTIMAL at 1404; machine 13 does not close in 60 s (bound 1400). I-073
 runs machine 13 at 180 s and the 105 pairs in three batches.
+
+## I-073: the descent reaches 1401 on ta18
+
+Round 2 of the core-breaking descent: machine 13 closes at 1404; of the machine
+pairs 1 to 70, 43 close at 1404, 26 stay open, and the pair (4, 14) closes
+OPTIMAL at 1401, verified against OR-Library, a new own best five units from
+the best known 1396. The descent so far: 1405, 1404, 1401. Round 3 starts from
+1401.
