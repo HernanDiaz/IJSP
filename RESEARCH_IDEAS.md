@@ -338,6 +338,7 @@ bucle y están aquí para que no se repitan; sus cifras están en el JOURNAL.
 | I-003 | el explorador del ABC reinyecta un **elite pateado** en vez de una solución aleatoria | un arranque aleatorio a mitad de tirada no puede alcanzar a la población; uno dentro de una cuenca buena sí | kick−control = **+1.43** (ta23 −0.27, ta29 +0.70, ta30 −0.50, ta45 **+5.80**); regla > +2 descarta → **pasa, por poco y en contra** | 4 mirillas de 6: −1.02, −0.57, **−0.03**, +0.44; kick mejor en 9-10 de 21 siempre; p entre 0.55 y 0.88, la frontera nunca se acerca | **detenida en la 4ª** (2026-09-21) por cambio de dirección del PI, no por sus datos. Sin aceptación: es un cero |
 | H-4 | N8 contra N2 (y contra N1, N3, N_ext), fase B del paper de COR | un vecindario más rico gana | -- | 82 instancias x 30 runs, 2460 bloques pareados: N2 1846.50 contra N8 1847.94, dif −1.45, p_adj = 3.9e−4, r = 0.077 (**despreciable**); rangos de Friedman N2 2.1315 el mejor de cinco, N8 2.2400 | **descartada** (antes del bucle; `experiments/cor_tabu_2026/`) |
 | I-012 | **escapar del estado todo-tabú, solo eso** | la celda informativa de I-010 dio −1.11 y mejor en 15 de 21 (p = 0.033) sin frontera | esc−control = −1.82, pasa | 6 mirillas, 30 runs: +1.30, +1.09, +0.59, +0.27, +0.39, **+0.07**; mejor en 10 de 21, p = 0.835 | **descartada** (2026-09-22). La señal de I-010 **no se reprodujo** |
+| I-045 | **el híbrido en el resto de 20x20 abiertas**: `ta22`, `ta25`, `ta26`, `ta27`, sus 6 mejores horarios distintos, 75 s cada uno | donde nuestro mejor está a 13-21 unidades del BKS el híbrido tiene recorrido, como en `ta23` | pendiente | no aplica | **lanzada** (2026-09-25) |
 | I-044 | **el híbrido donde el récord está a una unidad**: `ta23` 600 s desde el 1557; `ta29` y `ta30`, sus 10 mejores horarios distintos, 60 s cada uno | lo que igualó `ta23` desde una pista mediocre puede bajar de 1625 / 1584 desde alguna de las nuestras | `ta23` 1557 no baja en 600 s; `ta29`: ninguna de 10 pistas se mueve (5×1625, 5×1627); `ta30`: las **4 pistas de 1587 bajan a 1584** (BKS, verificado), ninguna por debajo | no aplica | **cerrada** (2026-09-25): sin récord; 1584 y 1625 se comportan como suelos |
 | I-043 | **híbrido ABC → CP-SAT**: pulir con CP-SAT los 20 mejores horarios **distintos** de `ta23` de la caza de I-032, 60 s cada uno | el mejor horario es un óptimo profundo, pero el ABC deja muchos óptimos distintos cerca; alguno puede estar en una región que CP-SAT sí mejore | **9 de 20 pistas mejoran**; la pista 6 (1566) llega a **1557 = BKS** en 39.6 s, verificado contra la OR-Library; las mejores pistas (1561, 1563, 1564, 1565) no se mueven | no aplica | **cerrada** (2026-09-25): **primera igualada de `ta23`**, y el mejor horario no es la mejor pista |
 | I-042 | **CP-SAT desde nuestros mejores horarios** (OR-Tools, instalado con permiso del PI): modelo completo, el horario guardado como pista, 14 hilos, semilla 1, 600 s en `ta29`, `ta30` y `ta23` | la reoptimización exacta de B-12 llegó a ventanas de 60 operaciones; los vecindarios grandes de CP-SAT llegan mucho más lejos | ninguna mejora en 600 s: `ta29` 1625, `ta30` 1584, `ta23` 1561 (la pista en las tres); cota demostrada igual a la LB publicada en las tres | no aplica | **cerrada** (2026-09-25): los vecindarios grandes de CP-SAT tampoco mueven nuestros mejores horarios |
@@ -4506,3 +4507,19 @@ región que el ABC visite. No es una prueba de optimalidad, y no se dice que
 lo sea: la cota que CP-SAT demuestra sigue en la inferior publicada. Pero es
 razón para dejar de gastar en estas dos y mirar las instancias abiertas donde
 el híbrido aún tiene recorrido.
+
+### I-045 — el híbrido ABC → CP-SAT en `ta22`, `ta25`, `ta26` y `ta27`
+
+**De dónde sale**: I-044 dice que en `ta29` y `ta30` el híbrido ya no tiene
+recorrido (1625 y 1584 se comportan como suelos). En `ta23` sí lo tuvo, desde
+4 unidades por encima del BKS. Las otras cuatro 20x20 abiertas están más
+lejos: nuestros mejores horarios son **1613** en `ta22` (BKS 1600), **1616**
+en `ta25` (1595), **1660** en `ta26` (1643) y **1694** en `ta27` (1680).
+
+**Fijado antes de correr** (`iter/I-045/run_probe.sh`): los **6** horarios
+distintos más bajos de cada instancia entre todos los resultados de la línea,
+**75 s** de CP-SAT cada uno (modelo y ajustes de I-042), unos 30 minutos.
+Todo horario mejor que su pista se verifica contra la OR-Library.
+
+**Lectura**: cuánto baja el mejor de cada instancia, y si alguna llega al
+mejor conocido o por debajo.
