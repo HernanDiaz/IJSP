@@ -64,6 +64,16 @@ namespace FuzzyFW {
 //            improved it; the first call that does not ends the chain (I-021:
 //            a further -2.62, 16 of 21, p = 0.0021).
 #define  LS_PICK "abc.ls.pick"
+// I-041. What the employed phase does with a searched child that only ties
+// its food source.
+//   "strict"   (default, unchanged): nothing; the source counts one more trial
+//   "sideways" : if the better child has exactly the source's makespan but a
+//                different genotype, it takes the source's place, so sources
+//                can drift across the plateau the population collapses onto
+//                (70 to 90 per cent of it on one makespan late in a run). The
+//                trial counter still goes up, so scouts come as often as
+//                before; the veto on the incumbent's makespan is untouched.
+#define  ACCEPT_RULE "abc.accept"
 #define	ELITE_SIZE	"elite.size" //Selection mechanism to select number of elements in elite 
 
 
@@ -146,6 +156,10 @@ namespace FuzzyFW {
 		unsigned long lsSecondImproved;   // ... that improved it
 		unsigned long lsRepeatCalls;      // calls beyond the second
 		unsigned long lsRepeatLongest;    // longest chain of calls on one child
+
+		// I-041: sideways moves on the plateau.
+		bool acceptSideways;
+		unsigned long sidewaysMoves;      // sources replaced by a tying child
 		unsigned int improvementsLS;
 		unsigned int enworstmentsLS;
 		unsigned int neutralLS;

@@ -338,6 +338,7 @@ bucle y están aquí para que no se repitan; sus cifras están en el JOURNAL.
 | I-003 | el explorador del ABC reinyecta un **elite pateado** en vez de una solución aleatoria | un arranque aleatorio a mitad de tirada no puede alcanzar a la población; uno dentro de una cuenca buena sí | kick−control = **+1.43** (ta23 −0.27, ta29 +0.70, ta30 −0.50, ta45 **+5.80**); regla > +2 descarta → **pasa, por poco y en contra** | 4 mirillas de 6: −1.02, −0.57, **−0.03**, +0.44; kick mejor en 9-10 de 21 siempre; p entre 0.55 y 0.88, la frontera nunca se acerca | **detenida en la 4ª** (2026-09-21) por cambio de dirección del PI, no por sus datos. Sin aceptación: es un cero |
 | H-4 | N8 contra N2 (y contra N1, N3, N_ext), fase B del paper de COR | un vecindario más rico gana | -- | 82 instancias x 30 runs, 2460 bloques pareados: N2 1846.50 contra N8 1847.94, dif −1.45, p_adj = 3.9e−4, r = 0.077 (**despreciable**); rangos de Friedman N2 2.1315 el mejor de cinco, N8 2.2400 | **descartada** (antes del bucle; `experiments/cor_tabu_2026/`) |
 | I-012 | **escapar del estado todo-tabú, solo eso** | la celda informativa de I-010 dio −1.11 y mejor en 15 de 21 (p = 0.033) sin frontera | esc−control = −1.82, pasa | 6 mirillas, 30 runs: +1.30, +1.09, +0.59, +0.27, +0.39, **+0.07**; mejor en 10 de 21, p = 0.835 | **descartada** (2026-09-22). La señal de I-010 **no se reprodujo** |
+| I-041 | **movimientos laterales en la meseta**: un hijo que **iguala** a su fuente con otro genotipo ocupa su lugar (`abc.accept = sideways`) | al final de la tirada el 70-90 % de la población está en un solo makespan, uno por encima del incumbente, y la sustitución estricta la deja inmóvil hasta que el contador la mata | pendiente | pendiente | **lanzada** (2026-09-25) |
 | I-040 | **cortar las cadenas sin esperanza tras su primera llamada**: si el mejor hijo sigue más de un 2 % peor que la fuente, la cadena para (`abc.chain.cut = cut`) | el 84 % de las cadenas no mejora su fuente y las llamadas tras la primera son dos tercios del tabú; lo ahorrado en las perdidas va a cadenas nuevas | mecanismo: ~12500 cadenas cortadas por tirada (27-44 % de las comprobadas), llamadas al tabú iguales, generaciones +16 a +55 %; cut−control = **+0.05** (ta30 +3.20, ta45 +1.00, ta29 −1.97, ta23 −2.03), pasa (descartaba si > +2.0); bo5 +1.42 | mirillas media: **−0.18** (w1, 12 de 21, p = 0.651), **−1.78** (w2, 14 de 21, p = 0.037), **−1.28** (w3, 16 de 21, p = 0.042), **−0.65** (w4, 12 de 21, p = 0.297), **−0.37** (w5, 11 de 21, p = 0.648), **−0.20** (w6, 12 de 21, p = 0.651) | **rechazada y revertida** (2026-09-25) |
 | I-039 | **JOX con probabilidad de conservar uniforme**: en cada cruce se sortea en U(0,1) la probabilidad de conservar cada trabajo, en vez de 1/2 fija (`crossover.jox.mask = uniform`) | I-036 mostró que quitar variedad al cruce hunde el resultado; más variedad de distancia debería ayudar | mecanismo: ~37400 cruces con máscara sorteada por tirada, media 0.50 y desviación 0.25; generaciones 72 → 111 (ta23), 191 → 292 (ta45); umask−control = **+11.70** (ta45 +18.63, ta23 +13.20, ta30 +8.70, ta29 +6.27), **descarta** (si > +2.0); bo5 +8.54 | no se corren | **descartada por el filtro y revertida** (2026-09-25) |
 | I-038 | **dejar de registrar la diversidad de Hamming en cada generación** (quitar `statistics.3 = hamming` del setup; sin código) | la estadística, "registrada pero no probada", se come una quinta parte del tiempo; devuelto a la búsqueda son ~25 % más generaciones con el mismo presupuesto | nostat−control = **−0.15** (ta30 −0.23, ta45 −0.20, ta29 −0.10, ta23 −0.07), pasa; pero **el mecanismo no aparece**: generaciones 79 → 78 (ta23), 95 → 95 (ta29), 80 → 78 (ta30), 177 → 190 (ta45) | no se corren | **retirada** (2026-09-25): con 14 procesos a la vez la estadística no cuesta nada medible; las oleadas solo medirían ruido de temporización |
@@ -4277,3 +4278,38 @@ celda **de control**.
 anterior a I-040 y el solver recompilado reproduce exactamente la referencia
 a número fijo de generaciones. Los scripts del diagnóstico de cadenas quedan
 en `iter/I-040/diagnostic/`, que es registro, no código del solver.
+
+### I-041 — movimientos laterales en la meseta
+
+**De dónde sale**: otra medida con la copia instrumentada, esta vez de la
+**población** en cada generación (tamaño, genotipos distintos, makespans
+distintos, mejor y cuántos lo comparten; datos en
+`iter/I-041/diagnostic/`). Al final de la tirada, **entre el 70 y el 90 % de
+la población comparte un único makespan**, una unidad por encima del
+incumbente: **210 a 223 de 247** individuos en 1574 en ta23 (incumbente
+1573), **160 a 184** en 2031 en ta45 (incumbente 2030), con genotipos
+distintos (unos 200 diferentes), así que no son copias.
+
+**Por qué ocurre**, leyendo el código de la fase de empleadas: (1) un hijo
+solo sustituye a su fuente si es **estrictamente** mejor, así que una fuente
+en 2031 nunca acepta otro 2031 y suma un fallo por intento hasta que a los 35
+la abandona un explorador; y (2) un hijo que **iguala al incumbente** nunca
+entra (el veto que I-015 levantó). En ta45 la fuente que tenía el 2030 acabó
+abandonada por fallos, y desde entonces la población no puede volver a
+contener ese nivel. La población queda **congelada en la meseta**: sus
+fuentes no pueden moverse por ella, solo morir y renacer al azar.
+
+**La idea**: `abc.accept = sideways`. Si el mejor hijo tras la cadena tiene
+**exactamente** el makespan de su fuente y **otro genotipo**, ocupa su lugar,
+para que las fuentes **se desplacen por la meseta** buscando una salida. El
+contador de fallos **sigue subiendo** (no se reinicia), para no cambiar de
+paso la frecuencia de exploradores; el veto sobre el makespan del incumbente
+**no se toca**, así que no es I-015. Sin parámetros.
+
+**Comprobado antes de lanzar**: por defecto, idéntico a la referencia a
+número fijo de generaciones; **620 y 6848** movimientos laterales por tirada
+en ta23 y ta45; generaciones 121 → 99 y 283 → 256. Horarios factibles.
+
+**Filtro**: descartar si `side − control` supera +2.0, semillas 1001 a 1030.
+**Endpoint**: media por instancia, Pocock simétrica p <= 0.0142. **Mecanismo,
+primero**: movimientos laterales, exploradores y generaciones.
