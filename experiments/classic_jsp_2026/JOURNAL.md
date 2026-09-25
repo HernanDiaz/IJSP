@@ -3041,3 +3041,10 @@ not shorter, not reassigned.
 
 No records; the only match is the known ta30 1584, in the control cell. The
 code is rolled back and the rebuilt solver reproduces the reference exactly.
+
+## I-041's filter passes by a hair, pointing against
+
+240 jobs, no infeasible schedule. About 4,000 sideways moves per run, scouts
+and generations close to the control's. Side minus control: ta23 +3.33, ta29
+-0.50, ta30 +3.97, ta45 +0.40, mean +1.80, two tenths inside the +2.0 line;
+best-of-five +3.25. The waves go, as the rule says.

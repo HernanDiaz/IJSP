@@ -1,0 +1,29 @@
+=== 0. MECHANISM CHECK ===
+inst   statistic                                     control       side
+ta23   Sideways moves on the plateau                    0.00    2458.10
+ta23   Total replacements in ABC                       42.60      54.97
+ta23   Number of Generations                           81.30      81.50
+ta29   Sideways moves on the plateau                    0.00    5576.17
+ta29   Total replacements in ABC                      170.13     126.50
+ta29   Number of Generations                           96.97      94.67
+ta30   Sideways moves on the plateau                    0.00    2784.73
+ta30   Total replacements in ABC                       40.77      43.23
+ta30   Number of Generations                           78.00      81.30
+ta45   Sideways moves on the plateau                    0.00    5187.10
+ta45   Total replacements in ABC                      279.33     338.93
+ta45   Number of Generations                          192.70     202.43
+
+sideways moves per run: 4002 on average (the control makes none)
+
+=== I-041 filter: per-instance mean (primary), best-of-5 (reported) ===
+inst     mean ctrl   mean side         d      bo5 ctrl    bo5 side         d
+ta23        1582.4      1585.8     +3.33        1570.7      1577.5     +6.83
+ta29        1639.6      1639.1     -0.50        1635.7      1632.5     -3.17
+ta30        1614.6      1618.6     +3.97        1599.7      1607.5     +7.83
+ta45        2034.4      2034.8     +0.40        2023.2      2024.7     +1.50
+
+runs per cell and instance: 30
+
+filter rule, on the MEAN: mean(side - control) = +1.80;
+discard if > +2.0 -> PASS, go to the waves
+best-of-5 moved +3.25, and decides nothing here.
