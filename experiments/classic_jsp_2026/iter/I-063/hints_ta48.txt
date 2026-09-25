@@ -1,0 +1,6 @@
+results/I-021_w2_p04_repeat/ta48_20260924035220_Certificate.csv 1 1996
+results/I-001_full_control/ta48_20260921110618_Certificate.csv 4 1998
+results/I-015_w6_p02_allow/ta48_20260923152938_Certificate.csv 1 1998
+results/I-034_w2_p04_polish/ta48_20260924161833_Certificate.csv 1 1998
+results/I-015_w4_p03_allow/ta48_20260923141520_Certificate.csv 1 2000
+results/I-004_w4_fulltails/ta48_20260922030045_Certificate.csv 5 2001

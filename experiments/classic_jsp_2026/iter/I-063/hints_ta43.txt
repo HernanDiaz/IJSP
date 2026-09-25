@@ -1,0 +1,6 @@
+results/I-001_full_mix/ta43_20260921090008_Certificate.csv 1 1890
+results/I-001_full_mix/ta43_20260921090008_Certificate.csv 27 1893
+results/I-030_w1_s6001_current/ta43_20260924102846_Certificate.csv 1 1894
+results/I-034_w3_p02_control/ta43_20260924164029_Certificate.csv 1 1894
+results/I-021_w3_p02_repeat/ta43_20260924041604_Certificate.csv 1 1898
+results/I-035_w4_p01_pair/ta43_20260924212540_Certificate.csv 1 1899

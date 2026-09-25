@@ -3262,3 +3262,9 @@ near-optimally from scratch. Searching against the core needs a starting point
 outside it, and none of our generators provides one. The most informative
 would be the published best-known schedules themselves, which would show which
 core decisions they break; downloading them needs the PI's permission.
+
+## I-063: five new own bests on 30x20
+
+6 feasible hints each at 60 s, all verified: ta41 2059 to 2031 (best known
+2005), ta43 1890 to 1883 (1846), ta46 2043 to 2032 (2004), ta47 1926 to 1922
+(1889), ta48 1996 to 1990 (1937).

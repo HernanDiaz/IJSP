@@ -1,0 +1,6 @@
+results/I-001_full_v2top/ta46_20260921100752_Certificate.csv 11 2043
+results/I-041_w6_p03_side/ta46_20260925105544_Certificate.csv 1 2045
+results/I-001_full_v2rand/ta46_20260921100651_Certificate.csv 2 2047
+results/I-001_full_v2rand/ta46_20260921100651_Certificate.csv 5 2048
+results/I-021_w3_p01_repeat/ta46_20260924042251_Certificate.csv 1 2049
+results/I-001_full_v2rand/ta46_20260921100651_Certificate.csv 21 2050

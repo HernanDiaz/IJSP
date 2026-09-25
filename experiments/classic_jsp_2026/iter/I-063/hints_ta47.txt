@@ -1,0 +1,6 @@
+results/I-040_w3_p02_cut/ta47_20260925041700_Certificate.csv 1 1926
+results/I-021_w1_p04_repeat/ta47_20260924031156_Certificate.csv 1 1929
+results/I-010_w4_escape/ta47_20260922135317_Certificate.csv 4 1932
+results/I-035_w1_p04_control/ta47_20260924195031_Certificate.csv 1 1934
+results/I-034_w1_p04_polish/ta47_20260924154041_Certificate.csv 1 1935
+results/I-040_w1_p04_control/ta47_20260925030500_Certificate.csv 1 1937
