@@ -15,7 +15,9 @@ solver's format (iter/I-042/found_<inst>_<makespan>_Certificate.csv), to be
 checked by scripts/verify_certificate.py against the original OR-Library
 data. A record is shown by the schedule itself, nothing else.
 
-Usage: cpsat_probe.py <instance> <certificate> <run> [seconds]
+Usage: cpsat_probe.py <instance> <certificate> <run> [seconds] [seed]
+
+The seed defaults to 1, as in I-042 to I-051 (added for I-052).
 """
 import csv
 import os
@@ -43,6 +45,7 @@ def load_run(path, run):
 def main():
     inst, cert, run = sys.argv[1], sys.argv[2], sys.argv[3]
     seconds = float(sys.argv[4]) if len(sys.argv) > 4 else 600.0
+    seed = int(sys.argv[5]) if len(sys.argv) > 5 else SEED
     rows = load_run(cert, run)
     lb, bks = BOUNDS[inst]
     ops = {}
@@ -79,7 +82,7 @@ def main():
 
     solver = cp_model.CpSolver()
     solver.parameters.num_search_workers = WORKERS
-    solver.parameters.random_seed = SEED
+    solver.parameters.random_seed = seed
     solver.parameters.max_time_in_seconds = seconds
 
     class Progress(cp_model.CpSolverSolutionCallback):

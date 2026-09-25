@@ -338,6 +338,7 @@ bucle y están aquí para que no se repitan; sus cifras están en el JOURNAL.
 | I-003 | el explorador del ABC reinyecta un **elite pateado** en vez de una solución aleatoria | un arranque aleatorio a mitad de tirada no puede alcanzar a la población; uno dentro de una cuenca buena sí | kick−control = **+1.43** (ta23 −0.27, ta29 +0.70, ta30 −0.50, ta45 **+5.80**); regla > +2 descarta → **pasa, por poco y en contra** | 4 mirillas de 6: −1.02, −0.57, **−0.03**, +0.44; kick mejor en 9-10 de 21 siempre; p entre 0.55 y 0.88, la frontera nunca se acerca | **detenida en la 4ª** (2026-09-21) por cambio de dirección del PI, no por sus datos. Sin aceptación: es un cero |
 | H-4 | N8 contra N2 (y contra N1, N3, N_ext), fase B del paper de COR | un vecindario más rico gana | -- | 82 instancias x 30 runs, 2460 bloques pareados: N2 1846.50 contra N8 1847.94, dif −1.45, p_adj = 3.9e−4, r = 0.077 (**despreciable**); rangos de Friedman N2 2.1315 el mejor de cinco, N8 2.2400 | **descartada** (antes del bucle; `experiments/cor_tabu_2026/`) |
 | I-012 | **escapar del estado todo-tabú, solo eso** | la celda informativa de I-010 dio −1.11 y mejor en 15 de 21 (p = 0.033) sin frontera | esc−control = −1.82, pasa | 6 mirillas, 30 runs: +1.30, +1.09, +0.59, +0.27, +0.39, **+0.07**; mejor en 10 de 21, p = 0.835 | **descartada** (2026-09-22). La señal de I-010 **no se reprodujo** |
+| I-052 | **la aleatoriedad de CP-SAT**: las pistas que dieron 1603 (`ta25`), 1653 (`ta26`) y 1685 (`ta27`), con las semillas 2 a 13, 45 s cada una | la misma pista con otra semilla puede caer en otro fondo | pendiente | no aplica | **lanzada** (2026-09-25) |
 | I-051 | **el híbrido en las 30x20 más cercanas**: `ta45`, `ta49`, `ta44`, `ta42`, sus 6 mejores horarios distintos y factibles, 60 s cada uno | 60 s por pista rindió en 30x15; aquí la distancia al BKS es de 15 a 37 | mejores propios nuevos, verificados: `ta45` 2015 → **2011** (BKS 2000), `ta49` 1987 → **1980** (1961), `ta44` 2011 → **2009** (1979), `ta42` 1974 → **1971** (1937) | no aplica | **cerrada** (2026-09-25): cuatro mejores propios pequeños |
 | I-050 | **continuaciones largas en 30x15**: CP-SAT desde el mejor de I-048, 600 s en `ta33` (1802) y `ta34` (1834), 300 s en `ta32` (1811) y `ta40` (1688) | en 30x15 CP-SAT sigue bajando más allá de los 20 s | `ta33` 1802 y `ta34` 1834 no se mueven en 600 s; `ta32` 1811 → **1809** (a los 157 s), `ta40` 1688 → **1686** (a los 61 s); verificado | no aplica | **cerrada** (2026-09-25): dos mejores propios pequeños; las continuaciones largas rinden poco |
 | I-049 | **muchas pistas en `ta33` y `ta34`**: sus 40 mejores horarios distintos, 20 s cada uno | la variante de I-046 donde estamos a 5 y 11 unidades del BKS | `ta33`: 33 de 40 mejoran, mejor 1802 (el mismo de I-048); `ta34`: 33 de 40, mejor 1835 (> 1834) | no aplica | **cerrada** (2026-09-25): sin mejores nuevos; en 30x15, 20 s es poco |
@@ -4715,3 +4716,16 @@ pista de 1993), `ta44` 2011 → **2009** (1979, desde una de 2020), `ta42` 1974
 → **1971** (1937). Mejoras de 2 a 7 unidades frente a huecos de 11 a 34: en
 30x20, 60 s de CP-SAT por pista es poco para una instancia de 600
 operaciones, y los horarios del ABC están más lejos del BKS que en 20x20.
+
+### I-052 — la aleatoriedad de CP-SAT sobre las pistas que mejor rindieron
+
+**De dónde sale**: todo lo hecho con CP-SAT usa la semilla 1. Las pistas que
+dieron los mejores propios de 20x20 aún por encima del BKS son **intermedias**
+(la de `ta27` era la 31.ª, de 1702), y cada una bajó por una trayectoria
+concreta de CP-SAT. Con otra semilla, la misma pista puede caer en otro fondo.
+
+**Fijado antes de correr** (`iter/I-052/run_probe.sh`; `cpsat_probe.py`
+admite ahora la semilla como quinto argumento, por defecto 1): `ta25` desde la
+pista de 1617 que llegó a 1603 (I-045), `ta26` desde la de 1661 que llegó a
+1653 (I-045), `ta27` desde la de 1702 que llegó a 1685 (I-046); **semillas 2 a
+13, 45 s cada una**, unos 27 minutos.
