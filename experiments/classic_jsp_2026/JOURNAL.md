@@ -3219,3 +3219,8 @@ Freeing one machine's consensus pairs on top of the 107-floor consensus (1361 to
 1406 free pairs), CP-SAT finds nothing better than 1603 on any of the 20
 machines, and closes none in 60 s (bounds 1584 to 1588). No improvement and no
 proof. Closing each would take on the order of ten minutes per machine.
+
+## I-058: 1613 on ta22 is the strongest attractor
+
+40 hints each at 20 s: on ta22, 38 of 40 end exactly at 1613 and two at 1614;
+on ta26 the best is 1656, the own best stays at 1653. No new bests.
