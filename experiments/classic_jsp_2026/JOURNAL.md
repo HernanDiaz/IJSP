@@ -3212,3 +3212,10 @@ With 600 s the two large consensus subspaces close: K = 64 OPTIMAL 1603 in 163
 s, K = 107 (1263 free machine pairs, a third of 3800) OPTIMAL 1603 in 565 s.
 Every ta25 schedule better than 1603 breaks at least one of the 2537 machine
 decisions all 107 floors share. I-057 frees them one machine at a time.
+
+## I-057: breaking the core one machine at a time is inconclusive
+
+Freeing one machine's consensus pairs on top of the 107-floor consensus (1361 to
+1406 free pairs), CP-SAT finds nothing better than 1603 on any of the 20
+machines, and closes none in 60 s (bounds 1584 to 1588). No improvement and no
+proof. Closing each would take on the order of ten minutes per machine.
