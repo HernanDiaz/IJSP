@@ -5185,3 +5185,12 @@ vueltas que sigan): el mismo grupo de 28; primero la **máquina 13** sola con
 **180 s**; después las **105 parejas** en tres tandas de 35, **45 s** cada una
 (una tanda por iteración). Todo horario por debajo de 1404 se verifica y entra
 en el grupo de la vuelta siguiente.
+
+### I-073, tanda 1: la máquina 13 cierra; 21 de 35 parejas cierran
+
+`iter/I-073/run_m13.log`, `run_1.log`. La **máquina 13** sola, con 180 s,
+cierra **OPTIMAL en 1404**: las 15 máquinas quedan demostradas en 1404. De las
+parejas 1 a 35, **21 cierran en 1404** y **14 no cierran** en 45 s (cotas
+1397 a 1402), sin mejora. Con el 1404 en el grupo el núcleo cuesta más de
+cerrar que con el de 1405. Siguen las tandas 2 y 3 y, al final, las abiertas
+con más tiempo.
