@@ -338,6 +338,7 @@ bucle y están aquí para que no se repitan; sus cifras están en el JOURNAL.
 | I-003 | el explorador del ABC reinyecta un **elite pateado** en vez de una solución aleatoria | un arranque aleatorio a mitad de tirada no puede alcanzar a la población; uno dentro de una cuenca buena sí | kick−control = **+1.43** (ta23 −0.27, ta29 +0.70, ta30 −0.50, ta45 **+5.80**); regla > +2 descarta → **pasa, por poco y en contra** | 4 mirillas de 6: −1.02, −0.57, **−0.03**, +0.44; kick mejor en 9-10 de 21 siempre; p entre 0.55 y 0.88, la frontera nunca se acerca | **detenida en la 4ª** (2026-09-21) por cambio de dirección del PI, no por sus datos. Sin aceptación: es un cero |
 | H-4 | N8 contra N2 (y contra N1, N3, N_ext), fase B del paper de COR | un vecindario más rico gana | -- | 82 instancias x 30 runs, 2460 bloques pareados: N2 1846.50 contra N8 1847.94, dif −1.45, p_adj = 3.9e−4, r = 0.077 (**despreciable**); rangos de Friedman N2 2.1315 el mejor de cinco, N8 2.2400 | **descartada** (antes del bucle; `experiments/cor_tabu_2026/`) |
 | I-012 | **escapar del estado todo-tabú, solo eso** | la celda informativa de I-010 dio −1.11 y mejor en 15 de 21 (p = 0.033) sin frontera | esc−control = −1.82, pasa | 6 mirillas, 30 runs: +1.30, +1.09, +0.59, +0.27, +0.39, **+0.07**; mejor en 10 de 21, p = 0.835 | **descartada** (2026-09-22). La señal de I-010 **no se reprodujo** |
+| I-062 | **buscar contra el núcleo** (`ta22`): un horario de makespan ≤ 1612 que invierta al menos D decisiones del núcleo, D = 10, 50, 150, 480 s | el BKS está fuera del núcleo (I-061); si nuestro 1613 se puede batir, es ahí | pendiente | no aplica | **lanzada** (2026-09-25) |
 | I-061 | **el consenso conjunto de `ta22` con 1500 s** | en 600 s la cota quedó en 1598, bajo el BKS: o se demuestra 1613 o aparece algo mejor | mejor 1613, sin cerrar, pero la cota sube a **1607 > BKS 1600**: el BKS está **fuera** del núcleo conjunto | no aplica | **cerrada** (2026-09-25): demostrado que ningún horario ≤ 1606 respeta el núcleo conjunto |
 | I-060 | **consenso conjunto de ABC y CP-SAT en frío** (`ta22`): fijar solo lo que ordenan igual los fondos del ABC y los diez horarios en frío, 600 s | los dos generadores caen en el mismo núcleo; su consenso conjunto deja libre más que cualquiera de ellos | grupo de 30 (20 de 1613, 10 en frío): el consenso fija el 77.7 % y deja **847** pares libres; en 600 s mejor 1613, **sin cerrar**, cota **1598** (< BKS 1600) | no aplica | **cerrada, no concluyente** (2026-09-25) |
 | I-059 | **CP-SAT en frío, sin pista** (`ta22`, semillas 1 a 10, 120 s): cuánto coinciden sus horarios con el atractor 1613 del ABC | todas nuestras pistas vienen del ABC y caen en su núcleo; otro generador puede caer en otras regiones | CP-SAT en frío: 1629-1648 en 120 s (peor que el ABC), y **coincide un 90.0-93.5 %** con el atractor 1613 del ABC: el mismo núcleo | no aplica | **cerrada** (2026-09-25): el núcleo no es un sesgo del ABC |
@@ -4968,3 +4969,17 @@ demostración y no con impresión, por qué ninguna de las ~60 iteraciones ha
 bajado de esos valores: todo lo que hacemos, ABC, CP-SAT pulidor, cruces
 exactos, trabaja **dentro** del núcleo. El siguiente paso es buscar **contra**
 él.
+
+### I-062 — buscar contra el núcleo en `ta22`
+
+**De dónde sale**: I-061 demuestra que ningún horario de `ta22` con makespan
+≤ 1606 respeta el núcleo de 2953 decisiones; si nuestro 1613 se puede batir,
+el horario mejor está fuera. En vez de minimizar dentro, se pide a CP-SAT un
+horario **fuera**: cada par del núcleo lleva una variable booleana que dice si
+se respeta, y se exige que **al menos D** se inviertan, con makespan **≤ 1612**
+(`iter/I-062/anticore.py`).
+
+**Fijado antes de correr** (`iter/I-062/run.sh`): el núcleo de 30 horarios de
+I-060/I-061; **D = 10, 50 y 150**; **480 s** de CP-SAT cada uno, sin pista (el
+1613 no cumple el tope). La prueba de humo de 20 s con D = 10 construye el
+modelo y no encuentra nada en ese tiempo.
