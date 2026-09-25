@@ -251,6 +251,10 @@ namespace FuzzyFW {
 		stats.push_back(std::pair<std::string, double>
 			("LS longest chain of calls on one child", (double)this->lsRepeatLongest));
 		stats.push_back(std::pair<std::string, double>
+			("Chains checked by the cut", (double)this->chainsChecked));
+		stats.push_back(std::pair<std::string, double>
+			("Chains cut after the first call", (double)this->chainsCut));
+		stats.push_back(std::pair<std::string, double>
 			("Best solution", this->bestSoFar->getFitness()->toDouble()));
 		return stats;
 	}
@@ -389,6 +393,11 @@ namespace FuzzyFW {
 		this->lsPickRepeat = (value.compare("best-repeat") == 0);
 		this->lsPickBest = this->lsPickRepeat || (value.compare("best") == 0);
 
+		// I-040: cutting hopeless chains.
+		this->chainCut =
+			(params->getStringLower(CHAIN_CUT).compare("cut") == 0);
+		this->chainReference = -1.0;
+
 		// Loads the common parameters
 		GeneticAlgorithm::prepareToRun(params);
 
@@ -458,6 +467,9 @@ namespace FuzzyFW {
 		this->lsSecondImproved = 0;
 		this->lsRepeatCalls = 0;
 		this->lsRepeatLongest = 0;
+		this->chainsCut = 0;
+		this->chainsChecked = 0;
+		this->chainReference = -1.0;
 		evolutionStats.clear();
 
 		this->generation = 0;
@@ -588,7 +600,11 @@ namespace FuzzyFW {
 					|| this->lsFrequency == LS_Frequency::MALS_INITIAL
 					&& this->generation % this->lsPeriod == 0)
 				{
+					// I-040: the chain knows the source it is meant to beat
+					this->chainReference = this->chainCut
+						? currentFoodSource->getFitness()->toDouble() : -1.0;
 					this->applyLocalSearch(&currentFoodSources);
+					this->chainReference = -1.0;
 				}
 				this->localSearchTime += clock() - timePoint;
 				timePoint = clock();
@@ -723,6 +739,17 @@ namespace FuzzyFW {
 			|| this->lsTarget == LS_Target::MALS_SOME) {
 			best = chosen = population->whoIsBest(this->sharedVariables);
 			this->applyLocalSearch(population, chosen);
+
+			// I-040: stop a hopeless chain after its first call
+			if (this->lsTarget == LS_Target::MALS_SOME && this->chainReference > 0.0) {
+				this->chainsChecked++;
+				double afterFirst = population->getIndividual(chosen)
+					->getFitness()->toDouble();
+				if (afterFirst > this->chainReference * (1.0 + CHAIN_CUT_FRACTION)) {
+					this->chainsCut++;
+					return;
+				}
+			}
 		}
 		if (this->lsTarget == LS_Target::MALS_WORST) {
 			chosen = population->whoIsBest(this->sharedVariables,
