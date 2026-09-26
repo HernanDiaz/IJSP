@@ -3376,3 +3376,9 @@ From the 1680 group, all 190 machine pairs close OPTIMAL at 1680. With the 20
 single machines of I-085, every ta27 schedule below 1680, that is every
 record, breaks the core of those 39 schedules on three machines or more.
 I-087 samples 30 random machine triples at 60 s.
+
+## I-087: machine triples give no signal on ta27 either; the descent moves to ta25
+
+29 of 30 random ta27 triples close OPTIMAL at 1680, one stays open, none
+improves. I-088 runs the core-breaking descent on ta25 (1603 against 1595) with
+the consensus of its 8 lowest floors, which closes in 5 s.
