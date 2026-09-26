@@ -5448,3 +5448,5 @@ las tres.
 
 - I-089, tríos 1-35: 33 cerradas OPTIMAL en 1401; abiertas: (0,1,13) 1399,(0,3,13) 1397; ninguna mejora.
 
+- I-089, tríos 36-70: 31 cerradas OPTIMAL en 1401; abiertas: (0,4,13) 1397,(0,5,13) 1398,(0,6,13) 1397,(0,7,13) 1395; ninguna mejora.
+
