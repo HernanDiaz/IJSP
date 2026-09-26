@@ -5352,3 +5352,5 @@ cierran en 60 s. Ninguna mejora.
 **Fijado antes de correr** (`iter/I-084/batch.sh`, `sets.txt`): las máquinas
 15 y 17 con **180 s** y las **37 parejas** que contienen la 15 o la 17 con
 **90 s**, en dos tandas (conjuntos 1-20 y 21-39).
+
+- I-084, conjuntos 1-20 (máquinas 15 y 17 solas a 180 s, 18 parejas a 90 s): **los 20 OPTIMAL en 1684**; ninguna mejora.
