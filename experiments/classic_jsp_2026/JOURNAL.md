@@ -3369,3 +3369,10 @@ against the original OR-Library data: "best verified makespan 1680 -- matches
 the best known solution 1680". The second match of the line after ta23, and
 the first of the descent: 1685, 1684, 1680. I-085 starts round 3 from the best
 known value; anything below 1680 would be a record.
+
+## I-086: 1680 holds against all 190 machine pairs of ta27
+
+From the 1680 group, all 190 machine pairs close OPTIMAL at 1680. With the 20
+single machines of I-085, every ta27 schedule below 1680, that is every
+record, breaks the core of those 39 schedules on three machines or more.
+I-087 samples 30 random machine triples at 60 s.

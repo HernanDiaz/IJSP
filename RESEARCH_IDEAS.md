@@ -338,7 +338,8 @@ bucle y están aquí para que no se repitan; sus cifras están en el JOURNAL.
 | I-003 | el explorador del ABC reinyecta un **elite pateado** en vez de una solución aleatoria | un arranque aleatorio a mitad de tirada no puede alcanzar a la población; uno dentro de una cuenca buena sí | kick−control = **+1.43** (ta23 −0.27, ta29 +0.70, ta30 −0.50, ta45 **+5.80**); regla > +2 descarta → **pasa, por poco y en contra** | 4 mirillas de 6: −1.02, −0.57, **−0.03**, +0.44; kick mejor en 9-10 de 21 siempre; p entre 0.55 y 0.88, la frontera nunca se acerca | **detenida en la 4ª** (2026-09-21) por cambio de dirección del PI, no por sus datos. Sin aceptación: es un cero |
 | H-4 | N8 contra N2 (y contra N1, N3, N_ext), fase B del paper de COR | un vecindario más rico gana | -- | 82 instancias x 30 runs, 2460 bloques pareados: N2 1846.50 contra N8 1847.94, dif −1.45, p_adj = 3.9e−4, r = 0.077 (**despreciable**); rangos de Friedman N2 2.1315 el mejor de cinco, N8 2.2400 | **descartada** (antes del bucle; `experiments/cor_tabu_2026/`) |
 | I-012 | **escapar del estado todo-tabú, solo eso** | la celda informativa de I-010 dio −1.11 y mejor en 15 de 21 (p = 0.033) sin frontera | esc−control = −1.82, pasa | 6 mirillas, 30 runs: +1.30, +1.09, +0.59, +0.27, +0.39, **+0.07**; mejor en 10 de 21, p = 0.835 | **descartada** (2026-09-22). La señal de I-010 **no se reprodujo** |
-| I-086 | **intento de récord en `ta27`**: las 190 parejas de máquinas desde 1680, 90 s, tandas de 20 | por debajo de 1680 es récord; las dos bajadas anteriores salieron de parejas | pendiente | no aplica | **lanzada** (2026-09-26) |
+| I-087 | **`ta27` desde 1680: tríos de máquinas**, 30 al azar (semilla 1), 60 s | tras I-086, un récord exige tres máquinas o más | pendiente | no aplica | **lanzada** (2026-09-26) |
+| I-086 | **intento de récord en `ta27`**: las 190 parejas de máquinas desde 1680, 90 s, tandas de 20 | por debajo de 1680 es récord; las dos bajadas anteriores salieron de parejas | **las 190 parejas OPTIMAL en 1680**; ninguna baja | no aplica | **cerrada** (2026-09-26): un récord en `ta27` exige romper el núcleo en **tres máquinas o más** |
 | I-085 | **descenso en `ta27`, vuelta 3, desde 1680 = BKS**: las 20 máquinas sueltas, 60 s | por debajo de 1680 es récord | **las 20 máquinas OPTIMAL en 1680** | no aplica | **cerrada** (2026-09-26); sigue la campaña de parejas I-086 |
 | I-084 | **`ta27` vuelta 2: máquinas 15 y 17 a 180 s y las 37 parejas que las contienen a 90 s**, dos tandas | en la vuelta 1 la mejora salió de una pareja con una máquina difícil | 38 de 39 conjuntos OPTIMAL (en 1684), (15,17) abierta, y **(15,18) OPTIMAL en 1680 = BKS**, verificado contra la OR-Library | no aplica | **cerrada** (2026-09-26): **igualada de `ta27`**, 1685 → 1684 → **1680** |
 | I-083 | **descenso en `ta27`, vuelta 2**: grupo + el 1684, las 20 máquinas sueltas, 60 s | el 1684 cambia el núcleo | **18 de 20 máquinas OPTIMAL en 1684**; abiertas la 15 (cota 1683) y la 17 (cota 1680); ninguna mejora | no aplica | **cerrada** (2026-09-26); sigue I-084 |
@@ -5400,3 +5401,14 @@ verificaría con `verify_certificate.py` antes de decir nada.
 
 - I-086, parejas 161-190: 30 cerradas OPTIMAL en 1680; ninguna mejora.
 
+### I-086, cierre: 1680 aguanta las 190 parejas de `ta27`
+
+`iter/I-086/run_*.log`. Desde el grupo del 1680, **las 190 parejas de máquinas
+cierran OPTIMAL en 1680**. Con I-085 (las 20 máquinas sueltas), queda
+**demostrado** que todo horario de `ta27` por debajo de 1680, es decir todo
+récord, rompe el núcleo de esos 39 horarios en **tres máquinas o más**.
+
+### I-087 — `ta27` desde 1680: tríos de máquinas
+
+**Fijado antes de correr** (`iter/I-087/run.sh`, `sets.txt`): 30 de los 1140
+tríos, al azar (`random.Random(1)`), **60 s** cada uno, el grupo de I-085.
