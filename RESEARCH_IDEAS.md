@@ -338,7 +338,8 @@ bucle y están aquí para que no se repitan; sus cifras están en el JOURNAL.
 | I-003 | el explorador del ABC reinyecta un **elite pateado** en vez de una solución aleatoria | un arranque aleatorio a mitad de tirada no puede alcanzar a la población; uno dentro de una cuenca buena sí | kick−control = **+1.43** (ta23 −0.27, ta29 +0.70, ta30 −0.50, ta45 **+5.80**); regla > +2 descarta → **pasa, por poco y en contra** | 4 mirillas de 6: −1.02, −0.57, **−0.03**, +0.44; kick mejor en 9-10 de 21 siempre; p entre 0.55 y 0.88, la frontera nunca se acerca | **detenida en la 4ª** (2026-09-21) por cambio de dirección del PI, no por sus datos. Sin aceptación: es un cero |
 | H-4 | N8 contra N2 (y contra N1, N3, N_ext), fase B del paper de COR | un vecindario más rico gana | -- | 82 instancias x 30 runs, 2460 bloques pareados: N2 1846.50 contra N8 1847.94, dif −1.45, p_adj = 3.9e−4, r = 0.077 (**despreciable**); rangos de Friedman N2 2.1315 el mejor de cinco, N8 2.2400 | **descartada** (antes del bucle; `experiments/cor_tabu_2026/`) |
 | I-012 | **escapar del estado todo-tabú, solo eso** | la celda informativa de I-010 dio −1.11 y mejor en 15 de 21 (p = 0.033) sin frontera | esc−control = −1.82, pasa | 6 mirillas, 30 runs: +1.30, +1.09, +0.59, +0.27, +0.39, **+0.07**; mejor en 10 de 21, p = 0.835 | **descartada** (2026-09-22). La señal de I-010 **no se reprodujo** |
-| I-089 | **`ta18`: todos los tríos de máquinas** desde 1401 (425 restantes), 50 s, tandas de 35 | un récord en `ta18` exige tres máquinas o más; la muestra de 30 solo tanteó | pendiente | no aplica | **lanzada** (2026-09-26) |
+| I-090 | **`ta18`: los 75 tríos abiertos**, de menor cota a mayor, 180 s, tandas de 10 | cerrarlos, o encontrar el horario bajo 1401 que sus cotas permiten | pendiente | no aplica | **lanzada** (2026-09-26) |
+| I-089 | **`ta18`: todos los tríos de máquinas** desde 1401 (425 restantes), 50 s, tandas de 35 | un récord en `ta18` exige tres máquinas o más; la muestra de 30 solo tanteó | con I-078, **380 de 455 tríos OPTIMAL en 1401**; 75 abiertos a 50 s (casi todos con la máquina 13, cotas 1392-1400); ninguna mejora | no aplica | **cerrada** (2026-09-26); los abiertos van a I-090 |
 | I-088 | **descenso por ruptura del núcleo en `ta25`**: grupo de 8 fondos, máquinas (30 s) y parejas (45 s) por tandas | lo que llevó `ta18` a 1401 y `ta27` a 1680; `ta25` es la siguiente más cercana (1603 frente a 1595) | con el núcleo de 8 fondos, **las 20 máquinas y las 190 parejas OPTIMAL en 1603** (≤ 4 s cada una); ese núcleo fija más que el de 107 (81.9 % frente a 66.8 %), así que la demostración es más débil | no aplica | **cerrada** (2026-09-26): sin bajada en `ta25` |
 | I-087 | **`ta27` desde 1680: tríos de máquinas**, 30 al azar (semilla 1), 60 s | tras I-086, un récord exige tres máquinas o más | **29 de 30 tríos OPTIMAL en 1680**, 1 abierto ((7,15,17), cota 1676); ninguna mejora | no aplica | **cerrada** (2026-09-26): los tríos no dan señal, como en `ta18` |
 | I-086 | **intento de récord en `ta27`**: las 190 parejas de máquinas desde 1680, 90 s, tandas de 20 | por debajo de 1680 es récord; las dos bajadas anteriores salieron de parejas | **las 190 parejas OPTIMAL en 1680**; ninguna baja | no aplica | **cerrada** (2026-09-26): un récord en `ta27` exige romper el núcleo en **tres máquinas o más** |
@@ -5470,3 +5471,16 @@ las tres.
 
 - I-089, tríos 386-425: 25 cerradas OPTIMAL en 1401; abiertas: (7,11,13) 1395,(7,12,13) 1396,(7,13,14) 1397,(8,9,13) 1396,(8,10,13) 1394,(8,11,13) 1399,(8,12,13) 1394,(8,13,14) 1396,(9,10,13) 1397,(9,12,13) 1397,(10,11,13) 1397,(10,12,13) 1396,(11,12,13) 1397,(11,13,14) 1398,(12,13,14) 1396; ninguna mejora.
 
+### I-089, cierre: el recorrido de tríos de `ta18`
+
+`iter/I-089/run_*.log`. Con los 30 de I-078, **380 de los 455 tríos cierran
+OPTIMAL en 1401** a 50 s y **75 quedan abiertos**, casi todos con la máquina 13
+(la que ya resistió en las vueltas anteriores), con cotas de 1392 a 1400;
+ninguno baja de 1401. Las cotas más bajas, (7,8,12) 1392 y (7,8,13) 1393, están
+por debajo del BKS (1396).
+
+### I-090 — los tríos abiertos de `ta18`, con 180 s
+
+**Fijado antes de correr** (`iter/I-090/batch.sh`, `sets.txt` ordenado por
+cota): los 75 tríos abiertos, **180 s** cada uno, de la cota más baja a la más
+alta, en tandas de 10.

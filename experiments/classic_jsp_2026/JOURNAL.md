@@ -3389,3 +3389,9 @@ With the consensus of ta25's 8 lowest floors, all 20 machines and 190 pairs
 close OPTIMAL at 1603 in at most 4 s each; that core fixes more pairs than the
 107-floor one, so the proof is weaker than on ta18 or ta27. I-089 sweeps the
 425 remaining machine triples of ta18 from 1401 at 50 s, in batches of 35.
+
+## I-089: the ta18 machine-triple sweep
+
+With I-078, 380 of the 455 machine triples of ta18 close OPTIMAL at 1401 in 50
+s; 75 stay open, nearly all with machine 13, bounds 1392 to 1400; none goes
+below 1401. I-090 reruns the open ones at 180 s, lowest bound first.
