@@ -3352,3 +3352,11 @@ All 20 single-machine relaxations of ta27 close OPTIMAL at 1685 (machines 0 and
 (bounds 1673 to 1682) and none improves; ta27 is much harder than ta18. The
 lowest bounds, (15,17) 1673 and (0,15), (0,17) 1676, sit below the best known
 1680. I-081 gives those three pairs 400 s each.
+
+## I-082: ta27 drops to 1684
+
+The ta27 machine-pair campaign, 187 pairs at 90 s: nearly all close OPTIMAL at
+1685, four stay open without improvement, and the pair (17, 18) closes OPTIMAL
+at 1684, verified against OR-Library, a new own best four units from the best
+known 1680. After ta18, the second instance where breaking the core by machine
+pairs moves an attractor nothing else moved. I-083 starts round 2 from 1684.

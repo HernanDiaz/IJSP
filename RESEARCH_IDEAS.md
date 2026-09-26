@@ -338,7 +338,8 @@ bucle y están aquí para que no se repitan; sus cifras están en el JOURNAL.
 | I-003 | el explorador del ABC reinyecta un **elite pateado** en vez de una solución aleatoria | un arranque aleatorio a mitad de tirada no puede alcanzar a la población; uno dentro de una cuenca buena sí | kick−control = **+1.43** (ta23 −0.27, ta29 +0.70, ta30 −0.50, ta45 **+5.80**); regla > +2 descarta → **pasa, por poco y en contra** | 4 mirillas de 6: −1.02, −0.57, **−0.03**, +0.44; kick mejor en 9-10 de 21 siempre; p entre 0.55 y 0.88, la frontera nunca se acerca | **detenida en la 4ª** (2026-09-21) por cambio de dirección del PI, no por sus datos. Sin aceptación: es un cero |
 | H-4 | N8 contra N2 (y contra N1, N3, N_ext), fase B del paper de COR | un vecindario más rico gana | -- | 82 instancias x 30 runs, 2460 bloques pareados: N2 1846.50 contra N8 1847.94, dif −1.45, p_adj = 3.9e−4, r = 0.077 (**despreciable**); rangos de Friedman N2 2.1315 el mejor de cinco, N8 2.2400 | **descartada** (antes del bucle; `experiments/cor_tabu_2026/`) |
 | I-012 | **escapar del estado todo-tabú, solo eso** | la celda informativa de I-010 dio −1.11 y mejor en 15 de 21 (p = 0.033) sin frontera | esc−control = −1.82, pasa | 6 mirillas, 30 runs: +1.30, +1.09, +0.59, +0.27, +0.39, **+0.07**; mejor en 10 de 21, p = 0.835 | **descartada** (2026-09-22). La señal de I-010 **no se reprodujo** |
-| I-082 | **campaña de parejas en `ta27`**: las 187 parejas restantes, 90 s, en tandas de 20 | en `ta18` 2 de 105 parejas bajaron el atractor; en `ta27` basta una para acercarse al BKS | pendiente | no aplica | **lanzada** (2026-09-26) |
+| I-083 | **descenso en `ta27`, vuelta 2**: grupo + el 1684, las 20 máquinas sueltas, 60 s | el 1684 cambia el núcleo | pendiente | no aplica | **lanzada** (2026-09-26) |
+| I-082 | **campaña de parejas en `ta27`**: las 187 parejas restantes, 90 s, en tandas de 20 | en `ta18` 2 de 105 parejas bajaron el atractor; en `ta27` basta una para acercarse al BKS | 187 parejas a 90 s: 185 OPTIMAL en 1685 o abiertas sin mejora ((3,15), (5,15), (13,15), (14,17)), y **(17,18) OPTIMAL en 1684**, **nuevo mejor propio de `ta27`**, verificado (BKS 1680) | no aplica | **cerrada** (2026-09-26): segunda instancia en que el descenso baja el atractor |
 | I-081 | **`ta27`: las tres parejas de cota más baja**, (15,17), (0,15), (0,17), 400 s | sus cotas (1673, 1676) están bajo el BKS 1680 | las tres **OPTIMAL en 1685**, en 77-92 s: las cotas bajas eran falta de tiempo | no aplica | **cerrada** (2026-09-26): una pareja de `ta27` pide unos 90 s |
 | I-080 | **`ta27`: máquinas 0 y 15 a 180 s y las 37 parejas que las contienen a 40 s** | en `ta18` las mejoras salieron de las parejas más difíciles de cerrar | máquinas 0 y 15 **OPTIMAL en 1685** con 180 s (las 20 demostradas); las 37 parejas **no cierran** en 40 s, cotas 1673-1682, ninguna mejora | no aplica | **cerrada** (2026-09-26): `ta27` es mucho más dura que `ta18`; sigue I-081 |
 | I-079 | **ruptura del núcleo en `ta27`**: las 20 máquinas sueltas, 60 s | `ta27` es la de hueco más corto (1685 frente a 1680) y su núcleo cierra en 42 s | **18 de 20 máquinas OPTIMAL en 1685**; abiertas la 0 (cota 1683) y la 15 (cota 1679); ninguna mejora | no aplica | **cerrada** (2026-09-26); sigue I-080 |
@@ -5323,3 +5324,18 @@ vuelta nueva del descenso, como en `ta18`.
 
 - I-082, parejas 161-187: 24 cerradas OPTIMAL en 1685; abiertas: (13,15) 1682,(14,17) 1679; **encontrado**: found_m17-18_ta27_1684_Certificate.csv.
 
+### I-082, cierre: `ta27` baja a 1684
+
+La campaña de parejas de `ta27` termina (`iter/I-082/run_*.log`): de las 187,
+la gran mayoría cierra OPTIMAL en 1685, cuatro quedan abiertas sin mejora
+((3,15), (5,15), (13,15), (14,17)) y **la pareja (17, 18) cierra OPTIMAL en
+1684** (`iter/I-082/found_m17-18_ta27_1684_Certificate.csv`), **verificado**
+contra la OR-Library: **nuevo mejor propio de `ta27`**, a 4 del BKS (1680).
+Es la segunda instancia, tras `ta18`, en que la ruptura del núcleo por parejas
+baja un atractor que ningún otro método movía.
+
+### I-083 — vuelta 2 del descenso en `ta27`, desde 1684
+
+**Fijado antes de correr** (`iter/I-083/run.sh`): el grupo de I-079 más el
+1684; las 20 máquinas sueltas, 60 s cada una. Siguen, si nada baja, las
+parejas por tandas como en I-082.
