@@ -5317,3 +5317,5 @@ vuelta nueva del descenso, como en `ta18`.
 
 - I-082, parejas 101-120: 20 cerradas OPTIMAL en 1685; ninguna mejora.
 
+- I-082, parejas 121-140: 20 cerradas OPTIMAL en 1685; ninguna mejora.
+
