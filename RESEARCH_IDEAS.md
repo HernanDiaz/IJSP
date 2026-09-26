@@ -5445,3 +5445,6 @@ del 1401, los **425** tríos que no probó I-078, **50 s** cada uno, en tandas d
 35 (unos 30 minutos por tanda, doce tandas). Todo récord en `ta18` exige romper
 el núcleo en tres máquinas o más (I-077); este es el recorrido sistemático de
 las tres.
+
+- I-089, tríos 1-35: 33 cerradas OPTIMAL en 1401; abiertas: (0,1,13) 1399,(0,3,13) 1397; ninguna mejora.
+
