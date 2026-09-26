@@ -5487,3 +5487,5 @@ alta, en tandas de 10.
 
 - I-090, tríos abiertos 1-10: 10 cerradas OPTIMAL en 1401; ninguna mejora.
 
+- I-090, tríos abiertos 11-35: 25 cerradas OPTIMAL en 1401; ninguna mejora.
+
