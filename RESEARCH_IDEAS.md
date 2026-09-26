@@ -5398,3 +5398,5 @@ verificaría con `verify_certificate.py` antes de decir nada.
 
 - I-086, parejas 141-160: 20 cerradas OPTIMAL en 1680; ninguna mejora.
 
+- I-086, parejas 161-190: 30 cerradas OPTIMAL en 1680; ninguna mejora.
+
