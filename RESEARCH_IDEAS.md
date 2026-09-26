@@ -5381,3 +5381,6 @@ máquinas cierran OPTIMAL en 1680**. **I-086**, fijado antes de correr
 cada una, en tandas de 20. Las dos bajadas de `ta27` (1685 → 1684 → 1680)
 salieron de parejas; **una pareja que baje de 1680 sería récord**, y se
 verificaría con `verify_certificate.py` antes de decir nada.
+
+- I-086, parejas 1-20: 20 cerradas OPTIMAL en 1680; ninguna mejora.
+
