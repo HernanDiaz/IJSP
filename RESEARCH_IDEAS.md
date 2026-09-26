@@ -5484,3 +5484,6 @@ por debajo del BKS (1396).
 **Fijado antes de correr** (`iter/I-090/batch.sh`, `sets.txt` ordenado por
 cota): los 75 tríos abiertos, **180 s** cada uno, de la cota más baja a la más
 alta, en tandas de 10.
+
+- I-090, tríos abiertos 1-10: 10 cerradas OPTIMAL en 1401; ninguna mejora.
+
