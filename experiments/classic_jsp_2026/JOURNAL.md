@@ -3360,3 +3360,12 @@ The ta27 machine-pair campaign, 187 pairs at 90 s: nearly all close OPTIMAL at
 at 1684, verified against OR-Library, a new own best four units from the best
 known 1680. After ta18, the second instance where breaking the core by machine
 pairs moves an attractor nothing else moved. I-083 starts round 2 from 1684.
+
+## I-084: ta27 matches the best known value, 1680
+
+Round 2 of the ta27 core-breaking descent: freeing machines 15 and 18 of the
+core, CP-SAT closes the subspace OPTIMAL at 1680 in 37 s. verify_certificate.py
+against the original OR-Library data: "best verified makespan 1680 -- matches
+the best known solution 1680". The second match of the line after ta23, and
+the first of the descent: 1685, 1684, 1680. I-085 starts round 3 from the best
+known value; anything below 1680 would be a record.
