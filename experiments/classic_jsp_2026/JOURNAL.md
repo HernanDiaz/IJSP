@@ -3382,3 +3382,10 @@ I-087 samples 30 random machine triples at 60 s.
 29 of 30 random ta27 triples close OPTIMAL at 1680, one stays open, none
 improves. I-088 runs the core-breaking descent on ta25 (1603 against 1595) with
 the consensus of its 8 lowest floors, which closes in 5 s.
+
+## I-088: ta25 does not drop with the 8-floor core; I-089 sweeps ta18 triples
+
+With the consensus of ta25's 8 lowest floors, all 20 machines and 190 pairs
+close OPTIMAL at 1603 in at most 4 s each; that core fixes more pairs than the
+107-floor one, so the proof is weaker than on ta18 or ta27. I-089 sweeps the
+425 remaining machine triples of ta18 from 1401 at 50 s, in batches of 35.
